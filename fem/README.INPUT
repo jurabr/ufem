@@ -1,0 +1,85 @@
+Input file structure:
+
+Header:
+
+1. solution ID (number) [long]
+2. depends of solution marked ID (doesn't work) [long]
+3. linear solver (always use 1) [long]
+4. no-linear solver (0=linear sol., 2=NRM) [long]
+5. number of non-linear steps (_even_ number!) [long]
+
+
+Real constants:
+
+6. number of sets
+for ii=1 to "number of sets":
+  6.1 ID number (>=1) [long]
+  6.2 type [long]
+  6.3 number of values [long]
+
+7. number of values
+for ii=1 to "number of values":
+  7.1 value [double]
+
+Material properties:
+
+6. number of sets
+for ii=1 to "number of sets":
+  6.1 ID number (>=1) [long]
+  6.2 type [long]
+  6.3 number of values [long]
+
+7. number of values
+for ii=1 to "number of values":
+  7.1 value [double]
+
+  
+Nodes:
+
+8. number of nodes
+for ii=1 to "number of nodes":
+  8.1 node ID (number) [long]
+  8.2 x coordinate (double)
+  8.3 y coordinate (double)
+  8.4 z coordinate (double)
+
+  
+Elements:
+
+9. number of elements
+for ii=1 to "number of elements":
+  9.1 element ID (number) [long]
+  9.2 element type [long]
+  9.3 element real set number [long]
+  9.4 element material type number [long]
+  9.5 number of nodes [long]
+
+10. number of element nodes
+for ii=1 to "number of element nodes":
+  10.1 node ID [long]
+
+
+Loads on nodes (including supports):
+
+11. number of loads
+for ii=1 to "number of loads":
+  11.1 node ID [long]
+  11.2 load type [long]
+  11.3 load direction [long]
+  11.4 load size (value) [double]
+
+
+Loads on elements:
+
+12. number of loads
+for ii=1 to "number of loads":
+  12.1 element ID [long]
+  12.2 load type [long]
+  12.3 load direction [long]
+  12.4 number of values [long]
+
+13. number of element load values
+for ii=1 to "number of element load values":
+  13.1 value [double]
+
+$Id: README.INPUT,v 1.1 2005/01/01 21:11:12 jirka Exp $

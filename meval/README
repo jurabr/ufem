@@ -1,0 +1,4 @@
+Extermely simple evaluator for mathematical expressions.
+Currently only +,-,*,/ works (NO PRIORITY of operators!).
+
+Use: echo "your expression" | ./m_eval

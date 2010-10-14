@@ -1,0 +1,25 @@
+What can be threaded:
+
+- femMatSetZero     [done]
+- (femMatSetZeroRow)  - probably not a good idea in FEM
+- femMatSetZeroCol - important (~20% speedup) [done]
+- femMatVecMult - most important (MAT_SPAR only) [done]
+- femMatNorm [done]
+- (femVecMatMult) - unused?
+- (femMatMatMult)
+- (femMatLinComb)
+- (femVecLinComb)
+
+- femVecSetZero [done]
+- femVecNorm [done]
+- femVecVecMult [done]
+
+- femVecSwitch
+- femVecAddVec
+
+- K matrix (hurts precission!?, but speedup is ~40%) [done]
+- result computations [done]
+
+- K structure computation
+
+$Id: README.THREADS,v 1.3 2005/01/01 21:13:39 jirka Exp $

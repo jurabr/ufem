@@ -1,0 +1,1131 @@
+### Sun Sep 12 16:23:54 CEST 2010
+
+bugfixes:
+  - chen2d fixes (tension slill doesn't work)
+
+
+### Mon Sep  6 15:42:51 CEST 2010
+
+bugfixes:
+  - non-working material 011 removed
+  - non-working material 012 removed
+  - non-working material 013 removed
+  - Ohtani for 2D/3D disabled (strange behaviour)
+
+
+### Thu Jul 29 14:38:16 CEST 2010
+
+bugfixes:
+  - J2 computation for 2D
+
+
+### Wed Jul 28 20:26:07 CEST 2010
+
+features:
+  + Ohtani hardening for Chen2D (rewritten, untested)
+
+
+### Tue Jul 27 19:48:31 CEST 2010
+
+features:
+  + unfinished rewrite of fem_ch2d (no unloading, no hardening)
+
+
+### Thu Oct 22 20:31:49 CEST 2009
+
+features:
+  + new file fem_sbet to separate the models
+
+
+### Tue Aug 25 23:53:57 CEST 2009
+
+features:
+  + equivalent strains in material 008
+
+
+### Thu Jul 16 17:14:19 CEST 2009
+
+features:
+  + new material curve added to the "sinope" library
+
+
+### Mon Jul 13 21:15:17 CEST 2009
+
+bugfixes:
+  - orthotropic matrix for material 008 (hopefully) fixed
+
+
+### Sun Jul 12 11:14:07 CEST 2009
+
+bugfixes:
+  - bad jacobian inversion in element 002
+
+
+### Sat Jun 27 20:15:45 CEST 2009
+
+bugfixes:
+  - unallocated T_T in lement 001 (material 008)
+
+
+### Wed Jun 24 00:18:45 CEST 2009
+
+bugfixes:
+  - zeroing of sparse rows in serial code (once more)
+
+
+### Tue Jun  2 00:30:35 CEST 2009
+
+bugfixes:
+  - transformation matrix for element 014
+
+
+### Thu Mar  5 21:34:44 CET 2009
+
+features:
+  + export of stresses/strains in nodes (to text file)
+  + export of stresses and strains to VTK
+  + functions for average results in nodes
+
+bugfixes:
+  - fixed VTK export
+
+
+### Wed Feb 25 22:24:44 CET 2009
+
+features:
+  + VTK export (grid only, experimental)
+
+
+### Tue Oct 28 19:25:40 CET 2008
+
+features:
+  + 2D orthotropy (smeared poisson ratio, zero angle only)
+
+
+### Mon Oct 27 14:34:21 CET 2008
+
+version 0.1.9
+
+features:
+  + uniprocessor optimalisation of SSOR preconditioner
+  + use of SSOR intead of Jacobi precond everywhere ("-ssor")
+
+
+### Sun Oct 26 20:55:35 CET 2008
+
+features:
+  + CG method with SSOR preconditioner (slow, unoptimised!)
+
+
+### Fri Aug 29 20:50:26 CEST 2008
+
+features:
+  + simple non-linear compression for material 013
+
+
+### Thu Aug 28 22:47:35 CEST 2008
+
+bugfixes:
+  -  bugs related to material 013 in fem_eqlo (still does not run)
+
+
+### Wed Aug 27 22:11:23 CEST 2008
+
+bugfixes:
+  - bugs related to material 013 in fem_stf2, fem_eqlo
+
+
+### Tue Aug 26 21:21:15 CEST 2008
+
+version 0.1.8
+
+features:
+  + material 013 (simplified Lourenco for 2D - experimental)
+
+
+### Sat Aug 16 22:21:07 CEST 2008
+
+features:
+  + stiffness matrix (sparse only) can be saved in each NRM/ALM step
+  + 36017 linex of code (including mviz etc)
+
+
+### Fri Aug 15 23:40:08 CEST 2008
+
+features:
+  + roufine for testin of 2D constitututive models
+
+bugfixes:
+  - material 012 (many fixes but still does NOT work)
+
+
+### Wed Aug  6 15:01:13 CEST 2008
+
+features:
+  + updated properties for amterial 012 (still preliminary)
+
+
+### Tue Aug  5 14:59:01 CEST 2008
+  
+features:
+  + diff for sparse matrices in "mviz" (still rather naive)
+
+bugfixes:
+  - femSparseMatReadF used bad "from" values again
+
+
+### Mon Aug  4 23:02:04 CEST 2008
+
+features:
+  + "mviz" matrix visualizer (first working version) 0.0.2
+  
+bugfixes:
+  - femSparseMatReadF used bad "from" values
+
+
+### Thu Jul 31 23:13:27 CEST 2008
+
+features:
+  + config file for Doxygen added
+  + definition (oly) for material 012 added
+
+
+### Mon Jul 28 15:47:23 CEST 2008
+
+features:
+  + export of matrix "-mmf" for MatViewer
+
+
+### Wed Jul 23 20:22:38 CEST 2008
+
+features:
+  + parallel version of VecLinComb (untested!)
+
+
+### Fri Jul  4 22:35:44 CEST 2008
+
+version 0.1.11
+
+features:
+  + mat 008 rotating cracks (untested, experimental)
+  + mat 008 updated
+
+
+### Thu Jul  3 16:39:35 CEST 2008
+
+version 0.1.10
+
+features:
+  + material 008 modified (chooseable Kupfer type)
+
+
+### Wed Jul  2 22:35:11 CEST 2008
+
+version 0.1.9
+
+features:
+  + material 008 modified (chooseable shear reduction)
+
+
+### Thu Jun 26 23:29:04 CEST 2008
+
+version 0.1.8
+
+features:
+  + modified (serial) result file format
+
+bugfixes:
+  - number of node with reaction added to output file
+
+
+### Fri Jun 20 00:28:07 CEST 2008
+
+version 0.1.7
+
+features:
+  + SaPo data are saved to file after every iteration (-DUSE_FAST_SAPO)
+  + program version info is included in fem.h
+  + copyright info added to output
+
+bugfixes:
+  - minor help updates
+
+
+### Wed Jun 11 10:41:46 CEST 2008
+
+features:
+  + one-directional supports for NRM and ALM (not for DDM solver!)
+
+
+### Fri Jun  6 20:12:49 CEST 2008
+
+bugfixes:
+  - solution for one-directional supports rewritten
+
+
+### Thu Jun  5 16:30:54 CEST 2008
+
+bugfixes:
+  - one-directional stiffness: bad type in test fixed
+
+
+### Tue Jun  3 15:08:20 CEST 2008
+
+features:
+  + NRM/ALM can continue after unconverged step (-nlbrk)
+
+
+### Mon Jun  2 21:30:24 CEST 2008
+
+features:
+  + number of non-linear iteration can be set from command line
+
+bugfixes:
+  - mass matrix related code in fem_load
+
+
+### Mon Jun  2 00:53:35 CEST 2008
+
+features:
+  + boundary conditions in mass matrix (non-MPI) (correct?)
+
+bugfixes:
+  - femValVecMult() fixed
+  - number and size of frequency in modal results
+
+
+### Mon May 26 18:06:43 CEST 2008
+
+bugfixes:
+  - step number saved in ALM iterations
+
+
+### Tue May  6 22:32:31 CEST 2008
+
+features:
+  + non-linear multiplier is saved  (NOT for MPI)
+
+
+### Thu May  1 22:00:07 CEST 2008
+
+features:
+  + material 011 (2D Chen + sbet for tension)
+
+
+### Thu May  1 15:12:09 CEST 2008
+
+bugfixes:
+  - one-directional concrete (od3d) fixed
+
+
+### Sun Apr 20 20:25:19 CEST 2008
+
+features:
+  + hardening in 3D Chen code
+
+bugfixes:
+  - Chen 3D partial rewrite
+
+
+### Mon Apr 14 22:03:16 CEST 2008
+
+bugfixes:
+  - half of chen-ohtani functions is rewritten
+
+
+### Sun Apr 13 23:04:27 CEST 2008
+
+bugfixes:
+  - I1 and J2 computation fixed once more
+  - tau2 -> tau fixed in all chens
+  - chen derivtives fixed
+  - chen coefficient modified (+/- issues)
+
+
+### Tue Apr  8 21:07:28 CEST 2008
+
+bugfixes:
+  - I1 (!) computation in fem_ch2d
+
+
+### Tue Apr  1 20:46:52 CEST 2008
+
+bugfixes:
+  - J2 computation in fem_ch2d
+
+
+### Sat Mar 22 17:44:46 CET 2008
+
+bugfixes:
+  - needed newline in SaPo zero line
+
+
+### Mon Mar 17 15:00:54 CET 2008
+
+features:
+  + NRM stops (with saving) after SIGINT signal
+  + DDS stops (with saving) after SIGINT signal
+  + ALM stops (with saving) after SIGINT signal
+
+
+### Tue Mar  4 21:46:19 CET 2008
+
+features:
+  + iteration in direct displacement solution
+  + several ALM enhancements (psi^2 zeroing etc.)
+  + previous E1, E2 checking in fem_sbet
+
+bugfixes:
+  - ALM fixes (basic F size etc.)
+  - ALM restart fixed
+
+
+### Mon Mar  3 22:58:48 CET 2008
+
+bugfixes:
+  + totally rewritten ALM (sometime works al least as NRM)
+
+
+### Wed Feb 20 22:55:38 CET 2008
+
+features:
+  + new version of ALM (still does not work)
+
+
+### Tue Feb 19 21:32:40 CET 2008
+
+features:
+  + minor changes in NRM (output, default num. of substeps)
+
+bugfixes:
+  - new (useless) ALM code
+
+  
+### Tue Feb 12 23:52:48 CET 2008
+
+bugfixes:
+  - minor issues in fem_Sbet
+  - invalid direction of unballanced forces !? (still need to be checked)
+
+
+### Mon Feb 11 21:46:25 CET 2008
+
+features:
+  + alternative orthotropic 2D matrix (Bittnar+Sejnoha)
+  + update of fem_sbet model (still strange c-c, c-t interaction!?)
+  + alternative plasticity in compression for fem_sbet
+
+bugfixes:
+  - many bugfixes in fem_sbet (mixed indexes, missing tests,...)
+
+
+### Sun Feb 10 23:23:21 CET 2008
+
+features:
+  + added special data to e002 results (unballanced stress)
+
+
+### Sat Feb  9 22:57:36 CET 2008
+
+features:
+  + fem_sbet model more updated (there still are issues)
+
+bugfixes:
+  - fem_sbet: total epsilon computation
+  - fem_sbet: total epsilon usage
+  - fem_sb1d: testing of computed Rt
+
+
+### Fri Feb  8 23:44:20 CET 2008
+
+features:
+  + newly rewritten fem_sbet model code
+
+bugfixes:
+  - Chen material have produced invalid stresses in 2D
+
+
+### Thu Jan 24 20:38:55 CET 2008
+
+bugfixes:
+  - Chen criteria fixed (Dep computation still useless)
+
+
+### Tue Jan 22 22:04:43 CET 2008
+
+features:
+  + mat003 data changed
+
+bugfixes:
+  - fem_ch2d: many bugfixes (still doesn't work)
+
+
+### Tue Jan  1 20:55:05 CET 2008
+
+features:
+  + new code for Full ALM (untested)
+  + partial  material 008 support for element 001
+
+  
+### Sun Dec 30 20:20:22 CET 2007
+
+features:
+  + fem_ch2d: H computation code added (untested)
+
+
+### Wed Dec 26 13:44:39 CET 2007
+
+bugfixes:
+  - fem_sb1d, Makefile: typing mistakes fixed
+
+
+### Sun Dec 23 12:23:46 CET 2007
+
+bugfixes:
+  - fem_sbet: fully damaged material modified 
+  - fem_sb1d: strain status computation modified
+
+
+### Mon Dec 17 21:53:56 CET 2007
+
+features:
+  + fem_sb1d: now linear or external curve only
+  + material 008 data modified for external "sbet" curves
+
+
+### Thu Dec 13 20:31:03 CET 2007
+
+features:
+  + more verbose  linear solution
+
+bugfixes:
+  - bad parameters for threaded assembling of M matrix
+
+
+### Thu Nov 29 22:25:32 CET 2007
+
+bugfixes:
+  - beam3: stiffness matrix fixed
+  - beam14: stiffness matrix fixed
+  - beam14: transformations (hopefuly) fixed
+
+
+### Mon Nov 26 21:54:59 CET 2007
+
+features:
+  + some more chen 2d code added (3D still need a check!)
+
+
+### Sun Nov 25 14:40:25 CET 2007
+
+features:
+  + fem_ch2d: Chen-Chen for 2D started (unfinished)
+
+bugfixes:
+  - Chen-Chen for 3D: bad derivatives (more fixes will follow)
+
+  
+### Mon Nov 19 20:33:14 CET 2007
+
+features:
+  + Winkler foundation for grille
+
+
+### Sat Nov 17 15:15:28 CET 2007
+
+version 0.1.6
+
+features:
+  + fem_m001: shear modulus (renundant) removed from mat001
+  + fem_mont: max, min, fail(0|1) results for reliability
+
+
+### Thu Nov 15 20:17:55 CET 2007
+
+features:
+  + fem_mont: summary element result possible in reliability
+  + fem_mont: result file saving (-DFEM_MONT_SAVE), not for MPI!
+
+
+### Tue Nov 13 20:39:52 CET 2007
+
+features:
+  + 2D element for grill structures (element 017)
+
+
+### Thu Nov  8 19:08:09 CET 2007
+
+features:
+  + RES_STAT1 value added to e011 (for reliability)
+
+
+### Sun Oct 28 21:41:39 CET 2007
+
+features:
+  + Gram-Schmidt ortogonalization (untested)
+  + inverse iteration method works for BEAM3 (tested)
+
+bugfixes:
+  - bug in normalisation of "x" in inverse iterations
+
+
+### Wed Oct 24 22:13:44 CEST 2007
+
+bugfixes:
+  - fixes in eigenfrequency computation (still useless)
+
+
+### Mon Oct 22 22:40:58 CEST 2007
+
+features:
+  + initial sumport for dynamics (command line param)
+  + allocations for modal analysis
+  + computation of global mass  matrix (untested!)
+  + inverse iteration algorithm (untested!)
+
+bugfixes:
+  - Loc_Ke() functions can be used also for mass (untested!)
+
+  
+### Mon Oct 15 22:23:26 CEST 2007
+
+bugfixes:
+  - fixed fem_add_load() call in fem_mont.c
+
+
+### Sat Oct  7 19:18:52 CEST 2007
+
+bugfixes:
+  - unused real sets bug in fem_io.c
+
+
+### Sat Oct  6 22:15:03 CEST 2007
+
+bugfixes:
+  - material model in fem_sb1d reverted to Ez linear softening
+
+
+### Fri Sep 28 21:25:01 CEST 2007
+
+features:
+  + material 010 - compression only 3D concrete (experimental)
+
+
+### Tue Sep 25 22:44:48 CEST 2007
+
+features:
+  + fem_od3d (iterational compression-only 3d problems)
+
+
+### Thu Sep 13 22:21:19 CEST 2007
+
+bugfixes:
+  - odd loop in fem_nlmc removed (n^2 slowdown)
+
+
+### Wed Sep 12 22:00:02 CEST 2007
+
+features:
+  + some new NLMC code (element grouping => possible speedup) 
+
+
+### Fri Sep  7 22:45:42 CEST 2007
+
+features:
+  + new solver for direct displacement started (unfinished)
+  + speedup in NLMC via threads (untested)
+
+
+### Fri Aug 24 18:11:41 CEST 2007
+
+bugfixes:
+  - added second damage direction in fem_sbet
+  - negative E in fem_sbet removed
+
+
+### Sun Aug  5 22:48:12 CEST 2007
+
+bugfixes:
+  - fem_sbet.c + fem_sb1d.c fixes
+
+
+### Thu Aug  2 18:53:44 CEST 2007
+
+bugfixes:
+  - fem_sbet.c - several errors in non-linear tension
+
+
+### Wed Aug  1 21:49:52 CEST 2007
+
+bugfixes:
+  - saving of DOF results in NRM fixed
+  - fem_sbet.c changes
+
+
+### Thu Jul 26 19:09:25 CEST 2007
+
+bugfixes:
+  - (some of) incorrect detection of softening type corrected
+  - missing Rt computation in fem_sb1d
+
+
+### Tue Jul 24 20:36:25 CEST 2007
+
+features:
+  + (totally) rewritten fem_sbet.c
+
+
+### Mon Jul 16 18:37:35 CEST 2007
+
+features:
+  + function to compute number of repeating data for MAT and RS
+  + new sbet-like model started (for 1D problems)
+
+  
+### Thu Jun  7 21:35:05 CEST 2007
+
+features:
+  + start of (another) rewriting of fem_sbet.c
+
+
+### Sun May 27 01:16:36 CEST 2007
+
+bugfixes:
+  - m008+e002: fixed model and reactions (untested)
+
+
+### Sat May 26 21:51:39 CEST 2007
+
+features:
+  + begin of rewrite of D computation in 2D elements 
+
+
+### Sun May 13 18:42:59 CEST 2007
+
+bugfixes:
+  - logging of reactions fixed once more
+
+
+### Sat May 12 23:13:48 CEST 2007
+
+bugfixes:
+  - logging of reactions tested and fixed
+
+
+### Sun May  6 22:42:47 CEST 2007
+
+features:
+  + logging of sums of reactions in NRM (untested, serial code only)
+
+bugfixes:
+  - displacement control in NRM seems to work (but only sometimes) 
+
+
+### Mon Feb 19 22:00:16 CET 2007
+
+features:
+  + displacement load for NRM (DOES NOT WORK)
+
+bugfixes:
+  - element 3 modified (all o-|, |-o, |-| now possible, but variable
+    stiffness of hinges is no longer available)
+
+
+### Wed Feb  7 15:55:10 CET 2007
+
+features:
+	+ basic material model for bricks (009, unfinished, untested)
+	+	NRM and ALM moved to separate files
+	+ run-time result data backup mechanism (tested)
+
+
+### Sun Nov 19 15:34:54 CET 2006
+
+features:
+	+ function for obtaining coordinates of integration points (untested)
+
+
+### Tue Oct 24 22:50:25 CEST 2006
+
+bugfixes: 
+  - Monte module: another D output error fixed
+
+
+### Sun Oct 15 22:26:20 CEST 2006
+
+bugfixes:
+  - Monte module: N input error fixed
+  - Monte module: D output error fixed
+  - NRM solver fixed (I hope...) - speedup have to be turned off
+
+
+### Tue Sep 26 23:49:40 CEST 2006
+
+features:
+  + libfem.so for Monte reliability tool (first less or more working version)
+  + 26373 lines of code
+
+bugfixes:
+  - number of real_rp parameters of element 003 fixed
+
+
+  
+### Mon Jun 26 21:57:14 CEST 2006
+
+features:
+  + output of convergence norms to a specified file (fflush-ed)
+
+
+
+### Mon Jun  5 00:31:36 CEST 2006
+
+features:
+  + non-linear solver and number of steps can be set from command line
+  + (once more) updated constitutive model for concrete (material 008)
+
+
+
+### Tue May 30 00:25:46 CEST 2006
+
+features:
+  + updated constitutive model for concrete (material 008)
+
+
+
+### Tue May  9 22:40:19 CEST 2006
+
+features:
+  + unique solution identifier for every NRM substep 
+    (necessary for postprocessing)
+
+
+
+### Mon Apr 17 14:45:24 CEST 2006
+
+features:
+  + substep results can be saved (serial an threads code only, NOT in MPI)
+  + experimental material 008 (quassibrittle concete)
+
+
+
+### Sat Apr  9 22:28:19 CEST 2005
+
+bugfixes:
+  - element 011: K_e bug fixed
+  - threads no longer used inside element computations (but *Big()
+    functions can be used to force usage of threads)
+
+
+
+### Mon Mar 28 23:27:51 CEST 2005
+
+version  0.1.5
+
+features:
+  + MPI result data file changed (eID added)
+
+
+
+### Thu Feb  3 22:51:39 CET 2005
+
+ports:
+  + MacOS X port (10.3/X11)
+
+
+
+### Sat Jan  1 21:53:23 CET 2005
+
+version:  0.1.4
+
+features:
+  + results from previous step can be readed to solution
+    (untested for NRM, doesn't work for MPI and MC)
+
+
+
+### Sat Jan  1 00:10:37 CET 2005
+
+version:  0.1.3
+
+features:
+  + new format of result file
+
+
+
+### Fri Dec 31 01:32:37 CET 2004
+
+bugfixes:
+  - Winkler - only "uz" DOF's can be used here
+
+
+
+### Thu Dec 30 23:03:42 CET 2004
+
+version: 0.1.2
+
+features:
+  + Winkler foundation available for element 010
+
+
+
+### Mon Dec 27 15:50:28 CET 2004
+
+version: 0.1.1
+
+features:
+  + rewritten (working) element 005 (Mindlin's slab)
+  + Winkler foundation available for element 005
+
+bugfixes:
+  - element 005 fixed ;-)
+
+
+
+### Thu Nov 11 22:54:39 CET 2004
+
+version: 0.1.0
+
+features:
+	+ von Mises plasticity (bilinear hardening, 3D only)
+	+ new element - 3D brick (20 nodes) for non-linear solution
+  + return from HPC-Europa :-(((
+
+
+
+### Wed Oct 27 23:21:25 CEST 2004
+
+features:
+	+ new element - 2D constant strain triangle
+	+ PSEUDO_SEC replaced by material type checking
+
+
+
+### Sun Oct 10 14:25:31 CEST 2004
+
+ports:
+	+ Solaris 9 - POSIX threads tested (perfect)
+	+ AIX 4.3 - POSIX threads tested (perfect)
+
+
+
+### Thu Sep  9 01:28:11 CEST 2004
+
+bugfixes:
+	- bug in deformation load in MPI (Pos instead of row)
+
+
+
+### Tue Sep  7 01:24:07 CEST 2004
+
+version 0.0.12
+
+features:
+	+ reactions in MPI solution (deformation load untested)
+	+ tension/compression-only boundary conditions (untested)
+  + 21101 lines of code
+
+bugfixes:
+	- invalid reaction data field (bad def. load types were tested)
+
+ports:
+	+ Solaris 9 - MPI version
+
+
+
+### Wed Sep  1 00:55:02 CEST 2004
+
+features:
+   + deformational load tested - linear solution only 
+	   (force in the same node and direction not allowed)
+
+
+
+### Fri Aug 27 15:32:42 BST 2004
+
+version 0.0.11
+
+features:
+	 + Rankine failure condition
+   + 20733 lines of code
+
+bugfixes:
+	- principal stresses in 3D
+	- non-linear behaviour of elements 009 (010) and 008
+	- bug in SaPo code (workaround)
+
+
+
+### Mon Aug 23 00:22:43 CEST 2004
+
+version 0.0.10
+
+features:
+	+ new result data format (added "S" or "M" to the header)
+
+ports:
+	+ AIX 4.x (serial, threads, MPI)
+	+ Solaris 9 (serial, threads)
+
+
+
+### Sun Jul 11 19:51:09 CEST 2004
+
+version 0.0.9
+
+features:
+  + POSIX threads can be used (up to 50% speedup for 2xXeon)
+  + 3D bricks are OK
+  + name of program changed to "FENA"
+
+
+
+### Mon Apr  5 19:07:02 CEST 2004
+
+version 0.0.8
+
+features:
+  + 3D bricks (20 nodes and 8 nodes; the later is untested)
+
+
+
+### Sun Mar  7 20:17:26 CET 2004
+
+version 0.0.7
+
+features:
+  + name of program changed to "AntEater"
+  + 3D link element
+  + 16938 lines of code
+
+ports:
+  + Window$ XP (MSYS/MINGW) 
+
+
+
+### Tue Feb 24 20:54:30 CET 2004
+
+version 0.0.6
+
+features:
+  + experimental Monte Carlo Simulation (linear solution only)
+  + 16050 lines of code
+
+
+
+### Tue Dec 23 14:51:48 CET 2003
+
+features:
+	+ new output data format (header, number of element results moved)
+	+ Conjugate Gradient Method speedup
+
+
+
+### Fri Nov  7 01:00:05 CET 2003:
+
+version 0.0.5
+
+features:
+	+ 3D tetrahedron
+	+ 2D beam element (no element loads)
+	+ Bi-Conjugate Gradient Stabilised Method solver (experimental)
+	+ Newton-Raphson speedup in MPI ported to serial version
+	+ new (cleaner) functions for reading of material and real set data
+	+ stiffness matrix and load vector can be saved to file (linear solver only)
+	+ 12016 lines of code
+
+ports:
+	- Minix/i286 support no longer guaranteed
+
+
+
+### Wed Jul 30 19:01:40 CEST 2003:
+
+version 0.0.4
+
+features:
+	+ MPI version of code (whole code, including Newton-Raphson
+	  non-linear solver); it's dog slow :-(
+	+ solver can be used up to 2000000 DOFs (requires lots of memory)
+	+ speedup in Newton-Raphson
+	+ 11102 lines of code
+
+bugfixes:
+	- errors in MPI-related code
+	- some fields indexing
+	- material 2 modified
+	- NRM process for tangent matrix changed (secant version look to be useless)
+
+ports:
+	+ SunOS 5.8 / Solaris 8 (UltraSPARC)
+
+
+
+### Sat May 31 17:20:37 CEST 2003:
+
+features:
+	+ MPI version of Conjugate Gradient Solver (untested, unoptimized)
+
+
+
+### Thu May 29 21:01:20 CEST 2003:
+
+bugfixes:
+	- bad type of "int" in MPI :-(((
+
+
+
+### Tue May 27 23:43:14 CEST 2003:
+
+version 0.0.3
+
+features:
+	+ solver can be used for problems up to 720000 DOFs (tested)
+		but it requires about 500 MB of RAM
+	+ nice command-line help
+	+ standard input can be used as input file ("-si" parameter)
+	+ still can run on Minix/i286 (tested)
+	+ command line parameters (input file, output file)
+
+ports:
+	+ HP-UX 11.x (PA-RISC, 8000/900 server)
+
+bugfixes:
+	- many usual fixes (field boundaries, indexes, etc.)
+	- sparse matrix handling corrected (zeros are ignored=speedup)
+
+
+
+### Sun May 11 11:26:58 CEST 2003:
+
+features:
+	+ solver can be used for problems up to 450000 DOFs (tested)
+
+ports:
+	+ Window$ [win32/IA32] (crosscompiled on Linux using MINGW - gcc 2.95.3)
+	+ tested on Debian 3.0
+
+
+
+### Sat May  3 19:51:39 CEST 2003:
+
+version 0.0.2
+
+features:
+	+ 2D link element, 2D isoparametric 4-node element
+	+ preconditioned Conjugate Gradient Method solver (Jacobi preconditioner)
+	+ result output (text file)
+  + 7400 lines of code (including some non-functional parallel code)
+
+bugfixes:
+	- many fixes 
+
+ports:
+	+ Linux (Slackware 8.1 and 9.0 tested)
+	+ IRIX 6.5
+	+ Minix 2.0/i286 (runs only if compiled with -D_SMALL_FEM_CODE_)
+
+
+
+### Mon Apr  7 16:51:33 CEST 2003:
+
+initial version

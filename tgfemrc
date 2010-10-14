@@ -1,0 +1,12 @@
+plotprop,nodeNumber,no
+plotprop,elemNumber,no
+plotprop,autoReplot,yes
+plotprop,elemColMat,yes
+plotprop,antiAlias,yes
+plotprop,wireOnly,no
+plotcol,hilightcolor,1,0,1,1
+ggeom,6,24,1268,900
+datadir,/tmp
+setsolver,/home/jirka/FEM/src/fem/fem
+outauto,yes
+outview,gvim

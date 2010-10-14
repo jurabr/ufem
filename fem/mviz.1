@@ -1,0 +1,47 @@
+.TH MVIZ 1 "5 August 2008"
+.SH NAME
+mviz \- Sparse matrix visualizer and visual differ for uFEM.
+.SH SYNOPSIS
+\fBmviz\fP  matrix1 [Imatrix2]
+.SH DESCRIPTION
+\fBmviz\fP can show non-zero members of sparse matrix in 2D graphical
+form. It also can show differences between two matrices. Matrices must
+be saved in uFEM sparse matrix format.
+.SH "PROGRAM CONTROL KEYS"
+.TP
+\fB<q>\fP or \fB<Escape>\fP quits program,
+.TP
+\fB<f>\fP switches to fullscree mode (if possible),
+.TP
+\fB<w>\fP switches to windowed mode.
+.SH FILES
+.TP
+\fBmviz\fP
+Executable file. Location of file is system-dependent but \fI/usr/local/bin/mviz\fP is the most common.
+.TP 
+\fB$MANPATH/man1/mviz.1 \fP
+Manual page (this file).
+.TP 
+.SH COMPATIBILITY
+Source code has been written in a plain \fBISO C\fP (C89) programming language without any extension. It should be compiled using any \fIISO C\fP-compliant compiler (at least in theory). The \fBgcc 3.x\fP compilers usually work. The program uses OpenGL(tm) libraries and GLUT(3). These must be available for succesfull compialtion and use of the software. 
+\fITested\fP systems include:
+\fBIRIX\fP 6.5.x (MIPS).
+.SH LICENSE
+The code is released under the GNU General Public Licence.
+.SH AUTHOR
+Jiri Brozovsky <jirka@penguin.cz>
+.SH "HOME PAGE"
+http://fast10.vsb.cz/brozovsky/articles/utils/index.html
+.SH "SEE ALSO"
+fem(1) tgfem(1)
+.SH BUGS
+.TP
+1. Incorrect initialization of OpenGL (renundant redrawings).
+.TP
+2. No text information is available (color points only).
+.TP
+3. No image manipulations.
+.TP
+4. No user interaction.
+.SH VERSION
+0.0.2

@@ -1,0 +1,104 @@
+.TH TFEM 1 "15 July 2008"
+.SH NAME
+tfem/gfem \- User Interface to uFEM Finite Element Method Solver.
+.SH SYNOPSIS
+\fBtfem\fP \fI[options]\fP
+.TP
+\fBgfem\fP \fI[options]\fP
+.SH DESCRIPTION
+\fBtfem\fP (\fBgfem\fP) is an interactive user interface to the structural analysis
+software (\fBfem\fP). 
+
+.SS Options
+
+.TP
+\fB-h\fR
+Help.
+.TP
+\fB-e\fP 
+Use standard error output instead of standard output.
+.TP
+\fB-c FILE\fP 
+Read configuration from file named \fBFILE\fP.
+.TP
+\fB-l filename\fP
+Log entered command to file named \fBfilename\fP. File will be rewritten.
+.TP
+\fB-la filename\fP
+Log entered command to file named \fBfilename\fP. File will be appended.
+.TP
+\fB-b\fP
+Right button box in GUI will be disabled.
+.TP
+\fB-t\fP
+Command tree in GUI (Gtk+-2.x version) will be disabled.
+.TP
+\fB-tc\fP
+Shows command names in command tree (not very usefull). GUI-only (Gtk+-2.x version).
+.TP
+\fB--no-mpi-eres\fP
+Results on elements will not be available (kind of speedup). Valid only for results from MPI solver. Please DO NOT use it.
+
+.TP
+\fB-np N\fP
+Run solver with N processes (if applicable). May cause speedup on
+multiprocessor systems.
+.TP
+\fB-nt N\fP
+Run with N processes. This item is for compatibility only. 
+
+.TP
+\fB-d DIR\fP
+Set working directory to DIR. It has the same effect as the "datadir"
+command has. Please note that it \fBdoes not override\fP the settings
+in configuration file.
+.TP
+\fB-j NAME\fP
+Set jobname to NAME. It has the same effect as the "jobname"
+command has. Please note that it \fBdoes not override\fP settings
+in a configuration file.
+.TP
+\fB-rs\fP
+Reads data from database file which is specified by "-j" and "-d" 
+parameters. Note that it will halt the program if database does not exist
+if it the database is invalid.
+
+.SH FILES
+.TP
+\fBtfem\fP
+Executable file (text-only version). Location of file is system-dependent but \fI/usr/local/bin/tfem\fP is the most common.
+.TP
+\fBgfem\fP
+Executable file (GUI version). Location of file is system-dependent but \fI/usr/local/bin/gfem\fP is the most common.
+.TP 
+\fI$HOME/.tgfemrc\fP 
+Configuration file. This file should include only standard
+configuration commands. This file is parsed \fBlast\fP. Another config file
+can be specified in
+\fBFEM_SETUP_FILE\fP environment variable.
+.TP
+\fB$MANPATH/man1/tfem.1 \fP
+Manual page (this file).
+.SH "ENVIRONMENT VARIABLES"
+.TP 
+\fBFEM_SETUP_FILE\fP
+Specifies configuration file. This one is parsed \fBbefore\fP \fI$HOME/.tgfemrc\fP (if any). 
+
+.SH "ORDER OF CONFIGURATION FILES"
+Global configuration file -> file specified in FEM_SETUP_FILE environment variable ->
+file in $HOME -> file specified by the "-c" switch.
+
+
+.SH COMPATIBILITY
+\fBLinux\fP 2.x (IA32),
+\fBIRIX\fP 6.5.x (MIPS).
+.SH LICENSE
+The code is released under GNU General Public Licence. Licence may be changed later (to LGPL).
+.SH AUTHOR
+Jiri Brozovsky <jirka@penguin.cz>
+.SH "SEE ALSO"
+fem(1), feminput(5)
+.SH BUGS
+There are tons of bugs. Really!
+.SH VERSION
+$Id$

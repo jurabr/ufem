@@ -1,0 +1,52 @@
+!* Input file for uFEM 0.2.40 and above
+!*
+!* Simple 2D truss girder 
+!*
+!* File: link.mac
+!* Date: Sat Jun 28 21:26:33 CEST 2008
+
+cleardata
+jobname,test-link2d
+
+et,1,1
+
+rs,1,1
+r,area, 1, 0.01
+
+mat,1,1
+mp,ex,  1, 20e9
+mp,prxy,1, 0.2
+
+n,1,0,0
+n,2,1,0
+n,3,1,1
+n,4,2,0
+n,5,2,1
+n,6,3,0
+
+e,,1,2
+e,,1,3
+e,,2,3
+e,,2,4
+e,,3,5
+e,,4,5
+e,,4,6
+e,,5,6
+
+e,,2,5
+
+d,1,ux
+d,1,uy
+d,6,uy
+
+f,3,fy,-10e3
+f,5,fy,-20e3
+f,6,fx,-5e3
+
+save
+
+solve
+
+pldef     !* deformations
+plrs      !* reactions
+ples,f_x  !* normal forces

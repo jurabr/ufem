@@ -1,0 +1,34 @@
+Operating System, Platform, Compiler(s) [additional features]:
+==============================================================
+
+Current:
+
+IRIX 6.5, SGI (misp3, mips4, n32), gcc 3.0-4.3 [threads, MPI]
+GNU/Linux 2.6.x, x86_64, gcc 3.x [threads, MPI]
+GNU/Linux 2.6.x, x86, gcc 3.x [threads, MPI]
+GNU/Linux 2.6.x, MIPS/XBurst (Ben NanoNote), gcc 3.x
+GNU/Linux 2.6.x, ARM (Nokia N800), gcc 3.x
+Mac OS 10.5, PowerPC (G5), gcc 3.x
+
+
+
+Archive (no longer tested):
+
+GNU/Linux 2.4.x, x86, gcc 3.x [threads, MPI] (2008)
+Mac OS 10.3, PowerPC (G3, G4), gcc 3.3 [threads, MPI] (2008)
+GNU/Linux 2.6.x, ARM (Nokia 770), gcc 3.3 (2008)
+Window$ 2000, XP, Vista x86 (32bit), MINGW gcc 3.x (2008)
+GNU/Linux 2.6.x, PowerPC, gcc 3.x [threads, MPI] (2006)
+GNU/Linux 2.6.x, Alpha, gcc 3.3 (2006)
+SunOS 2.10, x86_64 (Sun Ultra 20), gcc 3.x [threads] (2005)
+AIX 5.x, IBM POWER4 (Regatta, 64bit), VisualAge C++ Professional 6 [threads, MPI] (2004)
+SunOS 2.9, UltraSPARC (Sun Fire V420,..), gcc 3.1, 3.3.2 [threads, MPI] (2004)
+SunOS 2.8, UltraSPARC (Sun Enterprise 3500), gcc 3.1 [threads] (2004)
+HP_UX 11.11, PA-RISC (U9000/800, HP TestDrive), gcc 3.2, HP Compiler (2004)
+GNU/Linux 2.2.1, ARM (Psion Series 5), gcc 2.95 (2004)
+
+
+
+Obsolete (should not work):
+
+Minix 2.0.0, i286 (16bit),  cc (limited to one element type and material, 2003)

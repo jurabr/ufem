@@ -1,0 +1,1087 @@
+.TH FEMCMD 1 "27 February 2008" "uFEM Command Manual"
+
+.SH NAME
+\fBuFEM\fP COMMAND MANUAL
+
+.SH DESCRIPTION
+Commands to work with the \fBuFEM\fP user interface.
+
+.SH CONVENTIONS
+Parameters are comma-separated.
+Command parameters marked "[  ]" are optional (commas should not be omitted if any other parameter follows).
+Text uses regular expresion-s like semantics: "(a|b|c)" mean "a" or "b" or "c" etc.
+
+.SH "PROGRAM CONTROL"
+.TP
+exit 
+\fBexit\fP
+\fBquit\fP
+Program exit (\fBwithout\fP any warning).
+.TP
+system
+\fBsystem,command\fP
+Run external command.
+.TP
+help
+\fBhelp[,(e|m),num]\fP
+Gives some general information (jobname, directory). With parameters prints info about particular element or material type.
+
+
+.SS "Log File"
+.TP
+logopen
+\fBlogopen,fname,(yes|no)\fP
+Open file to log commands. "Yes" means that existing file is appended, not rewritten.
+.TP
+logclose
+\fBlogclose\fP
+Close file to log commands.
+
+.SS "Configuration"
+.TP
+writeconf
+\fBwriteconf,filename\fP
+Write current program configuration (basic and graphics) to a file named \fBfilename\fP.
+.TP
+writeconf
+\fBwriteconf,filename\fP
+Write current program configuration (basic, graphics and GUI) to a file named \fBfilename\fP.
+.TP
+writeconf
+\fBwriteconf,filename\fP
+Write current program configuration to a file named \fBfilename\fP.
+.TP
+nobreakinput
+\fBnobreakinput[yes,no]\tP
+Reading of commands from input file can not ("yes") or can ("no") stop when error (on unsuccesfull command). Affects only the \fBinput\fP command.
+
+
+.SS "Commands"
+input
+\fBinput,filename\fP
+Read commands from file.
+.TP
+history
+\fBhistory,n\fP
+Turns on command line history buffer. If n==0 or no "n" is given then history is turned off.
+.TP
+last
+\fBlast[,n]\fP
+Repeats the last command or n-th command from the end (n>=1, n==1 means the last one).
+
+.SS Variables
+.TP
+setvar     
+\fBsetvar,name,value\fP
+Define variable. The \fBname\fP have to be a constant string and not a variable.
+.TP
+genvar
+\fBgenvar,name,value\fP
+Define variable. The \fBname\fP can be a variable - then its value will be used.
+.TP
+unsetvar
+\fBunsetvar,name\fP
+Undefine (delete) variable.
+.TP
+printvar
+\fBprintvar,name\fP
+Print variable to output.
+.TP
+listvar
+\fBlistvar\fP
+List \fBall\fP defined variables.
+.TP
+eval
+\fBeval,variable_for_result,value1,(+|-|/|*|^|c|s|a|k|z),value2\fP Evaluate a simple real expession and store result in variable (c=cos, s=sin, t=tan, a=atan, z=asin, k=acos).
+.TP
+ieval
+\fBieval,variable_for_result,value1,(+|-|/|*|^),value2\fP
+Evaluate a simple integer expession and store result in variable
+.TP
+newfile
+\fBnewfile,file_name\fP
+Creates a new empty  file for user output (\fBwritewar\fP, \fBwritenl\fP).
+Existing content (if any) is destroyed. It is required only if existing content of file have to be deleted.
+.TP
+writenl
+\fBwritenl,file_name\fP
+Writes "new line" symbol to a file.
+.TP
+writevar
+\fBwritevar,file_name,variable_name\fP
+Writes variable to tile.
+.TP
+writentab
+\fBwritentab,file,node,dof\fP
+Writes reaction sum and displacement in selected node and direction to a file.
+.TP
+fillvaraverdof
+\fBfillvaraverdof,variable,dof_type\fP
+Fills variable with average of dof results of specified \fBdof_type\fP.
+.TP
+fillvarreact
+\fBfillvarreact,variable_name,node,type(ux|uy|uz|rotx|roty|rotz)\fP
+Fills variable with reaction in specified node and direction.
+.TP
+fillvarsumreact
+\fBfillvarsumreact,variable_name,type(ux|uy|uz|rotx|roty|rotz)\fP
+Fills variable with sum of specified type of reaction.
+.TP
+fillvartablen
+\fBfillvartablen,variable,(et|mat|rs|n|ele|g|f|d|elo|k|ent)\fP
+Fills variable with number of all items in table.
+.TP
+fillvartablensel
+\fBfillvartablensel,variable,(et|mat|rs|n|ele|g|f|d|elo|k|ent)\fP
+Fills variable with number of currently selected items in table.
+.TP
+fillvarjobname
+\fBfillvarjobname,variable_name\fP
+Fills variable with current jobname.
+.TP
+fillvardatadir
+\fBfillvardatadir,variable_name\fP
+Fills variable with current data directory.
+.TP
+fillvarfilename
+\fBfillvarfilename,variable_name,filename,extension\fP
+Fills variable with filename composed from user-suplied name and extension and path to current data directory.
+.TP
+fillvarissel
+\fBfillvarissel,[n|e|d|f|el|k|ge|l|a|v],id\fP
+Fills variable 1 if item "id" is selected, and with 0 if it isn't.
+.TP
+fillvarnode
+\fBfillvarnode,var,id,(x|y|z)\fP
+Fills variable with x, y or z position of node.
+
+.TP
+fillvareresnumnrep
+\fBfillvareresnumnrep,var,elem_id,result\fP
+Fills variable with 1 if non-repeating set is available, and with 0 if it isn't.
+.TP
+fillvareresnumrep
+\fBfillvareresnumrep,var,elem_id,result\fP
+Fills variable with number of available repeating sets.
+.TP
+fillvareres
+\fBfillvareres,var,elem_id,result,number(0=non-repeating, 1..n=repeating)\fP
+Fill variable with result from selected set (non-repeating or one of repeating sets).
+.TP
+fillvareresmax
+\fBfillvareresmax,var,elem_id,result,number\fP
+Fills variable with maximum result value from given element.
+.TP
+fillvareresmin
+\fBfillvareresmin,var,elem_id,result,number\fP
+Fills variable with minimum result value from given element.
+.TP
+fillvareresaver
+\fBfillvareresaver,var,elem_id,result,number\fP
+Fills variable with average result value from given element.
+.TP
+fillvareresmax
+\fBfillvareresmax,var,result\fP
+Fills variable with maximum result value from iven all selected elements.
+.TP
+fillvareresmin
+\fBfillvareresmin,var,result\fP
+Fills variable with minimum result value from all seleected elements.
+.TP
+fillvarnres
+\fBfillvarnres,var,node_id,dof\fP
+Fill variable with d.o.f. result (usually a displacement) from selected node and dof direction.
+.TP
+fillvarfirstsel
+\fBfillvarfirstsel,var,(n|e|d|f)\fP
+Fill variable with selected item (node, element, support, load) with the lowest ID number.
+
+.TP
+fillvarkp
+\fBfillvarkp,var,id,(x|y|z)\fP
+Fills variable with x, y or z position of keypoint.
+
+
+.TP
+varstrcat
+\fBvarstrcat,variable_name,str,str[,str][,str][,str]\fP
+Adds several strings to one variable
+
+.SH SETTINGS
+
+.SS "Paths and Names"
+
+.TP
+datadir
+\fBdatadir,dirname\fP
+Set directory for \fBprogram-generated\fP files (e.g. files that are not named by user \fBonly\fP).
+.TP
+jobname
+\fBjobname,name\fP
+Set name of current work (used for some filenames).
+
+
+.SS "Output Settings"
+.TP
+outform
+\fBoutform,(plain|tex|html)\fP
+Set format of "listed" data (for "*list" family of commands).
+.TP
+outauto
+\fBoutauto,(yes|no)\fP
+Set if output files have machine-generated names (like "out001.html").
+.TP
+outfile
+\fBoutfile[,filename]\fP
+Name of oufput file. Disables "outauto". No name means standard output.
+
+.SS "External Program Settings"
+
+.TP
+setsolver
+\fBsetsolver,program_name\fP
+Set name of solver. Required to use the "solve commands".
+.TP
+nproc
+\fBnproc,for_interface,for_solver\fP
+Set number of processes (unix threads) for user interface and for
+external solver. Please note that this will have no effect in uFEM
+versions without threads enables.
+
+.TP
+outview
+\fBoutview[,command_name]\fP
+Set command to view output files with machine-generated names (will be started afer any *list command).
+Empty name disables this functionality.
+
+.SS "Graphics Settings"
+.TP
+plotprop
+\fBplotprop,something,yes,no\fP
+
+Set plot property: 
+
+autoReplot: replot after any graphics operation,
+
+nodeNumber: plot numbers of nodes,
+
+elemNumber: plot numbers of elements,
+
+dispNumber: plot numbers of displacements,
+
+loadNumber: plot numbers of nodal loads,
+
+dispSize:  plot sizes of displacements,
+
+loadSize: plot sizes of nodal loads,
+
+smallNodes: plots small node symbols instead of default big ones,
+
+wireOnly: plot elements as wireframe,
+
+elemColMat: plot elements colored by material type,
+
+elemColRS: plot elements colored by real data set type,
+
+elemColET: plot elements colored by element type,
+
+elemColSet: plot elements colored element set number,
+
+palLen: color palette lenght (number greater than 5 must follow).
+
+jobName: show job name in left bottom corner of window.
+
+dynView: graphical view can be changed by mouse (motion, zoom, rotation).
+
+.TP
+plotcol
+\fBplotcol,(fore|back|text|node|load|disp),r,g,b[,tr]\fP
+Set color of graphics entity in Red,Green,Blue,Transparency form (0.0 - 1.0).
+
+
+.SS "GUI Settings"
+.TP
+ggeom
+\fBggeom[, x0, y0, width,height]\fP
+Main window geometry - upper left corener coordinates and width and height.
+"x0" and "y0" doesn't respect window decorations.
+
+.SH "WRITING SCRIPTS"
+.TP
+script
+\fBscript,name\fP
+New script definition. \fIname\fP is case insensitive.
+.TP
+endscript
+\fBendscript\fP
+End of a new script definition (don't forget it!).
+.TP
+runscript
+\fBrunscript,name\fP
+Runs script "name". Script must be defined before this command is called.
+.TP
+for
+\fBfor,variable,from,to\fP
+Loop statement for scripts. \fIfrom\fP is a number of the first cycle, \fIto\fP is number of last. 
+Actual loop number is stored in \fIvariable\fP.
+This command can be used inside scripts \fBonly\fP.
+.TP
+endfor
+\fBendfor\fP
+End of loop statement for scripts.
+This command can be used inside scripts \fBonly\fP.
+.TP
+if
+\fBif,val1,(=|<|>|>=|<=|<>),val2\fP
+Condition test. If the result is false then commands till \fBendif\fP are ignored.
+This command can be used inside scripts \fBonly\fP.
+.TP
+endif
+\fBendif\fP
+End of \fBif\fP statement for scripts.
+This command can be used inside scripts \fBonly\fP.
+.TP
+\fBmatrix,id,rows[,cols]\fP
+Creates or changes (and empties) matrix which is numbered \fBid\fP.
+.TP
+\fBnomatrix\fP
+Removes all allocated matrices from memory.
+.TP
+\fBvarmatput,id,row,col,value\fP
+Puts value into matrix (original value is revritten by the given \fBvalue\fP).
+.TP
+\fBvarmatadd,id,row,col,value\fP
+Adds value into matrix (size of matrix member is change by addition of the \fBvalue\fP).
+.TP
+\fBvarmatget,variable,id,row,col\fP
+Variable is filled with the value of given matrix member.
+.TP
+\fBvarmatread,id,fname\fP
+Matrix is read from file (the matrix must be allocated first and must have valid dimensions).
+.TP
+\fBvarmatwrite,id,fname\fP
+Matrix is writtne to file.
+.TP
+\fBvarmatlist,id\fP
+Matrix is written to the  standard output.
+.TP
+\fBvarmatfillres,id,elem,ipoint,res1[,res2,res3,...,res6]\fP
+Matrix is filled with results for given element and element point. The matrix is allocated by program.
+
+
+.SH PREPROCESSING
+
+.TP
+prep
+\fBprep\fP
+Start preprocessor.
+
+.SS "Coordinate Systems"
+
+.TP 
+csys
+\fBcsys,type(cart|cylxy|cylyz|cylzx) [,x0,y0,z0]\fP
+Sets coordinate system to be cartesian on cyllindric (in "xy", "yz" or
+"zx" plane) and sets its start to [x0, y0, z0] (x0, y0, z0 are always
+cartesian). Only valid for "n" (x=radius, y=angle, z=3rd coordinate 
+for cyllindric system) and "*gen" commands
+(dx=angle and y,z,.. are ignored for cyllindric system).
+.TP
+prcs
+\fBprcs\fP
+Print active coordinate system type and data.
+.TP
+cslis
+\fBcslis\fP
+Print active coordinate system type and data to the output.
+
+
+.SS "Element Types"
+
+.TP
+et
+\fBet,number,type\fP
+Define element type. "type" can be number (1, 2,..) or name ("Link1",..).
+.TP
+etlist
+\fBetlist[,from,to]\fP
+List element types.
+.TP
+etdel
+\fBetdel,from[,to]\fP
+Delete element types.
+
+.SS "Real Data Sets"
+
+.TP
+rs
+\fBrs,number,type[,rep_num]\fP
+Create set. Type mean "Link1" etc.
+If element require repeating data (see element manual) "rep" item must be set properly (default is 0).
+.TP
+r
+\fBr,valtype,number,value[,rep_index\fP
+Set real variable of type "valtype" ("Area", "Height",...). "rep" item must be set for repeating data (0 is for non-repeating part of data).
+.TP
+rslist
+rlist
+\fBrlist[,from,to]\fP
+List real data sets.
+.TP
+rsdel
+rdel
+\fBrdel,from,to\fP
+Delete real data sets.
+
+.SS "Materials"
+.TP
+mat
+\fBmat,number,type[,rep_num]\fP
+Create material type. Type mean "Hooke1" etc.
+If material require repeating data (see material manual) "rep" item must be set properly (default is 0).
+.TP
+mp
+\fBmp,valtype,number,value[,rep_index]\fP
+Set material data item of type "valtype" ("Ex", "PRxy",...). "rep" item must be set for repeating data (0 is for non-repeating part of data).
+.TP
+mplist
+matlist
+\fBmplist[,from,to]\fP
+List materials.
+.TP
+mpdel
+matdel
+\fBmpdel,from[,to]\fP
+Delete materials.
+
+
+
+.SS Nodes
+.TP
+n
+\fBn,[number],x,y,z\fP
+Create node with number and coordinates x, y, z.
+.TP
+nlist
+\fBnlist[,from,to]\fP
+List nodes numbered "from" ... "to". 
+.TP
+ndel
+\fBndel,from[,to]\fP
+Delete nodes numbered "from" ... "to". 
+.TP
+nsplit
+\fBnsplit,from[,to]\fP
+Splits nodes into two or more numbered "from" ... "to". 
+The node(s) have to be attached to at least two elements in order to
+be splitted!
+.TP
+nmerge
+\fBnmerge\fP
+Merges nodes at coincident positions. Unselected nodes are not merged.
+
+
+.SS Elements
+.TP
+edef
+\fBedef,et,rs,mat,eset\fP
+Define prototype for newly created elements.
+.TP
+ep
+\fBep,number,type,real,mat [,set]\fP
+Create element (nodes should be specified later with "e" commands).
+"Set" is element set (group) and is usually useless.
+.TP
+e
+\fBe,number,nodes..\fP
+Defines element through nodes (element properties should be set with "edef" or "ep" commands).
+.TP
+elist
+\fBelist[,from,to]\fP
+List elements.
+.TP
+edel
+\fBedel,from,to\fP
+Delete elements.
+.TP
+echset
+\fBechset,id,set\fP
+Changes set number of elements to \fBset\fP.
+
+.SS "Loads"
+
+.TP
+time
+\fBtime,id\fP
+Set default load set ("time") identifier.
+.TP
+d
+\fBd,node,type,val[,set,id]\fP
+Create boundary condition on node ("displacement").
+"Set" overrides value set by "time" command for this item.
+.TP
+dlist
+\fBdlist[,from,to]\fP
+List displacements.
+.TP
+ddel
+\fBddel,from[,to]\fP
+Delete displacements.
+.TP
+dchset
+\fBdchset,id,set\fP
+Changes set number of displacement to \fBset\fP.
+.TP
+f
+\fBf,node,type,val[,set,id]\fP
+Create nodal load.
+"Set" overrides value set by "time" command for this item.
+.TP
+flist
+\fBflist[,from,to]\fP
+List nodal loads.
+.TP
+fdel
+\fBfdel,from[,to]\fP
+Delete nodal loads.
+.TP
+fchset
+\fBfchset,id,set\fP
+Changes set number of nodal load to \fBset\fP.
+.TP
+el
+\fBel,node,type,val1,..,valn[,set,id]\fP
+Create element loads. See \fIElement Reference\fP for available element load types.
+"Set" overrides value set by "time" command for this item.
+.TP
+ellist
+\fBellist,from,to\fP
+List element loads.
+.TP
+eldel
+\fBeldel,from,to\fP
+Delete element loads.
+.TP
+elchset
+\fBelchset,id,set\fP
+Changes set number of element load to \fBset\fP.
+.TP
+accel
+\fBaccel,dir,val[,set,id]\fP
+Add gravitational acceleration in selected direction.
+"Set" overrides value set by "time" command for this item.
+.TP
+accellist
+\fBaccellist[,from,to]\fP
+List accelerations.
+.TP
+acceldel
+\fBacceldel,from[,to]\fP
+Delete accelerations.
+
+.SS "Load Steps"
+
+.TP
+step
+\fBstep,id,time[,values..]\fP
+Creates/changes a load step.
+.TP
+ssmult
+\fBssmult,step,set,multiplier\fP
+Changes multiplier of single set/time in the load step.
+.TP
+stepdel
+\fBstepdel,from,to\fP
+Deletes load steps.
+.TP
+steplist
+\fBsteplist,from,to\fP
+Lists load steps.
+
+.SS "Preprocessor Data Operations"
+
+.TP
+save
+\fBsave[,filename]\fP
+Save data to file. If no filename is given then \fIdatadir/jobname.db\fP will be used.
+.TP
+resu
+\fBresu[, filename]\fP
+Read data from file. If no filename is given then \fIdatadir/jobname.db\fP will be used.
+.TP
+cleandata
+\fBcleandata\fP
+Clean all data.
+.TP
+export
+\fBexport,format(fem|mac),filename\fP
+Export data to solver format and save them to file.
+.TP
+import
+\fBimport,format(fem|gmsh),filename\fP
+Imports data from solver format and save them to file. Only nodes, elements, gravitation
+and loads/supports on nodes are imported. Alternatively, GMSH mesh files can also be imported.
+In this case element and material types and real sets should be defined
+\fBbeore\fP the import (if not then Hooke material and basic element
+types will be used). No loads or boundary conditions are obtained from
+GMSH. All 2D elements are imported as 2D elements for plane problems
+(PLANE2 or PLANE11).
+.TP
+prsumm
+\fBsumm\fP
+Print short summary.
+.TP
+summ
+\fBsumm\fP
+Print short summary to output.
+
+
+.SS "Selections of data"
+
+.TP
+ksel
+\fBksel,mode(all|none|invert|select|reselect|unselect|add),what(number/id|loc),[dir(x|y|z)],from,to\fP
+Select (unselect, reselect,...) keypoints.
+.TP
+gesel
+\fBgesel,mode(all|none|invert|select|reselect|unselect|add),what(id|type|etype|rset|mat|set|loc),[loc(x|y|z)],from,to\fP
+Select (unselect, reselect,...) elements.
+
+
+.TP
+nsel
+\fBnsel,mode(all|none|invert|select|reselect|unselect|add),what(number/id|loc|res/val),dir(x|y|z)/result(ux|uy|uz),from,to\fP
+Select (unselect, reselect,...) nodes.
+.TP
+esel
+\fBesel,mode(all|none|invert|select|reselect|unselect|add),what(id|etype|rset|mat|set|val),[result_val_type],from,to\fP
+Select (unselect, reselect,...) elements.
+.TP
+dsel
+\fBdsel,mode(all|none|invert|select|reselect|unselect|add),what(id|node|type|set),,from,to\fP
+Select (unselect, reselect,...) displacements.
+.TP
+fsel
+\fBfsel,mode(all|none|invert|select|reselect|unselect|add),what(id|node|type|set),,from,to\fP
+Select (unselect, reselect,...) nodal loads.
+.TP
+elsel
+\fBelsel,mode(all|none|invert|select|reselect|unselect|add),what(id|elem|type|set),,from,to\fP
+Select (unselect, reselect,...) element loads.
+.TP
+accelsel
+\fBaccelsel,mode(all|none|invert|select|reselect|unselect|add),what(id/number|dir|set),,from,to"\fP
+Select (unselect, reselect,...) accelerations.
+.TP
+allsel
+\fBallsel\fP
+Select everything.
+.TP
+slstep
+\fBslstep,mode(all|none|invert|select|reselect|unselect|add),steps...\fP
+Select data related to listed load steps.
+
+
+.SS "Data Creating Operations"
+
+.TP
+kgen
+\fBkgen,number_of_copies,dx,dy,dz,[dx1,dy1,dz1]\fP
+Create keypoints by copying.
+.TP
+gekgen
+\fBgekgen,number_of_copies,dx,dy,dzdx1,dy1,dz1\fP
+Create geometric entities with nodes by copying. New nodes are created only when existing (selected) nodes cannot be used.
+
+
+.TP
+ngen
+\fBngen,number_of_copies,dx,dy,dz,[dx1,dy1,dz1]\fP
+Create nodes by copying.
+.TP
+engen
+\fBengen,number_of_copies,dx,dy,dzdx1,dy1,dz1\fP
+Create element with nodes by copying. New nodes are created only when existing (selected) nodes cannot be used.
+.TP
+dgen
+\fBdgen,number_of_copies,dx,dy,dzdx1,dy1,dz1\fP
+Create displacements by copying. Needed nodes must exist.
+.TP
+fgen
+\fBfgen,number_of_copies,dx,dy,dzdx1,dy1,dz1\fP
+Create nodal loads by copying. Needed nodes must exist.
+
+.TP
+kmirror
+\fBkmirror,plane(xy|yz|zx),move\fP
+Mirror keypoints. "Plane" specifies mirroring plane, "move" is distance of plane from beginning of coordinate system.
+.TP
+gekmirror
+\fBgekmirror,plane(xy|yz|zx),move\fP (use with caution! may change element orientation!)
+Mirror keypoints and geometric entities. May create incorrect data for
+some element types..
+"Plane" specifies mirroring plane, "move" is distance of plane from beginning of coordinate system.
+
+.TP
+nmirror
+\fBnmirror,plane(xy|yz|zx),move\fP
+Mirror nodes. "Plane" specifies mirroring plane, "move" is distance of plane from beginning of coordinate system.
+.TP
+enmirror
+\fBenmirror,plane(xy|yz|zx),move\fP (use with caution! may change element orientation!)
+Mirror nodes and elements. May create incorrect elements (mainly 3D elements).
+"Plane" specifies mirroring plane, "move" is distance of plane from beginning of coordinate system.
+.TP
+dmirror
+\fBnmirror,plane(xy|yz|zx),move\fP
+Mirror displacements. "Plane" specifies mirroring plane, "move" is distance of plane from beginning of coordinate system.
+.TP
+fmirror
+\fBnmirror,plane(xy|yz|zx),move\fP
+Mirror nodal loads. "Plane" specifies mirroring plane, "move" is distance of plane from beginning of coordinate system.
+.TP
+modify
+\fBmodify,(d|f|x|y|z),id,(+|*|/|^), value\fP
+Modifies size of displacement(s) and load(s) on node(s) or node coordinates.
+
+
+.TP
+kmove
+\fBkmove[,dx,dy,dz]\fP
+Moves keypoints.
+.TP
+nmove
+\fBnmove[,dx,dy,dz]\fP
+Moves nodes.
+
+.SS "GEOMETRIC MODEL"
+
+.SS "Keypoints"
+.TP
+k
+\fBk,number,x,y,z\fP
+Create a keypoints or modify coordinates of an existing one.
+.TP
+klist
+\fBklist,from,to\fP
+List keypoints.
+.TP
+kdel
+\fBkdel,from,to\fP
+Delete keypoints.
+.TP
+ksplit
+\fBksplit,from[,to]\fP
+Splits every keypoint into more ones (valid only if keypoint is atachet to two
+or more entities). 
+.TP
+kmerge
+\fBkmerge\fP
+Merges coincident keypoints. Only selected keypoints are merged.
+
+
+.SS "Geometric Entities"
+.TP
+ddiv
+\fBddiv,number_of_divisions\fP
+Set default division of edges of geometry entitites.
+.TP
+gep
+\fBgep,entity_type,number,etype,real,mat [,set]\fP
+Create geometry entities with parameters or modify parameters of
+an existing one.
+.TP
+ge
+\fBge,type,number,keypoints..\fP
+Set keypoints of the geometric entity. Properties of this entity
+should be set with the \fBedef\fP command.
+.TP
+gesize
+\Bgesize,type,number,x,y,z,dx,dy,dz\P
+Creates a new entity at given position (x,y,z) and with given dimensions (+dx,...)
+.TP
+gediv
+\fBgdiv,number,divisions..\fP
+Set entity edge divisions for the specified entity.
+.TP
+gelist
+\fBgelist,from,to\fP
+List geometric entities.
+.TP
+gedel
+\fBgedel,from,to\fP
+Delete geometric entities.
+.TP
+gechset
+\fBgechset,id,set\fP
+Changes set number of geometric entity to \fBset\fP.
+
+.SS "Geometric Entities (simplified commands)"
+.TP
+(l|a|v)p
+\fB[lav]p,number,etype,real,mat [,set]\fP
+Create geometry entities with parameters or modify parameters of
+an existing one. 
+(For  straight \fBl\fPine, rectangular \fBa\fPrea or brick \fBv\fPolume).
+.TP
+(l|a|v|g)
+\fB[lavg],number,keypoints..\fP
+Set keypoints of the geometric entity. Properties of this entity
+should be set with the \fBedef\fP command.
+(For  straight \fBl\fPine, rectangular \fBa\fPrea or brick \fBv\fPolume).
+.TP
+(l|a|v)div
+\fB(l|a|v)div,number,divisions..\fP
+Set entity edge divisions for the specified entity.
+(For  straight \fBl\fPine, rectangular \fBa\fPrea or brick \fBv\fPolume).
+.TP
+(l|a|v)list
+\fB(l|a|v)list,from,to\fP
+List geometric entities.
+(For  straight \fBl\fPine, rectangular \fBa\fPrea or brick \fBv\fPolume).
+.TP
+(l|a|v)del
+\fB(l|a|v)del,from,to\fP
+Delete geometric entities.
+(For  straight \fBl\fPine, rectangular \fBa\fPrea or brick \fBv\fPolume).
+
+.SS "Testing of Data"
+.TP 
+datatest
+\fBdatatest\fP 
+Provides logical tests of data validity (nonzero values of material data etc.).
+
+.SS "Random variables"
+.TP
+rval
+\fBrval,number,type,item,subitem[,repeat_number]\fP
+Type is: 0=rset, 1=mat, 2=n, 3=nload, 4=eload,
+6=res_d, 7=res_reac, 8=res_e, 9=sum_res_e, 10=max_res_e, 11=min_res_e,
+12=fail_res_e.
+Adds random variable. Please note that subitem index is based on the
+fem(1) numbering system and not on the uFEM GUI variables.
+.TP
+rvlist
+\fBrvlist[,from][,to]\fP
+Lists random variables.
+.TP
+rvdel
+\fBrvdel[,from][,to]\fP
+Removes random variables.
+
+.SH SOLUTION
+
+.TP
+solve
+\fBsolve[,solver_type,steps,iters,nsave]\fP
+Execute solver for current data.
+
+.TP
+solve
+\fBssolve[,ssolver_type,steps,iters,nsave]\fP
+Execute solver for currently selected data only.
+
+
+.SH POSTPROCESSING
+
+.SS "Result Sets"
+
+.TP
+gpost
+\fBgpost,number_of_result_sets\fP
+Run general postprocessor.
+Number of result sets to use with shoul be specified in "number_of_result_sets".
+.TP
+set
+\fBset,step_id\fP
+Select current result set with "time" number (data must be loaded with "rread" before).
+It is also possible to use relative specifications: "set,first", "set,last", "set,next", "set,prev".
+.TP
+rread
+\fBrread,step_num,filename\fP
+Read result set from disk. "Step_num" is number from 0 to (number_of_result_sets-1).
+.TP
+gpread
+\fBgpres,from,to,step\fP
+Starts postprocessor and reads results for steps in \fIfrom...to\fP interval.
+.TP
+slist
+\fBslist\fP
+Lists all available (currently loaded) result sets.
+.TP
+sprlist
+\fBprslist\fP
+Prints all available (currently loaded) result sets.
+
+.SS "Graphics Output of Results"
+.TP
+pldef
+\fBpldef[,mult]\fP
+Plot data on deformed structure. Use "mult" to adjust size of deformations.
+.TP
+plrs
+\fBplrs\fP
+Plot reactions.
+.TP
+ples
+\fBples,item\fP
+Plot element results. "Item" specifies result type ("s_x" for normal stress in the "x" direction etc.)
+
+.SS "Text Output of Results"
+
+.TP
+prrs
+\fBprrs\fP
+List reactions
+.TP
+prdof
+\fBprdof\fP
+\fBprdef\fP
+List nodal deforamtions.
+.TP
+pres
+\fBpres,item1[,item2,..]\fP
+List element results. "Item" specifies result type ("s_x" for normal stress in the "x" direction etc.)
+
+
+.SH "GRAPHICS" 
+
+.TP
+replot
+\fBreplot\fP
+Repeat last plot.
+.TP
+nplot
+\fBnplot\fP
+Plot nodes.
+.TP
+eplot
+\fBeplot\fP
+Plot element.
+.TP
+fplot
+\fBfplot\fP
+Plod nodal loads.
+.TP
+dplot
+Plot displacements.
+\fBdplot\fP
+.TP
+kplot
+\fBkplot\fP
+Plot keypoints (does nothing).
+.TP
+lplot
+\fBlplot\fP
+Plot lines (does nothing).
+.TP
+aplot
+\fBaplot\fP
+Plot areas (does nothing).
+.TP
+vplot
+\fBvplot\fP
+Plot volumes (does nothing).
+.TP
+noplot
+\fBnoplot\fP
+Plots nothing.
+.TP
+hide
+\fBhide,(n|e|f|d|r|k|l|a|v|p)\fP
+Hides plotted things: \fBn\fPodes, \fBe\fPlements, 
+loads(\fBf\fP), \fBd\fPisplacements, \fBr\fPesults, 
+\fBk\fPeypoints, \fBl\fPines, \fBa\fPreas, \fBv\fPolumes, \fBpicking grid\fP.
+.TP
+show
+\fBshow,(n|e|f|d|r|k|l|a|v)\fP
+Shows plotted things: \fBn\fPodes, \fBe\fPlements, 
+loads(\fBf\fP), \fBd\fPisplacements, \fBr\fPesults, 
+\fBk\fPeypoints, \fBl\fPines, \fBa\fPreas, \fBv\fPolumes.
+.TP
+zoom
+\fBzoom,mult\fP
+Zoom view.
+.TP
+unzoom
+\fBunzoom,mult\fP
+Unzoom view.
+.TP
+gbox
+\fBgbox\fP
+Shows frame for zoom view (an experimental feature, very unprecise).
+.TP
+reset
+\fBreset\fP
+Reset to default view.
+.TP
+move
+\fBmove,dir,dist\fP
+Move view in specified direcion (x,y). 
+.TP
+rot
+\fBrot,dir,angle\fP
+Rotate around axis.
+.TP
+view
+\fBview,(front|back|top|bottom|left|right|iso|aiso)\fP
+Set one of predefined views.
+.TP
+pgrid
+\fBpgrid,plane,dx,dy,num_x,num_y,x0,y0,z0,angle_in_plane, angle_out_of_plane\fP
+Plots a grid. It can be used to create keypoints and nodes through "gcreate".
+.TP
+vpmode
+\fBvpmode,mode[0|1|2|3]\fP
+Sets a multiview mode (0=one window, 1,2=two,3=four windows);
+.TP
+vp
+\fB"vp,[0|1|2|3]\fP
+Selects active viewport (window) in a multiview mode.
+.TP
+gl2ppm
+\fBgl2ppm, filename.ppm\fP
+Save current screen to PPM (Portable Pixmap) file.
+.TP
+gl2tiff
+\fBgl2tiff, filename.tif\fP
+Save current screen to TIFF (Tagged Image File Format) file. 
+May be unavailable on some platforms.
+.TP
+gl2ps
+\fBgl2ps, filename.eps\fP
+Save current screen to EPS (Encapsulated PostScript) file.
+.TP
+glformat 
+\fBglformat,(EPS|PS|PDF)\fP 
+Set format of "gl2ps" command output (default and the only reccomended is EPS).
+
+.TP
+gcancel
+\fBgcancel\fP
+Cancel any interactive (mouse-driven) operation.
+.TP
+gedit
+\fBgedit,(node|elem|disp|force|kpoint|gentity|stop)\fP
+Edit specified entity by mouse picking. "Stop" ends command.
+.TP
+gcreate
+\fBgcreate,(node|kpoint|elem|disp|force|stop),parameters..\fP (paramaters optional for \fPelem\fP but required for other)
+Create specified entity by mouse picking. "Stop" ends command.
+Parameters should define properties of created entities and are identical to "ep", "d" and "f" commands, respectively.
+"Stop" ends command.
+.TP
+pick
+\fBpick,item(node|elem|force|disp|stop),function[,parameters]\fP
+Pick items and apply command on them.
+.TP
+gsel
+\fBgsel,what(node|elem|force|disp|stop|run), mode(select,reselect,unselect)\fP
+Select (unselect or reselect) items by mouse.
+Stop command with \fPgsel,(stop|run)\fP.
+
+.SH AUTHOR
+Jiri Brozovsky <jirka@penguin.cz>
+
+.SH "SEE ALSO"
+fem(1) tfgem(1)

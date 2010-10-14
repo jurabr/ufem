@@ -1,0 +1,6 @@
+#! /bin/bash
+
+# Linux gtk+ workaround (for IRIX and so):
+echo "int XkbSelectEventDetails(void *d, int ds, int ev, long b, long v) {return 1;}" |tee xkb.c >/dev/null
+gcc -fPIC -shared -Wl,-soname,xkb.so -o xkb.so xkb.c 
+LD_LIBRARY_PATH=$PWD LD_PRELOAD=xkb.so $1

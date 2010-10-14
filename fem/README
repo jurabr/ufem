@@ -1,0 +1,32 @@
+This is a README file for the "fem" software.
+
+
+Introduction 
+
+"FEM" is a simple Finite Element Method solver. It is meant for structural
+engineering (for civil engineering).
+For more informations see manual pages fem(1) and feminput(5).
+
+
+Status
+
+Software can be used for static structural analysis.
+There is only a very limited number of finite element types available.
+
+
+Code Portability
+
+The code has been written in ISO/ANSI C language (may use some
+things from "ANSI99" standard).
+
+Code is meant for POSIX-compliant operating systems (e.g. for unices).
+It has been tested on Linux and IRIX.
+
+
+
+Home page
+
+There is a home page: http://www.penguin.cz/~jirka/fem_en.html
+
+
+$Id: README,v 1.13 2005/01/16 22:59:31 jirka Exp $

@@ -1,0 +1,21 @@
+FEM (Finite Element Method) Code
+
+Compiling
+=========
+
+Solver: cd fem ; make
+
+User Interface:  cd tui ; make all gfem
+
+
+Notes:
+======
+
+Solver (fem) includes its own documentation it its directory
+(see README, TODO, PLATFORMS etc.).
+
+Solver is fully independent on user the interface and is distributed
+under GNU General Public Licence, version 2.
+
+Most parts of the user interface are 
+under Lesser GNU General Public Licence, version 2,

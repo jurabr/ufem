@@ -1,0 +1,46 @@
+!* Input file for uFEM 0.2.40 and above
+!*
+!* Simple 2D slab in xy  plane
+!*
+!* File: slab.mac
+!* Date: Sat Jun 28 21:32:51 CEST 2008
+
+cleardata
+jobname,test-slab
+
+et,1,5
+
+rs,1,5
+r,height, 1, 0.01 !* thickness
+
+mat,1,1
+mp,ex,  1, 20e9
+mp,prxy,1, 0.2
+
+gesize,2,1,0,0,0,8,4  !* rectangel 8x4 m
+gediv,1, 20,10        !* division
+mesh                  !* f.e. mesh
+
+!* suports on sides:
+nsel,s,loc,x,0
+nsel,add,loc,x,8
+d,all,uz
+d,all,rotx
+d,all,roty
+
+!* forces on slab:
+nsel,all
+nsel,u,loc,x,0
+nsel,u,loc,x,8
+nsel,u,loc,y,0
+nsel,u,loc,y,4
+f,all,fz,-10e2
+
+save
+
+solve
+
+view,iso
+pldef     !* deformations
+!plrs      !* reactions (may be very huge)
+ples,sm_x !* moments aroun y axis

@@ -1,0 +1,20 @@
+ 0: empty
+ 1: 2D [XY] link, 2 nodes [ux,uy], materials: 1,5
+ 2: 2D [XY] plane stress/strain element, 4 nodes [ux,uy], materials: 1,2,5
+ 3: 2D [XY] beam, 2 nodes [ux,uy,rotz], materials: 1,5
+ 4: 3D tetrahedron, 3 nodes [ux,uy,uz], materials: 1,5
+ 5: 2D [XY] slab, 4 nodes [uz,rotx,roty], materials: 1
+ 6: 2D [XY] link, 2 nodes [ux,uy] (same as 001 but with different real data), materials: 1,5
+ 7: 3D link, 2 nodes [ux,uy,uz], materials: 1,5
+ 8: 3D brick, 20 nodes [ux,uy,uz], materials: 1,5,7
+ 9: 3D brick, 8 nodes [ux,uy,uz], materials: 1,5,7
+10: 3D brick, 8 nodes [ux,uy,uz], materials: 1,3,4,5,6,7
+11: 2D [XY] plane stress/strain element, 3 nodes [ux,uy], materials: 1,5,7
+12: 3D brick, 20 nodes [ux,uy,uz], materials: 1,3,4,5,6,7
+13: experimental (does not work!)
+14: experimental (does not work!) 3D beam [ux,uymuz,rotx,roty,rotz], materials: 1
+15: experimental (does not work!)
+16: experimental (does not work!)
+17: 2D [XY] grille beam, 2 nodes [uz,rotx,roty], materials: 1
+
+$Id: README.ELEMENTS,v 1.3 2005/01/01 21:11:52 jirka Exp $

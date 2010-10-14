@@ -1,0 +1,71 @@
+!* Input file for uFEM 0.2.44 and above
+!*
+!* Non-trivial 3D structure
+!*
+!* File: struct3d.mac
+!* Date: Sat Aug  2 22:39:23 CEST 2008
+
+cleardata
+reset
+jobname,test-struct3d
+
+et,1,9
+
+rs,1,9
+
+mat,1,1
+mp,ex,  1, 20e9
+mp,prxy,1, 0.2
+
+gesize,3,1, 0,0,0, 0.4,3,6
+gediv,1, 1,6,12
+
+gekgen,2,4
+
+gesize,3,4, 0,3,0, 12.4,0.2,6
+gediv,4,31,1,12
+
+
+view,iso
+geplot
+
+mesh
+
+hide,ge
+
+plotprop,smallnode,yes
+eplot
+
+!* suports on sides:
+nsel,s,loc,y,0
+d,all,ux
+d,all,uy
+
+!* force on top:
+nsel,s,loc,y,3.2
+nsel,u,loc,x,0
+nsel,u,loc,x,8.4,20
+nsel,u,loc,z,0
+nsel,u,loc,z,6
+f,all,fy,-10e3
+nsel,inve
+nsel,r,loc,y,3.2
+nsel,u,loc,x,8.42,20
+f,all,fy,-5e3
+
+nsel,s,loc,x,0
+nsel,u,loc,y,0
+nsel,u,loc,y,3.2
+f,all,fx,5e3
+nsel,all
+
+summ
+
+save
+
+!* solve:
+solve
+
+pldef     !* deformations
+plrs      !* reactions
+ples,s_x  !* normal stresses in x direction

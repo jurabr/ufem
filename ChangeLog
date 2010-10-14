@@ -1,0 +1,1544 @@
+Changelog for the user interface only.
+
+See fem/ChangeLog for solver changes.
+
+
+
+### Sat Oct  2 22:19:12 CEST 2010
+  + asin (z) and acos (k) parameters in "eval" command
+  + femcmd.1 updated
+
+
+
+### Mon May  3 09:44:46 CEST 2010
+
+bugfixes:
+  - swapped direction of wheel zooming
+
+
+
+### Tue Apr 27 21:35:20 CEST 2010
+
+bugfixes:
+  - documentation fixes (femcmd.1)
+
+
+
+### Sat Oct 31 19:55:10 CET 2009
+
+bugfixes:
+  - broken "mirror" commands removed from GUI 
+
+
+
+### Mon Aug  3 23:48:56 CEST 2009
+
+features:
+  + basic commands for matrix control (untested)
+
+
+
+### Thu Jul 30 17:50:30 CEST 2009
+
+features:
+  + function for matrix printing (untested)
+  + functions for adding and putting values to matrix (untested)
+
+
+
+### Tue Jul 28 23:09:26 CEST 2009
+
+features:
+  + fdb_math file (matrix field allocations etc)
+  + matrix allocation/deallocation commands
+
+
+
+### Mon Jul 27 23:30:28 CEST 2009
+
+version 0.2.52
+
+features:
+  + "set,first", "set,next" etc is now possible
+  + GUI dialog for "set" command
+  + GUI "time" dialog shows default time
+  + fdb_rops file for result operations (nothink works here)
+  + fem_math dependency added (code will follow)
+
+
+
+### Sat Jun 27 17:42:16 CEST 2009
+
+bugfixes:
+  - element load type initialisation fixed
+
+
+
+### Fri Jun 12 23:16:42 CEST 2009
+
+bugfixes:
+  - random load numbering fixes (it's only for forces!)
+
+
+
+### Thu Jun 11 22:59:02 CEST 2009
+
+features:
+  + random variables can include load specified by its ID
+
+bugfixes:
+  + random stuff in ramdom variable handling fixed
+
+
+
+### Sun Jun  7 11:35:37 CEST 2009
+
+features:
+  + menu for showing/hiding of item numbers and sizes
+
+bugfixes:
+  + icon and wheel code prevent compilation of Gtk+-1.x version
+
+
+
+### Thu Apr  9 22:34:27 CEST 2009
+
+features:
+  + "fillvarrestime" function for result time/multiplier
+
+
+
+### Tue Feb 24 21:50:41 CET 2009
+
+features:
+  + application icon (ugly)
+
+
+
+### Sat Feb 21 17:53:46 CET 2009
+
+features:
+  + node results (approximated) for elements 008, 010
+
+bugfixes:
+  - no plotting of more than one node results
+
+
+
+### Tue Feb 17 20:59:44 CET 2009
+
+version 0.20.51
+
+features:
+  + model statistics are printed in gfx window
+
+
+
+### Sat Jan 31 18:16:48 CET 2009
+
+features:
+  + mouse wheel zooming
+  + vertical mouse move + middle button does Z rotation
+
+
+
+### Wed Jan 28 20:06:04 CET 2009
+
+version 0.2.50
+
+bugfixes:
+  - element number position for gfx element 004
+  - numbering of brick created throught "gesize"
+
+
+
+### Sun Jan  4 20:48:47 CET 2009
+
+version 0.2.49
+
+features:
+  + NETGEN mesh import (plain text format only)
+
+
+
+### Sat Dec 20 22:35:14 CET 2008
+
+features:
+  + (much) faster mesh generation for entity 003 (3D brick)
+
+
+
+### Thu Nov 13 20:39:40 CET 2008
+
+bugfixes:
+  - too long numbers in graphics fixed (w32 bug)
+
+
+
+### Sun Nov  2 21:23:55 CET 2008
+
+features:
+  + element area load (for 2D elems.) added (untested!)
+
+
+
+### Tue Oct 28 13:19:05 CET 2008
+
+features:
+  + elements and gem. entities  can be colored by set number
+
+bugfixes:
+  - fixed coloring of geom. entities (elemCol* was ignored)
+
+
+
+### Sun Sep 21 16:29:14 CET 2008
+
+version 0.2.46
+
+features:
+  + commands for saving of max and min elem. res to variable
+  + more element loads (line load) - untested
+  + handling and drawing of (some) elem. loads
+
+bugfixes:
+  - element load export error fixed
+  - average element res. data variable filling fixed
+
+
+
+### Wed Sep 17 18:21:40 CET 2008
+
+bugfixes:
+  - "all" element specification in "el" command
+
+
+
+### Tue Sep 16 21:50:23 CET 2008
+
+features:
+  + element loads work in simple cases for e009
+
+bugfixes:
+  - "el" command fixed
+
+
+
+### Sun Sep 14 14:03:16 CET 2008
+
+features:
+  + start of element loads support (fdb_exel.c)
+
+
+
+### Sat Sep 13 18:04:36 CET 2008
+
+features:
+  + fillvarkp command
+
+
+
+### Tue Aug 26 21:21:15 CET 2008
+
+version 0.2.45
+
+features:
+  + material 013 (simplified Lourenco for 2D - experimental)
+
+
+
+### Wed Aug  6 15:01:13 CET 2008
+
+features:
+  + updated properties for material 012 (still preliminary)
+
+
+
+### Thu Jul 31 17:18:29 CET 2008
+
+features:
+  + definitions for material 012 (preliminary)
+  + Doxygen config files (*.dox) for source code
+
+
+
+### Wed Jul 23 21:56:32 CET 2008
+
+features:
+  + threaded version of fdbInputCountIntAll() (testing)
+
+
+
+### Mon Jul 21 23:28:33 CET 2008
+
+features:
+  + dialogs and menu items fo "input" and "import,fem"
+
+
+
+### Fri Jul 18 19:01:48 CET 2008
+
+features:
+  + only valid options are shown in "d" and "f" dialogs
+
+bugfixes:
+  - "f" creation dialog fixed (force types)
+  - TIFF image export on IRIX revised (libtiff header fix needed)
+
+
+
+### Thu Jul 17 23:10:18 CET 2008
+
+features:
+  + text output files are now named as jobname-out??.???
+  + "ples" dialog shows only valid result types
+  + "plns" dialog shows only valid result types
+
+
+
+### Tue Jul 15 20:00:57 CET 2008
+
+version 0.2.44
+
+features:
+  + beginning and ending spaces removed in ciGetStr()
+  + only valid half of color pallete is shown if needed
+  + crosshair cursor is shown during selection
+  + jobname can be specified from program command line
+  + working directory can be specified from program command line
+  + number of threads for solver can be specified (-np N)
+  + command for adjusting of number of threads
+  + dialog for adjusting of number of threads
+  + man pages updated
+
+bugfixes:
+  - renundant "-lm" removed from Makefile
+  - GCC from sgi freeware MUST NOT be used (code too big)
+
+
+
+### Fri Jul  4 22:35:44 CET 2008
+
+version 0.2.43
+
+features:
+  + mat 008 updated (rot. cracks model data)
+
+
+
+### Thu Jul  3 16:39:35 CET 2008
+
+version 0.2.42
+
+features:
+  + material 008 modified (chooseable Kupfer type)
+
+
+
+### Wed Jul  2 22:35:11 CET 2008
+
+version 0.2.41
+
+features:
+  + material 008 modified (chooseable shear reduction)
+
+
+
+### Mon Jun 30 17:31:50 CET 2008
+
+features:
+  + dynamic setting of view with mouse (first version)
+
+
+
+### Sun Jun 29 17:18:23 CET 2008
+
+bugfixes:
+  - old (2004) Monte Carlo code completely removed
+
+
+
+### Sat Jun 28 17:36:34 CET 2008
+
+version 0.2.40
+
+features:
+  + results from partially selected data (NOT for MPI!)
+  + "ssolve" command for partially selected data
+
+bugfixes:
+  - version for Gtk+ 1.2 can be compiled
+  - useless and obsolete sources and examples removed
+
+
+
+### Thu Jun 26 23:55:37 CET 2008
+
+version 0.2.39
+
+features:
+  + different format of result file (reactions)
+
+bugfixes:
+  - results from partially selected data (still half-working)
+
+
+
+### Wed Jun 25 22:56:33 CET 2008
+
+version 0.2.38
+
+features:
+  + experimental import from GMSH 1.x mesh file
+  + warning dialog for uncorrect closing of GUI
+  + some support for localization (unfinished)
+
+
+
+### Sun Jun 22 15:53:35 CET 2008
+
+version 0.2.37
+
+features:
+  + more sentitive moving of gfx (by 1/10 of struct. size)
+
+bugfixes:
+  - import of fem data fixed (elements, load types)
+
+
+
+### Sat Jun 21 21:10:25 CET 2008
+
+features:
+  + import of "fem" data (unfinished, does not work)
+
+
+
+### Fri Jun 20 22:46:37 CET 2008
+
+bugfixes:
+  - handling repeating values (r|mp) which are not in static data
+  - export (r, mp) fixed
+  - dilogs (r, mp) fixed
+
+
+
+### Fri Jun 20 16:01:54 CET 2008
+
+features:
+  + unbreakable "input" command (nobreakinput,yes)
+
+
+
+### Wed Jun 18 17:23:46 CET 2008
+
+features:
+  + "export" command added to main menu
+
+bugfixes:
+  - rearangement in command tree
+  - Makefiles (dependence on meval)
+
+
+
+### Wed Jun 18 00:14:28 CET 2008
+
+version 0.2.36
+
+features:
+  + hidden graphics during solution
+  + busy cursor forced even more
+  + dialog for "export" command
+  + simple automatic math evaluation for ciGetParDbl()
+
+
+
+### Thu Jun 12 23:10:19 CET 2008
+
+bugfixes:
+  - senseless Apply button removed is some dialogs
+
+
+
+### Thu Jun 12 14:51:06 CET 2008
+
+changes:
+  + dialogs for element/material type help
+  + link to homepage in Help menu
+
+bugfixes:
+  - direction type translation for supports (gfem-fem)
+
+
+
+### Wed Jun 11 22:43:01 CET 2008
+
+version 0.2.35
+
+features:
+  + aliases for (some) one-directional supports
+  + export of one-directional supports (fem only)
+  + dialog for solver reflects one-directional supps
+  + symbols for stiffnesses in b. conditions
+
+ports:
+  + Win32 (2000, XP, Vista) with installer
+
+
+
+### Thu Jun  5 16:04:20 CET 2008
+
+features:
+  + more tests in "datatest" command
+  + basic installer for WIN target (unfinished)
+
+bugfixes:
+  - bad indexes in datatests (mat, real values)
+  - image outputs disabled in WIN port (they not work)
+
+
+
+### Wed Jun  4 21:31:47 CET 2008
+
+version 0.2.34
+
+features:
+  + element help shows also results types
+  + pkg-config for win32 crosscompiler called from Makefile
+  + newer Gtk+ file selection dialogs (-DFEM_NEW_FILE_DLG)
+
+ports:
+  + Win32 (2000, XP, Vista), but needs manual install
+
+bugfixes:
+  - invalid data directory name in written configuration file
+
+
+
+### Tue Jun  3 15:52:00 CET 2008
+
+bugfixes:
+  - repeating data (rs, mat) indices in "mac" export
+
+
+
+### Mon Jun  2 21:49:17 CET 2008
+
+features:
+  + config file can be parsed also for -DWIN32
+
+
+
+### Sun May 25 19:50:08 CET 2008
+
+version 0.2.33
+
+features:
+  + filename for "export" command can be auto-generated
+  + enmirror works also for 2D elements plane (but not for 3D!)
+
+
+
+### Thu May  8 15:33:00 CET 2008
+
+features:
+  + both "time" and "set id" are shown in results plot
+
+
+
+### Tue May  6 22:31:07 CET 2008
+
+version 0.2.32
+
+features:
+  + multiplier from non-linear solution is shown as "time"
+
+
+
+### Thu May  1 22:00:07 CET 2008
+
+version 0.2.31
+
+features:
+  + material 011 (2D Chen + sbet for tension)
+
+
+
+### Wed Apr 16 22:41:10 CET 2008
+
+features:
+  + jobname can be plotted (plotp,jobname,yes + jobname,..)
+
+
+
+### Tue Mar 18 13:34:27 CET 2008
+
+features:
+  + node DOF result through load steps ("writentab")
+
+
+
+### Mon Mar 17 15:53:31 CET 2008
+
+features:
+  + "jobname" command outputs new jobname to msgout
+
+bugfixes:
+  - SaPo file should start with zeros
+
+
+
+### Tue Feb 26 00:44:19 CET 2008
+
+version 0.2.30
+
+features:
+  + new "gpres" command (reads N result steps)
+  + new file: cmd_solv (solve + result ops.)
+
+bugfixes:
+  - cmd_fem.c shortened (file must have less than 5400 lines)
+
+
+
+### Sun Feb 10 23:23:21 CET 2008
+
+features:
+  + added special data to e002 results (unballanced stress)
+
+
+
+### Sat Feb  9 22:59:52 CET 2008
+
+features:
+  + commandline help now notices "-b" and "-t" switches
+
+
+
+### Tue Feb  5 19:18:12 CET 2008
+
+version 0.2.29
+
+features:
+  + writing of configurations also for GFX and GUI ("writeguiconf")
+  + much more config data can be written
+  + export to "*.mac" file (untested!)
+  + total 241 commands
+
+bugfixes:
+  - "writeconf" openes file for reading, not for writing
+
+
+
+### Mon Feb  4 20:14:58 CET 2008
+
+features:
+  + "writeconf" command for writing of config (unfinished!)
+
+
+
+### Tue Jan 29 18:06:59 CET 2008
+
+bugfixes:
+  - fix of previous bugfix in the "input" command
+
+
+
+### Thu Jan 24 20:37:38 CET 2008
+
+bugfixes:
+  - segfaults on empty strings in the "input" command
+
+
+
+### Tue Jan 22 22:04:43 CET 2008
+
+version 0.2.28
+
+features:
+  + mat003 data changed
+
+
+
+### Sun Jan  6 22:35:31 CET 2008
+
+bugfixes:
+  - invalid loop lenghts in "help,e|m,all" command
+  - NULL handling in FEM_TEST_PREPROCESSOR
+
+
+
+### Sat Jan  5 22:07:31 CET 2008
+
+version 0.2.27
+
+features:
+  + help command enhanced (element/material type info)
+  + element type structure includes problem dimensionality
+  + variables for DOF names added (may differ from b.c. names)
+
+
+
+### Sun Dec 23 12:21:36 CET 2007
+
+bugfixes:
+  - "Run Solution" dialog strings fixed
+
+
+
+### Mon Dec 17 21:50:42 CET 2007
+
+version 0.2.26
+
+features:
+  + command for filling of variable with reaction in node
+  + material 008 data modified for external "sbet" curves
+
+
+
+### Mon Dec  3 14:36:10 CET 2007
+
+features:
+  + command for filling of var with 1st selected item
+  + dialog for "gesize" command
+  + testing of data exestance for "r" and "mp" dialogs
+  + "cvbrick" variable in fem_alia.c
+
+bugfixes:
+  - preprocessor checking macro now realy does something
+  - uninitialised values (non-essential) in cmd_fem, cmd_plot
+
+
+
+### Mon Nov 19 20:33:14 CET 2007
+
+features:
+  + Winkler foundation for grille
+
+
+
+### Sat Nov 17 15:13:28 CET 2007
+
+version 0.2.25
+
+features:
+  + shear modulus (renundant) removed from mat001
+  + max, min, fail(0|1) results for reliability (rval,,X,erestype)
+  + updated material variables in fem_alia.c
+
+
+  
+### Thu Nov 15 20:08:12 CET 2007
+
+features:
+  + summary element results for reliability (rval,,8,eres_type)
+
+bugfixes:
+  - initialization of element 017 fixed
+
+
+
+### Tue Nov 13 20:40:44 CET 2007
+
+features:
+  + 2D element for grille structures (element 017)
+  
+
+
+### Mon Nov 12 21:29:40 CET 2007
+
+features:
+  + new 1+2 multiview mode (TODO: selections ni multiview)
+
+bugfixes:
+  - bad colors in multiview model
+
+
+
+### Sun Nov 11 21:17:55 CET 2007
+  + new multiview mode added 
+
+version 0.2.24
+
+features:
+  + multiviews (TODO: colors, value clonning, speed)
+  + switch to preprocessor if any prep. command is used
+  + "vpmode", "vp" commands
+  + 236 commands
+
+
+
+### Thu Nov  8 19:06:56 CET 2007
+
+features:
+  + RES_STAT1 value added to e011 (for reliability)
+
+
+  
+### Wed Nov  7 21:18:16 CET 2007
+
+features:
+  + basic support for multiviews added (still useless!)
+
+
+
+### Sun Oct 14 19:51:50 CET 2007
+
+features:
+  + "nmerge", "kmerge" commands
+
+
+
+### Sun Oct  7 22:29:28 CET 2007
+
+bugfixes:
+  - "nsplit" and "ksplit" have to recompute stats
+
+
+
+### Sun Oct  7 11:16:31 CET 2007
+
+features:
+  + "nsplit" command (untested)
+  + "ksplit" command tested
+  +  232 commands
+
+
+
+### Sat Oct  6 23:59:45 CET 2007
+
+features:
+	+ "gesize" command  (creates entity through position and size)
+
+bugfixes:
+	- bad keypoints in for "gesize" in fem_ent.c
+
+
+
+### Sat Oct  6 22:13:01 CET 2007
+
+features:
+  + "ksplit" command (untested)
+  + definition of GEs through coordinates (in fdb_ent.c, no command)
+
+
+
+### Fri Sep 28 21:26:02 CET 2007
+
+version 0.2.23
+
+features:
+  + material 010 - compression only 3D concrete (experimental)
+
+
+
+### Fri Sep  7 22:43:43 CET 2007
+
+bugfixes:
+  - auto switch to "prep" when "solve" is called (without errors)
+
+
+
+### Fri Aug 24 18:12:54 CET 2007
+
+bugfixes:
+  - element 002 modified (because of fem_sbet fixes)
+
+
+
+### Tue Aug 21 19:44:48 CET 2007
+
+bugfixes:
+  - typing errors in GUI menus (in "Plot")
+
+
+
+### Mon Aug 13 20:53:57 CET 2007
+
+
+bugfixes:
+  - reading of (non-existant) subseps after linear solution
+
+
+  
+### Tue Jul 31 19:31:58 CET 2007
+
+bugfixes:
+  - testing of existence of element/node in fillvareres, fillvarnres
+  - incorrect element type computation if fdb_user_get_eres()
+  - getting of result on nodes gives strange values
+
+
+
+### Mon Jul 30 22:17:06 CET 2007
+
+features:
+  + output of individual DOF results (to a variable: "fillvarnres")
+  + 289 commands
+
+bugfixes:
+  - bad variable type in fillvareres
+  - incorrect explanation of "fillvareres*" in documentation
+
+
+  
+### Sat Jul 28 20:42:43 CET 2007
+
+features:
+  + "solve" nov reads NRM substeps (if any)
+
+
+
+### Mon Jun  4 22:24:44 CET 2007
+
+version 0.2.22
+
+features:
+  + reaction log is saved by default in non-linear solution
+
+bugfixes:
+  - command line history doesn't return the first item
+  - cursor keys (up/down) are tracked only in cmdline (gui)
+
+
+
+### Sun Jun  3 21:50:31 CET 2007
+
+features:
+  + command line history in GUI (Up and Down arrows)
+
+
+
+### Sat Jun  2 21:55:43 CET 2007
+
+version 0.2.21
+
+features:
+  + command line history (a very basic: through "last" command)
+  + 288 commands (new ones: "history,n" + "last[,n]")
+
+
+
+### Sat May 12 22:18:54 CET 2007
+
+version 0.2.20
+
+features:
+  + comments now can be included after commands: "n,1 !* new node"
+
+
+
+### Sat May 12 15:43:46 CET 2007
+
+bugfixes:
+  - segfault after ndel (incorrect index computing in ENODES)
+
+
+
+### Tue May  8 15:57:49 CET 2007
+
+features:
+  + variable names now can be obtained from variables ("genvar")
+  + scripts can be replaced at runtime
+  + 266 commands
+
+bugfixes:
+  - name argument for "setvar" have to be constant (use "genvar" for variable)
+
+
+
+### Mon Apr  9 21:22:40 CET 2007
+
+features:
+  + GUI dialog for a non-linear solution
+
+
+
+### Sat Mar 24 17:56:43 CET 2007
+
+features:
+  + "modify" command can also change coordinates of nodes
+
+
+
+### Mon Feb 19 22:00:16 CET 2007
+
+bugfixes:
+  - wrong direction of moments (too much fabs() calls)
+
+
+
+### Wed Nov 15 21:21:15 CET 2006
+
+features:
+	+ "modify" command for loads and displacements on nodes
+
+
+
+### Sun Nov 12 21:26:38 CET 2006
+
+features:
+  + GUI support for grid picking (dialog, menu, "gcreate,[kn]")
+
+
+
+### Sat Nov 11 23:52:27 CET 2006
+
+version 0.2.19
+
+features:
+  + grid for making nodes and keypoints through mouse picking
+  + nodes can be created by picking on grid
+  + keypoints can be created by picking on grid
+
+
+
+### Sun Oct 29 22:02:46 CET 2006
+
+bugfixes:
+  - multiple deleting function fixed (fdb_fem.c)
+  - box selection functions little improved (still too unprecise)
+
+
+
+### Tue Oct 24 22:49:35 CET 2006
+
+bugfixes:
+  - export of random data fixed several times
+
+
+
+### Tue Oct 24 09:57:36 CET 2006
+
+features
+  + functions for manipulation with random variables (untested)
+
+
+
+### Wed Oct 18 21:20:30 CET 2006
+
+version uFEM 0.2.18
+
+features:
+  + database table for random variables (no code support, though)
+  + new input data format
+
+
+
+### Sun Oct 15 17:09:02 CET 2006
+
+version: uFEM 0.2.17
+
+bugfixes:
+  - GUI changer for geom. entities now works (at least partially)
+  - GUI changer for geom. entities now can change element type
+
+
+
+### Sun Oct  1 22:57:43 CET 2006
+
+bugfixes:
+  - meshing of lines fixed
+
+
+
+### Tue Sep 26 23:53:19 CET 2006
+
+features:  
+  + 71295 lines of code (including solver)
+
+bugfixes:
+  - description of element 003 fixed
+
+
+
+### Fri Jun 23 00:14:14 CET 2006
+
+features:
+  + plotting of (aproximated) results in nodes ("prns" command),
+    it don't work for non-normal results (s_1 etc.)!
+
+bugfixes:
+  - computation of averaged results fixed (still don't work for s_1 etc.)
+
+
+
+### Fri May 12 15:24:38 CET 2006
+
+features:
+	+ new commands to access element results in selected elements
+	+ commands for listong of load steps added
+
+bugfixes:
+	- selection of result sets fixed
+
+
+
+### Thu Feb 16 18:35:46 CET 2006
+
+features:
+  + some more "fillvar" functions for nodes and elements
+
+bugfixes:
+  - segfault after use of file selection dialog under Gtk+-2.4 and above
+
+
+
+### Sun Feb 12 18:31:40 CET 2006
+
+features:
+  + geometric entities can be selected by location
+
+bugfixes:
+  - divisions are no longer ignored by "gekgen" command
+
+
+
+### Mon Mar 28 23:30:34 CET 2005
+
+version: uFEM 0.2.16
+
+features:
+  + faster reading of MPI results (new result file format)
+  + keypoint and g.e. data added to "prsumm" and "summ" commands
+  + von Mises stress (rather useless)
+
+bugfixes:
+  - useless "Apply" buttons removed from *chset dialogs
+  - delete command for entities fixed
+
+
+
+### Mon Feb 14 00:19:17 CET 2005
+
+version: uFEM 0.2.15
+
+features:
+  + some results (principal stresses) can be computed in postprocessor
+  + commands for easier change of elem/load/disp/ge set number.
+  + 64920 lines of code (including solver)
+
+
+bugfixes:
+  - mesh of links was incorrect
+  - dbl interval for selection is now larger (+-FEM_ZERO)
+
+
+
+### Thu Feb  3 22:50:00 CET 2005
+
+ports:
+  + MacOS X port (10.3/X11) - but selection frame is invisible!?
+
+
+
+### Thu Jan 20 20:58:02 CET 2005
+
+version: uFEM 0.2.14
+
+bugfixes:
+  - busy cursor without need to redraw the OpenGL area
+  - menu fixed (step -> set)
+  - ciStrCat?Perms fixed (segfault if first parameter was NULL)
+
+
+
+### Mon Jan 17 00:01:17 CET 2005
+
+version: uFEM 0.2.13
+
+features:
+  + busy cursor during all operations
+  + division on element can be edited by mouse
+
+bugfixes:
+  - geom.ent. number is set by "plotprop,genumber"
+  - g.e. and div. numbers are mutually exclusive - switching fixed
+  - gl2tiff command in GUI tree was called gl2ppm
+
+
+
+### Sat Jan  1 00:10:37 CET 2005
+
+version: uFEM 0.2.12
+
+features:
+  + new format of result file
+  + new format of database file (load step tables)
+
+bugfixes:
+  - reading of selected results
+
+
+
+### Thu Dec 30 23:05:00 CET 2004
+
+features:
+  + initial support for load steps (no GUI, no export etc.)
+  + Winkler foundation for element 010 
+    (side 1-2-3-4 and XY plane only)
+  + more data testing - at least one material must exist
+  + 202 user commands
+
+bugfixes:
+  - definitions of geometry entities corrected
+  - jobname changing fixed (now in preprocessor only)
+
+
+
+### Mon Dec 27 15:50:28 CET 2004
+
+version: uFEM 0.2.11
+
+features:
+  + rewritten (working!) element 005 (Mindlin's slab)
+  + Winkler foundation for element 005
+	+ 62390 lines of code (including solver)
+
+bugfixes:
+  - element 005 fixed
+  - meshing of rectangle fixed
+
+
+
+### Mon Dec 13 22:01:57 CET 2004
+
+version: uFEM 0.2.10
+
+features:
+  + initial data testing (consistency of input)
+
+
+
+### Fri Nov 26 00:44:41 CET 2004
+
+version: uFEM 0.2.9
+
+bugfixes:
+	- repeating data input fixed
+	- repeating data dialog fixed
+
+
+
+### Thu Nov 11 22:55:42 CET 2004
+
+version: uFEM 0.2.8
+
+features:
+  + CVS synchronised after HPC-Europa
+  + start of anisotropy measurement code
+  + return from HPC-Europa :-(((
+
+
+
+### Mon Nov  1 01:37:22 CET 2004
+
+version: uFEM 0.2.7
+
+bugfixes:
+	- numerous and important bugfixes related to geometry
+	  entities (mostly 004) - segfaults,...
+
+
+
+### Sun Oct 31 02:18:04 CET 2004
+
+version: uFEM 0.2.6
+
+features:
+	+ new element - 3D brick (20 nodes) for non-linear solution
+
+bugfixes:
+	- "gediv" now really changes divisions of entities
+
+
+
+### Wed Oct 27 23:21:25 CET 2004
+
+version: uFEM 0.2.5
+
+features:
+	+ new element - 2D constant strain triangle
+	+ speedup for mesh generation - nodes inside entity
+	  are generated without testing of existing nodes
+	+ jobname can be changed throught dialog (Gtk+-2.x only)
+
+bugfixes:
+	- fillvartablen mixes number of elements and entities
+	- box selections for creation of displacements and forces fixed
+
+
+
+### Wed Oct 13 21:07:09 CET 2004
+
+version: uFEM 0.2.4
+
+features:
+	+ "help" command - provides no help but some usefull(?) info
+	+ commands to obtain jobname and data directory info
+	+ users can easily compose filenames with path to data directory
+
+
+
+### Mon Oct 11 00:10:00 CET 2004
+
+features:
+	+ macros for checking of preprocesor/postprocesor
+	  (deleting in postprocesor is no longer possible ;-)
+	+ modifications in line division code (for meshing, have to be tested)
+
+
+
+### Sat Oct  9 17:27:48 CET 2004
+
+version: uFEM 0.2.3
+
+features:
+	+ "cleandata" command to start new work without exiting
+
+bugfixes:
+  - strange behaviour when picking individual items
+  - more workarounds for deleting (low-level code looks ok?)
+
+
+
+### Sat Oct  9 00:39:46 CET 2004
+
+version: uFEM 0.2.2
+
+features:
+  + new dependencies (less or more functional)
+  + 59833 lines of code (including solver)
+
+bugfixes:
+  - deleting of stuff fixed (I hope)
+  - workaround for strange table removing
+  - middle mouse button in GUI works
+
+
+
+### Sun Oct  3 20:08:22 CET 2004
+
+version: uFEM 0.2.1
+
+features:
+	+ button bar and command tree can be disabled at startup ("-b","-t")
+
+bugfixes:
+	- redrawing of screen before box selection is removed
+
+
+
+### Mon Sep 27 00:10:36 CET 2004
+
+bugfixes:
+	- corrections of an "isometric" view
+	- more contrast colors of elements are now used
+
+
+
+### Sat Sep 11 21:48:07 CET 2004
+
+version: uFEM 0.2.0
+
+features:
+	+ new name - uFEM (hope this is the last change...)
+	+ users can write variables to files
+
+
+
+### Wed Sep  8 00:02:26 CET 2004
+
+version: F.E.N.A. 0.1.11
+
+features:
+	+ nodes and elements can be selected by result size
+
+
+
+### Tue Sep  7 01:28:06 CET 2004
+
+version: F.E.N.A. 0.1.10
+
+features:
+	+ reactions in MPI solution
+
+
+
+### Sat Sep  4 23:12:15 CET 2004
+
+version: F.E.N.A. 0.1.9
+
+features:
+	+ "if" statement - only inside scripts
+	+ 181 commands
+  + 58145 lines of code (including solver)
+
+bugfixes:
+	- expansion of variable name in "eval" and "ieval"
+
+
+
+### Fri Sep  3 00:48:36 CET 2004
+
+features:
+	+ a very basic support for scripting
+	+ "for" loops (can be nested) - only inside scripts
+
+
+
+### Mon Aug 30 22:32:23 CET 2004
+
+features:
+	+ elements can be selected by location (average of nodes)
+	+ "eval" and "ieval" commands (simple arithmetic operations)
+
+
+
+### Mon Aug 23 00:18:46 CET 2004
+
+version FENA 0.1.8
+
+features:
+	+ OpenGL graphics window available for GLUT-only environments
+	+ new result data format
+	+ results from MPI can be processed (sloooow)
+
+ports:
+	+ AIX 4.3 (text-only, GLUT-only, Gtk+ untested)
+	+ Solaris 9 (text-only, GLUT-only, Gtk+-1.2 but red-ish image)
+
+
+
+### Sun May 30 13:09:41 CET 2004
+
+version FENA 0.1.7 
+
+features:
+  + new name: FENA (Finite ElemeNt Analysis)
+
+
+
+### Wed Apr 28 21:33:23 CET 2004
+
+version AntEater 0.1.6 
+
+features:
+  + geometric model (untested and unfinished)
+  + meshing (not very tested and unfinished)
+  + user-changeable (using mouse) width of command tree
+
+
+
+### Sun Apr 11 23:18:01 CET 2004
+
+version AntEater 0.1.5 
+
+features:
+  + box selections 
+  + picking selects ALL items under the cursor (in any depth)
+  + 50333 lines of code ;-) (including solver)
+
+bugfixes:
+  - coredump during picking because of field overrun
+  - coredump if "gsel" selection type is empty
+
+
+
+### Tue Apr  6 22:06:23 CET 2004
+
+version AntEater 0.1.4 
+
+features:
+  + "hide" function for graphics
+
+
+
+### Mon Apr  5 19:01:48 CET 2004
+
+version AntEater 0.1.3 
+
+features:
+  + configuration (or script) can go from file specified on command line
+
+ports:
+	+ Window$ (2000/XP MSYS/MINGW): GUI version (but no mouse picking)
+
+
+
+### Sun Mar 21 17:08:47 CET 2004
+
+version AntEater 0.1.2 
+
+features:
+  + new name "AntEater" (from Mar 7)
+  + brick element (20 nodes)
+  + brick element (8 nodes - untested)
+
+
+
+### Tue Feb 24 17:50:32 CET 2004
+
+version 0.0.31
+
+features:
+  + export (to "fem") in preparsed mode by default (can't be changed by user)
+  + solver is called with "-p" (can't be changed by user)
+
+bugfixes:
+  - preparsed data export
+
+
+
+### Thu Feb 12 19:17:12 CET 2004
+
+version 0.0.30
+
+features:
+  + optional TIFF image output (libtiff library required)
+  + minor ergonomic changes (gl2* commands moved to menu,..)
+  + man page for solver (update), postprocessor (update) and commands (new)
+
+bugfixes:
+  - dialogs fixed,..
+
+
+
+### Wed Jan 14 20:47:39 CET 2004
+
+version 0.0.27
+
+features:
+  + GUI (menus, command tree) + dialogs (Gtk+-2.x ONLY)
+  + partial (unfinished) rewrite of text outputs
+
+bugfixes:
+  - many fixes
+  - plotting of results on deformed element 001
+
+
+
+### Thu Jan  8 20:31:22 CET 2004
+
+version 0.0.22
+
+features:
+	+ preprocessor: FEM model creating (nodes, elements, loads and
+	  displacements on nodes), copying of stuff, selections
+	+ postprocessor: plotting of reactions, results on elements,
+	  deformed structure
+	+ graphics output: screen, PPM and EPS (via gl2ps library) output
+	+ text mode: the same functionality as graphics one except graphics
+	
+bugfixes:
+	- many fixes 
+
+ports:
+	+ IRIX 6.5
+	+ Linux (Slackware 8.1 and 9.0 tested)
+
+
+
+### Wed Jul 30 19:01:40 CET 2003:
+
+	+ initial version

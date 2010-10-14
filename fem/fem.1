@@ -1,0 +1,133 @@
+.TH FEM 1 "05 August 2008"
+.SH NAME
+fem \- Non-Interactive Finite Element Method Solver
+.SH SYNOPSIS
+\fBfem\fP -i filename [\fIoptions\fP]
+.SH DESCRIPTION
+\fBfem\fP provides structural analysis (using Finite Element Method).
+.SS Options
+.TP
+\fB-i\fI filename\fR
+Name of input file. The input \fBtext file\fP must be in a special form. See \fBfeminput(5)\fP for full description.
+.TP
+\fB-si\fR
+Standard input will be used as input file. If specified, all data files (even specified with \fB-i\fP) will be \fBignored\fP.
+.TP
+\fB-p\fR
+Input data are preparsed (preindexed).  Means that nodes, elements, materials and real sets are pointed by their positions (0..n-1), not by ID numbers. Note that data from preprocessor (\fBtfem\fP, \fBgfem\fP) are always preparsed.
+.TP
+\fB-o\fI filename\fR
+Name of output file (for results).
+.TP
+\fB-so\fR
+Standard output will be used for results. Program messages (errors etc.) will be printed to standard error output.
+.TP
+\fB-e\fR
+Program messages (errors etc.) will be printed to standard error output (not to standard output).
+.TP
+\fB-r\fI filename\fR
+Name of file with results from previous solution.
+.TP
+\fB-sr\fR
+Results from previous solution will be obtained from standard input.
+.TP
+\fB-ose \fIN\fR
+Save every N-th substep (for Newton-Raphson solver only, doesn't work
+in MPI mode).
+.TP
+\fB-osf \fINAME\fR
+Template name for substep results file (for Newton-Raphson solver only, doesn't work
+in MPI mode). The \fINAME\fR should include full path but \fBnot\fR
+the extension and step number (e.g. "/tmp/frame" is correct but
+"/tmp/frame002.res" \fBis not\fR).
+.TP
+\fB-nls\fI N\fR
+Selects the non-linear solver (N=0..linear, N=2..Newton-Raphson, N=3..Arc-lenght).
+.TP
+\fB-nlstp\fI N\fR
+Sets number of substeps for the non-linear solver (even number required).
+.TP
+\fB-nlit\fI N\fR
+Sets number of allowed iteration in one substep for the non-linear solver.
+.TP
+\fB-nlbrk\fR
+Solution (Newton-Raphson/Arc-Length) will try continue even after uncoverged step.
+.TP
+\fB-nlf \fIFILE\fR
+Convergence norms will be saved to \fIFILE\fP.
+.TP
+\fB-d\fR
+Run iterative solution for one-directional boundary conditions or materials.
+.TP
+\fB-t \fINUM\fR
+Use parallel solver with \fINUM\fP threads (this option may not be available on your system).
+.TP
+\fB-tm \fIMIN\fR
+Parallelize operations only for vectors and matrices larger than \fIMIN\fP. This option is complementary to the \fB-t \fINUM\fR option and it also may not be available on your system.
+.TP
+\fB-b\fR 
+Exit program after structure stiffness matrix and load vector are assembled.
+.TP
+\fB-mf \fIFILE\fR 
+Save the stiffness matrix of structure to \fIFILE\fP in dense form.
+.TP
+\fB-msf \fIFILE\fR 
+Save the stiffness matrix of structure to \fIFILE\fP in sparse form (compatible with \fImviz(1)\fP program).
+.TP
+\fB-mmf \fIFILE\fR 
+Save the stiffness matrix of structure to \fIFILE\fP in sparse form compatible in a Matrix Market format.
+.TP
+\fB-vf \fIFILE\fR 
+Save the load vector of structure to \fIFILE\fP in dense form.
+.TP
+\fB-nes\fR 
+Uses the Bi-Conjugate Gradient Stabilized Method (with Jacobi
+preconditioner) for solution of linear systems.
+.TP
+\fB-ssor\fR 
+Uses the Conjugate Gradient Method with SSOR preconditioner
+for solution of linear systems (it also turns of the \fB-nes\fP
+functionality).
+.TP
+\fB-h\fR
+Prints help to screen.
+.SH SIGNALS
+.TP
+\fBSIGINT\fP system signal (can be emmited by \fB<control> <c>\fP key sequence) can be used to terminate correctly (with saving of data files) of Newton-Rahpson or Arc-Lenght Method solution. All other types of solution (including the linear solution) can be only terminated without saving of results.
+.SH FILES
+.TP
+\fBfem\fP
+Executable file. Location of file is system-dependent but \fI/usr/local/bin/fem\fP is the most common.
+.TP 
+\fB$MANPATH/man1/fem.1 \fP
+Manual page (this file).
+.TP 
+\fB$MANPATH/man5/feminput.5 \fP
+Manual page for input file.
+.SH COMPATIBILITY
+Source code has been written in a plain \fBISO C\fP (C89) programming language without any extension.
+It should be compiled using any \fIISO C\fP-compliant compiler (at least in theory).
+The \fBgcc 3.x\fP compilers usually work.
+
+\fITested\fP systems include:
+\fBLinux\fP 2.x (IA32, ARM, PA-RISC),
+\fBIRIX\fP 6.5.x (MIPS),
+\fBHP-UX\fP 11.x (PA-RISC),
+\fBSunOS\fP 5.8, 5.9, 5.10 (UltraSPARC),
+\fBAIX\fP 4.3 (IBM POWER4),
+\fBMacOS X\fP 10.3 (PowerPC G3/G4/G5),
+\fBWindows 2000/XP\fP (IA32, minor issues).
+.SH LICENSE
+The code is released under the GNU General Public Licence.
+.SH AUTHOR
+Jiri Brozovsky <jirka@penguin.cz>
+.SH "HOME PAGE"
+http://fast10.vsb.cz/brozovsky/articles/ufem/index.html
+.SH "SEE ALSO"
+tgfem(1) mviz(1) feminput(5)
+.SH BUGS
+.TP
+There are tons of bugs. Really!
+.TP
+Newton-Raphson Solution will work only with even number of steps (2,4,.. 120,..).
+.SH VERSION

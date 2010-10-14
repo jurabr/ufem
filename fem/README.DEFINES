@@ -1,0 +1,59 @@
+The are lots of preprocessor directives:
+
+
+Output control:
+===============
+
+RUN_VERBOSE      ... program will print important infos (start/end, big errors)
+
+DEVEL_VERBOSE    ... some more errors
+
+DEVEL            ... program will provide lot of tests
+
+DEVEL_SBET       ... used to debug "sbet_" material model (specific prints)
+
+Note: if DEVEL_VERBOSE and DEVEL are used, the program produces a lot of output
+
+
+General functionality:
+======================
+
+_SMALL_FEM_CODE_ ... only element and material no.1 are used, no nonlinearity,
+                     no nothing (to make small binary, suitable to run
+                     on small machines - 286 Minix boxes, etc.).
+                     Probably useless for now (it's untested for a long time).
+
+_USE_SIGNALS_    ... allows correct termination of NRM, DDS, ALM solution
+                     (data are saved) after SIGINT (Ctrl+c) is received. 
+
+FAST_SAPO        ... inmadiately save SaPo data (deformations in tracked node)
+                     during solution. Incompatible with USE_MPI.
+
+
+Experimental features:
+======================
+
+NRM_SPDP         ... speedup hack for Newton-Raphson method (obsolete and broken!)
+
+_MATRIX_SAVING_  ... stiffness matrix and load vector can be saved at runtime
+                     (new command-line arguments)
+
+_USE_THREADS_    ... matrix library uses POSIX threads for some operations
+
+USE_NLMC         ... nonlocal-like model for bricks support (if
+                     not used the bricks are computed as  elastic)
+
+_USE_EXT_CRV__   ... external concrete softening curve routines
+                     (uses code by Dr. Ludek Brdecko)
+
+
+
+Parallel code:
+==============
+
+USE_MPI          ... parallel code is used instead of serial version
+
+BLOCK_FOR_MPI    ... removes some unfinished things (reaction handling etc.)
+                     Parallel code cannot run without this.
+
+$Id: README.DEFINES,v 1.8 2005/02/03 21:56:16 jirka Exp $

@@ -1,0 +1,58 @@
+Most important:
+
+- saving sums of reactions in MPI/threaded mode
+- orthotropy in element's direction (for timber etc.)
+- some kind of (s)hell
+- dynamics
+- 3D beam refuses to work
+- speedup: do not alocate K_e for each element
+
+
+To Do:
+
+- some constitutive models for masonry (in progress)
+- von Mises plasticity (at least) for 2D elements
+- make beam element better (element loads etc.)
+- documentation
+- multi load steps in one data file or other way to read
+  the changing data (for dynamics etc.)
+- more plasticity conditions
+
+
+Sci-Fi:
+
+- speedup optimalizations for linear solution (see ../MISC)
+- 2nd order solution (how to do it?)
+- rewrite MPI solution (speedup needed)
+- change MPI result files (include node and element ID)
+- "configure" script
+- (alternative) usage of BLAS/LAPACK/PETSc etc.
+
+
+
+Fixed:
+- rewrite threads code (fixed?)
+- displacement control in non-linear solution
+- reading of data from previous results
+- include id numbers of element and nodes in the result file
+- fix element 005 (slab) - it doesn't work
+- remove/change test (and segfault) if there are no boundary conditions
+  (usefull for Winkler)
+- remove/replace/delete PSEUDO_SEC
+- von Mises plasticity (bilinear only, no unloading)
+- reactions in MPI solution
+- trabecular bone failure conditions
+- fix MPI solution (boundary conditions)
+- non-linear solution depends on step size?
+- SaPo handling during Monte Carlo solution
+- divide load and displacement handling to separate functions
+- rewrite data acess (femGetMPVal etc.) macros to be more easy to use
+- use NRM speedup from MPI in serial version
+- add RUN_VERBOSE preprocessor directive
+- renumbering of input data:
+   - node numbers for elements
+	 - node numbers for loads
+	 - element numbers for element loads (maybe later)
+- math. library
+- element localization
+- gravitation load

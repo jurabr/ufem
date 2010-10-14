@@ -1,0 +1,53 @@
+!* Input file for uFEM 0.2.40 and above
+!*
+!* Simple 3D structure
+!*
+!* File: prism.mac
+!* Date: Sat Jun 28 22:03:04 CEST 2008
+
+cleardata
+jobname,test-prism
+
+et,1,9
+
+rs,1,9 !* empty - only to bypass mesher checks
+
+mat,1,1
+mp,ex,  1, 20e9
+mp,prxy,1, 0.2
+
+
+gesize,4,1,-1,0,-1,2,8,2
+gediv,1,4,16,4
+
+!* move top edge:
+ksel,s,loc,y,8
+kmove,1,0,1
+
+!* move middle nodes:
+ksel,s,loc,y,4
+kmove,-1,0,-1
+
+
+ksel,all
+
+mesh
+
+!* supports:
+nsel,s,loc,y,0
+d,all,ux
+d,all,uy
+d,all,uz
+
+!* loads:
+nsel,s,loc,y,8
+f,all,fy,-10e3
+
+save
+
+solve
+
+view,iso
+pldef    !* deformations
+!plrs     !* reactions (may be very huge)
+ples,s_x !* stress in x direction

@@ -1,0 +1,79 @@
+!* Input file for uFEM 0.2.40 and above
+!*
+!* Simple 2D frame with some forces
+!*
+!* File: frame.mac
+!* Date: Sat Jun 28 22:03:04 CEST 2008
+
+cleardata
+jobname,test-frame
+
+et,1,3
+
+rs,1,3
+r,area,   1, 0.01       !* thickness
+r,iy,     1, 1/12*0.1^4 !* moment of inertia
+r,11,     1, 1          !* no left hinge
+r,12,     1, 1          !* no right hinge
+
+mat,1,1
+mp,ex,  1, 20e9
+mp,prxy,1, 0.2
+
+!* key points:
+k,1, 0,0
+k,2, 0,2
+k,3, 0,3
+k,4, 5,3
+k,5, 6,1
+
+ddiv,1
+
+!* lines:
+l,1,1,2
+l,2,2,3
+l,3,3,4
+l,4,4,5
+
+gediv,3,10 !* more detailed division on line 3
+
+mesh
+
+!* loads:
+nsel,s,loc,x,0
+nsel,r,loc,y,0
+d,all,ux
+d,all,uy
+d,all,rotz
+
+nsel,s,loc,x,6
+nsel,r,loc,y,1
+d,all,uy
+
+!* forces:
+nsel,s,loc,x,0
+nsel,r,loc,y,2
+f,all,fx,30e3
+
+nsel,all
+nsel,r,loc,y,3
+nsel,u,loc,x,0
+nsel,u,loc,x,5
+f,all,fy,-1e4
+
+nsel,s,loc,y,3
+nsel,r,loc,x,0
+f,all,fy,-5e3
+
+nsel,s,loc,y,3
+nsel,r,loc,x,5
+f,all,fy,-5e3
+
+save
+
+solve
+
+view,iso
+pldef     !* deformations
+plrs      !* reactions (may be very huge)
+ples,m_z !* moments aroun y axis

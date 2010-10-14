@@ -1,0 +1,96 @@
+!* Input file for uFEM 0.2.40 and above
+!*
+!* Simple 3D arc 
+!*
+!* File: arc3d.mac
+!* Date: Tue Jul  1 21:27:19 CEST 2008
+
+!* user defined script (function):
+script,obloucek
+csys,cylxy
+
+for,aa,1,60,
+!* node numbers:
+ieval,bb,aa,-,1
+ieval,cc,bb,*,8
+ieval,n1,cc,+,1
+ieval,n2,cc,+,2
+ieval,n3,cc,+,3
+ieval,n4,cc,+,4
+
+ieval,n5,cc,+,5
+ieval,n6,cc,+,6
+ieval,n7,cc,+,7
+ieval,n8,cc,+,8
+
+!* angles:
+eval,ang1,bb,*,3
+eval,ang2,aa,*,3
+
+!* keypoints
+k,n1, 4,ang1, 0
+k,n2, 5,ang1, 0
+k,n3, 4,ang2, 0
+k,n4, 5,ang2, 0
+
+k,n5, 4,ang1, 2
+k,n6, 5,ang1, 2
+k,n7, 4,ang2, 2
+k,n8, 5,ang2, 2
+
+!* volumes:
+v,aa, n1,n2,n4,n3, n5,n6,n8,n7
+gediv,aa,4,1,5
+
+endfor
+
+csys,cart
+endscript
+
+
+!* normal input file:
+
+cleardata
+reset
+jobname,test-arc3d
+
+et,1,9
+
+rs,1,9
+
+mat,1,1
+mp,ex,  1, 20e9
+mp,prxy,1, 0.2
+
+!* running derined script (function):
+runscript,obloucek
+
+view,iso
+geplot
+
+mesh
+
+hide,ge
+
+unzoom,3
+plotprop,smallnode,yes
+eplot
+
+!* suports on sides:
+nsel,s,loc,y,0
+d,all,ux
+d,all,uy
+
+!* force on top:
+nsel,s,loc,x,5
+nsel,s,loc,y,5
+f,all,fy,-10e3
+
+save
+
+!* solve:
+solve
+
+pldef     !* deformations
+plrs      !* reactions
+ples,s_x  !* normal stresses in x direction

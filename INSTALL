@@ -1,0 +1,39 @@
+INTRODUCTION
+
+FEM is structural analysis software based on the finite element method.
+Software has meant for POSIX-compliant operating environments.
+
+REQUIREMENTS
+
+Solver requires near nothing - ISO/ANSI C89 compliant compiler 
+(GCC, for example) and standard system libraries.
+
+User environment (preprocessor) has the same requirements if text-only
+interface is used (e.g. without any kind of graphics output or interface).
+Graphics version requires additional libraries:
+
+- Gtk+ 2.x.x
+- GtkGlExt 1.x
+- OpenGL 1.2 implementation (Mesa3D for example)
+- gl2ps 1.x (optional)
+- libtiff (optional)
+
+INSTALLATION
+
+ 1) cd src/
+ 2) make clean
+ 3) cd fem ; make all
+ 4) cd ../tui
+ 5) make all 
+ 6) make gfem
+ 7) su <enter superuser password>
+ 8) cd ../fem ; make install
+ 9) cd ../tui ; make install
+
+
+Notes:
+
+Step 6) is needed only if GUI (graphics user interface) is requested.
+Dafault installation directory is "/usr/local" and may be changed
+by ediditn of "Makefile" files in "tui" and "fem" (value of the 
+INSTALLPATH environment variable).

@@ -1,0 +1,89 @@
+.TH FEM INPUT FILE FORMAT "27 May 2008"
+.SH SYNOPSIS
+This manual describes format of \fBfem\fP input file.
+File should include \fBnumbers only\fP. No other characters are allowed.
+The description shows also types of numbers: \fB[int]\fP means integer
+value (for example 1 or 99 or -21) and \fB[double]\fP means floating-point 
+value (for example 1.5 or 1e-3 or -0.122). Lines which are marked as
+\fI(repeated)\fP can be used repeatedly (number of repeats depends on 
+number of items - it is usualy described by  value which is put on line
+before the "repeated" one).
+There is also a \fI"preparsed"\fP variant of the input file
+(it is used with \fB-p\fP command line parameter for \fBfem(1)\fP).
+For this
+case the selected identifier values (marked as \fI(P)\fP below) are replaced
+with positions of pointed item in their lists (numbered from 0). This version
+of input file is produced by the \fBtfem(1)\fP and the \fBgfem(1)\fP.
+
+.SH FILE CONTENTS
+
+.SS "SOLUTION CONTROL DATA"
+.TP
+\fBSolution Identifier\fP [int]
+Integer number to identify solution.
+.TP
+\fBPrevious solution\fP [int]
+If solution depends on previous solution (uses their results as initial stress/strain state) identifier of this solution must be used.
+\fB-1\fP is used for independent solution.
+.TP
+\fBLinear Solver\fP [int]
+ID number of linear solver (\fB1\fP is only valid for now).
+.TP
+\fBNon-Linear Solver\fP [int]
+\fBZero\fP is used for linear solution.
+.TP 
+\fBNumber of Non-Linear Steps\fP [int]
+Number of steps in Non-Linear Solution.
+
+.SS "REAL SETS"
+\fBNumber of real sets\fP [int]
+.TP
+\fB Identifier\fP [int] \fBType\fP [int] \fBNumber of values\fP [int] 
+.TP 
+\fBNumber of all real set values (summ from all sets)\fP [int]
+.TP
+\fBReal set value \fP [double] \fI(repeated)\fP, in order identical to list of real sets.
+
+.SS MATERIALS
+\fBNumber of materials\fP [int]
+.TP
+\fB Identifier\fP [int] \fBType\fP [int] \fBNumber of values\fP [int] 
+.TP
+\fBNumber of all material values (summ from all materials)\fP [int]
+.TP
+\fBMaterial value \fP [double] \fI(repeated)\fP, in order identical to list of materials.
+
+.SS NODES
+\fBNumber of nodes\fP [int]
+.TP
+\fBNode ID\fP [int] \fBX\fP [double] \fBY\fP [double] \fBZ\fP [double] \fI(repeated)\fP
+
+.SS ELEMENTS
+\fBNumber of elements\fP [int]
+.TP
+\fBIdentifier\fP [int] \fBElement type\fP [int] \fBReal set identifier\fP [int](P) \fBMaterial identifier\fP [int] \fBNumber of nodes\fP [int](P) \fI(repeated)\fP
+.TP
+\fBNumber of element nodes\fP [int] (summ for all elements)
+.TP
+\fBElement node identifier\fP [int](P) \fI(repeated)\fP
+
+.SS GRAVITATION
+\fBDirection\fP [int]
+.TP
+\fBSize\fP [double]
+
+.SS "NODAL LOADS AND BOUNDARY CONDITIONS"
+\fBNumber of loads and boundary conditions\fP [int]
+.TP
+\fBNode identifier\fP [int](P) \fBType\fP [int] \fBDirection\fP [int] \fBSize\fP [double] \fI(repeated)\fP
+
+.SS ELEMENT LOADS
+\fB0\fP (zero number must be put here - this feature is currently not used).
+
+.SS END OF FILE
+\fB 0 0\fP (two zeros must be put here).
+
+.SH COMPATIBILITY
+
+.SH "SEE ALSO"
+fem(1)

@@ -1,0 +1,20 @@
+### Tue Jun 17 21:27:48 CEST 2008
+
+features:
+  + parsing and evaluation of simple formulaes
+
+bugfixes:
+  - data recognizing fixed
+
+
+### Mon Jun 16 22:56:06 CEST 2008
+
+features:
+  + function for recognising of data (only numbers tested)
+
+
+### Mon Jun 13 12:35:34 CEST 2008
+
+features:
+  + initial version
+
