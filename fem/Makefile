@@ -33,7 +33,7 @@ CC=gcc #-pg
 #CC=xlc_r -q64
 #CC=cc -mips4 -n32 -O2
 #CC=cc -mips4 -n32 -Ofast=ip26 -r8000 -static
-CC=/usr/nekoware/gcc-4.3/bin/gcc
+#CC=/usr/nekoware/gcc-4.3/bin/gcc
 
 AR= ar r
 RANLIB=-ranlib
@@ -177,7 +177,7 @@ OBJECTS=fem_sol.o fem_nrm.o fem_alm.o fem_eige.o fem_loads.o fem_mloc.o fem_io.o
 all: fem
 
 # main()
-fem: fem.o $(OBJECTS) fem_mont_no.o ../sinope/liba_diag.a
+fem: fem.o $(OBJECTS) fem_mont_no.o $(FEATLIBS)
 	$(CC) -o $(@) $(CFLAGS) fem.o $(OBJECTS) fem_mont_no.o $(LIBS)  
 
 # library for monte():
@@ -465,8 +465,8 @@ fem.ps: fem.1
 
 # cleaning:
 clean:
-	rm -f fem gen dul *.o *.a *.gcda *.gcno *.exe core results.txt fem.dvi fem.ps fem.pdf feminput.dvi feminput.ps feminput.pdf libfem.so mviz so_locations xkb.so xkb.c
-	(cd ../sinope && $(MAKE) clean)
+	-rm -f fem gen dul *.o *.a *.gcda *.gcno *.exe core results.txt fem.dvi fem.ps fem.pdf feminput.dvi feminput.ps feminput.pdf libfem.so mviz so_locations xkb.so xkb.c
+	-(cd ../sinope && $(MAKE) clean)
 
 
 # installation:
@@ -480,4 +480,4 @@ install: fem
 
 # deinstallation:
 uninstall:	
-	rm -f $(PREFIX)/bin/fem $(PREFIX)/man/man1/fem.1 $(PREFIX)/man/man5/feminput.5
+	-rm -f $(PREFIX)/bin/fem $(PREFIX)/man/man1/fem.1 $(PREFIX)/man/man5/feminput.5
