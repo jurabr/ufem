@@ -31,8 +31,8 @@
 #include "fdb_fem.h"
 #include "fem_elem.h"
 
-#define  PATH_NUM  10
-#define  PATH_LEN  60
+#define  PATH_NUM  10   /* max. number of paths                */
+#define  PATH_LEN  120  /* max. lenght of path (num. of nodes) */
 
 typedef struct
 {
@@ -76,9 +76,9 @@ typedef struct
 /* path for data plot */
 typedef struct
 {
-  long     len  ;    /* number of nodes                      */
-  long    *node ;    /* list of nodes                        */
-  char    *desc ;    /* path description                     */
+  long     len  ;      /* number of nodes                   */
+  long    *node ;      /* list of nodes                     */
+  char     desc[256] ; /* path description                  */
 }tResPath;
 
 
