@@ -3,7 +3,7 @@
 CC=gcc
 #CC=xlc_r -q64
 DEBUG=-Wall -ansi -pedantic -g -O0
-#DEBUG=-Wall -ansi -pedantic -O2
+DEBUG=-Wall -ansi -pedantic -O2 -DRUN_VERBOSE
 #DEBUG=
 
 FEATFLAGS=

@@ -519,7 +519,7 @@ void afEloadForceSymbol(
   type   = fdbInputGetInt(ELOAD, ELOAD_TYPE, eLPos) ;
   epos   = fdbInputGetInt(ELOAD, ELOAD_EPOS, eLPos) ;
   efrom  = fdbInputGetInt(ELEM, ELEM_FROM, epos);
-  ettype= fdbInputGetInt(ELEM, ELEM_TYPE, epos) ;
+  ettype = fdbInputGetInt(ELEM, ELEM_TYPE, epos) ;
   if ( fdbInputCountInt(ETYPE, ETYPE_ID, ettype, &etpos) < 0)
   {
     fprintf(msgout, "[E] %s: %li\n", _("Element type michmach for element"), fdbInputGetInt(ELEM, ELEM_ID, epos));
@@ -549,7 +549,7 @@ void afEloadForceSymbol(
   switch (type) /* type of load */
   {
     case 0: /* empty - testing load */
-      return(AF_OK); break ;
+      return; break ;
     case 1:
       switch (etype)
       {

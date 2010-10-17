@@ -591,7 +591,7 @@ void *thFemMatSetZeroCol (void *param)
 /** Sets all of matrix contents to 0 */
 void femMatSetZeroCol(tMatrix *a, long Col)
 {
-	long i, j, ifrom, ito, ipos ;
+	long i, j, ifrom, ito ;
 #ifdef _USE_THREADS_
   tThData data[AF_MAX_THREADS];
   pthread_t Thread_ID[AF_MAX_THREADS];
@@ -611,7 +611,7 @@ void femMatSetZeroCol(tMatrix *a, long Col)
 		ito   = a->pos[a->frompos[Col-1]]+a->defpos[Col-1]-1 ;
 		for (i=ifrom; i<ito; i++) 
 		{
-			for (j=a->frompos[ipos]; j<a->frompos[ipos]+a->defpos[ipos]; j++)
+			for (j=a->frompos[i]; j<a->frompos[i]+a->defpos[i]; j++)
 			{
 				if (a->pos[j] == Col) { a->data[j] = 0.0 ; }
 			}

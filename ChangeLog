@@ -4,6 +4,13 @@ See fem/ChangeLog for solver changes.
 
 
 
+### Sun Oct 17 16:47:38 CEST 2010
+
+features:
+  + added to GitHub repository
+
+
+
 ### Sat Oct  2 22:19:12 CEST 2010
   + asin (z) and acos (k) parameters in "eval" command
   + femcmd.1 updated

@@ -3,7 +3,7 @@
    Date:      2003/12/10 19:07
    Author:    Jiri Brozovsky
 
-   Copyright (C) 2003 
+   Copyright (C) 2003 Jiri Brozovsky
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public

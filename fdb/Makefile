@@ -14,8 +14,8 @@ CC=gcc
 CC=/usr/nekoware/gcc-4.3/bin/gcc
 
 #DEBUG=-DDEVEL_VERBOSE
-##DEBUG=-Wall -ansi -pedantic -g -DDEVEL_VERBOSE
-DEBUG=-g -Wall -ansi -pedantic -DDEVEL_VERBOSE -O0
+DEBUG=-Wall -ansi -pedantic -g -DDEVEL_VERBOSE
+#DEBUG=-g -Wall -ansi -pedantic -DDEVEL_VERBOSE -O0
 DEBUG=-Wall -ansi -pedantic -DRUN_VERBOSE -O2
 #
 INCLUDES=-I../fem -I../common -I../cint
