@@ -31,6 +31,9 @@
 #include "fdb_fem.h"
 #include "fem_elem.h"
 
+#define  PATH_NUM  10
+#define  PATH_LEN  60
+
 typedef struct
 {
   long    elen ;
@@ -68,6 +71,16 @@ typedef struct
   long    len    ;   /* lenght of "data" == lenght of NODE  */
   double *data   ;   /* list of values                      */
 }tResAve;
+
+
+/* path for data plot */
+typedef struct
+{
+  long     len  ;    /* number of nodes                      */
+  long    *node ;    /* list of nodes                        */
+  char    *desc ;    /* path description                     */
+}tResPath;
+
 
 
 extern long ResLen ;

@@ -9,8 +9,8 @@ RANLIB=-ranlib
 #AR=i386-mingw32-ar r
 #RANLIB=-i386-mingw32-ranlib
 
-DEBUG=-Wall -ansi -pedantic -g -O0
-#DEBUG=-Wall -ansi -pedantic -O2
+#DEBUG=-Wall -ansi -pedantic -g -O0
+DEBUG=-Wall -ansi -pedantic -O2
 CFLAGS=$(DEBUG) -I../fem -I../cint -I../common
 LIBS=-L../cint  -L../common -lcint -lfem_comm -lm
 
