@@ -3345,8 +3345,6 @@ int func_gfx_set_grid(char *cmd)
 		return ( tuiCmdReact(cmd, AF_ERR_EMP) ) ;
 	}
 
-printf(">>%s<<\n", cmd);
-
   if (ciParNum(cmd) > 1) { plane  = ciGetParInt(cmd, 1); }
     
   if (ciParNum(cmd) > 2) { dx     = ciGetParDbl(cmd, 2); }
