@@ -45,7 +45,7 @@ GUILIBS=`pkg-config --libs gtkglext-1.0 gtk+-2.0` -lGL -lGLU  $(LIBS) # no gl2ps
 #GUIFLAGS=$(CFLAGS) $(GFCFLAGS) -I../gui `export PKG_CONFIG_PATH=/usr/local/i386-mingw32/lib/pkgconfig && pkg-config --cflags gtk+-2.0 ` -I/home/jirka/FEM/src/tui/gle/include/gtkglext-1.0 -I/home/jirka/FEM/src/tui/gle/lib/gtkglext-1.0/include/ -DUSE_GL2PS -I../../gl2ps/ -DFEM_NEW_FILE_DLG
 #GUILIBS=-L../../gl2ps -lgl2ps-w32 `export PKG_CONFIG_PATH=/usr/local/i386-mingw32/lib/pkgconfig && pkg-config --libs gtk+-2.0` libgdkglext-win32-1.0.dll.a libgtkglext-win32-1.0.dll.a libopengl32.a libglu32.a  $(LIBS) # for windows
 
-OBJECTS=fem_tini.o fem_tclp.o fem_tcmd.o cmd_vars.o cmd_fem.o cmd_sele.o cmd_macs.o fem_alia.o fem_conf.o fem_solv.o cmd_help.o cmd_solv.o
+OBJECTS=fem_tini.o fem_tclp.o fem_tcmd.o cmd_vars.o cmd_fem.o cmd_res.o cmd_sele.o cmd_macs.o fem_alia.o fem_conf.o fem_solv.o cmd_help.o cmd_solv.o
 GFOBJECTS=fem_gfx.o fem_gfnt.o fem_gclr.o fem_gele.o gfx_e000.o gfx_e001.o gfx_e002.o gfx_e003.o gfx_e004.o gfx_e005.o gfx_e006.o gfx_load.o gfx_disp.o gfx_sele.o gfx_res.o gfx_reac.o gfx_ares.o gfx_ppm.o gfx_k.o gfx_grid.o fem_gent.o gfx_en01.o gfx_en02.o gfx_en03.o gfx_en04.o
 G2DOBJECTS=
 GOBJECTS=$(GFOBJECTS) $(G2DOBJECTS) fem_gui.o gui_main.o gui_gl.o gui_dlgs.o gui_canv.o
@@ -99,6 +99,9 @@ cmd_vars.o: cmd_vars.c fem_tui.h ../cint/cint.h
 
 cmd_fem.o: cmd_fem.c fem_tui.h ../fdb/fdb.h ../cint/cint.h ../fem/fem.h
 	$(CC) -c cmd_fem.c $(CFLAGS)
+
+cmd_res.o: cmd_res.c fem_tui.h ../fdb/fdb.h ../cint/cint.h ../fem/fem.h
+	$(CC) -c cmd_res.c $(CFLAGS)
 
 cmd_solv.o: cmd_solv.c fem_tui.h ../fdb/fdb.h ../cint/cint.h ../fem/fem.h
 	$(CC) -c cmd_solv.c $(CFLAGS)

@@ -4,6 +4,14 @@ See fem/ChangeLog for solver changes.
 
 
 
+### Mon Oct 18 09:54:18 CEST 2010
+
+features:
+  + more path operations functions
+	+ cmd_fem splitted to two (cmd_fem, cmd_res)
+
+
+
 ### Sun Oct 17 16:47:38 CEST 2010
 
 features:
