@@ -68,6 +68,7 @@ int func_fem_prdof(char *cmd)
 	return ( tuiCmdReact(cmd, rv) ) ;
 }
 
+
 /** Prints element solution: "pres,item1[,ttem2,..]"
  * @param cmd command
  * @return status

@@ -11,7 +11,7 @@ MAKE=make
 
 
 #DEBUG= -O0 -Wall -ansi -pedantic -g -DDEVEL_VERBOSE
-DEBUG= -O2 -Wall -ansi -pedantic -DRUN_VERBOSE -DDEVEL_VERBOSE
+DEBUG= -O2 -Wall -ansi -pedantic -DRUN_VERBOSE #-DDEVEL_VERBOSE
 #
 INCLUDES= -I../fem -I../fdb -I../fdb -I../cint -I../common -I../tui
 CFLAGS=$(INCLUDES) -DDISABLE_UNFINISHED $(DEBUG) -DHAVE_HOME_DIR

@@ -419,6 +419,9 @@ int func_mat_list_matrix(char *cmd)
   }
   
   id-- ;
+
+  rows = fdb_matrix[id].rows  ;
+  cols = fdb_matrix[id].cols  ;
   
   if ((fdb_matrix[id].cols > 0)&&(fdb_matrix[id].rows >0))
   {
@@ -455,6 +458,9 @@ int func_mat_write_matrix(char *cmd)
   }
   
   id-- ;
+
+  rows = fdb_matrix[id].rows  ;
+  cols = fdb_matrix[id].cols  ;
   
   if ((fdb_matrix[id].cols > 0)&&(fdb_matrix[id].rows >0))
   {

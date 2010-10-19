@@ -48,7 +48,7 @@ long fdb_exp_ans_et(long fem_type)
 }
 
 /** Converts element type number: uFEM -> APDL */
-int fdb_exp_ans_rs(long fem_type, FILE *fw)
+long fdb_exp_ans_rs(long fem_type, FILE *fw)
 {
 #if 0
 	switch (fem_type)
@@ -68,7 +68,7 @@ int fdb_exp_ans_rs(long fem_type, FILE *fw)
 		default: return(1);
 	}
 #endif
-  return("AF_OK");
+  return(0);
 }
 
 
