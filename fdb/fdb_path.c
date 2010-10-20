@@ -31,6 +31,8 @@
 /* Data for path: */
 tResPath femPath[PATH_NUM] ;
 
+long femActivePath = -1 ;
+
 /** Sets given path to NULL 
  * @param num path index (0..PATH_NUM )
  * */

@@ -96,6 +96,8 @@ extern tResAve *aRes ;
 extern long aResLen  ;
 extern long aResAct  ;
 
+extern tResPath femPath[] ;
+extern long femActivePath ;
 
 extern int fdbAllocResSpacePtrs(void);
 extern void fdbFreeResSpacePtrs(void);
@@ -154,6 +156,20 @@ extern int fdbResListSetsPrn(FILE *fw);
 
 /* listings of results to file: */
 extern int fdbGetLoopRawRes_DOF(FILE *fw, long n_id, long dof_type);
+
+/* path operations: */
+extern void resPathNull(int num);
+extern void resPathFree(int num);
+extern void resPathNullAll(void);
+extern void resPathFreeAll(void);
+extern void femPathInit(void);
+extern int resPathAlloc(int num);
+extern int resPathSetName(char *name, int num);
+extern int resPathAddNode(int num, long node);
+extern int resPathChangeNode(int num, long node_old, long node_new);
+extern int resPathDelLastNode(int num, int node);
+extern int femPathList(FILE *fw, long from, long to);
+extern int femPathResPrn(FILE *fw, long path_num, long *res_type, long type_len);
 
 #endif
 

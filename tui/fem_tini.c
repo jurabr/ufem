@@ -110,6 +110,9 @@ int fem_tui_init(void)
      {fprintf(msgout," %s!\n",_("Failed")); return(rv);};
 	fprintf(msgout, " %s\n", _("OK")) ;
 
+  /* path operations: */
+  femPathInit();
+
   /* resume database (if requested): */
   if (femCmdAutoResu == AF_YES)
   {

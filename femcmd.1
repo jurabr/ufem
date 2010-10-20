@@ -1080,6 +1080,29 @@ gsel
 Select (unselect or reselect) items by mouse.
 Stop command with \fPgsel,(stop|run)\fP.
 
+
+.SS "Path Operations"
+.TP
+path
+\fBpath [,number, name]\fP
+Creates path and makes it active.
+.TP
+pathdel
+\fBpathdel,number\fP
+Deletes path.
+.TP
+pn
+\fBpn,node\fP
+Adds node to active path.
+.TP
+pathlist
+\fBpathlist,from,to\fP
+Lists paths (with numbers between \fBfrom\fP and \fBto\fP). No number means list all.
+.TP
+prpath
+\fBprpath,res1[,res2,res3,res4,res5,res6]\fP
+Prints results on active path.
+
 .SH AUTHOR
 Jiri Brozovsky <jirka@penguin.cz>
 

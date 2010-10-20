@@ -669,3 +669,18 @@ varmatread
 
 varmatfillres
 "varmatfillres,id,elem,ipoint,res1[,res2,res3,...,res6]"
+
+path
+"path [,number, name]"
+
+pathdel
+"pathdel,number"
+
+pn
+"pn,node"
+
+pathlist
+"pathlist,from,to"
+
+prpath
+"prpath,res1[,res2,res3,res4,res5,res6]"

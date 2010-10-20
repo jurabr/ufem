@@ -1022,4 +1022,234 @@ memFree:
 	return ( tuiCmdReact(cmd, rv) ) ;
 }
 
-/* end of cmd_fem.c */
+
+/* ****************************************************
+ *
+ * PATH OPERATIONS
+ *
+ */
+
+/** Creates new (empty) path: "path [,number, name]"
+ * @param cmd command
+ * @return status
+ */
+int func_path_create(char *cmd)
+{
+  int rv = AF_OK ;
+  int num  = -1 ;
+  int i ;
+
+	FEM_TEST_POSTPROCESSOR
+
+  if (ciParNum(cmd) > 1)
+  {
+    num = ciGetParInt(cmd,1) ;
+    if ((num < 1)&& (num > PATH_NUM))
+    {
+		  fprintf(msgout,"[w] %s!\n", _("Invalid path number"));
+      num = -1 ;
+    }
+    else
+    {
+      /* check if exist - if yes then delete old path */
+      if (femPath[num-1].len > 0)
+      {
+        resPathFree(num-1);
+      }
+    }
+  }
+
+  if (num == -1)  /* new path number */
+  {
+    for (i=0; i<PATH_NUM; i++)
+    {
+      if (femPath[i].len < 0)
+      {
+        num = i+1 ;
+        break ;
+      }
+
+      if( num == -1)
+      {
+		    fprintf(msgout,"[E] %s!\n", _("Path space is full - new path is not possible"));
+	      return ( tuiCmdReact(cmd, AF_ERR_MEM) ) ;
+      }
+    }
+  }
+
+  if (resPathAlloc(num-1) != AF_OK)
+  {
+		fprintf(msgout,"[E] %s!\n", _("No memory for path data"));
+	  return ( tuiCmdReact(cmd, AF_ERR_MEM) ) ;
+  }
+
+  /* test path name: */
+  if (ciParNum(cmd) > 2)
+  {
+    if (strlen(ciGetParStr(cmd,2)) > 0)
+    {
+      strncpy(femPath[num-1].desc,ciGetParStr(cmd,2), 255);
+    }
+    else
+    {
+      sprintf(femPath[num-1].desc, "PATH%i",num) ;
+    }
+  }
+  else { sprintf(femPath[num-1].desc, "PATH%i",num) ; }
+
+  femActivePath = num - 1 ;
+
+  fprintf(msgout,"[ ] %s: %i %s\n", _("New path created"),
+      num, femPath[num-1].desc);
+
+	return ( tuiCmdReact(cmd, rv) ) ;
+}
+
+/** Deletes a path: "pathdel,number"
+ * @param cmd command
+ * @return status
+ */
+int func_path_delete(char *cmd)
+{
+  int num  = -1 ;
+  int i ;
+
+	FEM_TEST_POSTPROCESSOR
+
+  if (ciParNum(cmd) < 2)
+  {
+		fprintf(msgout,"[E] %s!\n", _("Path number have to be specified: pathdel,number"));
+	  return ( tuiCmdReact(cmd, AF_ERR_VAL) ) ;
+  }
+
+  if (ciTestStringALL(cmd,1) == AF_YES)
+  {
+    for (i=0; i<PATH_NUM; i++)
+    {
+      resPathFree(i);
+      fprintf(msgout,"[i] %s: %i\n", _("Path deleted:"),i+1);
+    }
+    femActivePath = -1 ;
+	  return ( tuiCmdReact(cmd, AF_OK) ) ;
+  }
+
+  num = ciGetParInt(cmd,1) ;
+  if ((num < 1)&& (num > PATH_NUM))
+  {
+	  fprintf(msgout,"[w] %s!\n", _("Invalid path number"));
+	  return ( tuiCmdReact(cmd, AF_ERR_VAL) ) ;
+  }
+
+  resPathFree(num-1);
+  femActivePath = num-2;
+  fprintf(msgout,"[i] %s: %i\n", _("Path deleted:"),num-1);
+
+	return ( tuiCmdReact(cmd, AF_OK) ) ;
+}
+
+
+/** Adds node to path: "pn,node"
+ * @param cmd command
+ * @return status
+ */
+int func_path_node_new(char *cmd)
+{
+  int num  = -1 ;
+
+	FEM_TEST_POSTPROCESSOR
+
+  if (femActivePath < 0)
+  {
+		fprintf(msgout,"[E] %s!\n", _("Path must be defined first"));
+	  return ( tuiCmdReact(cmd, AF_ERR_VAL) ) ;
+  }
+
+  if (ciParNum(cmd) < 2)
+  {
+		fprintf(msgout,"[E] %s!\n", _("Node number have to be specified: pn,node"));
+	  return ( tuiCmdReact(cmd, AF_ERR_VAL) ) ;
+  }
+  num = ciGetParInt(cmd,1) ;
+
+  if ((num <1) || (num > fdbFindMaxInt(NODE, NODE_ID)))
+  {
+		fprintf(msgout,"[E] %s!\n", _("Invalid node"));
+	  return ( tuiCmdReact(cmd, AF_ERR_VAL) ) ;
+  }
+  else
+  {
+    return(tuiCmdReact(cmd,resPathAddNode(femActivePath, num)));
+  }
+
+	return ( tuiCmdReact(cmd, AF_OK) ) ;
+}
+
+/** List paths: "pathlist,from,to"
+ * @param cmd command
+ * @return status
+ */
+int func_path_list(char *cmd)
+{
+  int from, to ;
+
+	FEM_TEST_POSTPROCESSOR
+
+  from = 1 ;
+  to   = PATH_NUM ;
+
+  if (ciParNum(cmd) < 2)
+  {
+    return ( tuiCmdReact(cmd, femPathList(fdbPrnFile, 0, PATH_NUM)));
+  }
+  else
+  {
+    if (ciParNum(cmd) > 1) 
+    { 
+      from = ciGetParInt(cmd,1) ;
+      if (from > PATH_NUM) {from = PATH_NUM;}
+      if (from < 1) {from = 1;}
+    }
+    if (ciParNum(cmd) > 2) 
+    { 
+      to = ciGetParInt(cmd,1) ;
+      if (to > PATH_NUM) {to = PATH_NUM;}
+      if (to < 1) {to = 1;}
+      if (to < from) {to = from;}
+    }
+  }
+
+  return ( tuiCmdReact(cmd, femPathList(fdbPrnFile, from-1, to-1)));
+}
+
+/** List paths: "prpath,res1[,res2,res3,res4,res5,res6]"
+ * @param cmd command
+ * @return status
+ */
+int func_path_print_res(char *cmd)
+{
+  long res_type[6] ;
+  long res_len = 0 ;
+  int i ;
+
+	FEM_TEST_POSTPROCESSOR
+
+
+  if (ciParNum(cmd) < 2)
+  {
+		 fprintf(msgout,"[E] %s!\n", _("At least one result type must be given: prpath,res_type"));
+	   return ( tuiCmdReact(cmd, AF_ERR_VAL) ) ;
+  }
+  
+  for (i=0; i<6; i++)
+  {
+    if (ciParNum(cmd) > i+1) 
+    {
+      res_type[i] = ciGetParInt(cmd,i+1); 
+      res_len++;
+    }
+  }
+
+  return ( tuiCmdReact(cmd, femPathResPrn(fdbPrnFile, femActivePath, res_type, res_len )));
+}
+
+/* end of cmd_res.c */

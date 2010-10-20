@@ -86,6 +86,8 @@ int func_fem_resu (char *cmd)
 
 	femUI_Mode = FEM_UI_MODE_PREP ;
 
+  resPathFreeAll();
+
 	if (ResLen > 0) { fdbFreeResSpacePtrs(); }
 	ResLen = 0 ;
   if (aResLen > 0) { fdbAvResFreeSpace(); }
@@ -124,6 +126,8 @@ int func_fem_clean_data (char *cmd)
   aResLen = 0 ;
 
 	rv = fdbInputCleanData();
+
+  resPathFreeAll();
 
 	return ( tuiCmdReact(cmd, rv) ) ;
 }
@@ -3466,6 +3470,8 @@ int func_fem_prep(char *cmd)
 	ResLen = 0 ;
   if (aResLen > 0) { fdbAvResFreeSpace(); }
   aResLen = 0 ;
+
+  resPathFreeAll();
 
 	femUI_Mode = FEM_UI_MODE_PREP ;
   if (cmd != NULL)

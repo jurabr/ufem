@@ -340,6 +340,13 @@ int func_fill_var_eres_min_from_all(char *cmd);
 
 extern int func_fill_var_kp(char *cmd);
 
+/* path operations: */
+extern int func_path_create(char *cmd);
+extern int func_path_delete(char *cmd);
+extern int func_path_node_new(char *cmd);
+extern int func_path_list(char *cmd);
+extern int func_path_print_res(char *cmd);
+
 /* random variables (monte): */
 extern int func_fem_rv (char *cmd);
 extern int func_fem_rv_list (char *cmd);
@@ -685,7 +692,7 @@ int fem_cmd_init (void)
 {
   long count = 0 ;
 
-  ciFuncLen = 261;
+  ciFuncLen = 266;
   ciFunction = (tFunc *) malloc (ciFuncLen * sizeof (tFunc));
   
   /* basic functions */
@@ -1774,6 +1781,27 @@ int fem_cmd_init (void)
 
   ciFunction[count].cmd = "varmatfillres";
   ciFunction[count].func = func_mat_matrix_fill_res;
+  count++;
+
+  /* path operations */
+  ciFunction[count].cmd = "path";
+  ciFunction[count].func = func_path_create;
+  count++;
+
+  ciFunction[count].cmd = "pathdel";
+  ciFunction[count].func = func_path_delete;
+  count++;
+
+  ciFunction[count].cmd = "pn";
+  ciFunction[count].func = func_path_node_new;
+  count++;
+
+  ciFunction[count].cmd = "pathlist";
+  ciFunction[count].func = func_path_list;
+  count++;
+
+  ciFunction[count].cmd = "prpath";
+  ciFunction[count].func = func_path_print_res;
   count++;
 
   /* test: */

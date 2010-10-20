@@ -4,6 +4,16 @@ See fem/ChangeLog for solver changes.
 
 
 
+### Wed Oct 20 21:03:49 CEST 2010
+
+version 0.2.53
+
+features:
+  + basic commands for path operations (untested)
+  + 266 commands
+
+
+
 ### Mon Oct 18 09:54:18 CEST 2010
 
 features:
