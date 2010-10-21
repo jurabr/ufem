@@ -4,6 +4,15 @@ See fem/ChangeLog for solver changes.
 
 
 
+### Thu Oct 21 13:43:10 CEST 2010
+
+bugfixes:
+  - "path creation" coredump fixed
+  - "pn" command coredump fixed (invalid femInputMaxInt call)
+  - "prpath" output fixed
+
+
+
 ### Wed Oct 20 21:03:49 CEST 2010
 
 version 0.2.53

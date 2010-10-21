@@ -11,7 +11,7 @@
 #
 CC=gcc
 #CC=xlc_r -q64
-CC=/usr/nekoware/gcc-4.3/bin/gcc
+#CC=/usr/nekoware/gcc-4.3/bin/gcc
 
 #DEBUG=-DDEVEL_VERBOSE
 DEBUG=-Wall -ansi -pedantic -g -DDEVEL_VERBOSE

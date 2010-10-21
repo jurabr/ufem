@@ -27,6 +27,7 @@
 
 #include "fem_tui.h"
 #include "cint.h"
+#include "fdb_res.h"
 
 extern tInData inputData ;
 extern tTab InputTab[];

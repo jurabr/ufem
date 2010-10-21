@@ -398,6 +398,7 @@ int func_error (char *cmd)
 int func_system (char *cmd)
 {
 #ifndef _SECURE_CODE_
+	int rv = AF_OK ;
   if (ciParNum (cmd) == 1) 
 	{ 
 		fprintf (msgout,"[E]: %s!\n",_("Command required")); 
@@ -406,8 +407,8 @@ int func_system (char *cmd)
   else 
 	{ 
     fprintf(msgout,"[i] %s: \"%s\"\n", _("Running command"), ciGetParStr(cmd,1));
-		system (ciGetParStr (cmd, 1)); 
-  	return (tuiCmdReact(cmd,AF_OK));
+		rv = system (ciGetParStr (cmd, 1)); 
+  	return (tuiCmdReact(cmd,rv));
 	}
 #else
 	fprintf (msgout,"[E]: %s!\n",_("Command not available in this version")); 

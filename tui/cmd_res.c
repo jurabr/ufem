@@ -1044,7 +1044,7 @@ int func_path_create(char *cmd)
   if (ciParNum(cmd) > 1)
   {
     num = ciGetParInt(cmd,1) ;
-    if ((num < 1)&& (num > PATH_NUM))
+    if ((num < 1)|| (num > PATH_NUM))
     {
 		  fprintf(msgout,"[w] %s!\n", _("Invalid path number"));
       num = -1 ;
@@ -1058,22 +1058,27 @@ int func_path_create(char *cmd)
       }
     }
   }
+	else
+	{
+		fprintf(msgout,"[E] %s!\n", _("Incomplete command - must be: path,[number],name"));
+	      return ( tuiCmdReact(cmd, AF_ERR_VAL) ) ;
+	}
 
   if (num == -1)  /* new path number */
   {
     for (i=0; i<PATH_NUM; i++)
     {
-      if (femPath[i].len < 0)
+      if (femPath[i].len <= 0)
       {
         num = i+1 ;
         break ;
       }
+    }
 
-      if( num == -1)
-      {
-		    fprintf(msgout,"[E] %s!\n", _("Path space is full - new path is not possible"));
-	      return ( tuiCmdReact(cmd, AF_ERR_MEM) ) ;
-      }
+    if( num == -1)
+    {
+		  fprintf(msgout,"[E] %s!\n", _("Path space is full - new path is not possible"));
+	    return ( tuiCmdReact(cmd, AF_ERR_MEM) ) ;
     }
   }
 
@@ -1099,7 +1104,7 @@ int func_path_create(char *cmd)
 
   femActivePath = num - 1 ;
 
-  fprintf(msgout,"[ ] %s: %i %s\n", _("New path created"),
+  fprintf(msgout,"[ ] %s: %i, %s\n", _("New path created"),
       num, femPath[num-1].desc);
 
 	return ( tuiCmdReact(cmd, rv) ) ;
@@ -1171,7 +1176,7 @@ int func_path_node_new(char *cmd)
   }
   num = ciGetParInt(cmd,1) ;
 
-  if ((num <1) || (num > fdbFindMaxInt(NODE, NODE_ID)))
+  if ((num <1) || (num > fdbInputFindMaxInt(NODE, NODE_ID)))
   {
 		fprintf(msgout,"[E] %s!\n", _("Invalid node"));
 	  return ( tuiCmdReact(cmd, AF_ERR_VAL) ) ;

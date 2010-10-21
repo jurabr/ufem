@@ -296,22 +296,15 @@ int femPathResPrn(FILE *fw, long path_num, long *res_type, long type_len)
         ) ;
   }
 
-  for (i=0; i< fdbInputTabLenAll(NODE); i++)
+  for (i=0; i< femPath[path_num].len; i++)
   {
-    if ( fdbInputTestSelect(NODE, i) != AF_YES) 
-	  { 
-      continue ; 
-    }
-    else
-    {
-        fdbPrnTableItemInt(fw, 0, fdbInputGetInt(NODE,NODE_ID, i) );
-				if (fdbInputCountInt(NODE, NODE_ID, femPath[path_num].node[i], &pos) < 1) { continue; }
+    fdbPrnTableItemInt(fw, 0, femPath[path_num].node[i]);
+		if (fdbInputCountInt(NODE, NODE_ID, femPath[path_num].node[i], &pos) < 1) { continue; }
 
-        for (j=0; j<type_len; j++)
-        {
-      		val = fdbAvResGetVal(res_type[j], pos);
-          fdbPrnTableItemDbl(fw,j+1, val);
-        }
+    for (j=0; j<type_len; j++)
+    {
+      val = fdbAvResGetVal(res_type[j], pos);
+      fdbPrnTableItemDbl(fw,j+1, val);
     }
   }
 
