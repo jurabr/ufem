@@ -348,6 +348,7 @@ extern int func_path_list(char *cmd);
 extern int func_path_print_res(char *cmd);
 extern int func_path_node_change(char *cmd);
 extern int func_path_set_active(char *cmd);
+extern int func_gfx_plot_path (char *cmd);
 
 
 /* random variables (monte): */
@@ -696,7 +697,7 @@ int fem_cmd_init (void)
 {
   long count = 0 ;
 
-  ciFuncLen = 268;
+  ciFuncLen = 269;
   ciFunction = (tFunc *) malloc (ciFuncLen * sizeof (tFunc));
   
   /* basic functions */
@@ -1814,6 +1815,10 @@ int fem_cmd_init (void)
 
   ciFunction[count].cmd = "actpath";
   ciFunction[count].func = func_path_set_active;
+  count++;
+
+  ciFunction[count].cmd = "plpath";
+  ciFunction[count].func = func_gfx_plot_path;
   count++;
 
   /* test: */

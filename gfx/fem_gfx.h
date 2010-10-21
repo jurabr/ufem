@@ -197,6 +197,7 @@ typedef struct
 
 	int eres;     /* plot element results   */
 	int nres;     /* plot nodal results     */
+	int path;     /* plot path     */
 	long  eresType; /* type of element result */
   double lrMult;  /* line result multiplier */
 }tPlotStuff ;
@@ -318,6 +319,9 @@ extern int femGfxDrawGrid(void);
 
 extern int femComputeViewPortProps( long ix, long iy, long *x0, long *y0, long *x, long *y) ;
 extern int femViewPortSet(long set);
+
+
+extern int femPlotPathItem(long res_type);
 
 #endif
 #endif

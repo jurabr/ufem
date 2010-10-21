@@ -4,12 +4,12 @@ See fem/ChangeLog for solver changes.
 
 
 
-### Thu Oct 21 14:58:21 CEST 2010
+### Thu Oct 21 21:05:28 CEST 2010
 
 features:
   + path nodes can be changed
   + command for selection of active path
-
+  + path plotting command (untested)
 
 bugfixes:
   - "path creation" coredump fixed

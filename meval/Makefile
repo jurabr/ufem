@@ -1,6 +1,12 @@
 all: libmeval.a m_test
 
 CC=gcc
+ifeq ($(SYS_TYPE),IRIX)
+CC=gcc
+else
+CC=/usr/nekoware/gcc-4.3/bin/gcc
+endif
+
 AR=ar -r
 RANLIB=-ranlib
 

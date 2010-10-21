@@ -13,6 +13,14 @@ CC=gcc
 #CC=xlc_r -q64
 #CC=/usr/nekoware/gcc-4.3/bin/gcc
 
+ifeq ($(SYS_TYPE),IRIX)
+CC=gcc
+else
+CC=/usr/nekoware/gcc-4.3/bin/gcc
+endif
+
+
+
 #DEBUG=-DDEVEL_VERBOSE
 DEBUG=-Wall -ansi -pedantic -g -DDEVEL_VERBOSE
 #DEBUG=-g -Wall -ansi -pedantic -DDEVEL_VERBOSE -O0

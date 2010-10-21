@@ -2000,6 +2000,55 @@ int func_gfx_plns (char *cmd)
 #endif
 }
 
+/** plots nodal solution (if possible): "plpath,what"
+ * @param cmd command
+ * @return status
+ */
+int func_gfx_plot_path (char *cmd)
+{
+#ifdef _USE_GFX_
+  char tmp[FEM_STR_LEN+1];
+  int i;
+  for (i=0; i<=FEM_STR_LEN; i++) {tmp[i] = '\0';}
+
+	if (ciParNum(cmd) <= 1)
+	{
+		fprintf(msgout, "[E] %s!\n", _("Result type should be specified"));
+		return ( tuiCmdReact(cmd, AF_ERR_EMP) ) ;
+	}
+	
+  if (femUI_Mode != FEM_UI_MODE_POST)
+  {
+    fprintf(msgout, "[E] %s!\n", _("Results not available") ) ;
+	  return ( tuiCmdReact(cmd, AF_ERR) ) ;
+  }
+  
+  plotStuff.eres = AF_NO ;
+  plotStuff.nres = AF_NO ;
+
+  plotStuff.path = AF_YES ;
+	plotStuff.eresType = ciGetParInt(cmd, 1) ;
+	plotStuff.elem = AF_NO ; 
+
+  strncpy (tmp, _("Result"),FEM_STR_LEN);
+  strncat (tmp, ": ",FEM_STR_LEN);
+  if (ciGetVarNameFromGrp( ciGetParStr(cmd,1), "result") == NULL)
+  {
+    fprintf(msgout, "[E] %s!\n", _("Unknown result type"));
+	  return ( tuiCmdReact(cmd, AF_ERR_VAL) ) ;
+  }
+  strncat (tmp, ciGetVarNameFromGrp( ciGetParStr(cmd,1), "result"), FEM_STR_LEN);
+  femSetPlotTitle( tmp );
+
+  if (plotStuff.autoreplot == AF_YES)
+     { return( func_gui_replot(cmd) ) ; }
+  else
+     { return ( tuiCmdReact(cmd, AF_OK) ) ; }
+#else
+	return ( tuiCmdReact(cmd, AF_OK) ) ;
+#endif
+}
+
 
 /** plots nothing: "noplot"
  * @param cmd command
@@ -2022,6 +2071,7 @@ int func_gfx_no_plot (char *cmd)
   plotStuff.react     = AF_NO ;
   plotStuff.eres      = AF_NO ;
   plotStuff.nres      = AF_NO ;
+  plotStuff.path      = AF_NO ;
 
   if (plotStuff.autoreplot == AF_YES)
      { return( func_gui_replot(cmd) ) ; }

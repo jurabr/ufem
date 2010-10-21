@@ -2,6 +2,14 @@
 
 CC=gcc
 #CC=xlc_r -q64
+
+ifeq ($(SYS_TYPE),IRIX)
+CC=gcc
+else
+CC=/usr/nekoware/gcc-4.3/bin/gcc
+endif
+
+
 INCLUDES=-I../fem
 DEBUG=-g -ansi -pedantic -Wall -O0
 DEBUG=-ansi -pedantic -Wall -O2 -DRUN_VERBOSE

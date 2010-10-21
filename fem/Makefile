@@ -35,6 +35,14 @@ CC=gcc #-pg
 #CC=cc -mips4 -n32 -Ofast=ip26 -r8000 -static
 #CC=/usr/nekoware/gcc-4.3/bin/gcc
 
+ifeq ($(SYS_TYPE),IRIX)
+CC=gcc
+else
+CC=/usr/nekoware/gcc-4.3/bin/gcc
+endif
+
+
+
 AR= ar r
 RANLIB=-ranlib
 LD=ld -shared

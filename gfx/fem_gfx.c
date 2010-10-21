@@ -642,6 +642,7 @@ void femDefaultPlotProp(void)
 	plotStuff.react     = AF_NO ;
 	plotStuff.eres      = AF_NO ;
 	plotStuff.nres      = AF_NO ;
+	plotStuff.path      = AF_NO ;
 	plotStuff.eresType  = 0     ;
 	plotStuff.lrMult    = 20    ;
 
@@ -1403,6 +1404,15 @@ int femPlotStuff(int length0, int width0, int Mode)
         fprintf(msgout, "[E] %s!\n", _("Plotting of results on elements failed"));
 		  }
     }
+
+		if ((rv=plotStuff.path == AF_YES))
+    {
+      if (femPlotPathItem(plotStuff.eresType) != AF_OK)
+      {
+        fprintf(msgout, "[E] %s!\n", _("Plotting of results on path failed"));
+		  }
+    }
+ 
 
   } /* end of post processor */
 
