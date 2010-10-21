@@ -346,6 +346,9 @@ extern int func_path_delete(char *cmd);
 extern int func_path_node_new(char *cmd);
 extern int func_path_list(char *cmd);
 extern int func_path_print_res(char *cmd);
+extern int func_path_node_change(char *cmd);
+extern int func_path_set_active(char *cmd);
+
 
 /* random variables (monte): */
 extern int func_fem_rv (char *cmd);
@@ -693,7 +696,7 @@ int fem_cmd_init (void)
 {
   long count = 0 ;
 
-  ciFuncLen = 266;
+  ciFuncLen = 268;
   ciFunction = (tFunc *) malloc (ciFuncLen * sizeof (tFunc));
   
   /* basic functions */
@@ -1803,6 +1806,14 @@ int fem_cmd_init (void)
 
   ciFunction[count].cmd = "prpath";
   ciFunction[count].func = func_path_print_res;
+  count++;
+
+  ciFunction[count].cmd = "pnchange";
+  ciFunction[count].func = func_path_node_change;
+  count++;
+
+  ciFunction[count].cmd = "actpath";
+  ciFunction[count].func = func_path_set_active;
   count++;
 
   /* test: */

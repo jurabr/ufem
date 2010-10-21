@@ -684,3 +684,9 @@ pathlist
 
 prpath
 "prpath,res1[,res2,res3,res4,res5,res6]"
+
+actpath
+actpath[,num]
+
+pnchange
+pnchange,node_old,node_new

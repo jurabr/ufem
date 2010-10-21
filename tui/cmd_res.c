@@ -1189,6 +1189,46 @@ int func_path_node_new(char *cmd)
 	return ( tuiCmdReact(cmd, AF_OK) ) ;
 }
 
+/** Changes nodes in path: "pnchange,node_old,node_new"
+ * @param cmd command
+ * @return status
+ */
+int func_path_node_change(char *cmd)
+{
+  int num  = -1 ;
+  int numn = -1 ;
+
+	FEM_TEST_POSTPROCESSOR
+
+  if (femActivePath < 0)
+  {
+		fprintf(msgout,"[E] %s!\n", _("Path must be defined first"));
+	  return ( tuiCmdReact(cmd, AF_ERR_VAL) ) ;
+  }
+
+  if (ciParNum(cmd) < 3)
+  {
+		fprintf(msgout,"[E] %s!\n", _("Node numbers have to be specified: pnch,node_old,node_new"));
+	  return ( tuiCmdReact(cmd, AF_ERR_VAL) ) ;
+  }
+
+  num = ciGetParInt(cmd,1) ;
+  if ((num <1) || (num > fdbInputFindMaxInt(NODE, NODE_ID)))
+  {
+		fprintf(msgout,"[E] %s: %i!\n", _("Invalid node"), num);
+	  return ( tuiCmdReact(cmd, AF_ERR_VAL) ) ;
+  }
+
+  numn = ciGetParInt(cmd,2) ;
+	if ((numn <1) || (numn > fdbInputFindMaxInt(NODE, NODE_ID)))
+  {
+		fprintf(msgout,"[E] %s: %i!\n", _("Invalid node"), numn);
+	  return ( tuiCmdReact(cmd, AF_ERR_VAL) ) ;
+  }
+
+  return(tuiCmdReact(cmd,resPathChangeNode(femActivePath, num, numn)));
+}
+
 /** List paths: "pathlist,from,to"
  * @param cmd command
  * @return status
@@ -1255,6 +1295,47 @@ int func_path_print_res(char *cmd)
   }
 
   return ( tuiCmdReact(cmd, femPathResPrn(fdbPrnFile, femActivePath, res_type, res_len )));
+}
+
+/** Set default path: "actpath[,num]"
+ * @param cmd command
+ * @return status
+ */
+int func_path_set_active(char *cmd)
+{
+  int num ;
+
+	FEM_TEST_POSTPROCESSOR
+
+	if (ciParNum(cmd) < 2)
+	{
+		fprintf(msgout, "[i] %s: %li, %s\n", _("Active path is"),
+				femActivePath+1, femPath[femActivePath].desc);
+	}
+	else
+	{
+		num = ciGetParInt(cmd, 1);
+		if ((num < 1)|| (num > PATH_NUM))
+    {
+		  fprintf(msgout,"[E] %s!\n", _("Invalid path number"));
+  		return ( tuiCmdReact(cmd, AF_ERR_VAL));
+    }
+		else
+		{
+			if (femPath[femActivePath].len < 0)
+			{
+		  	fprintf(msgout,"[E] %s!\n", _("Given path is empty"));
+  			return ( tuiCmdReact(cmd, AF_ERR_EMP));
+			}
+			else
+			{
+				femActivePath = num - 1 ;
+  			return ( tuiCmdReact(cmd, AF_OK));
+			}
+		}
+	}
+
+  return ( tuiCmdReact(cmd, AF_OK));
 }
 
 /* end of cmd_res.c */
