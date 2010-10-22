@@ -212,8 +212,8 @@ int femPlotPathItem(long res_type)
     }
 		  glVertex3f ( 0  , 0   , 0 ) ;
 		  glVertex3f ( 0+L, 0   , 0 ) ;
-		  glVertex3f ( 0+L, dVal2, 0 ) ;
-		  glVertex3f ( 0  , dVal1, 0 ) ;
+		  glVertex3f ( 0+L, dVal2*plotStuff.pzoom, 0 ) ;
+		  glVertex3f ( 0  , dVal1*plotStuff.pzoom, 0 ) ;
 	  glEnd();
 
 	  glLineWidth(1);

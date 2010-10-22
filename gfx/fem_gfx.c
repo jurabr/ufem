@@ -643,6 +643,7 @@ void femDefaultPlotProp(void)
 	plotStuff.eres      = AF_NO ;
 	plotStuff.nres      = AF_NO ;
 	plotStuff.path      = AF_NO ;
+	plotStuff.pzoom     = 1.0   ;
 	plotStuff.eresType  = 0     ;
 	plotStuff.lrMult    = 20    ;
 

@@ -692,4 +692,4 @@ pnchange
 pnchange,node_old,node_new
 
 plpath
-plpath,what
+plpath,what,zoom

@@ -2000,7 +2000,7 @@ int func_gfx_plns (char *cmd)
 #endif
 }
 
-/** plots nodal solution (if possible): "plpath,what"
+/** plots nodal solution (if possible): "plpath,what,zoom"
  * @param cmd command
  * @return status
  */
@@ -2009,6 +2009,8 @@ int func_gfx_plot_path (char *cmd)
 #ifdef _USE_GFX_
   char tmp[FEM_STR_LEN+1];
   int i;
+  double zoom ;
+
   for (i=0; i<=FEM_STR_LEN; i++) {tmp[i] = '\0';}
 
 	if (ciParNum(cmd) <= 1)
@@ -2039,7 +2041,13 @@ int func_gfx_plot_path (char *cmd)
   }
   strncat (tmp, ciGetVarNameFromGrp( ciGetParStr(cmd,1), "result"), FEM_STR_LEN);
   femSetPlotTitle( tmp );
-printf(">%s<\n", tmp);
+
+  if (ciParNum(cmd) > 2) 
+  {
+    zoom = ciGetParDbl(cmd,2);
+    if (zoom <= 0.0) { zoom = 1.0 ;}
+    plotStuff.pzoom = zoom ;
+  }
 
   if (plotStuff.autoreplot == AF_YES)
      { return( func_gui_replot(cmd) ) ; }

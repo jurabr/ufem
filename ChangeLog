@@ -4,7 +4,10 @@ See fem/ChangeLog for solver changes.
 
 
 
-### Fri Oct 22 13:41:23 CEST 2010
+### Fri Oct 22 19:39:13 CEST 2010
+
+features:
+  - zoom for plotted paths
 
 bugfixes:
   - Makefiles (invalid ifeq condition)

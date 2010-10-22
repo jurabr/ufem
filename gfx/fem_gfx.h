@@ -198,6 +198,7 @@ typedef struct
 	int eres;     /* plot element results   */
 	int nres;     /* plot nodal results     */
 	int path;     /* plot path     */
+	double pzoom; /* plot path zoom    */
 	long  eresType; /* type of element result */
   double lrMult;  /* line result multiplier */
 }tPlotStuff ;
