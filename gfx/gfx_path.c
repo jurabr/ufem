@@ -41,11 +41,16 @@ int femPlotPathItem(long res_type)
   float  L,Ly,Lz ;
   float  dVal1 = 0 ;
   float  dVal2 = 0 ;
+	long   set_id ;
 
 	glLineWidth(3);
 #ifdef USE_GL2PS
 	gl2psLineWidth(3);
 #endif
+
+	set_id = ResElem[ResActStep].set_id ;
+	if ((fdbAvResPrepareData(1, &set_id, &res_type)) != AF_OK)
+     { return(AF_ERR_VAL) ; }
 
   if (femActivePath > 0) {return(AF_ERR_VAL);}
 
@@ -178,20 +183,20 @@ int femPlotPathItem(long res_type)
 
 
   if (femPal.max != 0.0)
-  { dVal1 = (val/fabs(femPal.max))*(plotProp.Max/plotStuff.lrMult); }
+  { dVal1 = (val1/fabs(femPal.max))*(plotProp.Max/plotStuff.lrMult); }
   else
   {
     if (femPal.min != 0.0)
-    { dVal1 = (val/fabs(femPal.min))*(plotProp.Max/plotStuff.lrMult); }
+    { dVal1 = (val1/fabs(femPal.min))*(plotProp.Max/plotStuff.lrMult); }
     else { dVal1 = 0.0 ; }
   }
 
   if (femPal.max != 0.0)
-  { dVal2 = (val/fabs(femPal.max))*(plotProp.Max/plotStuff.lrMult); }
+  { dVal2 = (val2/fabs(femPal.max))*(plotProp.Max/plotStuff.lrMult); }
   else
   {
     if (femPal.min != 0.0)
-    { dVal2 = (val/fabs(femPal.min))*(plotProp.Max/plotStuff.lrMult); }
+    { dVal2 = (val2/fabs(femPal.min))*(plotProp.Max/plotStuff.lrMult); }
     else { dVal2 = 0.0 ; }
   }
 
@@ -207,8 +212,8 @@ int femPlotPathItem(long res_type)
     }
 		  glVertex3f ( 0  , 0   , 0 ) ;
 		  glVertex3f ( 0+L, 0   , 0 ) ;
-		  glVertex3f ( 0+L, dVal1, 0 ) ;
-		  glVertex3f ( 0  , dVal2, 0 ) ;
+		  glVertex3f ( 0+L, dVal2, 0 ) ;
+		  glVertex3f ( 0  , dVal1, 0 ) ;
 	  glEnd();
 
 	  glLineWidth(1);

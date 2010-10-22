@@ -81,7 +81,7 @@ int func_gui_replot (char *cmd)
 	/* should be changed later with something more flexible */
 	if (femUI_Mode == FEM_UI_MODE_POST)
 	{ 
-    if (plotStuff.eres != AF_YES)
+    if ((plotStuff.eres != AF_YES)&&(plotStuff.path != AF_YES))
     {
       femSetPlotTitle(_("Results")) ;
     }
@@ -2039,6 +2039,7 @@ int func_gfx_plot_path (char *cmd)
   }
   strncat (tmp, ciGetVarNameFromGrp( ciGetParStr(cmd,1), "result"), FEM_STR_LEN);
   femSetPlotTitle( tmp );
+printf(">%s<\n", tmp);
 
   if (plotStuff.autoreplot == AF_YES)
      { return( func_gui_replot(cmd) ) ; }
