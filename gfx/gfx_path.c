@@ -51,24 +51,22 @@ int femPlotPathItem(long res_type)
 
   for (j=1; j<femPath[femActivePath].len; j++)
   {
-    /* Compute values */
-    val1=fdbAvResGetVal(res_type,femPath[femActivePath].node[j-1]);
-    val2=fdbAvResGetVal(res_type,femPath[femActivePath].node[j]);
-    val = 0.5 * (val1 + val2) ;
-
-  	femGetResColor3f(val, &r, &g, &b);
-	  glColor4f(r,g,b,1.0);
-
-    /* coordinates: */
+    /* coordinates and values: */
     if (fdbInputCountInt(NODE,NODE_ID,femPath[femActivePath].node[j-1], &pos) < 1) { continue ; }
-		x[0] = gfxDefShapeCoord(pos, NODE_X) ;
-		y[0] = gfxDefShapeCoord(pos, NODE_Y) ;
-		z[0] = gfxDefShapeCoord(pos, NODE_Z) ;
+		x[0] = PoSX(fdbInputGetDbl(NODE, NODE_X, pos)) ;
+		y[0] = PoSY(fdbInputGetDbl(NODE, NODE_Y, pos)) ;
+		z[0] = PoSZ(fdbInputGetDbl(NODE, NODE_Z, pos)) ;
+    val1=fdbAvResGetVal(res_type,pos);
 
     if (fdbInputCountInt(NODE,NODE_ID,femPath[femActivePath].node[j], &pos) < 1) { continue ; }
-		x[1] = gfxDefShapeCoord(pos, NODE_X) ;
-		y[1] = gfxDefShapeCoord(pos, NODE_Y) ;
-		z[1] = gfxDefShapeCoord(pos, NODE_Z) ;
+		x[1] = PoSX(fdbInputGetDbl(NODE, NODE_X, pos)) ;
+		y[1] = PoSY(fdbInputGetDbl(NODE, NODE_Y, pos)) ;
+		z[1] = PoSZ(fdbInputGetDbl(NODE, NODE_Z, pos)) ;
+    val2=fdbAvResGetVal(res_type,pos);
+
+    val = 0.5 * (val1 + val2) ;
+  	femGetResColor3f(val, &r, &g, &b);
+	  glColor4f(r,g,b,1.0);
     
     /* lengths: */
     dx = x[1] - x[0] ;

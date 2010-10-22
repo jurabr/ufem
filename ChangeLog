@@ -4,6 +4,14 @@ See fem/ChangeLog for solver changes.
 
 
 
+### Fri Oct 22 13:41:23 CEST 2010
+
+bugfixes:
+  - Makefiles (invalid ifeq condition)
+  - invalid nodes (and therefore results) in path plotting 
+
+
+
 ### Thu Oct 21 21:05:28 CEST 2010
 
 features:

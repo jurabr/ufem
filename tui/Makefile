@@ -4,9 +4,9 @@
 CC=gcc
 #CC=xlc_r -q64
 ifeq ($(SYS_TYPE),IRIX)
-CC=gcc
-else
 CC=/usr/nekoware/gcc-4.3/bin/gcc
+else
+CC=gcc
 endif
 
 MAKE=make
