@@ -36,9 +36,9 @@ CC=gcc #-pg
 #CC=/usr/nekoware/gcc-4.3/bin/gcc
 
 ifeq ($(SYS_TYPE),IRIX)
-CC=gcc
-else
 CC=/usr/nekoware/gcc-4.3/bin/gcc
+else
+CC=gcc
 endif
 
 
