@@ -63,16 +63,17 @@
 #define GFX_SELE_SPACE    9 /* to select nothing - zoom etc. */
 #define GFX_SELE_GRID    10 /* to use selection grid */
 
-#define GFX_SELE_ACT_NONE  0
-#define GFX_SELE_ACT_EDIT  1
-#define GFX_SELE_CRT_NDISP 2
-#define GFX_SELE_CRT_NLOAD 3
-#define GFX_SELE_CRT_ELEM  4
-#define GFX_SELE_CRT_ENTS  5
-#define GFX_SELE_CRT_GR_N  6
-#define GFX_SELE_CRT_GR_K  7
-#define GFX_SELE_ACT_SELE  8
-#define GFX_SELE_PICK_BOX  9
+#define GFX_SELE_ACT_NONE   0
+#define GFX_SELE_ACT_EDIT   1
+#define GFX_SELE_CRT_NDISP  2
+#define GFX_SELE_CRT_NLOAD  3
+#define GFX_SELE_CRT_ELEM   4
+#define GFX_SELE_CRT_ENTS   5
+#define GFX_SELE_CRT_GR_N   6
+#define GFX_SELE_CRT_GR_K   7
+#define GFX_SELE_ACT_SELE   8
+#define GFX_SELE_PICK_BOX   9
+#define GFX_SELE_CRT_PATH  10
 
 #define GFX_PPM  0
 #define GFX_TIFF 1

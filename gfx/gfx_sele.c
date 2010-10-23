@@ -654,7 +654,11 @@ int femGfxCreateItemFunc(long pos)
       
       break;
 
-
+    case GFX_SELE_CRT_PATH: 
+      sprintf(tmp,"%li", fdbInputGetInt(NODE, NODE_ID, pos));
+      rv = (ciRunCmd( ciStrCat2CmdPers("pn", tmp))) ;
+      return(rv);
+      break ;
       
     default: return(AF_ERR_VAL); break;
   }
@@ -868,6 +872,8 @@ int femGfxPickStuff(double x, double y, double pick_x, double pick_y,  long mode
                   (plotProp.SelAct == GFX_SELE_CRT_ELEM)
                 ||
                   (plotProp.SelAct == GFX_SELE_CRT_ENTS)
+                ||
+                  (plotProp.SelAct == GFX_SELE_CRT_PATH)
                  )
               {
                 if (selectBuf[0] > 0)
@@ -1008,6 +1014,7 @@ int femGfxCanBox(void)
 		case GFX_SELE_CRT_ENTS:
 		case GFX_SELE_CRT_GR_N:
 		case GFX_SELE_CRT_GR_K:
+		case GFX_SELE_CRT_PATH:
 		/*case GFX_SELE_CRT_NLOAD:*/
 		/*case GFX_SELE_CRT_NDISP:*/
 			return(AF_NO);
