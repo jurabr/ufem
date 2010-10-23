@@ -4,6 +4,13 @@ See fem/ChangeLog for solver changes.
 
 
 
+### Sat Oct 23 16:51:27 CEST 2010
+
+features:
+  + path picking ("gcreate,pick"_
+
+
+
 ### Fri Oct 22 19:39:13 CEST 2010
 
 features:
