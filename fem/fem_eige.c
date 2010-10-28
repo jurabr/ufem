@@ -62,12 +62,28 @@ extern tVector Fra ;  /* load and arc lenght vector for full ALM */
 
 /* dynamics: */
 extern tMatrix M;         /* structure mass matrix    */
+
+/* eigensolver */
 extern tVector eig_omega; /* vector of eigenvalues    */
 extern tVector eig_x;     /* i-th iteration vector of eigenvalues    */
 extern tVector eig_xM;     /* i-th iteration vector of eigenvalues    */
 extern tMatrix eig_shap;  /* matrix of eigenvectors   */
 extern tMatrix eig_oMK;   /* (-omega*M+ K matrix)     */
 extern tVector *eig_y ;   /* FIELD of Gram-Schmidt data */
+
+/* newmark */
+extern tMatrix KK;         /* combined stiffness matrix combined stiffness matrix */
+extern tMatrix C;          /* damping matrix */
+extern tVector pp;         /* combined load vector */
+extern tVector dr;         /* displacement change   */
+extern tVector ra;         /* temporary vector    */
+extern tVector rb;         /* temporary vector    */
+extern tVector r0;         /* previous displacement */
+extern tVector rr0;        /* previous velocity     */
+extern tVector rrr0;       /* previous acceleration */
+extern tVector rr1;        /* current velocity     */
+extern tVector rrr1;       /* current acceleration */
+
 
 
 /** Computation of eigenvalues and eigenvectors for dynamics
@@ -556,7 +572,7 @@ memFree:
 /** Does one step of explicit solution 
  *
  * */
-int fem_dyn_explicit_step(
+int fem_dyn_implicit_step(
 		tMatrix *K,
 		tMatrix *M,
 		tMatrix *C,
@@ -570,7 +586,7 @@ int fem_dyn_explicit_step(
 	int rv = AF_OK;
 	tVector Rint, MD1, CD1, MD0, CD0, expV1, expV2 ;
 
-	/* TODO: move this to fem_sol_alooc() / fem_sol.c: */
+	/* TODO: move this to fem_sol_aloc() / fem_sol.c: */
 	femVecNull(&Rint);
 	femVecNull(&MD1);
 	femVecNull(&CD1);
@@ -625,19 +641,214 @@ memFree:
 	return(rv);
 }
 
-/** Simple explicit dynamics solver 
+int femLinEqSystemSolve(tMatrix *Ks, tVector *Fs, tVector *us)
+{
+  int rv = AF_OK ;
+  long steps ;
+  double precision ;
+
+  steps     = nDOFAct ;
+  precision = FEM_ZERO/10000.0 ;
+    
+#ifdef RUN_VERBOSE
+	fprintf(msgout,"[i]   %s:\n",_("solution of linear equations"));
+#endif
+  if (solUseBiCGs != AF_YES)
+  {
+		if (solUseCGSSOR != AF_YES)
+		{
+	  	rv = femEqsCGwJ(Ks, Fs, us, precision, steps);
+		}
+		else
+		{
+	  	rv = femEqsCGwSSOR(Ks, Fs, us, precision, steps);
+		}
+  }
+  else
+  {
+	  rv = femEqsBiCCSwJ(Ks, Fs, us, precision, steps);
+  }
+#ifdef RUN_VERBOSE
+  if (rv == AF_OK)
+  {
+	  fprintf(msgout,"[i]   %s.\n",_("solution of linear equations done"));
+  }
+  else
+  {
+	  fprintf(msgout,"[E]   %s!\n",_("solution of linear equations FAILED"));
+  }
+#endif
+
+
+  return(rv);
+}
+
+/** Simple implicit dynamics solver: see Bitnar, Rericha: "Metoda
+ * konecnych prvku v dynamice konstrukci", SNTL, Prague, 1981, p. 122
  *
+ * @param start_time time when solution starts
+ * @param endif time when solution ends
+ * @param steps number of steps
+ * @return statis
  */
-int femSolveDynExplicit(double start_time, double end_time, long steps)
+int femSolveDynNewmark(double start_time, double end_time, long steps)
 {
 	int rv = AF_OK ;
+  double a[11] ;
+  double dt = 0.0 ; /* time step */
+  double r_alpha = 0.1 ;
+  double r_beta  = 0.1 ;
+  long i ;
 
-	/** TODO:
-	 * - u(-1) = 0
-	 *   u(0): K*u(0)=F
-	 *   u1: ten dlouhy vzorec
-	 *
-	 */
+  /* Preparation: */
+  dt = (end_time - start_time) / (double)steps ;
+
+  /* Solution constants: */
+  a[0] = 4.0 / (dt*dt) ;
+  a[1] = 2.0 / dt ;
+  a[2] = 2.0 * a[1] ;
+  a[3] = 1.0 ;
+  a[4] = 1.0 ;
+  a[5] = 0.0 ;
+  a[6] = a[0] ;
+  a[7] = (-2.0)*a[1] ;
+  a[8] = (-1.0) ;
+  a[9] = 1.0/a[2] ;
+  a[10] = a[9] ;
+
+ 	if ((rv = femElemTypeInit()) != AF_OK) { goto memFree; }
+ 	if ((rv = femMatTypeInit()) != AF_OK) { goto memFree; }
+
+  fem_sol_null();
+  femResNull();
+
+#ifdef RUN_VERBOSE
+	fprintf(msgout,"[i]   %s:\n",_("data checking and allocations"));
+#endif
+ 	if ((rv = fem_dofs()) != AF_OK) { goto memFree; }
+ 	if ((rv = fem_sol_alloc()) != AF_OK) { goto memFree; }
+ 	if ((rv = fem_sol_res_alloc()) != AF_OK) { goto memFree; } /* __must__ be done before adding of loads! */
+
+ 	if ((rv = femMatAllocCloneStruct(&K, &M)) != AF_OK) { goto memFree; }
+ 	if ((rv = femMatAllocCloneStruct(&K, &C)) != AF_OK) { goto memFree; }
+ 	if ((rv = femMatAllocCloneStruct(&K, &KK)) != AF_OK) { goto memFree; }
+#ifdef RUN_VERBOSE
+	fprintf(msgout,"[i]   %s.\n",_("data checking and allocations done"));
+#endif
+
+#ifdef RUN_VERBOSE
+	fprintf(msgout,"[i]   %s:\n",_("assembling of stiffness matrix"));
+#endif
+ 	if ((rv = fem_fill_K(AF_NO)) != AF_OK) { goto memFree; }
+#ifdef RUN_VERBOSE
+	fprintf(msgout,"[i]   %s.\n",_("assembling of stiffness matrix done"));
+#endif
+
+#ifdef RUN_VERBOSE
+	fprintf(msgout,"[i]   %s:\n",_("assembling of mass matrix"));
+#endif
+ 	if ((rv = fem_fill_M()) != AF_OK) { goto memFree; }
+#ifdef RUN_VERBOSE
+	fprintf(msgout,"[i]   %s.\n",_("assembling of math matrix done"));
+#endif
+
+#ifdef RUN_VERBOSE
+	fprintf(msgout,"[i]   %s:\n",_("assembling of Rayleigh damping matrix"));
+#endif
+ 	/* if ((rv = fem_fill_M(AF_NO)) != AF_OK) { goto memFree; }*/
+  femMatLinComb(r_alpha, &M, r_beta, &K, &C);
+#ifdef RUN_VERBOSE
+	fprintf(msgout,"[i]   %s.\n",_("assembling of damping matrix done"));
+#endif
+
+#ifdef RUN_VERBOSE
+	fprintf(msgout,"[i]   %s:\n",_("loads and supports"));
+#endif
+ 	if ((rv = fem_add_loads()) != AF_OK) { goto memFree; }
+ 	if ((rv = fem_add_disps(AF_YES)) != AF_OK) { goto memFree; }
+#ifdef RUN_VERBOSE
+	fprintf(msgout,"[i]   %s.\n",_("loads and supports done"));
+#endif
+
+  /* TODO */
+
+  /* newmark preparations: */
+  if ( (M.type == MAT_SPAR) && (K.type == MAT_SPAR) && (C.type == MAT_SPAR) && (KK.type == MAT_SPAR) )
+  {
+    /* this assumes that structure of all matrices is identical: */
+    for (i=0; i<K.len; i++)
+    {
+      KK.data[i] = K.data[i] + a[0]*M.data[i] + a[1]*C.data[i] ;
+    }
+  }
+  else { rv = AF_ERR_TYP ; goto memFree ; }
+
+  /* TODO: fill F correctly for 0th step ! */
+  /* initial acceleration: */
+  femLinEqSystemSolve(&M, &F, &rrr0) ;
+
+  for (i=0; i<=steps; i++)
+  {
+    /* TODO: get current value of F! */
+    femVecAddVec(&pp, 1.0, &F);
+
+    /*TODO - get ra, rb: */
+    femVecAddVec(&pp, 1.0, &ra);
+    femVecAddVec(&pp, 1.0, &rb);
+
+    /* TODO: rest of procedure */
+  }
+
+  /* TODO */
+#if 0
+
+#ifdef RUN_VERBOSE
+	fprintf(msgout,"[i]   %s:\n",_("element results"));
+#endif
+ 	if ((rv = fem_fill_K(AF_YES)) != AF_OK) { goto memFree; }
+#ifdef RUN_VERBOSE
+	fprintf(msgout,"[i]   %s.\n",_("element results done"));
+#endif
+
+  if (femReadPrevStep == AF_YES) { femVecAddVec(&u, 1.0, &u_tot); }
+	if ((rv = femWriteRes(fem_output_file())) != AF_OK) { goto memFree; }
+
+#ifndef _SMALL_FEM_CODE_
+	if (fem_spec_out_file != NULL)
+	{
+#ifdef RUN_VERBOSE
+		fprintf(msgout,"[i]  %s:\n", _("Saving results in custom format"));
+#endif
+		switch (fem_spec_out_type)
+		{
+  		case 1: 
+				if ( femWriteNodeResVTK(fem_spec_out_file)  == AF_OK)
+					{ fprintf(msgout,"[i]    %s.\n", _("succesfully saved as VTK (legacy)")); }
+				else
+					{ fprintf(msgout,"[i]    %s!\n", _("writing of data failed")); }
+				break ;
+			case 0:
+			default:
+				if ( femWriteNodeResTxt(fem_spec_out_file) == AF_OK)
+					{ fprintf(msgout,"[i]    %s.\n", _("succesfully saved as ANSI text")); }
+				else
+					{ fprintf(msgout,"[i]    %s!\n", _("writing of data failed")); }
+				break ;
+
+		}
+	}
+#endif
+#endif /* if 0 */
+
+memFree:
+	fem_sol_free();
+	femDataFree();
+	femResFree();
+
+#ifdef RUN_VERBOSE
+	if (rv == AF_OK) { fprintf(msgout,"[I] %s.\n",_("Solution done")); }
+	else { fprintf(msgout,"[E] %s!\n",_("Solution failed")); }
+#endif
 
 	return(rv);
 }

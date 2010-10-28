@@ -2564,4 +2564,40 @@ int femMatCloneDiffToEmpty(tMatrix *orig, tMatrix *clone)
 	return(AF_OK);
 }
 
+/* Allocates empty sparse matrix with the same innternal structures as the original
+ * @param orig original (filled) matrix - must not be empty
+ * @param clone (empty) clone matrix
+ * */
+int femMatAllocCloneStruct(tMatrix *orig, tMatrix *clone)
+{
+  long i ;
+  if (orig->type != MAT_SPAR) {return(AF_ERR_TYP);}
+
+  if ((clone->frompos = femIntAlloc(orig->rows)) == NULL) {goto memFree;}
+  if ((clone->defpos  = femIntAlloc(orig->rows)) == NULL) {goto memFree;}
+  if ((clone->pos     = femIntAlloc(orig->len )) == NULL) {goto memFree;}
+  if ((clone->data    = femDblAlloc(orig->len )) == NULL) {goto memFree;}
+
+  clone->type = orig->type ;
+  clone->rows = orig->rows ;
+  clone->cols = orig->cols ;
+  clone->len  = orig->len  ;
+
+  for (i=0; i< orig->rows; i++)
+  {
+    clone->frompos[i] = orig->frompos[i] ;
+    clone->defpos[i]  = orig->defpos[i]  ;
+  }
+
+  for (i=0; i< orig->len; i++)
+  {
+    clone->pos[i] = orig->pos[i] ;
+  }
+
+  return(AF_OK);
+memFree:
+  femMatFree(clone);
+  return(AF_ERR_MEM);
+}
+
 /* end of fem_math.c */

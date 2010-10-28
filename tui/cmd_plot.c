@@ -159,7 +159,7 @@ int func_gui_vp(char *cmd)
 }
 
 
-/* Returnes "Yes,No" for AF_YES or "No.Yes" for other values 
+/* Returnes "Yes,No" for AF_YES or "No,Yes" for other values 
  * @param val value
  * @return string "Yes,No" or "No,Yes"
  * */

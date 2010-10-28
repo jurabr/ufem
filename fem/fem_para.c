@@ -85,9 +85,10 @@ long  femMCfileStat       = AF_OK ; /* random data file status */
 
 long  femBreakSolu        = AF_NO ; /* break linear solution after matrices were written - for MC etc. */
 
-long  femDynamics         = AF_NO ;
-long  femEigenModal       = AF_NO ;
-long  femEigenNum         = 0 ;
+long  femDynamics         = AF_NO ; /* indcates non-static solution */
+long  femEigenModal       = AF_NO ; /* modal solution */
+long  femEigenNum         = 0 ;     /* number of computed mode shapess */
+long  femNewmarkEL        = 0 ;     /* newmark integration solver */
 
 FILE *fem_sol_norm_file   = NULL ;
 
@@ -154,6 +155,9 @@ void fem_help(int argc, char *argv[])
 	fprintf(msgout,"   -nlnbrk   ... %s\n", _("do not break non-linear solution on unconverged steps"));
 #ifndef USE_MPI
 	fprintf(msgout,"   -mod N    ... %s\n", _("do modal analysis for first N eigenvalues"));
+#if 0
+	fprintf(msgout,"   -nwm      ... %s\n", _("do dynamic analysis by Newmark integration"));
+#endif
 
 	fprintf(msgout,"   -teste N  ... %s\n", _("run test solution only for element N"));
 	fprintf(msgout,"   -testi M  ... %s\n", _("run \"-teste N\" for integration point M"));
@@ -772,6 +776,7 @@ int fem_parse_params(int argc, char *argv[])
         {
           femEigenNum = 0 ;
           femEigenModal = AF_NO ;
+          femNewmarkEL  = AF_NO ;
           femDynamics   = AF_NO ;
 					return(AF_ERR_SIZ);
         }
@@ -780,8 +785,18 @@ int fem_parse_params(int argc, char *argv[])
           solNoLinS     = 1 ; /* we need data for linear solution */
           femEigenModal = AF_YES ;
           femDynamics   = AF_YES ;
+          femNewmarkEL  = AF_NO ;
         }
 			}
+		}
+
+    if (strcmp(argv[i],"-nwm") == 0) /* DYNAMICS: Newmark implicit integration */
+		{
+      solNoLinS     = 1 ; /* we need data for linear solution */
+      femEigenModal = AF_NO ;
+      femEigenNum   = 0 ;
+      femDynamics   = AF_YES ;
+      femNewmarkEL  = AF_YES ;
 		}
     
     if (strcmp(argv[i],"-teste") == 0) /* TESTING: element number */

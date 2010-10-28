@@ -1,4 +1,11 @@
-#### Sun Oct 17 16:46:18 CEST 2010
+### Thu Oct 28 21:03:24 CEST 2010
+
+features:
+  + part of Newmark procedure added (incomplete, noworking)
+  + clonning of sparse matrix structures in fem_math
+
+
+### Sun Oct 17 16:46:18 CEST 2010
 
 features:
   + added to GitHub repository

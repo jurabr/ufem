@@ -216,9 +216,9 @@ int femPlotPathItem(long res_type)
 		  glVertex3f ( 0  , dVal1*plotStuff.pzoom, 0 ) ;
 	  glEnd();
 
-	  glLineWidth(1);
+	  glLineWidth(3);
 #ifdef USE_GL2PS
-	  gl2psLineWidth(1);
+	  gl2psLineWidth(3);
 #endif
 
     /* wireframe */
@@ -232,7 +232,11 @@ int femPlotPathItem(long res_type)
 		  glVertex3f ( x[1], y[1], z[1] ) ;
 	  glEnd();
   }
-    /* ALL CODE WILL BE HERE */
+
+	  glLineWidth(3);
+#ifdef USE_GL2PS
+	  gl2psLineWidth(3);
+#endif
   }
   
   return(rv);

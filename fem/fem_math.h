@@ -164,6 +164,7 @@ extern int femLUinverse(tMatrix *a);
 extern int femVecCloneDiff(tVector *orig, tVector *clone);
 extern int femMatCloneDiffToEmpty(tMatrix *orig, tMatrix *clone);
 extern int femMatCloneDiffToSame(tMatrix *orig, tMatrix *clone);
+extern int femMatAllocCloneStruct(tMatrix *orig, tMatrix *clone);
 
 #endif
 

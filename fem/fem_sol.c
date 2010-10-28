@@ -70,14 +70,29 @@ tVector uLa ;  /* displacement and lambda vectro for full ALM */
 tVector Fra ;  /* load and arc lenght vector for full ALM */
 
 
-/* dynamics: */
+/* dynamics - general : */
 tMatrix M;         /* structure mass matrix    */
+
+/* dynamics - eigenproblems : */
 tVector eig_omega; /* vector of eigenvalues    */
 tVector eig_x;     /* i-th iteration vector of eigenvalues    */
 tVector eig_xM;     /* i-th iteration vector of eigenvalues    */
 tMatrix eig_shap;  /* matrix of eigenvectors   */
 tMatrix eig_oMK;   /* (-omega*M+ K matrix)     */
 tVector *eig_y ;   /* FIELD of Gram-Schmidt data */
+
+/* dynamics - newmark: */
+tMatrix C;          /* damping matrix */
+tMatrix KK;         /* combined stiffness matrix combined stiffness matrix */
+tVector pp;         /* combined load vector */
+tVector dr;         /* displacement change   */
+tVector ra;         /* temporary vector    */
+tVector rb;         /* temporary vector    */
+tVector r0;         /* previous displacement */
+tVector rr0;        /* previous velocity     */
+tVector rrr0;       /* previous acceleration */
+tVector rr1;        /* current velocity     */
+tVector rrr1;       /* current acceleration */
 
 #ifdef _USE_THREADS_
 pthread_mutex_t *mutexK   = NULL ; /* mutexes for K  */
@@ -164,6 +179,25 @@ void fem_sol_null(void)
 
 	    eig_y = NULL ;
     }
+    else
+    {
+      if (femNewmarkEL == AF_YES)
+      {
+	      femMatNull(&KK);
+	      femMatNull(&C);
+
+	      femVecNull(&pp);
+	      femVecNull(&dr);
+	      femVecNull(&ra);
+	      femVecNull(&rb);
+	      femVecNull(&r0);
+	      femVecNull(&rr0);
+	      femVecNull(&rr0);
+	      femVecNull(&rrr0);
+	      femVecNull(&rr1);
+	      femVecNull(&rrr1);
+      }
+    }
   }
 
 	switch(solNoLinS)
@@ -243,6 +277,25 @@ void fem_sol_free(void)
         free(eig_y);
       }
     }
+    else
+    {
+      if (femNewmarkEL == AF_YES)
+      {
+	      femMatFree(&KK);
+	      femMatFree(&C);
+
+	      femVecFree(&pp);
+	      femVecFree(&dr);
+	      femVecFree(&ra);
+	      femVecFree(&rb);
+	      femVecFree(&r0);
+	      femVecFree(&rr0);
+	      femVecFree(&rr0);
+	      femVecFree(&rrr0);
+	      femVecFree(&rr1);
+	      femVecFree(&rrr1);
+      }
+    }
   }
 
 	switch(solNoLinS)
@@ -317,11 +370,11 @@ int fem_sol_alloc(void)
 
   if (femDynamics == AF_YES)
   {
-	  if ((rv = femSparMatInitDesc(&M, nDOFAct, nDOFAct, K_rows)) != AF_OK)
-	     { goto memFree; }
-
     if (femEigenModal == AF_YES)
     {
+	    if ((rv = femSparMatInitDesc(&M, nDOFAct, nDOFAct, K_rows)) != AF_OK)
+	       { goto memFree; }
+
 	    if ((rv=femSparMatInitDesc(&eig_oMK,nDOFAct,nDOFAct, K_rows)) != AF_OK)
          { goto memFree; }
 
@@ -342,6 +395,29 @@ int fem_sol_alloc(void)
         {
 	        if ((rv = femVecFullInit(&eig_y[i], nDOFAct)) != AF_OK) { goto memFree; }
         }
+      }
+    }
+    else
+    {
+      if (femNewmarkEL == AF_YES)
+      {
+#if 0
+	      if ((rv = femSparMatInitDesc(&KK, nDOFAct, nDOFAct, K_rows)) != AF_OK)
+	         { goto memFree; }
+	      if ((rv = femSparMatInitDesc(&C, nDOFAct, nDOFAct, K_rows)) != AF_OK)
+	         { goto memFree; }
+#endif
+
+	      if ((rv = femVecFullInit(&pp, nDOFAct)) != AF_OK) { goto memFree; }
+	      if ((rv = femVecFullInit(&dr, nDOFAct)) != AF_OK) { goto memFree; }
+	      if ((rv = femVecFullInit(&ra, nDOFAct)) != AF_OK) { goto memFree; }
+	      if ((rv = femVecFullInit(&rb, nDOFAct)) != AF_OK) { goto memFree; }
+	      if ((rv = femVecFullInit(&r0, nDOFAct)) != AF_OK) { goto memFree; }
+	      if ((rv = femVecFullInit(&rr0, nDOFAct)) != AF_OK) { goto memFree; }
+	      if ((rv = femVecFullInit(&rrr0, nDOFAct)) != AF_OK) { goto memFree; }
+
+	      if ((rv = femVecFullInit(&rr1, nDOFAct)) != AF_OK) { goto memFree; }
+	      if ((rv = femVecFullInit(&rrr1, nDOFAct)) != AF_OK) { goto memFree; }
       }
     }
   }
