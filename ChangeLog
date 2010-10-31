@@ -4,6 +4,13 @@ See fem/ChangeLog for solver changes.
 
 
 
+### Sun Oct 31 19:26:38 CET 2010
+
+bugfixes:
+  - plotting of pathes > 1 was refused
+
+
+
 ### Sun Oct 31 12:40:11 CET 2010
 
 bugfixes:

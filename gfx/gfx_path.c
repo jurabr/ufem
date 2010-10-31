@@ -52,7 +52,7 @@ int femPlotPathItem(long res_type)
 	if ((fdbAvResPrepareData(1, &set_id, &res_type)) != AF_OK)
      { return(AF_ERR_VAL) ; }
 
-  if (femActivePath > 0) {return(AF_ERR_VAL);}
+  if (femActivePath < 0) {return(AF_ERR_VAL);}
 
   for (j=1; j<femPath[femActivePath].len; j++)
   {
