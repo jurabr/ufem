@@ -4,6 +4,13 @@ See fem/ChangeLog for solver changes.
 
 
 
+### Sun Oct 31 12:40:11 CET 2010
+
+bugfixes:
+  - invalid line width after path plotting
+
+
+
 ### Sat Oct 23 16:51:27 CEST 2010
 
 features:

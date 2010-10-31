@@ -233,9 +233,9 @@ int femPlotPathItem(long res_type)
 	  glEnd();
   }
 
-	  glLineWidth(3);
+	  glLineWidth(1);
 #ifdef USE_GL2PS
-	  gl2psLineWidth(3);
+	  gl2psLineWidth(1);
 #endif
   }
   

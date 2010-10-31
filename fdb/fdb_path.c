@@ -316,6 +316,5 @@ int femPathResPrn(FILE *fw, long path_num, long *res_type, long type_len)
 
   return(rv);
 }
-/* TODO list/plot into path: */
 
 /* end of fdb_path.c */

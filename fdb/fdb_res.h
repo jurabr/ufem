@@ -32,7 +32,7 @@
 #include "fem_elem.h"
 
 #define  PATH_NUM  10   /* max. number of paths                */
-#define  PATH_LEN  120  /* max. lenght of path (num. of nodes) */
+#define  PATH_LEN  256  /* max. lenght of path (num. of nodes) */
 
 typedef struct
 {
