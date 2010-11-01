@@ -966,7 +966,7 @@ void femVecSetZero(tVector *a)
 
 /** Clones vectors: src to dest both must be VEC_FULL, same size and allocated 
  * @param src original vector
- * @param dest moditied vector
+ * @param dest modified vector
  */
 int femVecClone(tVector *src, tVector *dest)
 {

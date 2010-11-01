@@ -165,6 +165,85 @@ memFree:
   return(rv);
 }
 
+/** reads dynamics (acceleration) data from file - do NOT use it directly
+ * @param fname file name
+ * @return state value
+ */
+int femReadInputDynLoads(FILE *fr)
+{
+	int   rv = AF_OK ;
+	long  i ;
+
+	rv = fscanf(fr,"%li", &dynNum); ; rv = AF_OK ;
+	if (dynNum <= 0) 
+	{ 
+		if (femNewmarkEL != AF_NO)
+		{
+#ifdef RUN_VERBOSE
+			fprintf(msgout,"[E] %s!\n", _("Empty dynamics data"));
+#endif
+			dynNum = 0 ;
+			dynStp = 0.0 ;
+			return(AF_ERR_EMP);
+		}
+		else { return(AF_OK) ; }
+	} 
+
+	if (fscanf(fr,"%lf", &dynStp) < 1) 
+	{
+		dynNum = 0 ;
+		return(AF_ERR_IO);
+	}
+	if (dynStp < 0.0) 
+	{
+#ifdef RUN_VERBOSE
+			fprintf(msgout,"[E] %s: %f!\n", _("Dynamics time step too small"),dynStp);
+#endif
+		dynNum = 0 ;
+		dynStp = 0.0 ;
+		return(AF_ERR_VAL);
+	}
+
+	if (fscanf(fr,"%lf %lf", &dynAlpha, &dynBeta) < 2)
+	{
+#ifdef RUN_VERBOSE
+		fprintf(msgout,"[E] %s!\n", _("Can not read damping data"));
+#endif
+		dynNum = 0; dynStp = 0.0 ;
+		return( AF_ERR_IO) ; 
+	}
+	if ((dynAlpha < 0.0) || (dynBeta < 0.0))
+	{
+#ifdef RUN_VERBOSE
+		fprintf(msgout,"[E] %s: alpha=%f, beta=%f!\n",
+				_("Invalid damping data"),dynAlpha, dynBeta);
+#endif
+		dynNum = 0; dynStp = 0.0 ;
+		return( AF_ERR_IO) ; 
+	}
+
+	if ((dynAccX = femDblAlloc(dynNum)) == NULL) {rv = AF_ERR_MEM; goto memFree;}
+	if ((dynAccY = femDblAlloc(dynNum)) == NULL) {rv = AF_ERR_MEM; goto memFree;}
+	if ((dynAccZ = femDblAlloc(dynNum)) == NULL) {rv = AF_ERR_MEM; goto memFree;}
+
+	for (i=0; i<dynNum; i++) /* acceleration data */
+	{
+		rv = fscanf(fr, "%lf %lf %lf", &dynAccX[i], &dynAccY[i], &dynAccZ[i]);
+		if (rv < 3) {rv = AF_ERR_IO ; goto memFree ;}
+	}
+
+	grVal = 0.0 ; /* should be zero for dynamics! */
+
+	return(AF_OK);
+memFree:
+	if (dynAccX != NULL) {femDblFree(dynAccX);}
+	if (dynAccY != NULL) {femDblFree(dynAccY);}
+	if (dynAccZ != NULL) {femDblFree(dynAccZ);}
+	dynStp = 0.0 ;
+	dynNum = 0 ;
+  return(rv);
+}
+
 
 /** reads input data from file - THE MAIN READING FUNCTION
  * @param fname file name
@@ -405,6 +484,9 @@ int femReadInput(char *fname)
 
   /* all load data: */
   if ((rv = femReadInputLoads(fr)) != AF_OK) {goto memFree;}
+
+	/* dynamics (if applicable) */
+	if ((rv = femReadInputDynLoads(fr)) != AF_OK) {goto memFree;}
 
   /* Monte-related data (if any )*/
   if ((rv = fem_monte_read_data(fr)) != AF_OK) {goto memFree;}

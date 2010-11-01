@@ -1,0 +1,18 @@
+Newmark implicit integration of dynamics problems:
+==================================================
+
+The "dynamics" subsystem in the uFEM is primarily aimed at seismic
+analysis (natural and technical seismicity effects). Thus it is 
+not general (yet) and it is limited in many aspects.
+
+Main limitations:
+- constant time step is required
+- only acceleration load is possible
+
+- loads: only gravitation acceleration at the moment 
+  (suitable for seismic loads)
+	+ data:
+	  number of time points
+		time step
+		list of accelerations (X Y Z in each time )
+- later: time-history for arbitrary load type

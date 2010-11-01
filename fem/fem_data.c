@@ -117,8 +117,18 @@ double   *elValL = NULL ;   /* values of load             */
 
 
 /* GRAVITATION */
-long   grDir = 0 ; /* direction (none=0, x=1, y=3, z=3)      */
-double grVal = 0 ; /* acceleration value (9.81, for example) */
+long    grDir  = 0 ;    /* direction (none=0, x=1, y=3, z=3)      */
+double  grVal  = 0 ;    /* acceleration value (9.81, for example) */
+
+
+/* DYNAMICS */
+long    dynNum  = 0 ;    /* number of time steps                   */
+double  dynStp  = 0.0 ;  /* time step size                         */
+double  dynAlpha= 0.0 ;  /* Rayleigh damping coefficient alpha     */
+double  dynBeta = 0.0 ;  /* Rayleigh damping coefficient beta      */
+double *dynAccX = NULL ; /* acceleration loads for each time step  */
+double *dynAccY = NULL ; /* acceleration loads for each time step  */
+double *dynAccZ = NULL ; /* acceleration loads for each time step  */
 
 
 /* RESULTS  - reaction */

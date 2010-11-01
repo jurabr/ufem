@@ -126,6 +126,16 @@ extern long   grDir  ; /* direction (none=0, x=1, y=3, z=3)      */
 extern double grVal  ; /* acceleration value (9.81, for example) */
 
 
+/* DYNAMICS */
+extern long    dynNum  ; /* number of time steps                   */
+extern double  dynStp  ; /* time step size                         */
+extern double  dynAlpha; /* Rayleigh damping coefficient alpha     */
+extern double  dynBeta ; /* Rayleigh damping coefficient beta      */
+extern double *dynAccX ; /* acceleration loads for each time step  */
+extern double *dynAccY ; /* acceleration loads for each time step  */
+extern double *dynAccZ ; /* acceleration loads for each time step  */
+
+
 /* RESULTS  - reaction */
 extern long     *resRnode ; /* node with reaction(s)     */
 extern long     *resRdof  ;   /* x force                   */

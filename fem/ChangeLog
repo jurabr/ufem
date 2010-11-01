@@ -1,3 +1,12 @@
+### Mon Nov  1 19:16:54 CET 2010
+
+features:
+
+  + input code for transient dynamics (Newmark, untested)
+  + more Newmark code (still incomplete)
+  + new file fem_newm.c to separate Newmark routines
+
+
 ### Thu Oct 28 21:03:24 CEST 2010
 
 features:
