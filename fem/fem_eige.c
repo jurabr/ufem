@@ -3,7 +3,7 @@
    Date:      2007/10/22 15:47
    Author:    Jiri Brozovsky
 
-   Copyright (C) 2007, 2010 Jiri Brozovsky
+   Copyright (C) 2007 Jiri Brozovsky
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as

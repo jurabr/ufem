@@ -63,6 +63,12 @@ extern tVector rr1;        /* current velocity     */
 extern tVector rrr1;       /* current acceleration */
 
 
+/** Wrapper for linear system solvers
+ * @param Ks stiffness matrix
+ * @param Fs load vector
+ * @param us displacement vector (result)
+ * @return status
+ */ 
 int femLinEqSystemSolve(tMatrix *Ks, tVector *Fs, tVector *us)
 {
   int rv = AF_OK ;
@@ -72,41 +78,28 @@ int femLinEqSystemSolve(tMatrix *Ks, tVector *Fs, tVector *us)
   steps     = nDOFAct ;
   precision = FEM_ZERO/10000.0 ;
     
-#ifdef RUN_VERBOSE
+#ifdef DEVEL_VERBOSE
 	fprintf(msgout,"[i]   %s:\n",_("solution of linear equations"));
 #endif
   if (solUseBiCGs != AF_YES)
   {
-		if (solUseCGSSOR != AF_YES)
-		{
-	  	rv = femEqsCGwJ(Ks, Fs, us, precision, steps);
-		}
-		else
-		{
-	  	rv = femEqsCGwSSOR(Ks, Fs, us, precision, steps);
-		}
+		if (solUseCGSSOR != AF_YES) { rv = femEqsCGwJ(Ks, Fs, us, precision, steps); }
+		else { rv = femEqsCGwSSOR(Ks, Fs, us, precision, steps); }
   }
-  else
-  {
-	  rv = femEqsBiCCSwJ(Ks, Fs, us, precision, steps);
-  }
-#ifdef RUN_VERBOSE
+  else { rv = femEqsBiCCSwJ(Ks, Fs, us, precision, steps); }
+#ifdef DEVEL_VERBOSE
   if (rv == AF_OK)
-  {
-	  fprintf(msgout,"[i]   %s.\n",_("solution of linear equations done"));
-  }
+    { fprintf(msgout,"[i]   %s.\n",_("solution of linear equations done")); }
   else
-  {
-	  fprintf(msgout,"[E]   %s!\n",_("solution of linear equations FAILED"));
-  }
+    { fprintf(msgout,"[E]   %s!\n",_("solution of linear equations FAILED")); }
 #endif
-
 
   return(rv);
 }
 
 /** Simple implicit dynamics solver: see Bitnar, Rericha: "Metoda
  * konecnych prvku v dynamice konstrukci", SNTL, Prague, 1981, p. 122
+ * Newmark time integration procedure is used
  *
  * @param start_time time when solution starts
  * @param endif time when solution ends
@@ -213,8 +206,6 @@ int femSolveDynNewmark(void)
 #ifdef RUN_VERBOSE
 	fprintf(msgout,"[i]   %s.\n",_("loads and supports done"));
 #endif
-
-  /* TODO */
 
   /* newmark preparations (initial KK matrix): */
   if ( (M.type == MAT_SPAR) && (K.type == MAT_SPAR) && (C.type == MAT_SPAR) && (KK.type == MAT_SPAR) )
