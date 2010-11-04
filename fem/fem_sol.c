@@ -74,25 +74,26 @@ tVector Fra ;  /* load and arc lenght vector for full ALM */
 tMatrix M;         /* structure mass matrix    */
 
 /* dynamics - eigenproblems : */
-tVector eig_omega; /* vector of eigenvalues    */
-tVector eig_x;     /* i-th iteration vector of eigenvalues    */
-tVector eig_xM;     /* i-th iteration vector of eigenvalues    */
-tMatrix eig_shap;  /* matrix of eigenvectors   */
-tMatrix eig_oMK;   /* (-omega*M+ K matrix)     */
-tVector *eig_y ;   /* FIELD of Gram-Schmidt data */
+tVector eig_omega; /* vector of eigenvalues                */
+tVector eig_x;     /* i-th iteration vector of eigenvalues */
+tVector eig_xM;    /* i-th iteration vector of eigenvalues */
+tMatrix eig_shap;  /* matrix of eigenvectors               */
+tMatrix eig_oMK;   /* (-omega*M+ K matrix)                 */
+tVector *eig_y ;   /* FIELD of Gram-Schmidt data           */
 
 /* dynamics - newmark: */
 tMatrix C;          /* damping matrix */
 tMatrix KK;         /* combined stiffness matrix combined stiffness matrix */
-tVector pp;         /* combined load vector */
-tVector dr;         /* displacement change   */
-tVector ra;         /* temporary vector    */
-tVector rb;         /* temporary vector    */
-tVector r0;         /* previous displacement */
-tVector rr0;        /* previous velocity     */
-tVector rrr0;       /* previous acceleration */
-tVector rr1;        /* current velocity     */
-tVector rrr1;       /* current acceleration */
+tVector pp;         /* combined load vector               */
+tVector dr;         /* displacement change                */
+tVector ra;         /* temporary vector                   */
+tVector rb;         /* temporary vector                   */
+tVector r0;         /* previous displacement              */
+tVector rr0;        /* previous velocity                  */
+tVector rrr0;       /* previous acceleration              */
+tVector rr1;        /* current velocity                   */
+tVector rrr1;       /* current acceleration               */
+tVector F_0 ;       /* initial load vector                */
 
 #ifdef _USE_THREADS_
 pthread_mutex_t *mutexK   = NULL ; /* mutexes for K  */
@@ -196,6 +197,7 @@ void fem_sol_null(void)
 	      femVecNull(&rrr0);
 	      femVecNull(&rr1);
 	      femVecNull(&rrr1);
+	      femVecNull(&F_0);
       }
     }
   }
@@ -294,6 +296,7 @@ void fem_sol_free(void)
 	      femVecFree(&rrr0);
 	      femVecFree(&rr1);
 	      femVecFree(&rrr1);
+	      femVecFree(&F_0);
       }
     }
   }
@@ -418,6 +421,7 @@ int fem_sol_alloc(void)
 
 	      if ((rv = femVecFullInit(&rr1, nDOFAct)) != AF_OK) { goto memFree; }
 	      if ((rv = femVecFullInit(&rrr1, nDOFAct)) != AF_OK) { goto memFree; }
+	      if ((rv = femVecFullInit(&F_0, nDOFAct)) != AF_OK) { goto memFree; }
       }
     }
   }

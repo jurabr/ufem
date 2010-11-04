@@ -489,7 +489,7 @@ int femAddGravLoad(long Dir, double Val)
 #ifdef DEVEL_VERBOSE
 					if (rv != AF_OK)
 					{
-					  fprintf(msgout,"[E] %s: %li!\n",_("Problem with gravity matrix on elemnt"), eID[i]);
+					  fprintf(msgout,"[E] %s: %li!\n",_("Problem with gravity matrix on element"), eID[i]);
 					}
 #endif
 				}
@@ -557,6 +557,5 @@ int femAddElemLoad(void)
 	
 	return(rv);
 }
-
 
 /* end of fem_loads.c */

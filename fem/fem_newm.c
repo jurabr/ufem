@@ -51,16 +51,17 @@ extern tMatrix M;         /* structure mass matrix    */
 
 /* newmark */
 extern tMatrix KK;         /* combined stiffness matrix combined stiffness matrix */
-extern tMatrix C;          /* damping matrix */
-extern tVector pp;         /* combined load vector */
+extern tMatrix C;          /* damping matrix        */
+extern tVector pp;         /* combined load vector  */
 extern tVector dr;         /* displacement change   */
-extern tVector ra;         /* temporary vector    */
-extern tVector rb;         /* temporary vector    */
+extern tVector ra;         /* temporary vector      */
+extern tVector rb;         /* temporary vector      */
 extern tVector r0;         /* previous displacement */
 extern tVector rr0;        /* previous velocity     */
 extern tVector rrr0;       /* previous acceleration */
-extern tVector rr1;        /* current velocity     */
-extern tVector rrr1;       /* current acceleration */
+extern tVector rr1;        /* current velocity      */
+extern tVector rrr1;       /* current acceleration  */
+extern tVector F_0;        /* initial load vector   */
 
 
 /** Wrapper for linear system solvers
@@ -95,6 +96,41 @@ int femLinEqSystemSolve(tMatrix *Ks, tVector *Fs, tVector *us)
 #endif
 
   return(rv);
+}
+
+/** Computes inertia forces distribution for given load step
+ *
+ * */
+int femMassDistrNewm(long step)
+{
+  long i, j, sum, act_sum ;
+  double m_x, m_y, m_z ;
+
+  m_x = dynAccX[ step ] ;
+  m_y = dynAccY[ step ] ;
+  m_z = dynAccZ[ step ] ;
+
+  sum     = 0 ;
+  act_sum = 0 ;
+
+  for (i=1; i<= nLen; i++)
+  {
+    for (j=0; j<KNOWN_DOFS; j++)
+    {
+      if (nDOFfld[sum] == 1)
+      {
+        switch (j)
+        {
+          case 0: act_sum++ ; femVecPut(&F, act_sum, m_x * femVecGet(&F_0, act_sum) ); break ;
+          case 1: act_sum++ ; femVecPut(&F, act_sum, m_y * femVecGet(&F_0, act_sum) ); break ;
+          case 2: act_sum++ ; femVecPut(&F, act_sum, m_z * femVecGet(&F_0, act_sum) ); break ;
+        }
+      }
+      sum++;
+    }
+  }
+
+  return(AF_OK);
 }
 
 /** Simple implicit dynamics solver: see Bitnar, Rericha: "Metoda
@@ -218,11 +254,19 @@ int femSolveDynNewmark(void)
   }
   else { rv = AF_ERR_TYP ; goto memFree ; }
 
-  /* TODO: fill F correctly for 0th step ! */
+  /* Prepare load vector */
+  for (i=0; i<nDOFAct; i++) { F.data[i] = 1.0 ; }
+  femMatVecMult(&M, &F, &F_0) ;
+  femVecClone(&F, &F_0);
+  femVecSetZeroBig(&F);
+  
+  /* load vector for step 0: */
+  femMassDistrNewm(0);
+
   /* initial acceleration: */
   femLinEqSystemSolve(&M, &F, &rrr0) ;
 
-  for (i=0; i<steps; i++) /* iteration over time steps */
+  for (i=1; i<steps; i++) /* iteration over time steps */
   {
 #ifdef RUN_VERBOSE
 		fprintf(msgout,"[ ] %s %li/%li ", _("Newmark step"), i+1, steps);
@@ -237,14 +281,15 @@ int femSolveDynNewmark(void)
     femVecAddVec(&pp, 1.0, &rb); /* 1st component of ra added */
 
 		femVecSetZeroBig(&ra) ;
-    femVecAddVec(&ra, a[1], &r0); /* TODO check this!!! */
+    femVecAddVec(&ra, a[1], &r0);
     femVecAddVec(&ra, a[4], &rr0);
     femVecAddVec(&ra, a[5], &rrr0);
 		femMatVecMult(&C, &ra, &rb);
     femVecAddVec(&pp, 1.0, &rb); /* 1st component of ra added */
 
-    /* TODO: get current value of F! */
-    femVecAddVec(&pp, 1.0, &F); /* TODO compute correct load first! */
+    femMassDistrNewm(i); /* load vector for step i: */
+
+    femVecAddVec(&pp, 1.0, &F); 
 
   	femLinEqSystemSolve(&KK, &pp, &u) ;
 		femVecLinCombBig(1.0, &u, -1.0, &r0, &dr); /* displacement change coputation */
