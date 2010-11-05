@@ -135,12 +135,28 @@ int main(int argc, char *argv[])
   if (femDynamics == AF_YES) /* dynamics */
   {
     /* TODO: modal analysis */
-
+		if (femEigenModal == AF_YES)
+		{
 #if 1
-    rv = femSolveEigenInvIter(1500, 4) ;
+    	rv = femSolveEigenInvIter(1500, 4) ;
 #else
-    rv = femSolveEigenLanczos(1500, 4) ;
+    	rv = femSolveEigenLanczos(1500, 4) ;
 #endif
+		}
+		else
+		{
+			if (femNewmarkEL == AF_YES) /* Newmark: dynamics */
+			{
+				rv = femSolveDynNewmark() ;
+			}
+			else
+			{
+#ifdef DEVEL_VERBOSE
+				fprintf(msgout,"[E] %s!", _("Unknown analysis type"));
+#endif
+				return(AF_ERR_VAL);
+			}
+		}
   }
   else 
   {

@@ -193,7 +193,6 @@ void fem_sol_null(void)
 	      femVecNull(&rb);
 	      femVecNull(&r0);
 	      femVecNull(&rr0);
-	      femVecNull(&rr0);
 	      femVecNull(&rrr0);
 	      femVecNull(&rr1);
 	      femVecNull(&rrr1);
@@ -291,7 +290,6 @@ void fem_sol_free(void)
 	      femVecFree(&ra);
 	      femVecFree(&rb);
 	      femVecFree(&r0);
-	      femVecFree(&rr0);
 	      femVecFree(&rr0);
 	      femVecFree(&rrr0);
 	      femVecFree(&rr1);

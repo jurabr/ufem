@@ -312,6 +312,22 @@ int femSolveDynNewmark(void)
 			femVecClone(&rrr1, &rrr0);
 		}
 
+		/* tracking points: */
+#if 1
+#ifndef _SMALL_FEM_CODE_
+		if (femTangentMatrix == AF_YES) 
+		{
+			femSaPoInput(dt*i, 
+				femVecGet(&u,femKpos(femSaPoNode, U_X)),
+				femVecGet(&u,femKpos(femSaPoNode, U_Y)),
+				femVecGet(&u,femKpos(femSaPoNode, U_Z)),
+				AF_NO,
+				AF_NO
+				) ;
+		}
+#endif
+#endif
+
 		/* results on elements: */
  		if ((rv = fem_fill_K(AF_YES)) != AF_OK) { goto memFree; }
 		if ((rv = femWriteRes( femSubStepFname(i))) != AF_OK) { goto memFree; }

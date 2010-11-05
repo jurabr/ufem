@@ -174,7 +174,8 @@ int femReadInputDynLoads(FILE *fr)
 	int   rv = AF_OK ;
 	long  i ;
 
-	rv = fscanf(fr,"%li", &dynNum); ; rv = AF_OK ;
+	rv = fscanf(fr,"%li", &dynNum); rv = AF_OK ;
+printf("DYN NUM: %li\n", dynNum);
 	if (dynNum <= 0) 
 	{ 
 		if (femNewmarkEL != AF_NO)
