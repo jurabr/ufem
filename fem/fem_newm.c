@@ -112,6 +112,8 @@ int femMassDistrNewm(long step)
   m_y = dynAccY[ step ] ;
   m_z = dynAccZ[ step ] ;
 
+  femVecSetZeroBig(&F);
+
   for (i=0; i<nLen; i++)
   {
     for (j=1; j<=3; j++)
@@ -169,14 +171,14 @@ int femSolveDynNewmark(void)
   /* Solution constants: */
   a[0] = 4.0 / (dt*dt) ;
   a[1] = 2.0 / dt ;
-  a[2] = 2.0 * a[1] ;
+  a[2] = 4.0 / dt ;
   a[3] = 1.0 ;
   a[4] = 1.0 ;
   a[5] = 0.0 ;
   a[6] = a[0] ;
-  a[7] = (-2.0)*a[1] ;
-  a[8] = (-1.0) ;
-  a[9] = 1.0/a[2] ;
+  a[7] = (-1.0)*a[2] ;
+  a[8] = (-1.0)*a[3] ;
+  a[9] = dt / 2.0 ;
   a[10] = a[9] ;
 
  	if ((rv = femElemTypeInit()) != AF_OK) { goto memFree; }
@@ -226,7 +228,7 @@ int femSolveDynNewmark(void)
   }
 	else
 	{
-  	femMatLinComb(r_alpha, &M, r_beta, &K, &C); /*slow as a hell */
+  	femMatLinComb(r_alpha, &M, r_beta, &K, &C); /* slow as hell */
 	}
 #ifdef RUN_VERBOSE
 	fprintf(msgout,"[i]   %s.\n",_("assembling of damping matrix done"));
@@ -338,7 +340,7 @@ int femSolveDynNewmark(void)
 		if ((rv = femWriteRes( femSubStepFname(i))) != AF_OK) { goto memFree; }
 
 #ifdef RUN_VERBOSE
-		fprintf(msgout,"[i]   %s: %s %f \n", _("Newmark step done"), _("cummulative time"), (i+1)*dt);
+		fprintf(msgout,"[i]   %s: %s %f \n", _("Newmark step done"), _("cummulative time"), (i)*dt);
 #endif
   } /*end of time steps iteration */
 
