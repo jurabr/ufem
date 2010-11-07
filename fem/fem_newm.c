@@ -220,16 +220,14 @@ int femSolveDynNewmark(void)
 #endif
  	if ((rv = femMatAllocCloneStruct(&K, &KK)) != AF_OK) { goto memFree; }
  	if ((rv = femMatAllocCloneStruct(&K, &C)) != AF_OK) { goto memFree; }
-  if ( (M.type == MAT_SPAR) && (K.type == MAT_SPAR) && (C.type == MAT_SPAR) && (KK.type == MAT_SPAR) )
+  if ((M.type == MAT_SPAR)&&(K.type == MAT_SPAR)&&(C.type == MAT_SPAR)&&(KK.type == MAT_SPAR))
   {
     /* this code assumes that structure of all matrices is identical! */
     for (i=0; i<K.len; i++)
         { C.data[i] = r_alpha*M.data[i] + r_beta*K.data[i] ; }
   }
 	else
-	{
-  	femMatLinComb(r_alpha, &M, r_beta, &K, &C); /* slow as hell */
-	}
+	{ femMatLinComb(r_alpha, &M, r_beta, &K, &C); /* slow as hell */ }
 #ifdef RUN_VERBOSE
 	fprintf(msgout,"[i]   %s.\n",_("assembling of damping matrix done"));
 #endif
@@ -237,7 +235,6 @@ int femSolveDynNewmark(void)
 #ifdef RUN_VERBOSE
 	fprintf(msgout,"[i]   %s:\n",_("loads and supports"));
 #endif
-
   femMatPrn(&K, "STIFFNESS MATRIX without supports ");
 	/*TODO: unit load for mass matrix: */
  	if ((rv = fem_add_disps(AF_YES)) != AF_OK) { goto memFree; }
@@ -267,7 +264,6 @@ int femSolveDynNewmark(void)
   for (i=0; i<nDOFAct; i++) { F.data[i] = 1.0 ; }
   femMatVecMult(&M, &F, &F_0) ;
   femVecClone(&F, &F_0);
-  femVecSetZeroBig(&F);
   
   /* load vector for step 0: */
   femMassDistrNewm(0);
@@ -275,21 +271,23 @@ int femSolveDynNewmark(void)
   /* initial acceleration: */
   femLinEqSystemSolve(&M, &F, &rrr0) ;
 
-  for (i=1; i<=steps; i++) /* iteration over time steps */
+  for (i=1; i<steps; i++) /* iteration over time steps */
   {
 #ifdef RUN_VERBOSE
-		fprintf(msgout,"[I] %s %li / %li:\n", _("Newmark step"), i, steps);
+		fprintf(msgout,"[I] %s %li / %li:\n", _("Newmark step"), i, steps-1);
 #endif
 		femVecSetZeroBig(&pp) ;
 
 		femVecSetZeroBig(&ra) ;
-    femVecAddVec(&ra, a[1], &r0);
+		femVecSetZeroBig(&rb) ;
+    femVecAddVec(&ra, a[0], &r0);
     femVecAddVec(&ra, a[2], &rr0);
     femVecAddVec(&ra, a[3], &rrr0);
 		femMatVecMult(&M, &ra, &rb);
     femVecAddVec(&pp, 1.0, &rb); /* 1st component of ra added */
 
 		femVecSetZeroBig(&ra) ;
+		femVecSetZeroBig(&rb) ;
     femVecAddVec(&ra, a[1], &r0);
     femVecAddVec(&ra, a[4], &rr0);
     femVecAddVec(&ra, a[5], &rrr0);
@@ -311,7 +309,7 @@ int femSolveDynNewmark(void)
 		femVecSetZeroBig(&rr1);
 		femVecAddVec(&rr1, 1.0, &rr0);
 		femVecAddVec(&rr1, a[9], &rrr1);
-		femVecAddVec(&rr1, -1.0*a[9], &rrr0);
+		femVecAddVec(&rr1, a[9], &rrr0);
 
 		/* clone new to old for next step: */
 		if (i < (steps-1))
