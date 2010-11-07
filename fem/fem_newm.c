@@ -99,37 +99,38 @@ int femLinEqSystemSolve(tMatrix *Ks, tVector *Fs, tVector *us)
 }
 
 /** Computes inertia forces distribution for given load step
- *
- * */
+ * @param step step number (0...)
+ * @return status
+ */
 int femMassDistrNewm(long step)
 {
-  long i, j, sum, act_sum ;
+  long i, j ;
+	long  pos_ind, pos ;
   double m_x, m_y, m_z ;
 
   m_x = dynAccX[ step ] ;
   m_y = dynAccY[ step ] ;
   m_z = dynAccZ[ step ] ;
 
-  sum     = 0 ;
-  act_sum = 0 ;
-
-  for (i=1; i<= nLen; i++)
+  for (i=0; i<nLen; i++)
   {
-    for (j=0; j<KNOWN_DOFS; j++)
+    for (j=1; j<=3; j++)
     {
-      if (nDOFfld[sum] == 1)
-      {
+	    pos_ind = (i*KNOWN_DOFS) + (j-1) ;
+      if (pos_ind < nDOFlen)
+    	{
+	      pos = nDOFfld[pos_ind];
         switch (j)
         {
-          case 0: act_sum++ ; femVecPut(&F, act_sum, m_x * femVecGet(&F_0, act_sum) ); break ;
-          case 1: act_sum++ ; femVecPut(&F, act_sum, m_y * femVecGet(&F_0, act_sum) ); break ;
-          case 2: act_sum++ ; femVecPut(&F, act_sum, m_z * femVecGet(&F_0, act_sum) ); break ;
+          case 1: femVecPut(&F, pos, m_x * femVecGet(&F_0, pos) ); break ;
+          case 2: femVecPut(&F, pos, m_y * femVecGet(&F_0, pos) ); break ;
+          case 3: femVecPut(&F, pos, m_z * femVecGet(&F_0, pos) ); break ;
         }
       }
-      sum++;
     }
   }
 
+  femVecPrn(&F, "STEP LOAD VECTOR");
   return(AF_OK);
 }
 
@@ -192,8 +193,6 @@ int femSolveDynNewmark(void)
  	if ((rv = fem_sol_res_alloc()) != AF_OK) { goto memFree; } /* __must__ be done before adding of loads! */
 
  	if ((rv = femMatAllocCloneStruct(&K, &M)) != AF_OK) { goto memFree; }
- 	if ((rv = femMatAllocCloneStruct(&K, &C)) != AF_OK) { goto memFree; }
- 	if ((rv = femMatAllocCloneStruct(&K, &KK)) != AF_OK) { goto memFree; }
 #ifdef RUN_VERBOSE
 	fprintf(msgout,"[i]   %s.\n",_("data checking and allocations done"));
 #endif
@@ -217,6 +216,8 @@ int femSolveDynNewmark(void)
 #ifdef RUN_VERBOSE
 	fprintf(msgout,"[i]   %s:\n",_("assembling of Rayleigh damping matrix"));
 #endif
+ 	if ((rv = femMatAllocCloneStruct(&K, &KK)) != AF_OK) { goto memFree; }
+ 	if ((rv = femMatAllocCloneStruct(&K, &C)) != AF_OK) { goto memFree; }
   if ( (M.type == MAT_SPAR) && (K.type == MAT_SPAR) && (C.type == MAT_SPAR) && (KK.type == MAT_SPAR) )
   {
     /* this code assumes that structure of all matrices is identical! */
@@ -234,10 +235,9 @@ int femSolveDynNewmark(void)
 #ifdef RUN_VERBOSE
 	fprintf(msgout,"[i]   %s:\n",_("loads and supports"));
 #endif
+
+  femMatPrn(&K, "STIFFNESS MATRIX without supports ");
 	/*TODO: unit load for mass matrix: */
-#if 0
- 	if ((rv = fem_add_loads()) != AF_OK) { goto memFree; }
-#endif
  	if ((rv = fem_add_disps(AF_YES)) != AF_OK) { goto memFree; }
 #ifdef RUN_VERBOSE
 	fprintf(msgout,"[i]   %s.\n",_("loads and supports done"));
@@ -254,6 +254,13 @@ int femSolveDynNewmark(void)
   }
   else { rv = AF_ERR_TYP ; goto memFree ; }
 
+#ifdef DEVEL
+  femMatPrn(&K, "STIFFNESS MATRIX");
+  femMatPrn(&M, "MASS MATRIX");
+  femMatPrn(&C, "DAMPING MATRIX");
+  femMatPrn(&KK, "KK STIFFNESS MATRIX");
+#endif
+
   /* Prepare load vector */
   for (i=0; i<nDOFAct; i++) { F.data[i] = 1.0 ; }
   femMatVecMult(&M, &F, &F_0) ;
@@ -266,10 +273,10 @@ int femSolveDynNewmark(void)
   /* initial acceleration: */
   femLinEqSystemSolve(&M, &F, &rrr0) ;
 
-  for (i=1; i<steps; i++) /* iteration over time steps */
+  for (i=1; i<=steps; i++) /* iteration over time steps */
   {
 #ifdef RUN_VERBOSE
-		fprintf(msgout,"[ ] %s %li/%li ", _("Newmark step"), i+1, steps);
+		fprintf(msgout,"[I] %s %li / %li:\n", _("Newmark step"), i, steps);
 #endif
 		femVecSetZeroBig(&pp) ;
 
@@ -313,7 +320,6 @@ int femSolveDynNewmark(void)
 		}
 
 		/* tracking points: */
-#if 1
 #ifndef _SMALL_FEM_CODE_
 		if (femTangentMatrix == AF_YES) 
 		{
@@ -326,14 +332,13 @@ int femSolveDynNewmark(void)
 				) ;
 		}
 #endif
-#endif
 
 		/* results on elements: */
  		if ((rv = fem_fill_K(AF_YES)) != AF_OK) { goto memFree; }
 		if ((rv = femWriteRes( femSubStepFname(i))) != AF_OK) { goto memFree; }
 
 #ifdef RUN_VERBOSE
-		fprintf(msgout," ...  %s: %s %f \n", _("done"), _("cummulative time"), (i+1)*dt);
+		fprintf(msgout,"[i]   %s: %s %f \n", _("Newmark step done"), _("cummulative time"), (i+1)*dt);
 #endif
   } /*end of time steps iteration */
 

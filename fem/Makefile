@@ -104,7 +104,7 @@ CFLAGS=$(FEATFLAGS) -Wall -ansi -pedantic $(DEBUG) -fPIC
 FEATLIBS=
 #FEATLIBS=../sinope/liba_diag.a
 
-LIBS=$(FEATLIBS) -L/usr/local/lib -lm -lefence
+LIBS=$(FEATLIBS) -L/usr/local/lib -lm #-lefence
 #LIBS=$(FEATLIBS) -L/usr/local/lib -lm -lpthread #-lefence
 
 

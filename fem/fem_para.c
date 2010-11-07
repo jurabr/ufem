@@ -155,7 +155,7 @@ void fem_help(int argc, char *argv[])
 	fprintf(msgout,"   -nlnbrk   ... %s\n", _("do not break non-linear solution on unconverged steps"));
 #ifndef USE_MPI
 	fprintf(msgout,"   -mod N    ... %s\n", _("do modal analysis for first N eigenvalues"));
-#if 0
+#if 1
 	fprintf(msgout,"   -nwm      ... %s\n", _("do dynamic analysis by Newmark integration"));
 #endif
 

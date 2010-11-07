@@ -667,7 +667,7 @@ void femMatSetZeroCol(tMatrix *a, long Col)
     }
   }
 #else
-#if 0 /* alternative algorithm - original */
+#if 1 /* alternative algorithm - original */
 		for (i=0; i<a->len; i++) { if (a->pos[i] == Col) { a->data[i] = 0 ; } }
 #else  /* alternative algorithm - modified (symmetric matrices only) */
 		ifrom = a->pos[a->frompos[Col-1]]-1 ;

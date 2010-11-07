@@ -37,6 +37,7 @@
 extern long   femTestConstElem ;
 extern long   femTestConstIpn  ;
 extern int    femDryRun(void)  ;
+extern int    femSolveDynNewmark(void);
 #endif
 
 #ifdef USE_MPI

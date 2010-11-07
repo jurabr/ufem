@@ -529,7 +529,7 @@ int e003_mass(long ePos, tMatrix *M_e)
   femMatSetZero(M_e);
 
 #if 1
-	for (i=1; i<3; i++)
+	for (i=1; i<=3; i++)
 	{
 		femMatPut(M_e,i,  i,   ( (mass)/(2.0) ) ) ;
 		femMatPut(M_e,i+3,i+3, ( (mass)/(2.0) ) ) ;
