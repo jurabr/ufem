@@ -1,3 +1,14 @@
+### Sun Nov  7 19:36:54 CET 2010
+
+version 0.2.0
+features:
+  + first Newmark which does someting (untested)
+
+bugfixes:
+  - expressions in Newmark typo (- instead of +)
+  - Newmark step counting
+
+
 ### Sun Nov  7 12:41:30 CET 2010
 
 bugfixes:

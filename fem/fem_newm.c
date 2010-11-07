@@ -335,6 +335,9 @@ int femSolveDynNewmark(void)
 
 		/* results on elements: */
  		if ((rv = fem_fill_K(AF_YES)) != AF_OK) { goto memFree; }
+
+    /* writing of results*/
+    solSimNum = dt*i; /* time data */
 		if ((rv = femWriteRes( femSubStepFname(i))) != AF_OK) { goto memFree; }
 
 #ifdef RUN_VERBOSE
