@@ -21,12 +21,3 @@ things from "ANSI99" standard).
 
 Code is meant for POSIX-compliant operating systems (e.g. for unices).
 It has been tested on Linux and IRIX.
-
-
-
-Home page
-
-There is a home page: http://www.penguin.cz/~jirka/fem_en.html
-
-
-$Id: README,v 1.13 2005/01/16 22:59:31 jirka Exp $
