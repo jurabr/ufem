@@ -1,3 +1,9 @@
+### Mon Nov  8 19:57:31 CET 2010
+
+bugfixes:
+  - mass matrix in beam3 was not rotated
+
+
 ### Mon Nov  8 11:33:02 CET 2010
 
 bugfixes:

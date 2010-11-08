@@ -501,7 +501,24 @@ int e003_mass(long ePos, tMatrix *M_e)
 	double Ax  = 0 ;
 	double dens = 0 ;
 	double mass = 0 ;
+  double sin_a,cos_a;
 	int    i, j ;
+  tMatrix Me0 ;
+	tMatrix Tk_0;
+	tMatrix T;
+	tMatrix T_T;
+
+	femMatNull(&Tk_0);
+	femMatNull(&T);
+	femMatNull(&T_T);
+
+	if ((rv=femFullMatInit(&Me0,6,6)) != AF_OK) { goto memFree; }
+	if ((rv=femFullMatInit(&Tk_0,6,6)) != AF_OK) { goto memFree; }
+	if ((rv=femFullMatInit(&T,6,6)) != AF_OK) { goto memFree; }
+	if ((rv=femFullMatInit(&T_T,6,6)) != AF_OK) { goto memFree; }
+
+
+  femFullMatInit(&Me0,6,6);
 
   x1 = femGetNCoordPosX(femGetENodePos(ePos,0));
   y1 = femGetNCoordPosY(femGetENodePos(ePos,0));
@@ -526,40 +543,75 @@ int e003_mass(long ePos, tMatrix *M_e)
 	mass = dens * Ax * Lx ;
 	for (i=1; i<=3; i++)
 	{
-		femMatPut(M_e,i,  i,   ( (mass)/(2.0) ) ) ;
-		femMatPut(M_e,i+3,i+3, ( (mass)/(2.0) ) ) ;
+		femMatPut(Me0,i,  i,   ( (mass)/(2.0) ) ) ;
+		femMatPut(Me0,i+3,i+3, ( (mass)/(2.0) ) ) ;
 	}
 #else
 	mass = dens * Ax * Lx / 420.0 ;
-  femMatPut(M_e, 1,1,mass*140.0  ) ;
-  femMatPut(M_e, 1,4,mass*70.0  ) ;
+  femMatPut(&Me0, 1,1,mass*140.0  ) ;
+  femMatPut(&Me0, 1,4,mass*70.0  ) ;
 
-	femMatPut(M_e, 2,2,mass*156.0 ) ;
-  femMatPut(M_e, 2,3,22.0*Lx*mass  ) ;
-  femMatPut(M_e, 2,5,54.0*mass  ) ;
-  femMatPut(M_e, 2,6,(-13.0)*Lx*mass  ) ;
+	femMatPut(&Me0, 2,2,mass*156.0 ) ;
+  femMatPut(&Me0, 2,3,22.0*Lx*mass  ) ;
+  femMatPut(&Me0, 2,5,54.0*mass  ) ;
+  femMatPut(&Me0, 2,6,(-13.0)*Lx*mass  ) ;
 
-  femMatPut(M_e, 3,3,mass * 4.0*Lx*Lx ) ;
-  femMatPut(M_e, 3,5,mass * 13.0*Lx ) ;
-  femMatPut(M_e, 3,6,mass * (-3.0)*Lx*Lx ) ;
+  femMatPut(&Me0, 3,3,mass * 4.0*Lx*Lx ) ;
+  femMatPut(&Me0, 3,5,mass * 13.0*Lx ) ;
+  femMatPut(&Me0, 3,6,mass * (-3.0)*Lx*Lx ) ;
 
-  femMatPut(M_e, 4,4,140.0*mass ) ;
+  femMatPut(&Me0, 4,4,140.0*mass ) ;
 
-  femMatPut(M_e, 5,5,mass * 156.0 ) ;
-  femMatPut(M_e, 5,6,mass* (-22.0)*Lx ) ;
+  femMatPut(&Me0, 5,5,mass * 156.0 ) ;
+  femMatPut(&Me0, 5,6,mass* (-22.0)*Lx ) ;
 
-  femMatPut(M_e, 6,6,mass * 4.0*Lx*Lx ) ;
+  femMatPut(&Me0, 6,6,mass * 4.0*Lx*Lx ) ;
 
 	for (i=1; i<=6; i++)
 	{
 		for (j=i; j<=6; j++)
 		{
-			femMatPut(M_e, j,i, femMatGet(M_e,i,j)) ;
+			femMatPut(&Me0, j,i, femMatGet(&Me0,i,j)) ;
 		}
 	}
 
 #endif
 
+  /* TODO: transformation */
+	cos_a = (x2 - x1) / Lx ;
+	sin_a = (y2 - y1) / Lx ;
+
+	/* transformation matrix */
+	femMatSetZero(&T) ;
+	femMatSetZero(&T_T) ;
+
+	femMatPut(&T, 1, 1,  cos_a ) ;
+	femMatPut(&T, 1, 2,  sin_a ) ;
+
+	femMatPut(&T, 2, 1, -sin_a ) ;
+	femMatPut(&T, 2, 2,  cos_a ) ;
+
+	femMatPut(&T, 3, 3,  1.0 ) ;
+
+	femMatPut(&T, 4, 4,  cos_a ) ;
+	femMatPut(&T, 4, 5, sin_a ) ;
+
+	femMatPut(&T, 5, 4, -sin_a ) ;
+	femMatPut(&T, 5, 5,  cos_a ) ;
+
+	femMatPut(&T, 6, 6,  1.0 ) ;
+
+	/* transposition of "T" */
+	femMatTran(&T, &T_T) ;
+
+	femMatMatMult(&T_T, &Me0, &Tk_0);
+	femMatMatMult(&Tk_0, &T, M_e);
+
+memFree:
+  femMatFree(&Me0);
+	femMatFree(&Tk_0);
+	femMatFree(&T);
+	femMatFree(&T_T);
 	return(rv);
 }
 
