@@ -324,7 +324,6 @@ int femSolveDynNewmark(void)
 #ifndef _SMALL_FEM_CODE_
 		if (femTangentMatrix == AF_YES) 
 		{
-printf("----------------------------\n");
 			femSaPoInput(dt*i, 
 				femVecGet(&u,femKpos(femSaPoNode, U_X)),
 				femVecGet(&u,femKpos(femSaPoNode, U_Y)),
