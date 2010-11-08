@@ -543,8 +543,8 @@ int e003_mass(long ePos, tMatrix *M_e)
 	mass = dens * Ax * Lx ;
 	for (i=1; i<=3; i++)
 	{
-		femMatPut(Me0,i,  i,   ( (mass)/(2.0) ) ) ;
-		femMatPut(Me0,i+3,i+3, ( (mass)/(2.0) ) ) ;
+		femMatPut(&Me0,i,  i,   ( (mass)/(2.0) ) ) ;
+		femMatPut(&Me0,i+3,i+3, ( (mass)/(2.0) ) ) ;
 	}
 #else
 	mass = dens * Ax * Lx / 420.0 ;
