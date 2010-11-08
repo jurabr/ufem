@@ -126,9 +126,9 @@ int femMassDistrNewm(long step)
 				{
         	switch (j)
         	{
-          	case 1: femVecPut(&F, pos, m_x * femVecGet(&F_0, pos) ); break ;
-          	case 2: femVecPut(&F, pos, m_y * femVecGet(&F_0, pos) ); break ;
-          	case 3: femVecPut(&F, pos, m_z * femVecGet(&F_0, pos) ); break ;
+          	case U_X: femVecPut(&F, pos, m_x * femVecGet(&F_0, pos) ); break ;
+          	case U_Y: femVecPut(&F, pos, m_y * femVecGet(&F_0, pos) ); break ;
+          	case U_Z: femVecPut(&F, pos, m_z * femVecGet(&F_0, pos) ); break ;
         	}
 				}
       }
@@ -324,6 +324,7 @@ int femSolveDynNewmark(void)
 #ifndef _SMALL_FEM_CODE_
 		if (femTangentMatrix == AF_YES) 
 		{
+printf("----------------------------\n");
 			femSaPoInput(dt*i, 
 				femVecGet(&u,femKpos(femSaPoNode, U_X)),
 				femVecGet(&u,femKpos(femSaPoNode, U_Y)),

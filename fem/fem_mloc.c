@@ -56,7 +56,7 @@ long femKpos(long node_pos, long dof)
 
 	pos_ind = (node_pos*KNOWN_DOFS) + (dof-1) ;
 
-	if (pos_ind < nDOFlen)
+	if ((pos_ind < nDOFlen)&&(pos_ind >= 0))
 	{
 	  pos = nDOFfld[pos_ind];
 	}
@@ -73,7 +73,7 @@ long femKpos(long node_pos, long dof)
 	}
 
 #ifdef DEVEL_VERBOSE
-printf ("[ ] pos = %li \n", pos);
+printf ("[ ] pos = %li (index %li, n=%li, dof=%li) \n", pos, pos_ind, node_pos, dof);
 #endif
 	
 	return(pos);
