@@ -80,6 +80,18 @@ Number of steps in Non-Linear Solution.
 .SS ELEMENT LOADS
 \fB0\fP (zero number must be put here - this feature is currently not used).
 
+.SS DYNAMICS
+\fBNumber of steps\fP [int] (zero must be here if no dynamics is used - the rest of this section must be present only for dynamics).
+.TP
+\fBTime step size\fP [double]
+.TP
+\fBAlpha\fP [double] coefficient for Rayleigh damping (alpha*M + beta*K)
+.TP
+\fBBeta\fP [double] coefficient for Rayleigh damping (alpha*M + beta*K)
+.TP
+\fBAcceleration X\fP [double] \fBAcceleration Y\fP [double] \fBAcceleration Z\fP [double] (repeated)
+
+
 .SS END OF FILE
 \fB 0 0\fP (two zeros must be put here).
 
