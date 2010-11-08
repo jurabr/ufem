@@ -110,19 +110,19 @@ int e003_local_stiff_matrix(long ePos, long Mode, double Lx, double Ex, double A
 
   if ((kl1 > 0.0) && (kl2 > 0.0))
   {
-	  femMatPut(k_0, 2, 2,  (12.0 * EI) / (Lx*Lx*Lx)  );
-	  femMatPut(k_0, 2, 3,  (-6.0 * EI) / (Lx*Lx)  );
-	  femMatPut(k_0, 2, 5,  (-12.0 * EI) / (Lx*Lx*Lx) );
-	  femMatPut(k_0, 2, 6,  (-6.0 * EI) / (Lx*Lx)  );
+	  femMatPut(k_0, 2, 2,  (12.0 * Ex*Ix) / (Lx*Lx*Lx)  );
+	  femMatPut(k_0, 2, 3,  (6.0 * Ex*Ix) / (Lx*Lx)  );
+	  femMatPut(k_0, 2, 5,  (-12.0 * Ex*Ix) / (Lx*Lx*Lx) );
+	  femMatPut(k_0, 2, 6,  (6.0 * Ex*Ix) / (Lx*Lx)  );
 
-	  femMatPut(k_0, 3, 3,  (4.0 * EI) / Lx       );
-	  femMatPut(k_0, 3, 5,  (6.0 * EI) / (Lx*Lx)     );
-	  femMatPut(k_0, 3, 6,  (2.0 * EI) / Lx   );
+	  femMatPut(k_0, 3, 3,  (4.0 * Ex*Ix) / Lx       );
+	  femMatPut(k_0, 3, 5,  (-6.0 * Ex*Ix) / (Lx*Lx)     );
+	  femMatPut(k_0, 3, 6,  (2.0 * Ex*Ix) / Lx   );
 
-	  femMatPut(k_0, 5, 5,  (12.0 * EI) / (Lx*Lx*Lx)  );
-	  femMatPut(k_0, 5, 6,  (6.0 * EI) / (Lx*Lx) );
+	  femMatPut(k_0, 5, 5,  (12.0 * Ex*Ix) / (Lx*Lx*Lx)  );
+	  femMatPut(k_0, 5, 6,  (-6.0 * Ex*Ix) / (Lx*Lx) );
 
-	  femMatPut(k_0, 6, 6,  (4.0 * EI) / Lx       );
+	  femMatPut(k_0, 6, 6,  (4.0 * Ex*Ix) / Lx       );
   }
   else
   {
@@ -269,7 +269,7 @@ int e003_stiff(long ePos, long Mode, tMatrix *K_e, tVector *F_e, tVector *Fr_e)
 	femMatPut(&T, 3, 3,  1.0 ) ;
 
 	femMatPut(&T, 4, 4,  cos_a ) ;
-	femMatPut(&T, 4, 5,  sin_a ) ;
+	femMatPut(&T, 4, 5, sin_a ) ;
 
 	femMatPut(&T, 5, 4, -sin_a ) ;
 	femMatPut(&T, 5, 5,  cos_a ) ;
@@ -520,39 +520,35 @@ int e003_mass(long ePos, tMatrix *M_e)
 	Ax = femGetRSValPos(ePos, RS_AREA, 0) ;
 	dens = femGetMPValPos(ePos, MAT_DENS, 0) ;
 
-	mass = dens * Ax * Lx ;
-
-#ifdef DEVEL_VERBOSE
-	fprintf(msgout,"mass = %e \n",mass);
-#endif
-
   femMatSetZero(M_e);
 
 #if 0
+	mass = dens * Ax * Lx ;
 	for (i=1; i<=3; i++)
 	{
 		femMatPut(M_e,i,  i,   ( (mass)/(2.0) ) ) ;
 		femMatPut(M_e,i+3,i+3, ( (mass)/(2.0) ) ) ;
 	}
 #else
-  femMatPut(M_e, 1,1,mass*140.0/420.0  ) ;
-  femMatPut(M_e, 1,4,mass*70.0/420.0  ) ;
+	mass = dens * Ax * Lx / 420.0 ;
+  femMatPut(M_e, 1,1,mass*140.0  ) ;
+  femMatPut(M_e, 1,4,mass*70.0  ) ;
 
-	femMatPut(M_e, 2,2,mass*156.0/420.0 ) ;
-  femMatPut(M_e, 2,3,22.0*Lx*mass/420.0  ) ;
-  femMatPut(M_e, 2,5,54.0*mass/420.0  ) ;
-  femMatPut(M_e, 2,6,-13.0*mass/420.0  ) ;
+	femMatPut(M_e, 2,2,mass*156.0 ) ;
+  femMatPut(M_e, 2,3,22.0*Lx*mass  ) ;
+  femMatPut(M_e, 2,5,54.0*mass  ) ;
+  femMatPut(M_e, 2,6,(-13.0)*Lx*mass  ) ;
 
-  femMatPut(M_e, 3,3,mass/420.0 * 4.0*Lx*Lx ) ;
-  femMatPut(M_e, 3,5,mass/420.0 * 13.0*Lx ) ;
-  femMatPut(M_e, 3,6,mass/420.0 * -3.0*Lx*Lx ) ;
+  femMatPut(M_e, 3,3,mass * 4.0*Lx*Lx ) ;
+  femMatPut(M_e, 3,5,mass * 13.0*Lx ) ;
+  femMatPut(M_e, 3,6,mass * (-3.0)*Lx*Lx ) ;
 
-  femMatPut(M_e, 4,4,140.0*mass/6.0 ) ;
+  femMatPut(M_e, 4,4,140.0*mass ) ;
 
-  femMatPut(M_e, 5,5,mass/420.0 * 156.0 ) ;
-  femMatPut(M_e, 5,6,mass/420.0 * -22.0*Lx ) ;
+  femMatPut(M_e, 5,5,mass * 156.0 ) ;
+  femMatPut(M_e, 5,6,mass* (-22.0)*Lx ) ;
 
-  femMatPut(M_e, 6,6,mass/420.0 * 4.0*Lx*Lx ) ;
+  femMatPut(M_e, 6,6,mass * 4.0*Lx*Lx ) ;
 
 	for (i=1; i<=6; i++)
 	{
