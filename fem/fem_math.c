@@ -810,18 +810,20 @@ int femVecPutAdd(tVector *vec, long pos, double val, int mode)
  */
 double femVecGet(tVector *vec, long pos)
 {
-	if (pos > vec->rows)
+	if ((pos > vec->rows)||(pos < 1))
 	{
 #ifdef RUN_VERBOSE
 		fprintf(msgout,"[E] %s: %li/%li!\n", _("Index outside vector (Get)"),pos,vec->rows);
 #endif
 		return(0);
 	}
-
+#if 0
 	switch (vec->type)
 	{
 		case VEC_FULL:
+#endif
 										return(vec->data[pos-1]);
+#if 0
 			              break;
 		case VEC_SPAR:  /* unimplemented */
 										exit(0);
@@ -832,7 +834,8 @@ double femVecGet(tVector *vec, long pos)
 #endif
 										return(0); break;
 	}
-	return(AF_OK);
+	return(0);
+#endif
 }
 
 /** Prints vector to stdout, works only in DEVEL mode */

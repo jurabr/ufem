@@ -90,7 +90,7 @@ int femSaPoAlloc(long NewLen, long OldLen)
 			tmp[i].unused = AF_NO ;
 	}
 
-	free (femSaPo);
+	if (OldLen > 0 ) { free (femSaPo); }
 	femSaPo = tmp ;
 	tmp     = NULL ;
 

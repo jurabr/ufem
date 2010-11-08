@@ -1,3 +1,9 @@
+### Mon Nov  8 11:33:02 CET 2010
+
+bugfixes:
+  - coredumps in newmark (load-related)
+
+
 ### Sun Nov  7 19:36:54 CET 2010
 
 version 0.2.0

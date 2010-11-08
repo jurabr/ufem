@@ -122,16 +122,18 @@ int femMassDistrNewm(long step)
       if (pos_ind < nDOFlen)
     	{
 	      pos = nDOFfld[pos_ind];
-        switch (j)
-        {
-          case 1: femVecPut(&F, pos, m_x * femVecGet(&F_0, pos) ); break ;
-          case 2: femVecPut(&F, pos, m_y * femVecGet(&F_0, pos) ); break ;
-          case 3: femVecPut(&F, pos, m_z * femVecGet(&F_0, pos) ); break ;
-        }
+				if (pos > 0)
+				{
+        	switch (j)
+        	{
+          	case 1: femVecPut(&F, pos, m_x * femVecGet(&F_0, pos) ); break ;
+          	case 2: femVecPut(&F, pos, m_y * femVecGet(&F_0, pos) ); break ;
+          	case 3: femVecPut(&F, pos, m_z * femVecGet(&F_0, pos) ); break ;
+        	}
+				}
       }
     }
   }
-
   femVecPrn(&F, "STEP LOAD VECTOR");
   return(AF_OK);
 }
@@ -236,7 +238,6 @@ int femSolveDynNewmark(void)
 	fprintf(msgout,"[i]   %s:\n",_("loads and supports"));
 #endif
   femMatPrn(&K, "STIFFNESS MATRIX without supports ");
-	/*TODO: unit load for mass matrix: */
  	if ((rv = fem_add_disps(AF_YES)) != AF_OK) { goto memFree; }
 #ifdef RUN_VERBOSE
 	fprintf(msgout,"[i]   %s.\n",_("loads and supports done"));

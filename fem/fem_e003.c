@@ -192,7 +192,7 @@ int e003_stiff(long ePos, long Mode, tMatrix *K_e, tVector *F_e, tVector *Fr_e)
 	double  cos_a, sin_a ;
   double  kl1 = 1 ;
   double  kl2 = 1 ;
-  double  N,Ma,Mb ;
+  double  N ;
   double  EI ;
 #if 0
   int     i ;
@@ -501,7 +501,7 @@ int e003_mass(long ePos, tMatrix *M_e)
 	double Ax  = 0 ;
 	double dens = 0 ;
 	double mass = 0 ;
-	int    i ;
+	int    i, j ;
 
   x1 = femGetNCoordPosX(femGetENodePos(ePos,0));
   y1 = femGetNCoordPosY(femGetENodePos(ePos,0));
@@ -528,40 +528,40 @@ int e003_mass(long ePos, tMatrix *M_e)
 
   femMatSetZero(M_e);
 
-#if 1
+#if 0
 	for (i=1; i<=3; i++)
 	{
 		femMatPut(M_e,i,  i,   ( (mass)/(2.0) ) ) ;
 		femMatPut(M_e,i+3,i+3, ( (mass)/(2.0) ) ) ;
 	}
 #else
+  femMatPut(M_e, 1,1,mass*140.0/420.0  ) ;
+  femMatPut(M_e, 1,4,mass*70.0/420.0  ) ;
 
-  femMatPut(M_e, 2,2,mass/420.0 * 156.0 ) ;
-  femMatPut(M_e, 2,3,mass/420.0 * 22.0*Lx ) ;
-  femMatPut(M_e, 2,5,mass/420.0 * 54.0 ) ;
-  femMatPut(M_e, 2,6,mass/420.0 * -13.0*Lx ) ;
+	femMatPut(M_e, 2,2,mass*156.0/420.0 ) ;
+  femMatPut(M_e, 2,3,22.0*Lx*mass/420.0  ) ;
+  femMatPut(M_e, 2,5,54.0*mass/420.0  ) ;
+  femMatPut(M_e, 2,6,-13.0*mass/420.0  ) ;
 
-  femMatPut(M_e, 3,2,mass/420.0 * 22.0*Lx ) ;
   femMatPut(M_e, 3,3,mass/420.0 * 4.0*Lx*Lx ) ;
   femMatPut(M_e, 3,5,mass/420.0 * 13.0*Lx ) ;
   femMatPut(M_e, 3,6,mass/420.0 * -3.0*Lx*Lx ) ;
 
-  femMatPut(M_e, 5,2,mass/420.0 * 54.0 ) ;
-  femMatPut(M_e, 5,3,mass/420.0 * 13.0*Lx ) ;
+  femMatPut(M_e, 4,4,140.0*mass/6.0 ) ;
+
   femMatPut(M_e, 5,5,mass/420.0 * 156.0 ) ;
   femMatPut(M_e, 5,6,mass/420.0 * -22.0*Lx ) ;
 
-  femMatPut(M_e, 6,2,mass/420.0 * -13.0*Lx ) ;
-  femMatPut(M_e, 6,3,mass/420.0 * -3.0*Lx*Lx ) ;
-  femMatPut(M_e, 6,5,mass/420.0 * -22.0*Lx ) ;
   femMatPut(M_e, 6,6,mass/420.0 * 4.0*Lx*Lx ) ;
 
-  femMatPut(M_e, 1,1,mass/6.0 * 2.0 ) ;
-  femMatPut(M_e, 4,4,mass/6.0 * 2.0 ) ;
+	for (i=1; i<=6; i++)
+	{
+		for (j=i; j<=6; j++)
+		{
+			femMatPut(M_e, j,i, femMatGet(M_e,i,j)) ;
+		}
+	}
 
-  femMatPut(M_e, 1,4,mass/6.0 * 1.0 ) ;
-  femMatPut(M_e, 4,1,mass/6.0 * 1.0 ) ;
-  
 #endif
 
 	return(rv);
