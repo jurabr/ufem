@@ -138,8 +138,8 @@ int fem_create_cmd_aliases(void)
   if ((rv=ciAddVarGrp("ix","8","real")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("iy","9","real")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("iz","10","real")) != AF_OK) {goto memFree;}
-  if ((rv=ciAddVarGrp("winkler","11","hinge_a")) != AF_OK) {goto memFree;}
-  if ((rv=ciAddVarGrp("winkler","12","hinge_b")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("hinge_a","11","real")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("hinge_b","12","real")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("winkler","13","real")) != AF_OK) {goto memFree;}
 
   if ((rv=ciAddVarGrp("hinge_x_1","17","real")) != AF_OK) {goto memFree;}
