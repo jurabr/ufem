@@ -1,7 +1,8 @@
-### Mon Nov  8 19:57:31 CET 2010
+### Mon Nov  8 20:02:17 CET 2010
 
 bugfixes:
   - mass matrix in beam3 was not rotated
+  - direction of loads swapped in newmark
 
 
 ### Mon Nov  8 11:33:02 CET 2010

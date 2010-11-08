@@ -126,9 +126,9 @@ int femMassDistrNewm(long step)
 				{
         	switch (j)
         	{
-          	case U_X: femVecPut(&F, pos, m_x * femVecGet(&F_0, pos) ); break ;
-          	case U_Y: femVecPut(&F, pos, m_y * femVecGet(&F_0, pos) ); break ;
-          	case U_Z: femVecPut(&F, pos, m_z * femVecGet(&F_0, pos) ); break ;
+          	case U_X: femVecPut(&F, pos, -1.0 * m_x * femVecGet(&F_0, pos) ); break ;
+          	case U_Y: femVecPut(&F, pos, -1.0 * m_y * femVecGet(&F_0, pos) ); break ;
+          	case U_Z: femVecPut(&F, pos, -1.0 * m_z * femVecGet(&F_0, pos) ); break ;
         	}
 				}
       }
