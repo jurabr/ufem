@@ -1,3 +1,10 @@
+### Tue Nov  9 14:37:32 CET 2010
+
+bugfixes:
+  - invalid initial load vector in newmark
+  - fixes in e001, e003
+
+
 ### Mon Nov  8 20:02:17 CET 2010
 
 bugfixes:

@@ -77,7 +77,7 @@ int femLinEqSystemSolve(tMatrix *Ks, tVector *Fs, tVector *us)
   double precision ;
 
   steps     = nDOFAct ;
-  precision = FEM_ZERO/10000.0 ;
+  precision = FEM_ZERO/100000.0 ;
     
 #ifdef DEVEL_VERBOSE
 	fprintf(msgout,"[i]   %s:\n",_("solution of linear equations"));
@@ -196,7 +196,6 @@ int femSolveDynNewmark(void)
  	if ((rv = fem_sol_alloc()) != AF_OK) { goto memFree; }
  	if ((rv = fem_sol_res_alloc()) != AF_OK) { goto memFree; } /* __must__ be done before adding of loads! */
 
- 	if ((rv = femMatAllocCloneStruct(&K, &M)) != AF_OK) { goto memFree; }
 #ifdef RUN_VERBOSE
 	fprintf(msgout,"[i]   %s.\n",_("data checking and allocations done"));
 #endif
@@ -212,6 +211,7 @@ int femSolveDynNewmark(void)
 #ifdef RUN_VERBOSE
 	fprintf(msgout,"[i]   %s:\n",_("assembling of mass matrix"));
 #endif
+ 	if ((rv = femMatAllocCloneStruct(&K, &M)) != AF_OK) { goto memFree; }
  	if ((rv = fem_fill_M()) != AF_OK) { goto memFree; }
 #ifdef RUN_VERBOSE
 	fprintf(msgout,"[i]   %s.\n",_("assembling of math matrix done"));
@@ -234,11 +234,15 @@ int femSolveDynNewmark(void)
 	fprintf(msgout,"[i]   %s.\n",_("assembling of damping matrix done"));
 #endif
 
+  femMatPrn(&K, "STIFFNESS MATRIX without supports ");
+
 #ifdef RUN_VERBOSE
 	fprintf(msgout,"[i]   %s:\n",_("loads and supports"));
 #endif
-  femMatPrn(&K, "STIFFNESS MATRIX without supports ");
+  for (i=0; i<nDOFAct; i++) { F_0.data[i] = 1.0 ; }
+  femMatVecMult(&M, &F_0, &F) ; /**/
  	if ((rv = fem_add_disps(AF_YES)) != AF_OK) { goto memFree; }
+  femVecClone(&F, &F_0);
 #ifdef RUN_VERBOSE
 	fprintf(msgout,"[i]   %s.\n",_("loads and supports done"));
 #endif
@@ -261,11 +265,6 @@ int femSolveDynNewmark(void)
   femMatPrn(&KK, "KK STIFFNESS MATRIX");
 #endif
 
-  /* Prepare load vector */
-  for (i=0; i<nDOFAct; i++) { F.data[i] = 1.0 ; }
-  femMatVecMult(&M, &F, &F_0) ;
-  femVecClone(&F, &F_0);
-  
   /* load vector for step 0: */
   femMassDistrNewm(0);
 

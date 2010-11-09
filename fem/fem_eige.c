@@ -466,7 +466,7 @@ memFree:
 int femSolveEigenLanczos(long max_iter, double eps)
 {
 	int  rv = AF_ERR_VAL;
-#if 0
+#if 1
   long i, j, jj ;
   double xmult ;
   double om_top ;
@@ -499,7 +499,7 @@ printf("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
   rv = femEigLanczos(&K, &M, femEigenNum, &u) ;
 printf("YYYYYYYYYYYYYYYYYYYYYYYYYYYYY\n");
 
-#if 0
+#if 1
   for (j=1; j<=femEigenNum; j++)
   {
     rv = AF_ERR_VAL ; /* initial return value */
@@ -550,82 +550,5 @@ memFree:
 #endif
 	return(rv);
 }
-
-
-/* ############################################################ */
-
-
-/** Does one step of explicit solution 
- *
- * */
-int fem_dyn_implicit_step(
-		tMatrix *K,
-		tMatrix *M,
-		tMatrix *C,
-		tVector *F,
-		double d_t,
-		tVector *u0, 
-		tVector *u1, 
-		tVector *u2
-		)
-{
-	int rv = AF_OK;
-	tVector Rint, MD1, CD1, MD0, CD0, expV1, expV2 ;
-
-	/* TODO: move this to fem_sol_aloc() / fem_sol.c: */
-	femVecNull(&Rint);
-	femVecNull(&MD1);
-	femVecNull(&CD1);
-	femVecNull(&MD0);
-	femVecNull(&CD0);
-	femVecNull(&expV1);
-	femVecNull(&expV2);
-
-	if ((rv = femVecFullInit(&Rint, nDOFAct)) != AF_OK) { goto memFree; }
-	if ((rv = femVecFullInit(&MD1, nDOFAct)) != AF_OK) { goto memFree; }
-	if ((rv = femVecFullInit(&CD1, nDOFAct)) != AF_OK) { goto memFree; }
-	if ((rv = femVecFullInit(&MD0, nDOFAct)) != AF_OK) { goto memFree; }
-	if ((rv = femVecFullInit(&CD0, nDOFAct)) != AF_OK) { goto memFree; }
-	if ((rv = femVecFullInit(&expV1, nDOFAct)) != AF_OK) { goto memFree; }
-	if ((rv = femVecFullInit(&expV2, nDOFAct)) != AF_OK) { goto memFree; }
-
-	/* Computation of components: */
-	femMatVecMult(K, u0, &Rint);
-	femMatVecMult(M, u1, &MD1); femValVecMultSelf(2.0/(d_t*d_t),&MD1);
-	femMatVecMult(C, u1, &CD1); femValVecMultSelf(1.0/(d_t),&CD1);
-	femMatVecMult(M, u0, &MD0); femValVecMultSelf(2.0/(d_t*d_t),&MD0);
-	femMatVecMult(C, u0, &CD0); femValVecMultSelf(1.0/(d_t),&CD0);
-
-	femVecLinCombBig(1.0, F, -1.0, &Rint, &expV1);
-	femVecLinCombBig(1.0, &expV1, 1.0, &MD1, &expV2);
-	femVecLinCombBig(1.0, &expV2, -1.0, &CD1, &expV1);
-	femVecLinCombBig(1.0, &expV1, -1.0, &MD0, &expV2);
-	femVecLinCombBig(1.0, &expV2, +1.0, &CD0, &expV1); /* all right hand side*/
-
-	femValVecMultSelf((d_t*d_t),&expV1);
-
-#if 0
-  if ((rv = femEqsCGwJ(M, &expV1, u2, FEM_ZERO/10000.0, nDOFAct)) != AF_OK)
-#else
-  if ((rv = femEqsBiCCSwJ(M, &expV1, u2, FEM_ZERO/1000.0, 3*nDOFAct)) != AF_OK)
-#endif
-     { goto memFree; } 
-
-	femVecPrn(u2, "U2");
-
-memFree:
-
-	femVecFree(&Rint);
-	femVecFree(&MD1);
-	femVecFree(&CD1);
-	femVecFree(&MD0);
-	femVecFree(&CD0);
-
-	femVecFree(&expV1);
-	femVecFree(&expV2);
-
-	return(rv);
-}
-
 
 /* end of fem_eige.c */
