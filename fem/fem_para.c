@@ -58,6 +58,8 @@ char *fem_rfile = NULL ; /* previous results */
 
 char *fem_ssfile = NULL; /* substep result file */
 
+char *fem_dfile = NULL ; /* input file for newmark */
+
 #ifndef _SMALL_FEM_CODE_
 char *fem_spec_out_file   = NULL ;
 long  fem_spec_out_type   = 0 ;
@@ -159,6 +161,7 @@ void fem_help(int argc, char *argv[])
 #endif
 
 	fprintf(msgout,"   -nwm      ... %s\n", _("do dynamic analysis by Newmark integration"));
+	fprintf(msgout,"   -inw FILE ... %s\n", _("read dynamics data from FILE"));
 
 	fprintf(msgout,"   -teste N  ... %s\n", _("run test solution only for element N"));
 	fprintf(msgout,"   -testi M  ... %s\n", _("run \"-teste N\" for integration point M"));
@@ -799,6 +802,44 @@ int fem_parse_params(int argc, char *argv[])
       femDynamics   = AF_YES ;
       femNewmarkEL  = AF_YES ;
 		}
+
+    if (strcmp(argv[i],"-inw") == 0) /* DYNAMICS: file for acceleration data */
+		{
+      if (argc < (i+2)) 
+			{
+        femEigenModal = AF_NO ;
+        femDynamics   = AF_NO ;
+        femNewmarkEL  = AF_NO ;
+				return(AF_ERR_SIZ);
+			}
+			else
+			{
+				if (argv[i+1][0] == '-')
+				{
+          femEigenModal = AF_NO ;
+          femDynamics   = AF_NO ;
+          femNewmarkEL  = AF_NO ;
+					return(AF_ERR_VAL);
+				}
+				if ((fem_dfile = fem_set_iofile(argv[i+1])) == NULL)
+				{
+          femEigenModal = AF_NO ;
+          femDynamics   = AF_NO ;
+          femNewmarkEL  = AF_NO ;
+					return(AF_ERR_VAL);
+				}
+        else
+        {
+          solNoLinS     = 1 ; /* we need data for linear solution */
+          femEigenModal = AF_NO ;
+          femEigenNum   = 0 ;
+          femDynamics   = AF_YES ;
+          femNewmarkEL  = AF_YES ;
+        }
+			}
+      /* ********************************* */
+		}
+
     
     if (strcmp(argv[i],"-teste") == 0) /* TESTING: element number */
 		{

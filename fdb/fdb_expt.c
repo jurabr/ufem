@@ -633,6 +633,9 @@ int fdb_export_to_fem(FILE *fw, long *opts, long optlen)
 	/* element load  should be here... maybe later  */
 	fprintf(fw," 0\n");
 
+  /* dynamics loads should be here... or in an extra file */
+	fprintf(fw," 0\n");
+
   /* random data ("monte") */
   rv = fdb_to_fem_rand(fw) ;
 

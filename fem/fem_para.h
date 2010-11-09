@@ -47,6 +47,7 @@ extern long femPrevStdInput   ;
 extern char *fem_ifile ;
 extern char *fem_ofile ;
 extern char *fem_rfile ;
+extern char *fem_dfile ;
 
 extern long  femBreakSolu ;
 

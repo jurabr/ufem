@@ -254,6 +254,7 @@ int femReadInput(char *fname)
 {
 	int   rv = AF_OK ;
 	FILE *fr = NULL ;
+	FILE *frd = NULL ;
 	long pos, sum;
 	long  i ;
 
@@ -487,7 +488,30 @@ int femReadInput(char *fname)
   if ((rv = femReadInputLoads(fr)) != AF_OK) {goto memFree;}
 
 	/* dynamics (if applicable) */
-	if ((rv = femReadInputDynLoads(fr)) != AF_OK) {goto memFree;}
+  if (fem_dfile == NULL)
+  {
+	  if ((rv = femReadInputDynLoads(fr)) != AF_OK) {goto memFree;}
+  }
+  else
+  {
+    if ((frd = fopen(fem_dfile,"r")) == NULL) 
+    {
+#ifdef RUN_VERBOSE
+		  fprintf(msgout,"[E] %s: %s!\n",_("Error during input data reading - can not open file"), fem_dfile);
+#endif
+      fclose(fr) ;
+		  frd = NULL;
+		  return(AF_ERR_IO);
+    }
+    fscanf(fr,"%li", &dynNum); /* just for compatibility */
+	  if ((rv = femReadInputDynLoads(frd)) != AF_OK) 
+    {
+      fclose(frd);
+      fclose(fr);
+      goto memFree;
+    }
+    fclose(frd); frd = NULL ;
+  }
 
   /* Monte-related data (if any )*/
   if ((rv = fem_monte_read_data(fr)) != AF_OK) {goto memFree;}
