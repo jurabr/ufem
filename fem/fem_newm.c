@@ -77,7 +77,7 @@ int femLinEqSystemSolve(tMatrix *Ks, tVector *Fs, tVector *us)
   double precision ;
 
   steps     = nDOFAct ;
-  precision = FEM_ZERO/100000.0 ;
+  precision = FEM_ZERO/10000.0 ;
     
 #ifdef DEVEL_VERBOSE
 	fprintf(msgout,"[i]   %s:\n",_("solution of linear equations"));
