@@ -60,7 +60,9 @@ extern long *nDOFfld  ; /* description of DOFs in nodes             */
 
 extern char *fem_ssfile ; /* substep result file */
 
+#ifdef FEM_MONT_FSAVE
 static long fem_monte_file_num = 0 ; /* file number for results */
+#endif
 
 /* DATA STRUCTURES */
 
@@ -361,6 +363,26 @@ int monte_clean_lib_stuff(char *param)
   return(0);
 }
 
+/* linear solver wrapper: */
+int monte_linear_solver(void)
+{
+  int rv = AF_OK ;
+
+	femMatSetZeroBig(&K);
+	femVecSetZeroBig(&F);
+	femVecSetZeroBig(&u);
+
+ 	if ((rv = fem_fill_K(AF_NO)) != AF_OK) { goto memFree; }
+
+ 	if ((rv = fem_add_loads()) != AF_OK) { goto memFree; }
+ 	if ((rv = fem_add_disps(AF_YES)) != AF_OK) { goto memFree; }
+
+	if ((rv = femEqsCGwJ(&K, &F, &u, FEM_ZERO/10000.0, K.rows)) != AF_OK) { goto memFree; }
+ 	if ((rv = fem_fill_K(AF_YES)) != AF_OK) { goto memFree; }
+
+memFree:
+  return(rv);
+}
 
 /* It's basicaly a stripped-down linear solver from fem_sol.c */
 int monte_solution(char *param, double *ifld, double *ofld)
@@ -455,20 +477,9 @@ int monte_solution(char *param, double *ifld, double *ofld)
 
   femTangentMatrix = AF_NO ; /* workaround - we need empty result fields! */
 
-  /* ## solution start */
-	femMatSetZeroBig(&K);
-	femVecSetZeroBig(&F);
-	femVecSetZeroBig(&u);
-
- 	if ((rv = fem_fill_K(AF_NO)) != AF_OK) { goto memFree; }
-
- 	if ((rv = fem_add_loads()) != AF_OK) { goto memFree; }
- 	if ((rv = fem_add_disps(AF_YES)) != AF_OK) { goto memFree; }
-
-	if ((rv = femEqsCGwJ(&K, &F, &u, FEM_ZERO/10000.0, K.rows)) != AF_OK) { goto memFree; }
- 	if ((rv = fem_fill_K(AF_YES)) != AF_OK) { goto memFree; }
-  /* ## solution end */
-
+  /* call solver here */
+  if ((rv =  monte_linear_solver()) != AF_OK) { goto memFree ; }
+ 
 #if 0
 printf("NORM: (nodes=%li disps=%li) u=%e F=%e\n",nLen,nlLen,femVecNorm(&u), femVecNorm(&F));
 #endif

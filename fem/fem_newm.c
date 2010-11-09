@@ -236,8 +236,6 @@ int femSolveDynNewmark(void)
 	fprintf(msgout,"[i]   %s.\n",_("assembling of damping matrix done"));
 #endif
 
-  femMatPrn(&K, "STIFFNESS MATRIX without supports ");
-
 #ifdef RUN_VERBOSE
 	fprintf(msgout,"[i]   %s:\n",_("loads and supports"));
 #endif
@@ -259,13 +257,6 @@ int femSolveDynNewmark(void)
     }
   }
   else { rv = AF_ERR_TYP ; goto memFree ; }
-
-#ifdef DEVEL
-  femMatPrn(&K, "STIFFNESS MATRIX");
-  femMatPrn(&M, "MASS MATRIX");
-  femMatPrn(&C, "DAMPING MATRIX");
-  femMatPrn(&KK, "KK STIFFNESS MATRIX");
-#endif
 
   /* load vector for step 0: */
   femMassDistrNewm(0);
