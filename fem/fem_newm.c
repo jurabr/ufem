@@ -156,6 +156,8 @@ int femSolveDynNewmark(void)
   double r_alpha = 0.1 ;
   double r_beta  = 0.1 ;
   long   i ;
+  long   pos ; /* for SaPo */
+  double val ; /* for SaPo */
 
 	dt      = dynStp ;
 	steps   = dynNum ;
@@ -323,12 +325,13 @@ int femSolveDynNewmark(void)
 #ifndef _SMALL_FEM_CODE_
 		if (femTangentMatrix == AF_YES) 
 		{
+      if ((pos = femKpos(femSaPoNode, U_Z)) > 0) 
+           { val = femVecGet(&u, pos) ; }
+      else { val = 0.0 ; }
 			femSaPoInput(dt*i, 
 				femVecGet(&u,femKpos(femSaPoNode, U_X)),
 				femVecGet(&u,femKpos(femSaPoNode, U_Y)),
-				femVecGet(&u,femKpos(femSaPoNode, U_Z)),
-				AF_NO,
-				AF_NO
+        val, AF_NO, AF_NO
 				) ;
 		}
 #endif
