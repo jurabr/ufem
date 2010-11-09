@@ -54,6 +54,7 @@ extern void fem_sol_free(void);
 extern int fem_fill_K(long mode);
 extern int fem_add_loads(void);
 extern int fem_add_disps(long disp_mode);
+extern int    femSolveDynNewmark(void);
 
 extern long  nDOFlen  ; /* lenght of nDOFfld                        */
 extern long *nDOFfld  ; /* description of DOFs in nodes             */
@@ -478,7 +479,14 @@ int monte_solution(char *param, double *ifld, double *ofld)
   femTangentMatrix = AF_NO ; /* workaround - we need empty result fields! */
 
   /* call solver here */
-  if ((rv =  monte_linear_solver()) != AF_OK) { goto memFree ; }
+  if (femNewmarkEL == AF_YES) /* transient dynamics: */
+  {
+    if ((rv =  femSolveDynNewmark()) != AF_OK) { goto memFree ; }
+  }
+  else /* falling back to linear solution */
+  {
+    if ((rv =  monte_linear_solver()) != AF_OK) { goto memFree ; }
+  }
  
 #if 0
 printf("NORM: (nodes=%li disps=%li) u=%e F=%e\n",nLen,nlLen,femVecNorm(&u), femVecNorm(&F));

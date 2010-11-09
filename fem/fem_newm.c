@@ -158,6 +158,7 @@ int femSolveDynNewmark(void)
   long   i ;
   long   pos ; /* for SaPo */
   double val ; /* for SaPo */
+  char  *fnm = NULL ; /* file name for step */
 
 	dt      = dynStp ;
 	steps   = dynNum ;
@@ -331,8 +332,13 @@ int femSolveDynNewmark(void)
  		if ((rv = fem_fill_K(AF_YES)) != AF_OK) { goto memFree; }
 
     /* writing of results*/
-    solSimNum = dt*i; /* time data */
-		if ((rv = femWriteRes( femSubStepFname(i))) != AF_OK) { goto memFree; }
+    if ((fnm = femSubStepFname(i)) != NULL)
+    {
+      solSimNum = dt*i; /* time data */
+		  if ((rv = femWriteRes(fnm)) != AF_OK) 
+         { free(fnm); fnm = NULL ; goto memFree; }
+      free(fnm); fnm = NULL ;
+    }
 
 #ifdef RUN_VERBOSE
 		fprintf(msgout,"[i]   %s: %s %f \n", _("Newmark step done"), _("cummulative time"), (i)*dt);
