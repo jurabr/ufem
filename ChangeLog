@@ -4,6 +4,14 @@ See fem/ChangeLog for solver changes.
 
 
 
+### Tue Nov 16 22:12:33 CET 2010
+
+bugfixes:
+  - path filed size problems
+  - faults on 64bit Linux fixed (problem related to paths)
+
+
+
 ### Tue Nov  9 20:05:14 CET 2010
 
 features:
