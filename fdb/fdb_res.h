@@ -78,7 +78,7 @@ typedef struct
 {
   long     len  ;      /* number of nodes                   */
   long    *node ;      /* list of nodes                     */
-  char     desc[256] ; /* path description                  */
+  char     desc[257] ; /* path description                  */
 }tResPath;
 
 

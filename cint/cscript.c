@@ -418,7 +418,7 @@ int ciPreProcScript(tScp *scp)
 	return(rv);
 memFree:
 	/* Destroys whole script: !!! */
-	ciFreeScript(scp); 
+	ciFreeScript(scp);
 	return(rv);
 }
 
@@ -586,12 +586,21 @@ int ciAddScript(char *name)
 
 	for (i=0; i<ciScriptLen; i++)
 	{
-		if ((strcmp(name,ciScript[i].name)) == 0)  /* already exists */
-    {
-      pos = i ;
-      /* free old one and replace with new: */
-	    return(ciModScript(&ciScript[pos], name, pos));
-    }
+		if ((ciScript[i].name != NULL) && (ciScript[i].len > 0))
+		{
+			if ((strcmp(name,ciScript[i].name)) == 0)  /* already exists */
+    	{
+      	pos = i ;
+      	/* free old one and replace with new: */
+	    	return(ciModScript(&ciScript[pos], name, pos));
+    	}
+		}
+		else
+		{
+			return(AF_ERR_MEM);
+			ciScriptLen = i-1 ;
+			return(ciNewScript(&ciScript[ciScriptLen], name));
+		}
 	}
 
 	return(ciNewScript(&ciScript[ciScriptLen], name));

@@ -417,7 +417,7 @@ int ciRunCmd(char *cmd)
 		{
 			rv = ciPreProcActiveScript();
 			ciReadingScript = 0 ;
-			if (rv != CI_OK) {return(AF_ERR);}
+			if (rv != CI_OK) {free(name); name=NULL; return(AF_ERR);}
 		}
 		else
 		{
