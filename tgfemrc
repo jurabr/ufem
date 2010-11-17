@@ -1,3 +1,6 @@
+!* Sample "$HOME/.tgfemrc" file:
+!* 
+!* Graphics:
 plotprop,nodeNumber,no
 plotprop,elemNumber,no
 plotprop,autoReplot,yes
@@ -6,7 +9,12 @@ plotprop,antiAlias,yes
 plotprop,wireOnly,no
 plotcol,hilightcolor,1,0,1,1
 ggeom,6,24,1268,900
+!* Deirectory for data files:
 datadir,/tmp
+!* Solver executable (must not end with spaces!):
 setsolver,/home/jirka/FEM/src/fem/fem
+!* Text output settings:
 outauto,yes
 outview,gvim
+!* Number of processor in use (solver,gui):
+nproc,2,2

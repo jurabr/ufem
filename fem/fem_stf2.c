@@ -33,9 +33,8 @@
 extern int D_ConcCrack2D(long ePos, long iPoint, double A, tVector *epsilon, long newM, long Problem, tMatrix *D);
 extern int sbet_get_D( long ePos, long iPoint, double A, tVector *epsilon, tVector *sigma, tVector *sigma_r, long newM, long Problem, tMatrix *D); /* fem_sbet.c */
 extern int fem_m09_D_2d( long ePos, long iPoint, double A, tVector *epsilon, long Mode, long Problem, tMatrix *D); 
-extern int chen2d_D(long ePos, long e_rep, long Problem,
-    tVector *epsilon, long Mode, 
-    tMatrix *Dep);
+extern int chen2d_D(long ePos, long e_rep, long Problem, tVector *epsilon, long Mode, tMatrix *Dep);
+int D_Plane_Ortho(double R1, double R2, double nu, double beta, double fi_1, tMatrix *Dcr);
 
 
 int D_HookIso_planeRaw(double E, double nu, long Problem, tMatrix *D)

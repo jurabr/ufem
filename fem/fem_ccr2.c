@@ -558,7 +558,6 @@ memFree:
 int D_Plane_OrthoCerv(double R1, double R2, double nu, double G, double beta, double fi_1, tMatrix *Dcr)
 {
 	int rv = AF_OK;
-	double ksi, H ;
   tMatrix  Dc0 ;
 	tMatrix  Dt  ;
 	tMatrix  TeT ;
