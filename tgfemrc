@@ -9,7 +9,7 @@ plotprop,antiAlias,yes
 plotprop,wireOnly,no
 plotcol,hilightcolor,1,0,1,1
 ggeom,6,24,1268,900
-!* Deirectory for data files:
+!* Directory for data files:
 datadir,/tmp
 !* Solver executable (must not end with spaces!):
 setsolver,/home/jirka/FEM/src/fem/fem
