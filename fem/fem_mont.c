@@ -74,7 +74,7 @@ long *monte_io_var_pos     = NULL ; /* random variable index*/
 long *monte_io_var_type    = NULL ; /* node, elem */
 long *monte_io_item        = NULL ; /* position of node, elem.. */
 long *monte_io_subitem     = NULL ; /* x,y, property number,...*/
-long *monte_io_subitemiter = NULL ; /* repeating valee (if needed) */
+long *monte_io_subitemiter = NULL ; /* repeating value (if needed) */
 
 long monte_fail_funct_id   = -1   ; /* still ignored */
 
@@ -389,119 +389,12 @@ memFree:
   return(rv);
 }
 
-/* Provides linear static/dynamic solution for Monte
- * @parame param parameter passed from Monte
- * @param ifld random input data field
- * @param ofld output data field
- */
-int monte_solution(char *param, double *ifld, double *ofld)
+int monte_fill_ofld_data(char *param, double *ofld)
 {
-	int rv = 0;
-  long i, j, k, pos ;
-  long val ;
+	long i, j, k, pos ;
+	double val ;
 
-  /* TODO use ifld */
-  for (i=0; i< monte_i_len; i++)
-  {
-    switch(monte_io_var_type[i])
-    {
-      case MONTE_VTYPE_RS:
-          femSetRSValPos(
-              rsType[monte_io_item[i]], 
-              monte_io_item[i], 
-              monte_io_subitem[i], 
-              monte_io_subitemiter[i],
-              ifld[monte_io_var_pos[i]]
-              ) ;
-        break ;
-      case MONTE_VTYPE_MAT: 
-          pos =  mpType[monte_io_item[i]] ;
-          pos = femGetRepValIndex(
-                    monte_io_item[i], 
-                    monte_io_subitem[i], 
-										monte_io_subitemiter[i],
-										mpValL, mpLenL,
-										mpFrom, mpLen,
-                    Mat[pos].val, Mat[pos].num, 
-                    Mat[pos].val_rp, Mat[pos].num_rp
-										);
-          if (pos  > -1)
-          {
-            mpValL[pos] = ifld[monte_io_var_pos[i]] ;
-          }
-
-        break ;
-
-      case MONTE_VTYPE_N:
-        switch (monte_io_subitem[i])
-        {
-          case 1: n_x[monte_io_item[i]] = ifld[monte_io_var_pos[i]] ;break ;
-          case 2: n_y[monte_io_item[i]] = ifld[monte_io_var_pos[i]] ; break ;
-          case 3: n_z[monte_io_item[i]] = ifld[monte_io_var_pos[i]] ;break ;
-        }
-        break ;
-        
-      case MONTE_VTYPE_NLD:
-        for (j=0; j<nlLen; j++)
-        {
-          if ((nlNode[j] == monte_io_item[i])
-              && (nlType[j] == monte_io_subitem[i])
-              && (nlDir[j] == monte_io_subitemiter[i])
-              )
-          {
-            nlVal[j] = ifld[monte_io_var_pos[i]] ;
-            break ;
-          }
-        }
-      break ;
-        
-      case MONTE_VTYPE_NLPOS: /* TODO fix this: */
-        for (j=0; j<nlLen; j++)
-        {
-          if ((j == monte_io_item[i])
-              && (nlType[j] == monte_io_subitem[i])
-              && (nlDir[j] == monte_io_subitemiter[i])
-              )
-          {
-            nlVal[j] = ifld[monte_io_var_pos[i]] ;
-            break ;
-          }
-        }
-      break ;
-
-      case MONTE_VTYPE_EL:
-        for (j=0; j<nlLen; j++)
-        {
-          if ((elElem[j] == monte_io_item[i])
-              && (elType[j] == monte_io_subitem[i])
-              )
-          {
-            elValL[elFrom[j+monte_io_subitemiter[i]]] = ifld[monte_io_var_pos[i]] ;
-            break ;
-          }
-        }
-      break ;
-    }
-  }
-
-  femTangentMatrix = AF_NO ; /* workaround - we need empty result fields! */
-
-  /* call solver here */
-  if (femNewmarkEL == AF_YES) /* transient dynamics: */
-  {
-    if ((rv =  femSolveDynNewmark()) != AF_OK) { goto memFree ; }
-  }
-  else /* falling back to linear solution */
-  {
-    if ((rv =  monte_linear_solver()) != AF_OK) { goto memFree ; }
-  }
- 
-#if 0
-printf("NORM: (nodes=%li disps=%li) u=%e F=%e\n",nLen,nlLen,femVecNorm(&u), femVecNorm(&F));
-#endif
-
-  /* fill ofld */
-  for (i=monte_i_len; i< (monte_i_len+monte_o_len); i++)
+	for (i=monte_i_len; i< (monte_i_len+monte_o_len); i++)
   {
     ofld[monte_io_var_pos[i-monte_i_len]] = 0 ;
 
@@ -606,11 +499,120 @@ printf("NORM: (nodes=%li disps=%li) u=%e F=%e\n",nLen,nlLen,femVecNorm(&u), femV
         }
       break ;
 
-
-
-
     }
   }
+	return(AF_OK);
+}
+
+/* Provides linear static/dynamic solution for Monte
+ * @parame param parameter passed from Monte
+ * @param ifld random input data field
+ * @param ofld output data field
+ */
+int monte_solution(char *param, double *ifld, double *ofld)
+{
+	int rv = 0;
+  long i, j, pos ;
+
+  /* TODO use ifld */
+  for (i=0; i< monte_i_len; i++)
+  {
+    switch(monte_io_var_type[i])
+    {
+      case MONTE_VTYPE_RS:
+          femSetRSValPos(
+              rsType[monte_io_item[i]], 
+              monte_io_item[i], 
+              monte_io_subitem[i], 
+              monte_io_subitemiter[i],
+              ifld[monte_io_var_pos[i]]
+              ) ;
+        break ;
+      case MONTE_VTYPE_MAT: 
+          pos =  mpType[monte_io_item[i]] ;
+          pos = femGetRepValIndex(
+                    monte_io_item[i], 
+                    monte_io_subitem[i], 
+										monte_io_subitemiter[i],
+										mpValL, mpLenL,
+										mpFrom, mpLen,
+                    Mat[pos].val, Mat[pos].num, 
+                    Mat[pos].val_rp, Mat[pos].num_rp
+										);
+          if (pos  > -1)
+          {
+            mpValL[pos] = ifld[monte_io_var_pos[i]] ;
+          }
+
+        break ;
+
+      case MONTE_VTYPE_N:
+        switch (monte_io_subitem[i])
+        {
+          case 1: n_x[monte_io_item[i]] = ifld[monte_io_var_pos[i]] ;break ;
+          case 2: n_y[monte_io_item[i]] = ifld[monte_io_var_pos[i]] ; break ;
+          case 3: n_z[monte_io_item[i]] = ifld[monte_io_var_pos[i]] ;break ;
+        }
+        break ;
+        
+      case MONTE_VTYPE_NLD:
+        for (j=0; j<nlLen; j++)
+        {
+          if ((nlNode[j] == monte_io_item[i])
+              && (nlType[j] == monte_io_subitem[i])
+              && (nlDir[j] == monte_io_subitemiter[i])
+              )
+          {
+            nlVal[j] = ifld[monte_io_var_pos[i]] ;
+            break ;
+          }
+        }
+      break ;
+        
+      case MONTE_VTYPE_NLPOS: /* TODO fix this: */
+        for (j=0; j<nlLen; j++)
+        {
+          if ((j == monte_io_item[i])
+              && (nlType[j] == monte_io_subitem[i])
+              && (nlDir[j] == monte_io_subitemiter[i])
+              )
+          {
+            nlVal[j] = ifld[monte_io_var_pos[i]] ;
+            break ;
+          }
+        }
+      break ;
+
+      case MONTE_VTYPE_EL:
+        for (j=0; j<nlLen; j++)
+        {
+          if ((elElem[j] == monte_io_item[i])
+              && (elType[j] == monte_io_subitem[i])
+              )
+          {
+            elValL[elFrom[j+monte_io_subitemiter[i]]] = ifld[monte_io_var_pos[i]] ;
+            break ;
+          }
+        }
+      break ;
+    }
+  }
+
+  femTangentMatrix = AF_NO ; /* workaround - we need empty result fields! */
+
+  /* call solver here */
+  if (femNewmarkEL == AF_YES) /* transient dynamics: */
+  {
+    if ((rv =  femSolveDynNewmark()) != AF_OK) { goto memFree ; }
+  }
+  else /* falling back to linear solution */
+  {
+    if ((rv =  monte_linear_solver()) != AF_OK) { goto memFree ; }
+  }
+ 
+  /* RESULTS: fill ofld */
+	monte_fill_ofld_data(param, ofld) ;
+  
 
 #ifdef FEM_MONT_FSAVE
   if (fem_monte_file_num > -1)
