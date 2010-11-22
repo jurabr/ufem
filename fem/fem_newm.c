@@ -25,6 +25,10 @@
 
 #include "fem_sol.h"
 
+#ifdef USE_MONTE
+extern int monte_fill_ofld_data(double *ofld);
+#endif
+
 /* from fem_sol.c: */
 extern void fem_sol_null(void);
 extern void fem_sol_free(void);
@@ -142,12 +146,10 @@ int femMassDistrNewm(long step)
  * konecnych prvku v dynamice konstrukci", SNTL, Prague, 1981, p. 122
  * Newmark time integration procedure is used
  *
- * @param start_time time when solution starts
- * @param endif time when solution ends
- * @param steps number of steps
+ * @param ofld random output data filed (only != NULL for Monte Carlo)
  * @return statis
  */
-int femSolveDynNewmark(void)
+int femSolveDynNewmark(double *ofld)
 {
 	int    rv = AF_OK ;
 	double dt = 0.0 ;
@@ -330,6 +332,10 @@ int femSolveDynNewmark(void)
 
 		/* results on elements: */
  		if ((rv = fem_fill_K(AF_YES)) != AF_OK) { goto memFree; }
+
+#ifdef USE_MONTE
+		monte_fill_ofld_data(ofld) ;
+#endif
 
     /* writing of results*/
     if ((fnm = femSubStepFname(i)) != NULL)

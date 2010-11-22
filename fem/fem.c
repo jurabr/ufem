@@ -37,7 +37,7 @@
 extern long   femTestConstElem ;
 extern long   femTestConstIpn  ;
 extern int    femDryRun(void)  ;
-extern int    femSolveDynNewmark(void);
+extern int    femSolveDynNewmark(double *ofld);
 #endif
 
 #ifdef USE_MPI
@@ -145,7 +145,7 @@ int main(int argc, char *argv[])
 		{
 			if (femNewmarkEL == AF_YES) /* Newmark: dynamics */
 			{
-				rv = femSolveDynNewmark() ;
+				rv = femSolveDynNewmark(NULL) ;
 			}
 			else
 			{

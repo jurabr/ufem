@@ -178,19 +178,19 @@ MVIZLIBS=-L/usr/lib32 -L/usr/freeware/lib32 -lglut -lGL -lGLU -lX11 -lXmu -lm
 
 #####################################################
 
-OBJECTS=fem_sol.o fem_nrm.o fem_alm.o fem_eige.o fem_newm.o fem_loads.o fem_mloc.o fem_io.o fem_spio.o fem_data.o fem_dama.o fem_accs.o fem_mem.o fem_math.o fem_eqs.o fem_elem.o fem_eini.o fem_e000.o fem_e001.o fem_e002.o fem_e003.o fem_e004.o fem_e005.o fem_e006.o fem_e007.o fem_e008.o fem_e009.o fem_e010.o fem_e011.o fem_e012.o fem_e013.o fem_e014.o fem_e015.o fem_e016.o fem_e017.o fem_mat.o fem_mini.o fem_m000.o fem_m001.o fem_m002.o fem_m003.o fem_m004.o fem_m005.o fem_m006.o fem_m007.o fem_m008.o fem_m009.o fem_m010.o fem_sbet.o fem_sber.o fem_nlmc.o fem_mpi.o fem_paux.o fem_meqs.o fem_stf2.o fem_ccr2.o fem_chen.o fem_ch2d.o fem_bone.o fem_scrv.o fem_dp.o fem_vmis.o fem_pl3d.o fem_ccr3.o fem_para.o fem_spnt.o fem_pr3d.o fem_lb2d.o fem_pl1d.o fem_sb1d.o fem_od3d.o fem_mrun.o
+OBJECTS=fem_sol.o fem_nrm.o fem_alm.o fem_eige.o fem_loads.o fem_mloc.o fem_io.o fem_spio.o fem_data.o fem_dama.o fem_accs.o fem_mem.o fem_math.o fem_eqs.o fem_elem.o fem_eini.o fem_e000.o fem_e001.o fem_e002.o fem_e003.o fem_e004.o fem_e005.o fem_e006.o fem_e007.o fem_e008.o fem_e009.o fem_e010.o fem_e011.o fem_e012.o fem_e013.o fem_e014.o fem_e015.o fem_e016.o fem_e017.o fem_mat.o fem_mini.o fem_m000.o fem_m001.o fem_m002.o fem_m003.o fem_m004.o fem_m005.o fem_m006.o fem_m007.o fem_m008.o fem_m009.o fem_m010.o fem_sbet.o fem_sber.o fem_nlmc.o fem_mpi.o fem_paux.o fem_meqs.o fem_stf2.o fem_ccr2.o fem_chen.o fem_ch2d.o fem_bone.o fem_scrv.o fem_dp.o fem_vmis.o fem_pl3d.o fem_ccr3.o fem_para.o fem_spnt.o fem_pr3d.o fem_lb2d.o fem_pl1d.o fem_sb1d.o fem_od3d.o fem_mrun.o
 
 
 # targets:
 all: fem
 
 # main()
-fem: fem.o $(OBJECTS) fem_mont_no.o $(FEATLIBS)
-	$(CC) -o $(@) $(CFLAGS) fem.o $(OBJECTS) fem_mont_no.o $(LIBS)  
+fem: fem.o $(OBJECTS) fem_mont_no.o fem_newm.o $(FEATLIBS)
+	$(CC) -o $(@) $(CFLAGS) fem.o $(OBJECTS) fem_mont_no.o fem_newm.o $(LIBS)  
 
 # library for monte():
-libfem.so: fem_mont.o $(OBJECTS)
-	$(LD) fem_mont.o $(OBJECTS) -o $(@)
+libfem.so: fem_mont.o fem_newmmont.o $(OBJECTS)
+	$(LD) fem_mont.o fem_newmmont.o $(OBJECTS) -o $(@)
 
 # library for softening curves:
 ../sinope/liba_diag.a: 
@@ -445,6 +445,11 @@ fem_pr3d.o: fem_pr3d.c fem_math.h fem.h fem_mem.o
 fem_mont.o: fem_mont.c fem.h fem_mem.o
 	$(CC) -c $(CFLAGS) -DUSE_MONTE fem_mont.c
 
+# Newmark for Monte cooperation:
+fem_newmmont.o: fem_newm.c fem_sol.h fem.h fem_data.o
+	$(CC) -c $(CFLAGS) -DUSE_MONTE fem_newm.c -o $(@)
+
+# monte without monte support:
 fem_mont_no.o: fem_mont.c fem.h fem_mem.o
 	$(CC) -c $(CFLAGS) fem_mont.c -o $(@)
 

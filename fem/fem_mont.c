@@ -54,7 +54,7 @@ extern void fem_sol_free(void);
 extern int fem_fill_K(long mode);
 extern int fem_add_loads(void);
 extern int fem_add_disps(long disp_mode);
-extern int    femSolveDynNewmark(void);
+extern int    femSolveDynNewmark(double *ofld);
 
 extern long  nDOFlen  ; /* lenght of nDOFfld                        */
 extern long *nDOFfld  ; /* description of DOFs in nodes             */
@@ -389,7 +389,11 @@ memFree:
   return(rv);
 }
 
-int monte_fill_ofld_data(char *param, double *ofld)
+/** Filling of results data filed (ofld)
+ * @param ofld field to put data in
+ * @return status
+ */
+int monte_fill_ofld_data(double *ofld)
 {
 	long i, j, k, pos ;
 	double val ;
@@ -603,7 +607,7 @@ int monte_solution(char *param, double *ifld, double *ofld)
   /* call solver here */
   if (femNewmarkEL == AF_YES) /* transient dynamics: */
   {
-    if ((rv =  femSolveDynNewmark()) != AF_OK) { goto memFree ; }
+    if ((rv =  femSolveDynNewmark(ofld)) != AF_OK) { goto memFree ; }
   }
   else /* falling back to linear solution */
   {
@@ -611,7 +615,7 @@ int monte_solution(char *param, double *ifld, double *ofld)
   }
  
   /* RESULTS: fill ofld */
-	monte_fill_ofld_data(param, ofld) ;
+	monte_fill_ofld_data(ofld) ;
   
 
 #ifdef FEM_MONT_FSAVE
@@ -640,24 +644,28 @@ int fem_monte_read_data(FILE *fr)
   long ilen, olen;
   long i ;
 
-  fscanf(fr,"%li %li", &ilen, &olen) ;
+  if (fscanf(fr,"%li %li", &ilen, &olen) < 2) {return(AF_OK); /* nothing to do */}
 
-  if (ilen <= 0)
-  {
-    return(AF_OK); /* nothing to do */
-  }
+  if (ilen <= 0) { return(AF_OK); /* nothing to do */ }
 
   if (monte_io_alloc(ilen, olen) != AF_OK) {return(AF_ERR_MEM);}
   
   for (i=0; i<(ilen+olen); i++)
   {
+		if (
     fscanf(fr, "%li %li %li %li %li",
         &monte_io_var_pos[i],
         &monte_io_var_type[i],
         &monte_io_item[i],
         &monte_io_subitem[i],
         &monte_io_subitemiter[i]
-        );
+        ) < 5) 
+		{
+#ifdef RUN_VERBOSE
+			fprintf(msgout,"[E] %s!\n", ("Incomplete or unavailable random data"));
+#endif
+			return(AF_ERR_IO);
+		}
 #ifdef DEVEL_VERBOSE
   fprintf(msgout, "rand: %li %li %li %li %li\n",
         monte_io_var_pos[i],
