@@ -36,7 +36,7 @@
 #define MONTE_VTYPE_N           2
 #define MONTE_VTYPE_NLD         3
 #define MONTE_VTYPE_EL          4
-#define MONTE_VTYPE_NLPOS       5 /* new variable - node load with its ID */
+#define MONTE_VTYPE_NLPOS       5 /* node load with its ID */
 
 #define MONTE_VTYPE_RES_D       6
 #define MONTE_VTYPE_RES_R       7
@@ -139,7 +139,7 @@ void monte_nums_of_vars(char *param, long *ilen, long *olen, long *ffunc)
 {
   *ilen = monte_i_len ; /* required number of input variables */
   *olen = monte_o_len ; /* returned number of output variables */
-  *ffunc = -1 ; /* TODO ... currently not available */
+  *ffunc = -1 ;         /* TODO ... currently not available */
   return ;
 }
 
@@ -220,13 +220,17 @@ char *monte_ivar_name(char *param, long pos)
 }
 
 
+/** Returnes name of output variable
+ * @parame param parameter passed from Monte
+ * @param pos number of variable in field (0..n-1)
+ * @return string with variable name
+ */
 char *monte_ovar_name(char *param, long pos)
 {
   static char name[257];
   char dir[]  = "__";
   int i ;
 
-  /* TODO */
   if (pos >= monte_o_len) { return("empty"); }
   for (i=0; i<257; i++) { name[i] = '\0'; }
 
@@ -364,7 +368,7 @@ int monte_clean_lib_stuff(char *param)
   return(0);
 }
 
-/* linear solver wrapper: */
+/* linear static solver wrapper: */
 int monte_linear_solver(void)
 {
   int rv = AF_OK ;
@@ -385,7 +389,11 @@ memFree:
   return(rv);
 }
 
-/* It's basicaly a stripped-down linear solver from fem_sol.c */
+/* Provides linear static/dynamic solution for Monte
+ * @parame param parameter passed from Monte
+ * @param ifld random input data field
+ * @param ofld output data field
+ */
 int monte_solution(char *param, double *ifld, double *ofld)
 {
 	int rv = 0;
@@ -445,7 +453,7 @@ int monte_solution(char *param, double *ifld, double *ofld)
             break ;
           }
         }
-                                break ;
+      break ;
         
       case MONTE_VTYPE_NLPOS: /* TODO fix this: */
         for (j=0; j<nlLen; j++)
@@ -459,7 +467,7 @@ int monte_solution(char *param, double *ifld, double *ofld)
             break ;
           }
         }
-                                break ;
+      break ;
 
       case MONTE_VTYPE_EL:
         for (j=0; j<nlLen; j++)
@@ -472,7 +480,7 @@ int monte_solution(char *param, double *ifld, double *ofld)
             break ;
           }
         }
-                                break ;
+      break ;
     }
   }
 

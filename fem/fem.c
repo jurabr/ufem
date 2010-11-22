@@ -132,13 +132,13 @@ int main(int argc, char *argv[])
 
   if (femDynamics == AF_YES) /* dynamics */
   {
-    /* TODO: modal analysis */
+    /* modal analysis */
 		if (femEigenModal == AF_YES)
 		{
 #if 1
-    	rv = femSolveEigenInvIter(1500, 4) ;
+    	rv = femSolveEigenInvIter(1500, 4) ; /* this does not work well */
 #else
-    	rv = femSolveEigenLanczos(1500, 4) ;
+    	rv = femSolveEigenLanczos(1500, 4) ; /* this totally fails */
 #endif
 		}
 		else
@@ -156,7 +156,7 @@ int main(int argc, char *argv[])
 			}
 		}
   }
-  else 
+  else /* statics */
   {
     if ((femTestConstIpn > -1) && (femTestConstElem > -1))
     {
