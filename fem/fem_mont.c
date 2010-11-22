@@ -255,6 +255,35 @@ char *monte_ovar_name(char *param, long pos)
       sprintf(name,"DISP_%s_%li",dir,nID[monte_io_item[pos]]);
 			return(name);
       break;
+
+    case MONTE_VTYPE_RES_D_MAX:
+      switch(monte_io_subitem[pos])
+      {
+        case 1: dir[0] = 'U'; dir[1]='X' ; break;
+        case 2: dir[0] = 'U'; dir[1]='Y' ; break;
+        case 3: dir[0] = 'U'; dir[1]='Z' ; break;
+        case 4: dir[0] = 'R'; dir[1]='X' ; break;
+        case 5: dir[0] = 'R'; dir[1]='Y' ; break;
+        case 6: dir[0] = 'R'; dir[1]='Z' ; break;
+      }
+      sprintf(name,"DISP_%s_%li",dir,nID[monte_io_item[pos]]);
+			return(name);
+      break;
+
+    case MONTE_VTYPE_RES_D_MIN:
+      switch(monte_io_subitem[pos])
+      {
+        case 1: dir[0] = 'U'; dir[1]='X' ; break;
+        case 2: dir[0] = 'U'; dir[1]='Y' ; break;
+        case 3: dir[0] = 'U'; dir[1]='Z' ; break;
+        case 4: dir[0] = 'R'; dir[1]='X' ; break;
+        case 5: dir[0] = 'R'; dir[1]='Y' ; break;
+        case 6: dir[0] = 'R'; dir[1]='Z' ; break;
+      }
+      sprintf(name,"DISP_%s_%li",dir,nID[monte_io_item[pos]]);
+			return(name);
+      break;
+
     case MONTE_VTYPE_RES_R: 
       switch(monte_io_subitem[pos])
       {
