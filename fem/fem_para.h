@@ -77,12 +77,6 @@ extern char *femSaveVecFName ;
 #endif
 #endif
 
-extern long  femUseMC      ;
-extern long  femMCSims     ;
-extern long  femMCSaveMode ;
-extern char *femMCfile     ;
-
-
 extern char *femSubStepFname(long snumber);
 extern long femSubStepCheckNumber(long number);
 

@@ -79,12 +79,6 @@ char *femSaveVecFName     = NULL ;
 
 long femSaveEveryNth      = 0 ;     /* save every Nth substep in NRM */
 
-long  femUseMC            = AF_NO; /* if Monte Carlo is used */
-long  femMCSims           = 1 ; /* number of MC simulations */
-long  femMCSaveMode       = 1 ; /* 1=save sum,sum2 only, 2=save failed data, too, 3=save every simulation */
-char *femMCfile           = NULL ; /* random data file */
-long  femMCfileStat       = AF_OK ; /* random data file status */
-
 long  femBreakSolu        = AF_NO ; /* break linear solution after matrices were written - for MC etc. */
 
 long  femDynamics         = AF_NO ; /* indcates non-static solution */

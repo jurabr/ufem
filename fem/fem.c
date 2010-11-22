@@ -124,12 +124,9 @@ int main(int argc, char *argv[])
 	if ((rv = femReadInput(fem_ifile)) != AF_OK) {return(rv);}
 
 #ifndef _SMALL_FEM_CODE_
-  if (femUseMC == AF_NO)
-  {
-	  femSaPoSetNode(0, nLen);
-	  if ((rv = femSaPoAlloc(solNoLinStepMax, 0)) != AF_OK) {return(rv);}
-	  femSaPoLen  = solNoLinStepMax ;
-  }
+	femSaPoSetNode(0, nLen);
+	if ((rv = femSaPoAlloc(solNoLinStepMax, 0)) != AF_OK) {return(rv);}
+	femSaPoLen  = solNoLinStepMax ;
 #endif
 
 
