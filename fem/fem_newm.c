@@ -333,6 +333,7 @@ int femSolveDynNewmark(double *ofld)
 		/* results on elements: */
  		if ((rv = fem_fill_K(AF_YES)) != AF_OK) { goto memFree; }
 
+		/* if running as Monte library then data should be checked here: */
 #ifdef USE_MONTE
 		if (ofld !=  NULL) { monte_fill_ofld_data(ofld) ; }
 #endif
