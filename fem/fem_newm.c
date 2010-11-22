@@ -334,7 +334,7 @@ int femSolveDynNewmark(double *ofld)
  		if ((rv = fem_fill_K(AF_YES)) != AF_OK) { goto memFree; }
 
 #ifdef USE_MONTE
-		monte_fill_ofld_data(ofld) ;
+		if (ofld !=  NULL) { monte_fill_ofld_data(ofld) ; }
 #endif
 
     /* writing of results*/
