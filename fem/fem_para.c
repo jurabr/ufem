@@ -138,11 +138,6 @@ void fem_help(int argc, char *argv[])
 #endif
 #ifndef _SMALL_FEM_CODE_
 	fprintf(msgout,"   -d        ... %s\n", _("iterative solution for compression/tension only b. conditions"));
-#ifdef _SHOW_MONTE_CARLO
-	fprintf(msgout,"   -mc  N    ... %s\n", _("use Monte Carlo with \"N\" simulations (required to run MC)"));
-	fprintf(msgout,"   -mcf      ... %s\n", _("save \"failed\" Monte Carlo simulations"));
-	fprintf(msgout,"   -mca      ... %s\n", _("save ALL Monte Carlo simulations (will need a lot of space)"));
-#endif
 #ifdef _USE_THREADS_
 	fprintf(msgout,"   -t   N    ... %s\n", _("use \"N\" threads"));
 	fprintf(msgout,"   -tm  N    ... %s\n", _("run threaded code only if vectors are larger than \"N\""));
@@ -512,58 +507,6 @@ int fem_parse_params(int argc, char *argv[])
 			fem2ndOrder = AF_YES ;
 		}
 
-    /* Monte Carlo */
-		if (strcmp(argv[i],"-mc") == 0)
-		{
-			if (argc < (i+2)) 
-			{
-				return(AF_ERR_SIZ);
-			}
-			else
-			{
-			  femUseMC = AF_YES ;
-				if (argv[i+1][0] == '-')
-				{
-					return(AF_ERR_VAL);
-				}
-				if ((femMCSims = atoi(argv[i+1])) < 1) 
-        {
-					return(AF_ERR_SIZ);
-        }
-        
-			}
-		}
-    
-    if (strcmp(argv[i],"-mcf") == 0)
-		{
-			if (femMCSaveMode < 2) { femMCSaveMode = 2 ; }
-		}
-
-    if (strcmp(argv[i],"-mca") == 0)
-		{
-      femMCSaveMode = 3 ;
-		}
-    
-    if (strcmp(argv[i],"-mci") == 0) /* monte carlo data */
-		{
-			if (argc < (i+2)) 
-			{
-				return(AF_ERR_SIZ);
-			}
-			else
-			{
-				if (argv[i+1][0] == '-')
-				{
-					return(AF_ERR_VAL);
-				}
-				if ((femMCfile=femMiscFileName(argv[i+1],&femMCfileStat)) == NULL)
-				{
-					return(AF_ERR_MEM);
-				}
-        if (femMCfileStat == AF_NO) {return(AF_ERR_MEM);}
-			}
-		}
-    
     if (strcmp(argv[i],"-b") == 0)
 		{
       femBreakSolu = AF_YES ;

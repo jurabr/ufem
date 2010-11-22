@@ -168,8 +168,6 @@ int main(int argc, char *argv[])
     }
     else /* statics */
     {
-    if (femUseMC == AF_NO) /* normal solution */
-    {
 	    if (solNoLinS > 1)
 	    {
         switch (solNoLinS)
@@ -183,15 +181,6 @@ int main(int argc, char *argv[])
       }
 	    else
 	      { if ((rv = femSolve()) != AF_OK) {return(rv);} }
-    }
-    else /* Monte Carlo */
-    {
-	    femSaPoSetNode(0, nLen);
-	    if ((rv = femSaPoAlloc(femMCSims, 0)) != AF_OK) {return(rv);}
-	    femSaPoLen  = femMCSims ;
-
-      rv = femSolveMC();
-    }
     }
   }
 
