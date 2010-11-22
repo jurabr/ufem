@@ -46,6 +46,10 @@
 #define MONTE_VTYPE_RES_MIN_E  11 /* min value of elem. res. */
 #define MONTE_VTYPE_RES_FAIL_E 12 /* 1 for fail, 0 for OK (determined from given elem. res) */
 
+#define MONTE_VTYPE_RES_D_MAX  13 /* max. displacement in node (dynamics) */
+#define MONTE_VTYPE_RES_D_MIN  14 /* min. displacement in node (dynamics) */
+
+
 extern void fem_sol_null(void);
 extern int fem_dofs(void);
 extern int fem_sol_alloc(void);
@@ -410,6 +414,26 @@ int monte_fill_ofld_data(double *ofld)
         ofld[monte_io_var_pos[i-monte_i_len]] = femVecGet(&u, pos) ;
         break ;
 
+        /* ************************************** */
+
+      case MONTE_VTYPE_RES_D_MAX:  /* MAX displacements */
+        if ((pos = monte_io_item[i]*KNOWN_DOFS + monte_io_subitem[i]-1) > nDOFlen) {break;}
+        pos = nDOFfld[pos] ;
+        val = femVecGet(&u, pos) ;
+        if (ofld[monte_io_var_pos[i-monte_i_len]]  < val)
+           { ofld[monte_io_var_pos[i-monte_i_len]] = val ; }
+        break ;
+
+      case MONTE_VTYPE_RES_D_MIN:  /* MIN displacements */
+        if ((pos = monte_io_item[i]*KNOWN_DOFS + monte_io_subitem[i]-1) > nDOFlen) {break;}
+        pos = nDOFfld[pos] ;
+        val = femVecGet(&u, pos) ;
+        if (ofld[monte_io_var_pos[i-monte_i_len]] > val)
+           { ofld[monte_io_var_pos[i-monte_i_len]] = val ; }
+        break ;
+
+        /* ************************************** */
+
       case MONTE_VTYPE_RES_R: /* reactions */
         for (j=0; j<resRLen; j++)
         {
@@ -445,7 +469,8 @@ int monte_fill_ofld_data(double *ofld)
       break ;
 
       case MONTE_VTYPE_RES_MAX_E: /* max of element results */
-        ofld[monte_io_var_pos[i-monte_i_len]] = 0.0 ;
+        if (femNewmarkEL != AF_YES)
+           { ofld[monte_io_var_pos[i-monte_i_len]] = 0.0 ; }
         for(j=0; j<eLen; j++)
         {
           for (k=0; k<=Elem[femGetETypePos(j)].res_rp;k++)
@@ -463,7 +488,8 @@ int monte_fill_ofld_data(double *ofld)
       break ;
 
       case MONTE_VTYPE_RES_MIN_E: /* min of element results */
-        ofld[monte_io_var_pos[i-monte_i_len]] = 0.0 ;
+        if (femNewmarkEL != AF_YES)
+           { ofld[monte_io_var_pos[i-monte_i_len]] = 0.0 ; }
         for(j=0; j<eLen; j++)
         {
           for (k=0; k<=Elem[femGetETypePos(j)].res_rp;k++)
@@ -481,7 +507,8 @@ int monte_fill_ofld_data(double *ofld)
       break ;
 
       case MONTE_VTYPE_RES_FAIL_E: /* failure state */
-        ofld[monte_io_var_pos[i-monte_i_len]] = 0.0 ;
+        if (femNewmarkEL != AF_YES)
+           { ofld[monte_io_var_pos[i-monte_i_len]] = 0.0 ; }
         val = -1 ;
 
         for(j=0; j<eLen; j++)
