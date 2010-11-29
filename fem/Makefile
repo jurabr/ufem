@@ -88,7 +88,6 @@ DEBUG=-O3 -DRUN_VERBOSE -D_MATRIX_SAVING_ -D_USE_SIGNALS_ -DUSE_FAST_SAPO
 #DEBUG=-O2 -DRUN_VERBOSE
 
 FEATFLAGS=
-#FEATFLAGS=-D_USE_EXT_CRV_
 
 #CFLAGS=$(FEATFLAGS) -Wall -ansi -pedantic -DUSE_NLMC $(DEBUG) -fPIC
 CFLAGS=$(FEATFLAGS) -Wall -ansi -pedantic $(DEBUG) -fPIC
@@ -102,7 +101,6 @@ CFLAGS=$(FEATFLAGS) -Wall -ansi -pedantic $(DEBUG) -fPIC
 #DEBUG=-O -DRUN_VERBOSE -DDEVEL
 
 FEATLIBS=
-#FEATLIBS=../sinope/liba_diag.a
 
 LIBS=$(FEATLIBS) -L/usr/local/lib -lm #-lefence
 #LIBS=$(FEATLIBS) -L/usr/local/lib -lm -lpthread #-lefence

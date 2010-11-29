@@ -97,9 +97,6 @@ void fem_help(int argc, char *argv[])
 #ifdef RUN_VERBOSE
 	fprintf(msgout,"\nuFEM %s: %s\n", _FEM_VERSION_, _("tool for finite element analysis"));
 	fprintf(msgout,"(C) Jiri Brozovsky");
-#ifdef _USE_EXT_CRV_
-	fprintf(msgout,", Ludek Brdecko");
-#endif
 	fprintf(msgout,"\n\n");
 	fprintf(msgout,"%s: %s [%s]\n\n %s:\n", _(" Usage"), argv[0], _("arguments"),
 	  _("Arguments"));

@@ -26,10 +26,48 @@
 #include "fem_elem.h"
 #include "fem_mat.h"
 
-#ifdef _USE_EXT_CRV_ /* from Ludek Brdecko's library */
-extern int rt_f(int TypeCurve, double Eo, double ft,double Gf, double eps, double Le, int NPar, tVector *par, double *sig );
-#endif
 
+/** Exponential softwening curve for concrete (type=2)
+ * @param E0 initial E (youn modullus)
+ * @param ft current tensile strenth
+ * @param Gf fracture energy
+ * @param eps strain
+ * @param Le crack band width
+ * @param sigma current stress (pointer to result)
+ */
+int ft_curve(double E0, double ft, double Gf, double eps, double Le, double  *sigma )
+{
+  double epso,epsi,epsc,eps_f;
+  int i;
+
+	eps_f = Gf / ft / Le;
+
+	epso = ft / E0;
+
+  if (eps<epso)
+	{
+    *sigma = eps * E0;
+  }
+	else
+	{
+    epsi = eps;
+    *sigma = ft * exp(-1.0*(eps-epso)/(eps_f));
+    epsc = epsi - (*sigma)/E0;
+
+	  for (i=1; i<=20; i++)
+		{
+	    *sigma = ft*exp(-1.0*(epsc)/(eps_f));
+	    epsi = epsc + (*sigma) / E0;
+	    epsc = epsc - (epsi-eps);
+	  }
+  }
+
+	if (*sigma < 0) { *sigma = 0.0 ; }
+
+	return(AF_OK);
+}
+
+  
 /** Computes Rt for tension (no epsilon-check, no Kupfer, no nothing)
  * @param mPos material type index
  * @epsilon current total strain
@@ -43,49 +81,22 @@ double sb1d_get_Rt_tension(long ePos,
     double epsilon)
 {
   double  sigma ;
-#ifdef _USE_EXT_CRV_
-  int     i ;
   long    type = 0 ;
-  long    npar ;
-  tVector par ;
-  long    vpos[100] ;
-  double  vdata[100] ;
-#endif
 
   if (epsilon <= 0.0) {return(E0);} /* nothing to do with non-linearity */
 
-#ifdef _USE_EXT_CRV_
-  if ((type = femGetMPValPos(ePos, MAT_SELE, 0)) < 1) { type = 1 ; }
-
-  npar = femGetMPRepNumPos(ePos);
-
-  /* vector settings (TODO: need to be filled) */
-  par.type = VEC_FULL ;
-  par.rows = npar ;
-  par.pos  = vpos ;
-  par.data = vdata ;
-
-  if (npar > 0)
-  {
-    for (i=1; i<=npar; i++)
-    {
-      par.pos[i-1] = i  ;
-      par.data[i-1] = femGetMPValPos(ePos, MAT_WX, i) ;
-			/*printf("{%i} %e\n",i,femGetMPValPos(ePos, MAT_WX, i));*/
-    }
-  }
-#endif
-
 	if (Gf <= 0.0) {return(0.0);}
 
-#ifndef _USE_EXT_CRV_ /* original (my) code: */
-	sigma = smax - smax*smax*L / (2.0*Gf/1.0)*(epsilon-(smax/E0)) ;
-	if (sigma <= 0.0) {sigma = 0.0 ;}
+	if (type <= 1) /* linear interpolation */
+	{
+		sigma = smax - smax*smax*L / (2.0*Gf/1.0)*(epsilon-(smax/E0)) ;
+		if (sigma <= 0.0) {sigma = 0.0 ;}
+	}
+	else /* curvilinear interpolation */
+	{
+		ft_curve(E0, smax, Gf, epsilon, L, &sigma ) ;
+	}
 
-#else /* external code is called here */
-  rt_f(type, E0, smax, Gf, epsilon, L,
-      npar, &par, &sigma );
-#endif
 	if ((sigma/epsilon) < 0.0) {return(0.0);}
 	if ((sigma/epsilon) > E0 ) {return(E0); }
 
