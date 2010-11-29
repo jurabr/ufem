@@ -4,6 +4,13 @@ See fem/ChangeLog for solver changes.
 
 
 
+### Mon Nov 29 13:10:31 CET 2010
+
+features:
+  + -ssor parameter added to all solver commands
+
+
+
 ### Tue Nov 16 22:12:33 CET 2010
 
 bugfixes:
