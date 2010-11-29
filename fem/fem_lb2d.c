@@ -26,6 +26,8 @@
 
 #include "fem_elem.h"
 
+/* TODO: this file is unused */
+
 /** computes position of centre of gravity */
 double lb2_compute_ty(long ePos)
 {

@@ -339,33 +339,7 @@ int e003_stiff(long ePos, long Mode, tMatrix *K_e, tVector *F_e, tVector *Fr_e)
 		femVecPrn(F_e, "F_e");
 		femVecPrn(&F_0, "F_0");
 
-    if (femGetETypePos(ePos) == 13)
-    {
-      EI = fem_beam2d_ei_val(ePos,
-          (femVecGet(F_e,3)+femVecGet(F_e,6))/2.0, /* M */
-          (femVecGet(F_e,1)+femVecGet(F_e,4))/2.0 /* N */
-          ) ;
-
-	    femPutEResVal(ePos, RES_EI, 0, EI);
-	    femPutEResVal(ePos, RES_EI, 1, EI);
-
-      femVecSetZero(&F_0) ;
-      femVecSetZero(&F_1) ;
-
-      femVecClone(&F_0, &F_1);
-
-      /* recompute stiffness matrix (won't work for 2nd order!): */
-      e003_local_stiff_matrix(ePos, Mode, Lx, Ex, Ax, Ix, EI, kl1, kl2, &k_0);
-	    femMatMatMult(&T_T, &k_0, &Tk_0);
-	    femMatMatMult(&Tk_0, &T, K_e);
-		  femMatVecMult(K_e, &u_e, F_e) ; /* global */
-		  femMatVecMult(&T, F_e, &F_0) ; /* local */
-      femVecLinComb(1.0, &F_0, -1.0, &F_1, Fr_e) ;
-    }
-    else
-    {
-      EI = Ex * Ix ;
-    }
+    EI = Ex * Ix ;
 
     /* layered beam */
     if ((femGetETypePos(ePos) == 3) && (femRSNumPos(femGetERSPos(ePos)) > 4))
