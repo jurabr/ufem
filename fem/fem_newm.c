@@ -188,6 +188,7 @@ int femSolveDynNewmark(double *ofld)
   a[9] = dt / 2.0 ;
   a[10] = a[9] ;
 
+#ifndef USE_MONTE
  	if ((rv = femElemTypeInit()) != AF_OK) { goto memFree; }
  	if ((rv = femMatTypeInit()) != AF_OK) { goto memFree; }
 
@@ -204,26 +205,37 @@ int femSolveDynNewmark(double *ofld)
 #ifdef RUN_VERBOSE
 	fprintf(msgout,"[i]   %s.\n",_("data checking and allocations done"));
 #endif
+#endif
 
+#ifndef USE_MONTE
 #ifdef RUN_VERBOSE
 	fprintf(msgout,"[i]   %s:\n",_("assembling of stiffness matrix"));
 #endif
+#endif
  	if ((rv = fem_fill_K(AF_NO)) != AF_OK) { goto memFree; }
+#ifndef USE_MONTE
 #ifdef RUN_VERBOSE
 	fprintf(msgout,"[i]   %s.\n",_("assembling of stiffness matrix done"));
 #endif
+#endif
 
+#ifndef USE_MONTE
 #ifdef RUN_VERBOSE
 	fprintf(msgout,"[i]   %s:\n",_("assembling of mass matrix"));
 #endif
+#endif
  	if ((rv = femMatAllocCloneStruct(&K, &M)) != AF_OK) { goto memFree; }
  	if ((rv = fem_fill_M()) != AF_OK) { goto memFree; }
+#ifndef USE_MONTE
 #ifdef RUN_VERBOSE
 	fprintf(msgout,"[i]   %s.\n",_("assembling of math matrix done"));
 #endif
+#endif
 
+#ifndef USE_MONTE
 #ifdef RUN_VERBOSE
 	fprintf(msgout,"[i]   %s:\n",_("assembling of Rayleigh damping matrix"));
+#endif
 #endif
  	if ((rv = femMatAllocCloneStruct(&K, &KK)) != AF_OK) { goto memFree; }
  	if ((rv = femMatAllocCloneStruct(&K, &C)) != AF_OK) { goto memFree; }
@@ -235,19 +247,25 @@ int femSolveDynNewmark(double *ofld)
   }
 	else
 	{ femMatLinComb(r_alpha, &M, r_beta, &K, &C); /* slow as hell */ }
+#ifndef USE_MONTE
 #ifdef RUN_VERBOSE
 	fprintf(msgout,"[i]   %s.\n",_("assembling of damping matrix done"));
 #endif
+#endif
 
+#ifndef USE_MONTE
 #ifdef RUN_VERBOSE
 	fprintf(msgout,"[i]   %s:\n",_("loads and supports"));
+#endif
 #endif
   for (i=0; i<nDOFAct; i++) { F_0.data[i] = 1.0 ; }
   femMatVecMult(&M, &F_0, &F) ; /**/
  	if ((rv = fem_add_disps(AF_YES)) != AF_OK) { goto memFree; }
   femVecClone(&F, &F_0);
+#ifndef USE_MONTE
 #ifdef RUN_VERBOSE
 	fprintf(msgout,"[i]   %s.\n",_("loads and supports done"));
+#endif
 #endif
 
   /* newmark preparations (initial KK matrix): */
@@ -269,8 +287,10 @@ int femSolveDynNewmark(double *ofld)
 
   for (i=1; i<steps; i++) /* iteration over time steps */
   {
+#ifndef USE_MONTE
 #ifdef RUN_VERBOSE
 		fprintf(msgout,"[I] %s %li / %li:\n", _("Newmark step"), i, steps-1);
+#endif
 #endif
 		femVecSetZeroBig(&pp) ;
 
@@ -347,19 +367,25 @@ int femSolveDynNewmark(double *ofld)
       free(fnm); fnm = NULL ;
     }
 
+#ifndef USE_MONTE
 #ifdef RUN_VERBOSE
 		fprintf(msgout,"[i]   %s: %s %f \n", _("Newmark step done"), _("cummulative time"), (i)*dt);
+#endif
 #endif
   } /*end of time steps iteration */
 
 memFree:
+#ifndef USE_MONTE
 	fem_sol_free();
 	femDataFree();
 	femResFree();
+#endif
 
+#ifndef USE_MONTE
 #ifdef RUN_VERBOSE
 	if (rv == AF_OK) { fprintf(msgout,"[I] %s.\n",_("Solution done")); }
 	else { fprintf(msgout,"[E] %s!\n",_("Solution failed")); }
+#endif
 #endif
 
 	return(rv);

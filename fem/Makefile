@@ -464,8 +464,6 @@ fem.ps: fem.1
 # cleaning:
 clean:
 	-rm -f fem gen dul *.o *.a *.gcda *.gcno *.exe core results.txt fem.dvi fem.ps fem.pdf feminput.dvi feminput.ps feminput.pdf libfem.so mviz so_locations xkb.so xkb.c
-	-(cd ../sinope && $(MAKE) clean)
-
 
 # installation:
 install: fem

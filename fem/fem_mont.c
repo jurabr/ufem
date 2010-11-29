@@ -355,6 +355,11 @@ int monte_init_lib_stuff(char *param)
 	msgout = stderr ; /* for output from "fprintf(msgout,...)" */
 #endif
 
+  /* TODO: workaround to enable dynamics - find a better solution */
+  solUseCGSSOR = AF_YES ;
+  femDynamics  = AF_YES ; 
+  femNewmarkEL = AF_YES ;
+
   if (param == NULL) { return(-1); }
   if (strlen(param) < 1) { return(-1); }
 
