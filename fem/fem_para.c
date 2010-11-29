@@ -81,10 +81,10 @@ long femSaveEveryNth      = 0 ;     /* save every Nth substep in NRM */
 
 long  femBreakSolu        = AF_NO ; /* break linear solution after matrices were written - for MC etc. */
 
-long  femDynamics         = AF_NO ; /* indcates non-static solution */
+long  femDynamics         = AF_NO ; /* indicates non-static solution */
 long  femEigenModal       = AF_NO ; /* modal solution */
 long  femEigenNum         = 0 ;     /* number of computed mode shapess */
-long  femNewmarkEL        = 0 ;     /* newmark integration solver */
+long  femNewmarkEL        = AF_NO ; /* newmark integration solver */
 
 FILE *fem_sol_norm_file   = NULL ;
 
