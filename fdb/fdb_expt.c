@@ -267,9 +267,17 @@ int fdb_to_fem_rand(FILE *fw)
                               pos += fdbInputTabLenSel(NDISP);
                               break;
 			case MONTE_VTYPE_EL:    fdbInputCountInt(ELOAD, ELOAD_ELEM, item, &pos ); break;
-			case MONTE_VTYPE_RES_D: fdbInputCountInt(NODE, NODE_ID, item, &pos ); break;
+			case MONTE_VTYPE_RES_D:
+			case MONTE_VTYPE_RES_D_MAX:
+			case MONTE_VTYPE_RES_D_MIN:
+                              fdbInputCountInt(NODE, NODE_ID, item, &pos ); break;
 			case MONTE_VTYPE_RES_R: fdbInputCountInt(NODE, NODE_ID, item, &pos ); break;
-			case MONTE_VTYPE_RES_E: fdbInputCountInt(ELEM, ELEM_ID, item, &pos ); break;
+			case MONTE_VTYPE_RES_MAX_E:
+			case MONTE_VTYPE_RES_MIN_E:
+			case MONTE_VTYPE_RES_FAIL_E:
+			case MONTE_VTYPE_RES_SUM_E:
+			case MONTE_VTYPE_RES_E:
+                              fdbInputCountInt(ELEM, ELEM_ID, item, &pos ); break;
 			case MONTE_VTYPE_DAMP:  pos = item ; break;
 
 		}
