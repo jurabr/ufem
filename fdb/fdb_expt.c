@@ -270,6 +270,8 @@ int fdb_to_fem_rand(FILE *fw)
 			case MONTE_VTYPE_RES_D: fdbInputCountInt(NODE, NODE_ID, item, &pos ); break;
 			case MONTE_VTYPE_RES_R: fdbInputCountInt(NODE, NODE_ID, item, &pos ); break;
 			case MONTE_VTYPE_RES_E: fdbInputCountInt(ELEM, ELEM_ID, item, &pos ); break;
+			case MONTE_VTYPE_DAMP:  pos = 0 ; break;
+
 		}
 
     if (pos == -1) {pos = 0 ;}

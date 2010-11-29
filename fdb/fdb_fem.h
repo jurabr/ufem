@@ -29,29 +29,14 @@
 #define __FDB_FEM_H__
 
 #include "fem_math.h"
+#include "fem_mont.h"
+
 #include "fdb.h"
 #include "fdb_data.h"
 
 #define  U_X 1
 #define  U_Y 2
 #define  U_Z 3
-
-/* random variables types (monte): */
-#define MONTE_VTYPE_RS          0
-#define MONTE_VTYPE_MAT         1
-#define MONTE_VTYPE_N           2
-#define MONTE_VTYPE_NLD         3
-#define MONTE_VTYPE_EL          4
-#define MONTE_VTYPE_NLPOS       5
-
-#define MONTE_VTYPE_RES_D       6
-#define MONTE_VTYPE_RES_R       7
-#define MONTE_VTYPE_RES_E       8
-
-#define MONTE_VTYPE_RES_SUM_E   9
-#define MONTE_VTYPE_RES_MAX_E  10
-#define MONTE_VTYPE_RES_MIN_E  11
-#define MONTE_VTYPE_RES_FAIL_E 12
 
 #define PICK_GRID_XY 0
 #define PICK_GRID_YZ 1

@@ -21,7 +21,7 @@
    02139, USA.
 
    FEM Solver - tools for building the code in the form of dynamic
-   library loodable by "Monte" reliability tool.
+   library loadable by "Monte" reliability tool.
 */
 
 #include "fem.h"
@@ -30,21 +30,7 @@
 #include <string.h>
 
 #ifdef USE_MONTE
-
-#define MONTE_VTYPE_RS          0
-#define MONTE_VTYPE_MAT         1
-#define MONTE_VTYPE_N           2
-#define MONTE_VTYPE_NLD         3
-#define MONTE_VTYPE_EL          4
-#define MONTE_VTYPE_NLPOS       5 /* node load with its ID */
-
-#define MONTE_VTYPE_RES_D       6
-#define MONTE_VTYPE_RES_R       7
-#define MONTE_VTYPE_RES_E       8
-#define MONTE_VTYPE_RES_SUM_E   9 /* sum of element results */
-#define MONTE_VTYPE_RES_MAX_E  10 /* max value of elem. res. */
-#define MONTE_VTYPE_RES_MIN_E  11 /* min value of elem. res. */
-#define MONTE_VTYPE_RES_FAIL_E 12 /* 1 for fail, 0 for OK (determined from given elem. res) */
+#include "fem_mont.h"
 
 extern void fem_sol_null(void);
 extern int fem_dofs(void);
@@ -208,6 +194,13 @@ char *monte_ivar_name(char *param, long pos)
           monte_io_subitem[pos],
           monte_io_subitemiter[pos]
           );
+			return(name);
+        break;
+
+    case MONTE_VTYPE_DAMP:
+				if (monte_io_item[pos] == 1)
+				     { sprintf(name,"DAMP_ALPHA"); }
+				else { sprintf(name,"DAMP_BETA"); }
 			return(name);
         break;
 
@@ -599,6 +592,14 @@ int monte_solution(char *param, double *ifld, double *ofld)
           }
         }
       break ;
+
+			case MONTE_VTYPE_DAMP:
+				if (monte_io_item[i] == 1)
+				   { dynAlpha = ifld[monte_io_var_pos[i]] ; }
+				else
+				   { dynBeta = ifld[monte_io_var_pos[i]] ;  }
+      break ;
+
     }
   }
 

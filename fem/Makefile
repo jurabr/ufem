@@ -442,7 +442,7 @@ fem_pr3d.o: fem_pr3d.c fem_math.h fem.h fem_mem.o
 	$(CC) -c $(CFLAGS) fem_pr3d.c
 
 # even more random stuff (Monte cooperation):
-fem_mont.o: fem_mont.c fem.h fem_mem.o
+fem_mont.o: fem_mont.c fem_mont.h fem.h fem_mem.o
 	$(CC) -c $(CFLAGS) -DUSE_MONTE fem_mont.c
 
 # Newmark for Monte cooperation:

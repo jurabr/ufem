@@ -81,7 +81,7 @@ fdb.o: fdb.c fdb.h
 fdb_io.o: fdb_io.c fdb.h
 	$(CC) -c fdb_io.c $(CFLAGS)
 
-fdb_expt.o: fdb_expt.c fdb.h
+fdb_expt.o: fdb_expt.c fdb.h ../fem/fem_mont.h
 	$(CC) -c fdb_expt.c $(CFLAGS)
 
 fdb_exel.o: fdb_exel.c fdb.h
@@ -214,7 +214,7 @@ fdb_step.o: fdb_step.c fdb.h fdb_fem.h fdb_eld.o fdb_nld.o fdb_disp.o
 fdb_get.o: fdb_get.c fdb.h fdb_fem.h fdb_fem.o
 	$(CC) -c fdb_get.c $(CFLAGS)
 
-fdb_rand.o: fdb_rand.c fdb.h fdb_fem.h fdb_fem.o
+fdb_rand.o: fdb_rand.c fdb.h fdb_fem.h fdb_fem.o ../fem/fem_mont.h
 	$(CC) -c fdb_rand.c $(CFLAGS)
 
 fdb_path.o: fdb_path.c fdb.h fdb_fem.h fdb_res.h

@@ -3,6 +3,12 @@ Changelog for the user interface only.
 See fem/ChangeLog for solver changes.
 
 
+### Mon Nov 29 14:40:35 CET 2010
+
+features:
+  + damping parameters  added as random variables
+
+
 
 ### Mon Nov 29 13:10:31 CET 2010
 
