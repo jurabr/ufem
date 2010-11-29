@@ -42,6 +42,8 @@
 #define MONTE_VTYPE_RES_MAX_E  11 /* max value of elem. res. */
 #define MONTE_VTYPE_RES_MIN_E  12 /* min value of elem. res. */
 #define MONTE_VTYPE_RES_FAIL_E 13 /* 1 for fail, 0 for OK (determined from given elem. res) */
+#define MONTE_VTYPE_RES_D_MAX  14 /* max. displacement in node (dynamics) */
+#define MONTE_VTYPE_RES_D_MIN  15 /* min. displacement in node (dynamics) */
 
 #endif
 

@@ -32,9 +32,6 @@
 #ifdef USE_MONTE
 #include "fem_mont.h"
 
-#define MONTE_VTYPE_RES_D_MAX  13 /* max. displacement in node (dynamics) */
-#define MONTE_VTYPE_RES_D_MIN  14 /* min. displacement in node (dynamics) */
-
 
 extern void fem_sol_null(void);
 extern int fem_dofs(void);
