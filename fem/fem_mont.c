@@ -32,6 +32,10 @@
 #ifdef USE_MONTE
 #include "fem_mont.h"
 
+#define MONTE_VTYPE_RES_D_MAX  13 /* max. displacement in node (dynamics) */
+#define MONTE_VTYPE_RES_D_MIN  14 /* min. displacement in node (dynamics) */
+
+
 extern void fem_sol_null(void);
 extern int fem_dofs(void);
 extern int fem_sol_alloc(void);
@@ -244,6 +248,35 @@ char *monte_ovar_name(char *param, long pos)
       sprintf(name,"DISP_%s_%li",dir,nID[monte_io_item[pos]]);
 			return(name);
       break;
+
+    case MONTE_VTYPE_RES_D_MAX:
+      switch(monte_io_subitem[pos])
+      {
+        case 1: dir[0] = 'U'; dir[1]='X' ; break;
+        case 2: dir[0] = 'U'; dir[1]='Y' ; break;
+        case 3: dir[0] = 'U'; dir[1]='Z' ; break;
+        case 4: dir[0] = 'R'; dir[1]='X' ; break;
+        case 5: dir[0] = 'R'; dir[1]='Y' ; break;
+        case 6: dir[0] = 'R'; dir[1]='Z' ; break;
+      }
+      sprintf(name,"DISP_%s_%li",dir,nID[monte_io_item[pos]]);
+			return(name);
+      break;
+
+    case MONTE_VTYPE_RES_D_MIN:
+      switch(monte_io_subitem[pos])
+      {
+        case 1: dir[0] = 'U'; dir[1]='X' ; break;
+        case 2: dir[0] = 'U'; dir[1]='Y' ; break;
+        case 3: dir[0] = 'U'; dir[1]='Z' ; break;
+        case 4: dir[0] = 'R'; dir[1]='X' ; break;
+        case 5: dir[0] = 'R'; dir[1]='Y' ; break;
+        case 6: dir[0] = 'R'; dir[1]='Z' ; break;
+      }
+      sprintf(name,"DISP_%s_%li",dir,nID[monte_io_item[pos]]);
+			return(name);
+      break;
+
     case MONTE_VTYPE_RES_R: 
       switch(monte_io_subitem[pos])
       {
@@ -403,6 +436,26 @@ int monte_fill_ofld_data(double *ofld)
         ofld[monte_io_var_pos[i-monte_i_len]] = femVecGet(&u, pos) ;
         break ;
 
+        /* ************************************** */
+
+      case MONTE_VTYPE_RES_D_MAX:  /* MAX displacements */
+        if ((pos = monte_io_item[i]*KNOWN_DOFS + monte_io_subitem[i]-1) > nDOFlen) {break;}
+        pos = nDOFfld[pos] ;
+        val = femVecGet(&u, pos) ;
+        if (ofld[monte_io_var_pos[i-monte_i_len]]  < val)
+           { ofld[monte_io_var_pos[i-monte_i_len]] = val ; }
+        break ;
+
+      case MONTE_VTYPE_RES_D_MIN:  /* MIN displacements */
+        if ((pos = monte_io_item[i]*KNOWN_DOFS + monte_io_subitem[i]-1) > nDOFlen) {break;}
+        pos = nDOFfld[pos] ;
+        val = femVecGet(&u, pos) ;
+        if (ofld[monte_io_var_pos[i-monte_i_len]] > val)
+           { ofld[monte_io_var_pos[i-monte_i_len]] = val ; }
+        break ;
+
+        /* ************************************** */
+
       case MONTE_VTYPE_RES_R: /* reactions */
         for (j=0; j<resRLen; j++)
         {
@@ -438,7 +491,8 @@ int monte_fill_ofld_data(double *ofld)
       break ;
 
       case MONTE_VTYPE_RES_MAX_E: /* max of element results */
-        ofld[monte_io_var_pos[i-monte_i_len]] = 0.0 ;
+        if (femNewmarkEL != AF_YES)
+           { ofld[monte_io_var_pos[i-monte_i_len]] = 0.0 ; }
         for(j=0; j<eLen; j++)
         {
           for (k=0; k<=Elem[femGetETypePos(j)].res_rp;k++)
@@ -456,7 +510,8 @@ int monte_fill_ofld_data(double *ofld)
       break ;
 
       case MONTE_VTYPE_RES_MIN_E: /* min of element results */
-        ofld[monte_io_var_pos[i-monte_i_len]] = 0.0 ;
+        if (femNewmarkEL != AF_YES)
+           { ofld[monte_io_var_pos[i-monte_i_len]] = 0.0 ; }
         for(j=0; j<eLen; j++)
         {
           for (k=0; k<=Elem[femGetETypePos(j)].res_rp;k++)
@@ -474,7 +529,8 @@ int monte_fill_ofld_data(double *ofld)
       break ;
 
       case MONTE_VTYPE_RES_FAIL_E: /* failure state */
-        ofld[monte_io_var_pos[i-monte_i_len]] = 0.0 ;
+        if (femNewmarkEL != AF_YES)
+           { ofld[monte_io_var_pos[i-monte_i_len]] = 0.0 ; }
         val = -1 ;
 
         for(j=0; j<eLen; j++)
