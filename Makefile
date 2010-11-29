@@ -26,7 +26,6 @@ clean:
 	(cd fdb    ; $(MAKE) clean)
 	(cd tui    ; $(MAKE) clean)
 	(cd tests  ; $(MAKE) clean)
-	#(cd sinope ; $(MAKE) clean)
 	#(cd doc   ; $(MAKE) clean)
 
 # clean "fem" only:

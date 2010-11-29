@@ -1,7 +1,8 @@
-### Mon Nov 29 14:40:35 CET 2010
+### Mon Nov 29 15:27:45 CET 2010
 
 features:
   + damping parameters  added as random variables
+  + sinope dependency removed
 
 
 ### Mon Nov 22 13:49:21 CET 2010

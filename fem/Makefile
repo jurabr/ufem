@@ -190,11 +190,6 @@ fem: fem.o $(OBJECTS) fem_mont_no.o fem_newm.o $(FEATLIBS)
 libfem.so: fem_mont.o fem_newmmont.o $(OBJECTS)
 	$(LD) fem_mont.o fem_newmmont.o $(OBJECTS) -o $(@)
 
-# library for softening curves:
-../sinope/liba_diag.a: 
-	-(cd ../sinope && $(MAKE))
-
-
 
 # solver code ;-)
 fem_sol.o: fem_sol.c fem_sol.h fem.h fem_data.o
