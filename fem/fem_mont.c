@@ -428,8 +428,6 @@ int monte_fill_ofld_data(double *ofld)
 
 	for (i=monte_i_len; i< (monte_i_len+monte_o_len); i++)
   {
-    ofld[monte_io_var_pos[i-monte_i_len]] = 0 ;
-
     switch (monte_io_var_type[i])
     {
       case MONTE_VTYPE_RES_D:  /* displacements */
@@ -568,6 +566,12 @@ int monte_solution(char *param, double *ifld, double *ofld)
 {
 	int rv = 0;
   long i, j, pos ;
+
+	for (i=monte_i_len; i< (monte_i_len+monte_o_len); i++)
+  {
+    ofld[monte_io_var_pos[i-monte_i_len]] = 0 ;
+	}
+
 
   /* TODO use ifld */
   for (i=0; i< monte_i_len; i++)
