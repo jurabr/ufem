@@ -45,6 +45,7 @@
 #define MONTE_VTYPE_RES_D_MAX  14 /* max. displacement in node (dynamics) */
 #define MONTE_VTYPE_RES_D_MIN  15 /* min. displacement in node (dynamics) */
 #define MONTE_VTYPE_RES_D_SUM  16 /* sum of displacements in node (dynamics) */
+#define MONTE_VTYPE_RES_A_MAX  17 /* maximum acceleration (in dynamics)  */
 
 #endif
 
