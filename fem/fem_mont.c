@@ -471,7 +471,7 @@ int monte_fill_ofld_data(double *ofld)
 
       case MONTE_VTYPE_RES_D_SUM:  /* SUM displacements */
         if ((pos = monte_io_item[i]*KNOWN_DOFS + monte_io_subitem[i]-1) > nDOFlen) {break;}
-        val = femVecGet(&u, pos) ;
+        pos = nDOFfld[pos] ;
         ofld[monte_io_var_pos[i-monte_i_len]] +=  nDOFfld[pos] ;
         break ;
 
