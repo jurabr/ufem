@@ -274,6 +274,21 @@ char *monte_ovar_name(char *param, long pos)
 			return(name);
       break;
 
+    case MONTE_VTYPE_RES_D_SUM:
+      switch(monte_io_subitem[pos])
+      {
+        case 1: dir[0] = 'U'; dir[1]='X' ; break;
+        case 2: dir[0] = 'U'; dir[1]='Y' ; break;
+        case 3: dir[0] = 'U'; dir[1]='Z' ; break;
+        case 4: dir[0] = 'R'; dir[1]='X' ; break;
+        case 5: dir[0] = 'R'; dir[1]='Y' ; break;
+        case 6: dir[0] = 'R'; dir[1]='Z' ; break;
+      }
+      sprintf(name,"DSUM_%s_%li",dir,nID[monte_io_item[pos]]);
+			return(name);
+      break;
+
+
     case MONTE_VTYPE_RES_R: 
       switch(monte_io_subitem[pos])
       {
@@ -452,6 +467,12 @@ int monte_fill_ofld_data(double *ofld)
         val = femVecGet(&u, pos) ;
         if (ofld[monte_io_var_pos[i-monte_i_len]] > val)
            { ofld[monte_io_var_pos[i-monte_i_len]] = val ; }
+        break ;
+
+      case MONTE_VTYPE_RES_D_SUM:  /* SUM displacements */
+        if ((pos = monte_io_item[i]*KNOWN_DOFS + monte_io_subitem[i]-1) > nDOFlen) {break;}
+        val = femVecGet(&u, pos) ;
+        ofld[monte_io_var_pos[i-monte_i_len]] +=  nDOFfld[pos] ;
         break ;
 
         /* ************************************** */
