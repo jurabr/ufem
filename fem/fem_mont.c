@@ -356,9 +356,11 @@ int monte_init_lib_stuff(char *param)
 #endif
 
   /* TODO: workaround to enable dynamics - find a better solution */
+#if 0
   solUseCGSSOR = AF_YES ;
   femDynamics  = AF_YES ; 
   femNewmarkEL = AF_YES ;
+#endif
 
   if (param == NULL) { return(-1); }
   if (strlen(param) < 1) { return(-1); }
