@@ -63,7 +63,7 @@
 /* Thread variables: */
 
 #ifdef _USE_THREADS_
-#define AF_MAX_THREADS 4    /* max. number of threads! */
+#define AF_MAX_THREADS 8    /* max. number of threads! */
 
 extern long femUseThreads ; /* if threads are used  */
 extern long femThreadNum  ; /* number of threads    */
