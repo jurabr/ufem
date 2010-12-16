@@ -2000,7 +2000,7 @@ int func_gfx_plns (char *cmd)
 #endif
 }
 
-/** plots nodal solution (if possible): "plpath,what,zoom"
+/** plots nodal solution (if possible): "plpath,what,zoom[,from,to]"
  * @param cmd command
  * @return status
  */
@@ -2008,8 +2008,11 @@ int func_gfx_plot_path (char *cmd)
 {
 #ifdef _USE_GFX_
   char tmp[FEM_STR_LEN+1];
-  int i;
+  int i, from, to;
   double zoom ;
+
+	gfxActFromPath = -1 ; 
+	gfxActToPath   = -1 ;
 
   for (i=0; i<=FEM_STR_LEN; i++) {tmp[i] = '\0';}
 
@@ -2047,6 +2050,45 @@ int func_gfx_plot_path (char *cmd)
     zoom = ciGetParDbl(cmd,2);
     if (zoom <= 0.0) { zoom = 1.0 ;}
     plotStuff.pzoom = zoom ;
+  }
+
+	if (ciParNum(cmd) > 4) 
+  {
+  	if (ciTestStringALL(cmd,3) == AF_YES)
+		{
+			if (femPath[0].len <= 0) 
+			{
+				return ( tuiCmdReact(cmd, AF_OK) ) ;
+			}
+			from = 0 ;
+			to   = 0 ;
+			for (i=0; i<PATH_NUM; i++)
+			    { if (femPath[i].len > 0) {to = i;} }
+
+			gfxActFromPath = from ; 
+			gfxActToPath   = to ;
+		}
+		else
+		{
+    	from = ciGetParDbl(cmd,3) - 1;
+    	to   = ciGetParDbl(cmd,4) - 1;
+
+			if (from < 0)
+			{
+				fprintf(msgout,"[E] %s: %d!\n", _("Incorrect start number of path"), from+1);
+  			plotStuff.path = AF_NO ;
+				return ( tuiCmdReact(cmd, AF_ERR_VAL) ) ;
+			}
+			if (to >= PATH_NUM)
+			{
+				fprintf(msgout,"[E] %s: %d!\n", _("Incorrect start number of path"), to+1);
+  			plotStuff.path = AF_NO ;
+				return ( tuiCmdReact(cmd, AF_ERR_VAL) ) ;
+			}
+
+			gfxActFromPath = from ; 
+			gfxActToPath   = to ;
+		}
   }
 
   if (plotStuff.autoreplot == AF_YES)

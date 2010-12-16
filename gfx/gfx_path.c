@@ -27,12 +27,15 @@
 #ifdef _USE_GFX_
 #include "fdb_res.h"
 
+long gfxActFromPath = -1 ; 
+long gfxActToPath   = -1 ;
+
 int femPlotPathItem(long res_type)
 {
   int rv = AF_OK;
   long   pos ;
   float  r,g,b ;
-  int    j;
+  int    i,j,from,to, oldactpath;
   double val, val1,val2,dx,dy, dz;
   double x[2];
   double y[2];
@@ -53,6 +56,24 @@ int femPlotPathItem(long res_type)
      { return(AF_ERR_VAL) ; }
 
   if (femActivePath < 0) {return(AF_ERR_VAL);}
+
+	if ( (gfxActToPath < 0) || (gfxActFromPath < 0) )
+	{
+		from = femActivePath ;
+		to   = femActivePath ;
+		oldactpath = femActivePath ;
+	}
+	else
+	{
+		from = gfxActFromPath ;
+		to   = gfxActToPath ;
+		oldactpath = femActivePath ;
+	}
+
+	for (i=from; i<=to; i++) /* loop for paths */
+	{
+		femActivePath = i ;
+		if (femPath[femActivePath].len < 0) {continue;}
 
   for (j=1; j<femPath[femActivePath].len; j++)
   {
@@ -238,6 +259,11 @@ int femPlotPathItem(long res_type)
 	  gl2psLineWidth(1);
 #endif
   }
+	} /* for i*/
+
+	femActivePath = oldactpath ;
+	gfxActFromPath = -1 ; 
+	gfxActToPath   = -1 ;
   
   return(rv);
 }

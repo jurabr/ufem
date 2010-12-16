@@ -261,6 +261,9 @@ extern float lightDiffuse[]     ;
 extern float lightSpecular[]    ;
 extern float lightPosition[]    ;
 
+/* paths: */
+extern long gfxActFromPath ; 
+extern long gfxActToPath   ;
 
 extern int femResetTran(void);
 extern void femDefaultPlotProp(void) ;

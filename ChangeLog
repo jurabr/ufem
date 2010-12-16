@@ -3,6 +3,13 @@ Changelog for the user interface only.
 See fem/ChangeLog for solver changes.
 
 
+### Thu Dec 16 14:33:17 CET 2010
+
+features:
+  + multiple paths plotting (untested)
+
+
+
 ### Mon Nov 29 14:40:35 CET 2010
 
 features:
