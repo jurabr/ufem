@@ -155,7 +155,6 @@ gint glarea_button_release (GtkWidget* widget, GdkEventButton* event)
   if (event->button == 1) 
 	{
     /* mouse button 1 was released */
-    /*g_print ("Button 1 release (%d, %d)\n", x, y);*/
     if (plotProp.SelStuff != GFX_SELE_NONE)
     {
 			if (use_box == AF_YES)
@@ -180,7 +179,6 @@ gint glarea_button_release (GtkWidget* widget, GdkEventButton* event)
   if (event->button == 2) 
 	{
     /* mouse button 2 was released */
-    /*g_print ("Button 2 release (%d, %d)\n", x, y);*/
 		use_box = AF_NO ;
     return (AF_OK);
   }
@@ -188,7 +186,6 @@ gint glarea_button_release (GtkWidget* widget, GdkEventButton* event)
   if (event->button == 3) 
 	{
     /* mouse button 2 was released */
-    /*g_print ("Button 3 release (%d, %d)\n", x, y);*/
     if (plotProp.SelStuff != GFX_SELE_NONE)
     {
 			if (use_box == AF_YES)
@@ -243,20 +240,11 @@ gint glarea_button_press (GtkWidget* widget, GdkEventButton* event)
 
     return (AF_OK);
 	}
+
   /* pressing of buttons 1,2,3 cause action */
   if ((event->button >= 1) && (event->button <= 3))
 	{
 		use_box = AF_NO ;
-#if 0
-		/* This probably should be removed: */
-    femGfxPickFunc(x, y, 
-        x0,y0,
-        xm, 
-        ym,
-        event->button 
-        ) ;
-#endif
-
     return (AF_OK);
   }
 
@@ -881,7 +869,6 @@ void femPlot(void)
       	fprintf(msgout,"[E] %s!\n", _("cannot close file"));
       	rv = AF_ERR_IO;
     	}
-
 #endif
   	}
     else
@@ -942,15 +929,11 @@ void idlefunc(void)
 	char cmd[FEM_STR_LEN+1];
   int cmdlen = FEM_STR_LEN;
 
-#if 0
-  ciRunCmd (cmd);
-#else
   while (fgets (cmd, cmdlen, stdin))
   {
     ciRunCmd (cmd);
   	fprintf (msgout,"\n%s ",FEM_TUI_PROMPT);
   }
-#endif
 }
 
 void timer_func(int param)
@@ -958,23 +941,11 @@ void timer_func(int param)
 	char cmd[FEM_STR_LEN+1];
   int cmdlen = FEM_STR_LEN;
 
-#if 0
-	if (feof(stdin))
-	{
-    if (fgets(cmd, cmdlen, stdin))
-	  {
-  	  ciRunCmd (cmd);
-  	  fprintf (msgout,"\n%s ",FEM_TUI_PROMPT);
-	  }
-	}
-  glutTimerFunc(2000,timer_func,param);
-#else
   while (fgets (cmd, cmdlen, stdin))
   {
     ciRunCmd (cmd);
   	fprintf (msgout,"\n%s ",FEM_TUI_PROMPT);
   }
-#endif
 }
 
 int guiMainWin(void)
