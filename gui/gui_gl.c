@@ -53,10 +53,6 @@ void gui_draw_rect(GtkWidget *widget, int x2, int y2, int remove_only, long butt
   yi = widget->allocation.height ;
   femComputeViewPortProps( xi, yi, &x0, &y0, &xm, &ym);
 
-#if 0
-  printf("SelMode is %li\n", plotProp.SelRectMode);
-#endif
-
   if (plotProp.SelRectMode != AF_YES) 
   {
     ox = 0 ;
@@ -139,30 +135,6 @@ void gui_draw_rect(GtkWidget *widget, int x2, int y2, int remove_only, long butt
 
   gdk_draw_rectangle(glarea->window, gc, FALSE, x, y, w, h);
 }
-
-#ifndef _USE_GTK_GL_AREA_
-void gui_draw_cross(GtkWidget *widget,int x, int y)
-{
-  static int old_x = -1 ;
-  static int old_y = -1 ;
-
-  if (gc == NULL)
-  {
-    gc = gdk_gc_new(glarea->window);
-    gdk_gc_set_foreground(gc, &(glarea->style->white));
-    gdk_gc_set_function(gc, GDK_XOR);
-  }
-
-  gdk_draw_line ( glarea->window, gc, 0, old_y, widget->allocation.width, old_y);
-  gdk_draw_line ( glarea->window, gc, old_x, 0, old_x, widget->allocation.height);
-
-  gdk_draw_line ( glarea->window, gc, 0, y, widget->allocation.width, y);
-  gdk_draw_line ( glarea->window, gc, x, 0, x, widget->allocation.height);
-
-  old_x = x ;
-  old_y = y ;
-}
-#endif
 
 
 /** Tests if and what mouse button was reseased */
@@ -340,12 +312,6 @@ gint glarea_motion_notify (GtkWidget* widget, GdkEventMotion* event)
 
 	if (last_x <= -1) { last_x = x ; }
 	if (last_y <= -1) { last_y = y ; }
-
-#ifndef _USE_GTK_GL_AREA_
-#if 0
-  gui_draw_cross(widget, x,y );
-#endif
-#endif
   
   if (state & GDK_BUTTON1_MASK) 
 	{
