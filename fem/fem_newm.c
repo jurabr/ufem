@@ -294,7 +294,6 @@ int femSolveDynNewmark(double *ofld)
 #endif
 		femVecSetZeroBig(&pp) ;
 
-		/* TODO: this can be done only once? */
 		femVecSetZeroBig(&ra) ;
 		femVecSetZeroBig(&rb) ;
     femVecAddVec(&ra, a[0], &r0);
