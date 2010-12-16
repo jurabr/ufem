@@ -36,7 +36,7 @@ int fem_gui_cmd( GtkWidget *widget, gpointer   data )
 {
   if (ciRunCmd((char *)data) == AF_OK)
   {
-    gtk_label_set_text(GTK_LABEL(cmdStatus), _("O.K. ")) ;
+    gtk_label_set_text(GTK_LABEL(cmdStatus), _(" OK ")) ;
     return(AF_OK);
   }
   else

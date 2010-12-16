@@ -703,14 +703,6 @@ void gui_main_menu_plot(GtkWidget *menubar)
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "plotprop,autoreplot,yes");
   /* ################################ */
 
-
-
-
-
-
-
-
-
 #ifndef WIN32
 	/* separator */
   separ_item = gtk_menu_item_new() ;
@@ -841,6 +833,7 @@ void gui_main_menu_hide(GtkWidget *menubar)
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "plotp,grid,no");
 
   /* ################################ */
+
   /* separator */
   separ_item = gtk_menu_item_new() ;
   gtk_menu_append (GTK_MENU (menu_plot), separ_item);
@@ -893,10 +886,6 @@ void gui_main_menu_hide(GtkWidget *menubar)
 
 
   /* ################################ */
-
-
-
-
 
 	/* appending of menu to menubar */
 	plot_item = gtk_menu_item_new_with_mnemonic ("H_ide");
@@ -1006,7 +995,6 @@ void gui_main_menu_list(GtkWidget *menubar)
 	gtk_widget_show (item);
 	g_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "accellist");
-
 
 
 	/* separator */
@@ -1629,7 +1617,6 @@ int gui_winMain(int argc, char *argv[])
 #ifdef _USE_GTK_GL_AREA_
 	gtk_box_pack_start(GTK_BOX(hbox_top_2),glArea,TRUE, TRUE, padding);
 #else
-	/*gtk_box_pack_start(GTK_BOX(paned),glArea,TRUE, TRUE, padding);*/
 	gtk_paned_pack2 (GTK_PANED (paned), glArea, TRUE, TRUE);
 #endif
   gtk_widget_show (glArea);
