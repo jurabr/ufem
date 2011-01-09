@@ -165,7 +165,7 @@ void fem_help(int argc, char *argv[])
 	fprintf(msgout,"   -ssor     ... %s\n", _("use SSOR instead of Jacobi preconditioning in CG solver"));
 
 	fprintf(msgout,"   -ao FILE  ... %s\n", _("write alternative results of linear solution to FILE"));
-	fprintf(msgout,"   -at TYPE  ... %s\n", _("type of alternative results of linear"));
+	fprintf(msgout,"   -at TYPE  ... %s\n", _("type of alternative results (0 .. text, 1 .. VTK legacy)"));
 #endif /* end of _SMALL_FEM_CODE_*/
 	fprintf(msgout,"   -h        ... %s\n", _("print this help"));
 #endif
