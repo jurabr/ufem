@@ -107,11 +107,17 @@ void fdbIntSetEmpty(tInt *fld)
 {
 	int i ;
 
-	for (i=0; i<fld->rows; i++)
+	if (fld != NULL) 
 	{
-		free(fld->data[i]) ;
-    fld->data[i] = NULL ;
-    fld->len[i]  = 0 ;
+		for (i=0; i<fld->rows; i++)
+		{
+			if (fld->data[i] != NULL) 
+			{
+				free(fld->data[i]) ;
+    		fld->data[i] = NULL ;
+    		fld->len[i]  = 0 ;
+			}
+		}
 	}
 }
 
@@ -124,6 +130,7 @@ void fdbIntSetEmpty(tInt *fld)
 int fdbIntInit(tInt *fld, long len)
 {
 	int rv = AF_OK ;
+	long i ;
 
 	fdbIntNull(fld) ;
 
@@ -131,6 +138,7 @@ int fdbIntInit(tInt *fld, long len)
 	if ((fld->data = (long **) malloc(len*sizeof(long *))) == NULL) 
 	   {rv = AF_ERR_MEM ; goto memFree;}
 	fld->rows = len ;
+	for (i=0; i<len; i++) {fld->data[i] = NULL ;}
 
 	return (rv) ;
 memFree: /* on error: */
@@ -310,6 +318,7 @@ void fdbDblSetEmpty(tDbl *fld)
 int fdbDblInit(tDbl *fld, long len)
 {
 	int rv = AF_OK ;
+	long i ;
 
 	fdbDblNull(fld) ;
 
@@ -317,6 +326,7 @@ int fdbDblInit(tDbl *fld, long len)
 	if ((fld->data = (double **) malloc(len*sizeof(double *))) == NULL) 
 	   {rv = AF_ERR_MEM ; goto memFree;}
 	fld->rows = len ;
+	for (i=0; i<len; i++) {fld->data[i] = NULL ;}
 
 	return (rv) ;
 memFree: /* on error: */
