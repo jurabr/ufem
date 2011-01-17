@@ -20,8 +20,8 @@ INCLUDES= -I../fem -I../fdb -I../fdb -I../cint -I../common -I../tui
 CFLAGS=$(INCLUDES) -DDISABLE_UNFINISHED $(DEBUG) -DHAVE_HOME_DIR
 #
 ##GFCFLAGS=-I../gfx -D_USE_GFX_ -D_USE_GLUT_UI_ #-DUSE_GLUT
-#GFCFLAGS=-I../gfx -I/usr/X11R6/include -D_USE_GFX_ -D_USE_GUI_  -DUSE_GL2PS -I../../gl2ps/ #-D_USE_LIB_TIFF_ -I/sw/include #-DUSE_FOG
-GFCFLAGS=-I../gfx -I/usr/X11R6/include -D_USE_GFX_ -D_USE_GUI_ # -DUSE_GL2PS -I../../gl2ps/ #-D_USE_LIB_TIFF_ -I/sw/include #-DUSE_FOG # no gl2ps
+GFCFLAGS=-I../gfx -I/usr/X11R6/include -D_USE_GFX_ -D_USE_GUI_  -DUSE_GL2PS -I../../gl2ps/ #-D_USE_LIB_TIFF_ -I/sw/include #-DUSE_FOG
+#GFCFLAGS=-I../gfx -I/usr/X11R6/include -D_USE_GFX_ -D_USE_GUI_ # -DUSE_GL2PS -I../../gl2ps/ #-D_USE_LIB_TIFF_ -I/sw/include #-DUSE_FOG # no gl2ps
 ####GFCFLAGS=-I../gfx -I/usr/X11R6/include -D_USE_G2D_ -D_USE_GUI_  -I/sw/include #-DUSE_FOG
 #GUIFLAGS=$(CFLAGS) $(GFCFLAGS) -I../gui -I../gfx `gtk-config --cflags` -D_USE_GTK_GL_AREA_
 GUIFLAGS=$(CFLAGS) $(GFCFLAGS) -I../gui `pkg-config --cflags gtk+-2.0 gtkglext-1.0` -DFEM_NEW_FILE_DLG
@@ -34,8 +34,8 @@ LIBS=-L/usr/local/lib -L../fdb -L../cint -L../common -L../meval -lfdb -lcint -lm
 ##GUILIBS=-L/usr/X11R6/lib -lGL -lGLU -lglut -lXi -lXext -lXmu -lX11 $(LIBS)
 #GUILIBS=`gtk-config --libs` -L/usr/local/lib -L/usr/freeware/lib32 -lgtkgl -lGL -lGLU -lglut $(LIBS)
 #GUILIBS=`gtk-config --libs` -L/usr/local/lib -L/usr/freeware/lib32 -lgtkgl -lGL -lGLU $(LIBS) -L../../gl2ps -ltiff -lgl2ps -lm
-#GUILIBS=-L../../gl2ps -lgl2ps `pkg-config --libs gtkglext-1.0 gtk+-2.0` -lGL -lGLU  $(LIBS) #-ltiff
-GUILIBS=`pkg-config --libs gtkglext-1.0 gtk+-2.0` -lGL -lGLU  $(LIBS) # no gl2ps
+GUILIBS=-L../../gl2ps -lgl2ps `pkg-config --libs gtkglext-1.0 gtk+-2.0` -lGL -lGLU  $(LIBS) #-ltiff
+#GUILIBS=`pkg-config --libs gtkglext-1.0 gtk+-2.0` -lGL -lGLU  $(LIBS) # no gl2ps
 ####GUILIBS=`pkg-config --libs gtk+-2.0` $(LIBS)
 
 
@@ -70,7 +70,7 @@ gfem: $(OBJECTS) $(GOBJECTS) gcmd_plot.o ../fdb/fdb.h ../fem/fem.h ../common/lib
 ../fdb/libfdb.a:
 	(cd ../fdb ; $(MAKE) all)
 
-../meval/libmeval.a:
+../meval/libmeval.a: ../cint/libcint.a
 	(cd ../meval ; $(MAKE) all)
 
 fem_tui.o: fem_tui.c fem_tcmd.o fem_tui.h ../fem/fem.h ../cint/cint.h
