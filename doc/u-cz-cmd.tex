@@ -1,0 +1,59 @@
+% File name: u-cz-cmd.tex
+% Date:      2009/10/31 11:17
+% Author:    
+
+\section{Úvod}
+
+Program uFEM poskytuje u¾ivateli mo¾nost ovládat jej pomocí pøíkazù.
+Pøesto¾e vìt¹ina u¾ivatelù pøirozenì prefereruje ovládání programù pomocí
+tlaèítek a roletových nabídek, v~øadì situací je pou¾ití pøíkazù
+pru¾nìj¹í nebo dokonce pohodlnìj¹í (napøíklad pro nìkteré slo¾itìj¹í a
+opakované operace je mo¾né mít pøipravené dávkové soubory s pøíkazy,
+které pak staèí jen ,,spustit``).
+
+Dal¹í výhodou je mo¾nost takto realizovat urèitou formu parametrizace
+úloh - pokud u¾ivatel specifikuje popis úlohy pomocí pøíkazù, má
+mo¾nost v nich pou¾ívat promìnné (parametry), které mù¾e podle potøeby snadno 
+mìnit pro rùzné varianty øe¹ené úlohy.
+
+Pøíkazový jazyk obsahuje i nejzákladnìj¹í konstrukce pro cykly a
+podmínky, proto u¾ivatel mù¾e øadu problémù automatizovat (napøíklad
+vyhodnocování výsledkù nebo zadávání dat).
+
+Seznam v¹ech pøíkazù i s jejich parametry je dostupný v manuálových
+stránkách (podle normy POSIX), které jsou obvykle v unixových operaèních
+systémech (Linux apod.) dostupné po zadání pøíkazu {\tt man femcmd} a
+je zpravidla také souèástí ti¹tìné dokumentace.
+
+\section{Promìnné}
+
+Program internì vyu¾ívá øadu promìnných, jde napøíklad o zkratky
+typù výsledkù ({\tt s\_x}, {\tt s\_vmis}), zkratky materiálových
+konstant a podobnì.\footnote{Ve skuteènosti jsou ve¹keré øetìzce v programu 
+definovány jako promìnné pøíkazového jazyka.}
+
+Ka¾dá promìnná se skládá ze dvou èástí: z~{\em názvu} (který by v¾dy mìl
+obsahovat písmena a mù¾e obsahovat i èíslice)\footnote{Vøele se v¹ak doporuèuje
+vyu¾ívat jen písmena malé anglické nápovìdy, èísla 0-9 a pøípadnì podtr¾ítka. {\bf Nesmí}
+být pou¾ity mezery, tabelátory a podobné znaky.}
+a z~{\em hodnoty}, která mù¾e být jak èíslem, tak øetìzcem slo¾eným z písmem.\footnote{Program
+automaticky pøevádí v¹echna velká písmena na malá, a to i v názvech promìnných.}
+
+\subsection{Vytvoøení nebo zmìna hodnoty promìnné}
+
+Promìnná se vytvoøí pøíkazem {\tt setvar}. Napøíklad promìnná {\em stovka}
+o hodnotì $100$ se vytvoøí pøíkazem {\tt setvar,stovka,100}. Pokud by ji¾
+promìnná {\em stovka} existovala, uvedený pøíkaz zmìní její hodnotu na $100$.
+
+\subsection{Vypsání promìnné}
+
+Hodnotu promìnné je mo¾né vypsat do {\em okna výpisù} pøíkazem {\em printvar}.
+Napøíklad {\tt printvar,stovka}. Pokud by promìnná neexistovala, nic se
+nevypí¹e. V¹echny existující promìnné se vypí¹í pøíkazem {\em listvar} (bez
+dal¹ích parametrù).
+
+\subsection{Odstranìní promìnné}
+Pokud by bylo potøebné nìkterou promìnnou odstranit, je mo¾né pou¾ít pøíkaz
+{\em unsetvar}. Napøíklad {\tt unsetvar,stovka} odstraní promìnnou {\em stovka}
+a ta u¾ nadále nebude v programu dostupná -- pokud se pou¾ije v nìjakém následujícím
+pøíkazu, bude nahrazena èíselnou hodnoutou $0$ (nula).

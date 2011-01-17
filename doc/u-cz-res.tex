@@ -1,0 +1,144 @@
+% File name: u-cz-res.tex
+% Date:      2009/10/31 19:51
+% Author:    Jiri Brozovsky
+
+Program umo¾òuje vybrané výsledky vypsat v èíselné podobì, zobrazit graficky,
+pøípadnì ulo¾it v podobì grafických souborù.\footnote{Mo¾nosti ukládání 
+grafických souborù závisí na konkrétní verzi a sestavení programu. V¾dy je k dispozici 
+rastrový formát Portable Bitmap ({\tt PBM}) \cite{netpbm}, k dispozici mù¾e být i mo¾nost
+ulo¾ení do vektorového formátu Encapsulated PostScript {\tt EPS}, pøípadnì
+do rastrového formátu {\tt TIFF}.}
+
+\section{Textové výpisy}
+
+V textové podobì je mo¾né získat výpis posunutí (pøípadnì pootoèení)
+uzlù koneèných prvkù, uzlové reakce a jejich výslednice a výsledky
+silových velièin\footnote{Typicky jde o napìtí, u desek je mo¾né získat
+mìrné vnitøní síly (momenty, posouvající síly), u prutových prvkù pak
+vnitøní síly (normálová síla, posouvající síly, ohybové momenty,
+krouticí moment) v závislosti na typu problému.}
+v integraèních bodech koneèných prvkù.\footnote{U prutových prvkù je mo¾né
+získat výsledky i z jiných bodù, napøíklad z koncù prutù, více informací
+je uvedeno v dokumentaci jednotlivých typù koneèných prvkù.}
+
+Výpisy výsledkù jsou dostupné pomocí 
+{\em Stromu pøíkazù}:\\
+{\tt Postprocessor $\rightarrow$ List Results $\rightarrow$ DOF Solution} 
+(posunutí uzlù) nebo 
+{\tt Postprocessor $\rightarrow$ List Results $\rightarrow$ Reactions}
+(uzlové reakce),
+pøípadnì
+{\tt Postprocessor $\rightarrow$ List Results $\rightarrow$ Element Solution..}
+(výsledky na koneèných prvcích). U výsledkù na koneèných prvcích je tøeba
+je¹tì v následném dialogu specifikovat typy vypisovaných výsledkù (a¾ 6).
+
+%V tomto pøípadì se potøebné {\em body} vyberou pomocí my¹i.
+
+Názvy typù výsledkù jsou uvádìny ve formì zkratek, jejich¾ význam nemusí
+být u¾ivateli hned zøejmý. V tabulce~\ref{tabrestype} jsou proto uvedeny
+zkratky pro nejtypiètìj¹í velièiny.
+
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{|c||l|c|}
+\hline
+{\bf Zkratka} & {\bf Velièina} & {\bf Jednotka}\footnote{Tato informace
+je jen pomocná a má jen demonstrovat vztahy mezi velièinami,
+proto¾e volba systému jednotek je plnì na u¾ivateli.} \\
+\hline
+\hline
+s\_x & normálové napìtí ve smìru osy x & $Pa$ \\
+s\_y & normálové napìtí ve smìru osy y & $Pa$ \\
+s\_{xz} & smykové napìtí ve rovinì xy & $Pa$ \\
+\hline
+e\_x & pomìrná deformace ve smìru osy x & $-$ \\
+e\_y & pomìrná deformace ve smìru osy y & $-$ \\
+e\_{xy} & zkosení v rovinì xy& $rad$ \\
+\hline
+f\_x & síla ve smìru osy x & $N$ \\
+f\_y & síla ve smìru osy y & $N$ \\
+m\_z & moment kolem osy z\footnote{Moment a pootoèení 
+jsou pokládány za kladné pokud otáèejí proti smìru hodinových ruèièek
+a pokud kladný smìr osy otáèení smìøuje k pozorovateli.} & $Nm$ \\
+\hline
+s\_{mx} & mìrný ohybový moment otáèející kolem osy y   & $N$ \\
+s\_{my} & mìrný ohybový moment otáèející kolem osy x   & $N$ \\
+s\_{mxy} & mìrný krouticí moment (deskový moment) & $N$ \\
+\hline
+\end{tabular}
+\label{tabrestype}
+\caption{Pøíklady typù výsledkù v programu uFEM}
+\end{center}
+\end{table}
+
+
+\section{Grafické výstupy}
+
+Grafické zobrazení výsledkù poskytuje mo¾nost vykreslení konstrukce 
+v deformovaném tvaru pomocí
+{\em Stromu pøíkazù}:\\
+{\tt Postprocessor $\rightarrow$ Plot Results $\rightarrow$ Deformed Shape}.
+V tomto pøípadì se aktuální zobrazení upraví do deformovaného tvaru,
+nedojde v¹ak k ¾ádným dal¹ím zmìnám (program neumo¾òuje barevné zobrazení
+deformací.)
+
+Podobnì je mo¾né vykreslit reakce pomocí
+{\em Stromu pøíkazù}:\\
+{\tt Postprocessor $\rightarrow$ Plot Results $\rightarrow$ Reactions}.
+Reakce jsou zobrazovány v podobì rùznì velkých ¹ipek. 
+
+Výsledky je mo¾né graficky zobrazit barevným odli¹ením i integraèních bodech
+a to pomocí 
+{\em Stromu pøíkazù}:\\
+{\tt Postprocessor $\rightarrow$ Plot Results $\rightarrow$ Element Solution..}.
+V následném dialogu je tøeba vybrat typ zobrazovaných dat.
+
+Zkratky typù výsledkù jsou uvedeny v tabulce~\ref{tabrestype}.
+
+\section{Dal¹í typy výsledkù}
+
+V nìkterých pøípadech je vhodné mít k dispozici i nìkteré dal¹í výsledky,
+napøíklad hlavní napìtí nebo takzvané von Misesovo napìtí. Ty nejsou v pøíslu¹ných
+dialozích pro výpis nebo vykreslení výsledkù nabízeny, nicménì program je
+zpracovat dovede. Je v¹ak tøeba je do vstupního okna pøímo napsat.
+Zkratky pro uvedené typy výsledkù jsou uvedeny v tabulce~\ref{tabresspec}.
+
+
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{|c||l|c|}
+\hline
+{\bf Zkratka} & {\bf Velièina} & {\bf Jednotka}\footnote{Tato informace
+je jen pomocná a má jen demonstrovat vztahy mezi velièinami,
+proto¾e volba systému jednotek je plnì na u¾ivateli.} \\
+\hline
+\hline
+s\_1 & hlavní tahové napìtí & $Pa$ \\
+s\_2 & hlavní tlakové napìtí (pro 2D problémy) & $Pa$ \\
+s\_3 & hlavní tlakové napìtí (pro 3D problémy) & $Pa$ \\
+\hline
+s\_vmis & von Misesovo napìtí & $Pa$ \\
+\hline
+\end{tabular}
+\label{tabresspec}
+\caption{Dal¹í typy výsledkù v programu uFEM}
+\end{center}
+\end{table}
+
+
+
+\section{Ukládání obrázkù}
+
+Aktuální grafické zobrazení je mo¾né ulo¾it do souboru pomocí
+{\em Stromu pøíkazù}:\\
+{\tt Postprocessor $\rightarrow$ Save Graphics $\rightarrow$ To PPM..}.
+
+Taté¾ funkce je kdykoli bìhem chodu programu (tedy ne jen v postprocesoru)
+dostupná z {\em Nabídky aplikace}:\\
+{\tt Plot $\rightarrow Save as PPM..$}.
+
+Jsou-li k dispozici i dal¹í grafické formáty, je mo¾né je najít
+na tomté¾ místì ve {\em Stromu pøíkazù}. 
+
+Pøíklady grafických výstupù programu byly uvedeny napøíklad
+na obrázku~\ref{p1model} nebo na~obrázku~\ref{p1sx}.

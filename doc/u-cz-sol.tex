@@ -1,0 +1,61 @@
+% File name: u-cz-sol.tex
+% Date:      2009/10/31 19:16
+% Author:    Jiri Brozovsky
+
+\section{Lineární výpoèet}
+
+V nejjednodu¹¹ím pøípadì, kdy je potøebné provést jen lineární výpoèet
+s právì naèteným modelem staèí spustit ve 
+{\em Stromu pøíkazù}:\\
+{\tt Solver $\rightarrow$ Solve Current Data }.
+
+Spustí se øe¹iè (bì¾ící v {\em oknì výpisù}) a po dobu výpoètu není
+mo¾né z programem nijak pracovat.\footnote{Doba výpoètu je závislá na
+rozsahu øe¹ené úlohy a pro velmi rozsáhlé úlohy mù¾e být i velmi
+dlouhá.}  Po ukonèení øe¹ení (úspì¹ném nebo neúspì¹ném) dojde k
+pøekreslení {\em grafického okna} a v {\em informaèní poli} okna se
+objeví zpráva o úspì¹nosti výpoètu (tedy {\em Done} nebo {\em
+Failed}).
+
+Pøi øe¹ení se obvykle vytvoøí tyto soubory:
+\begin{itemize}
+\item popis úlohy pro øe¹iè (koncovka {\tt .fem})
+\item výsledky øe¹ení (koncovka {\tt .res})
+\end{itemize}
+
+
+\section{Nelineární výpoèet}
+
+V pøípadì potøeby nelineárního øe¹ení je mo¾né spustit výpoèet  pomocí
+
+{\em Stromu pøíkazù}:\\
+{\tt Solver $\rightarrow$ Non-Linear Solution..}.
+
+V tomto pøípadì je potøebné v následním dialogu nastavit parametry
+øe¹ení. V poli {\em Non-linear solver type} se volí typ metody øe¹ení
+nelineárních úloh:
+\begin{itemize}
+\item {\em NRM} \dots Newtonova-Raphsonova metoda, pou¾ívá se pro
+vìt¹inu úloh, neumo¾òuje v¹ak vy¹etøovat chování konstrukce po
+dosaøení maximální únosnosti.
+\item {\em ALM} \dots Metoda délky oblouku, která mù¾e vy¾adovat podstatnì 
+del¹í dobu výpoètu, ale umo¾ní vy¹etøit i chování modelu po pøekroèení
+maximální únosnosti, pøípadnì øe¹it nìkteré úlohy, ve kterých øe¹ení
+{\em NRM} selhává.
+\item {\em Linear} \dots klasické lineární øe¹ení (je zde k dispozici
+pro kontrolní a pomocné výpoèty).
+\end{itemize}
+
+Dále je mo¾né v poli {\em Number of substeps} nastavit poèet
+výpoètových krokù. Doporuèuje se pou¾ívat sudé èíslo, zpravidla v
+rozmezí 10--100. Hodnota {\em Number of iterations} urèuje maximální
+mo¾ný poèet iterací v ka¾dém podkroku øe¹ení. Výhozí nastavená hodnota
+je zpravidla více ne¾ dostateèná.
+
+Pole {\em Node to track} slou¾í k ulo¾ení kontrolních výsledkù z
+vybraného uzlu. V souboru z koncovkou {\tt .ntrack} je potom po
+výpoètu mo¾né najít data o posunech tohoto uzlu na konci jednotlivých
+výpoètových krokù.
+
+Pokud byly zadány jednostranné vazby, je jejich pou¾ití tøeba
+aktivovat v poli {\em Iterative supports}.

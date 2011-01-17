@@ -1,0 +1,100 @@
+% File name: u-cz-gfx.tex
+% Date:      2009/10/28 20:45
+% Author:    Jiri Brozovsky
+
+Grafické prostøedí programu umo¾òuje provádìt øadu operací s
+výpoèetním modelem pomocí poèítaèové my¹i. V dal¹ích odstavcích jsou
+podrobnìji rozebrány jednotlivé mo¾nosti a jejich vyu¾ití v programu.
+
+Nìkteré operace je mo¾né rychleji nebo pohodlnìji provést jiným
+zpùsobem, napøíklad stiskem nìkterého z tlaèítek v panelu {\em
+Nastavení zobrazení} (není-li vypnut, je umístìn v grafickém oknì zcela vpravo).
+
+
+\section{Manipulace s modelem}
+
+\subsection{Posouvání modelu}
+
+Provádí se tahem my¹i pøi souèasnì stiskutém {\bf levém tlaèítku
+my¹i}.
+
+
+\subsection{Otáèení modelu kolem os $x$ a $y$}
+
+
+Provádí se tahem my¹i pøi souèasnì stiskutém {\bf pravém tlaèítku
+my¹i}. Otáèení je vzta¾eno k aktuální poloze os $x$ a $y$ (aktuální
+orientace systému souøadnic je obvykle zobrazena v pravém dolním rohu
+grafického okna).
+
+\subsection{Otáèení modelu kolem osy $z$ }
+
+Provádí se {\bf vodorovným} pohybem my¹i pøi souèasnì stiskutém {\bf
+prostøedním tlaèítku my¹i}.
+
+\subsection{Zvìt¹ování a zmen¹ování modelu}
+
+Provádí se {\bf svislým} pohybem my¹i pøi souèasnì stiskutém {\bf
+prostøedním tlaèítku my¹i}. Posunem nahoru se zvìt¹uje, posun dolù
+se zmen¹uje.\footnote{K dispozici je také výbìr zobrazované oblasti
+pomocí okna. Tato funkce je dostupná jen po zadání pøíkazu {\tt gbox}
+a provádí se posunem my¹i pøi souèasnì stisknutém jejím levém
+tlaèítku. Po dokonèení operace je potøeba  stisknout prostøední
+tlaèítko my¹i nebo {\em Done} v oblasti {\em potvrzovacích tlaèítek}
+(v grafickém oknì vlevo dole).}
+
+Alternativnì je mo¾né pou¾ít koleèko my¹i (je-li jím vybavena).
+
+\section{Oznaèování objektù v grafických operacích}
+
+Nìkteré pøíkazy vy¾adují pou¾ití my¹i k oznaèování zpracovávaných
+objektù (obvykle jde o operace mající v názvu {\em By Mouse}).
+
+V takovém pøípadì platí nìkolik zásad:
+\begin{itemize}
+\item Objekty se oznaèují {\bf levým tlaèítkem my¹i}.
+\item Oznaèení je mo¾né odvolat {\bf pravým tlaèítkem my¹i} (u
+nìkterých operací nemusí být mo¾né).
+\item Je-li potøebné vybrat více objektù souèasnì, pohyb my¹i pøi
+stisknutém jejím levém tlaèítku zobrazí okno výbìru (funkce je
+dostupná jen pokud má pro daný objekt smysl).
+\item Grafickou operaci je mo¾né ukonèit stiskem {\bf prostøedního
+tlaèítka my¹i} enbo pomocí {\em Done} v poli {\em potvrzovacích tlaèítek}
+(v grafickém oknì vlevo dole).
+\item Dokonèení operace je mo¾no zru¹it stiskem {\em Cancel}
+ v oblasti {\em potvrzovacích tlaèítek}
+(v grafickém oknì vlevo dole).
+\end{itemize}
+
+{\bf Poznámka:} {\em Bìhem uvedených operací je mo¾né zobrazované
+objekty posouvat, otáèet a zvìt¹ovat nebo zmen¹ovat, je tøeba v¹ak
+dbát na to, aby pøi tìchto operacích nedo¹lo k náhodnému výbìru
+nìkterého objektu.}
+
+\section{Èíslování a zobrazování komponent modelu}
+
+Typy objektù (koneèné prvky, uzly, symboly zatí¾ení,\dots), které
+mají nebo nemají být zobrazovány je mo¾né nastavit s nabídky aplikace
+v polo¾kách {\em Plot} a {\em Hide}. V tìch¾e polo¾kách je mo¾né
+zapnout
+nebo vypnout i èíslování uvedených typù objektù. U zatí¾ení a podpor
+je dále mo¾né volit mezi vypisováním èísla objektu nebo velikosti
+pøíslu¹né velièiny (velikost síly, pøedepsané popu¹tìní podpory).
+
+Ve výchozím nastavení se zobrazují
+jen uzly,  koneèné prvky a podpory a zatí¾ení, nikoli v¹ak komponenty
+geometrického modelu.
+
+
+\section{Automatické pøekreslování modelu}
+
+Ve výchozím nastavení není aktivní funkce automatického pøekreslování
+modelu, a proto se po øadì operací neprojeví v grafickém zobrazení
+¾ádné zmìny. To je mo¾no zmìnit v nabídce aplikace: {\tt Plot
+$\rightarrow$ Automatic Replotting}. 
+
+Pokud by automatické pøekreslování zdr¾ovalo práci (velký model,
+práce na vzdáleném terminálu), je mo¾né jej opìt vypnout v nabídce:
+ {\tt Hide $\rightarrow$ Automatic Replotting}. 
+
+

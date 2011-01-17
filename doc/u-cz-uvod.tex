@@ -1,0 +1,109 @@
+% File name: u-cz-uvod.tex
+% Date:      2009/10/28 12:37
+% Author:    Jiri Brozovsky
+
+\section{Základní informace}
+
+Program uFEM slou¾í k øe¹ení statických úloh mechaniky kontinua pomocí
+metody koneèných prvkù. Je mo¾né jej pou¾ívat pro výpoèty prutových,
+plo¹ných a prostorových konstrukcí. Program obsahuje jak výpoèetní
+jádro, tak interaktivní a neinteraktivní u¾ivatelské nástroje pro
+tvorbu výpoèetních modelù a pro vyhodnocování výsledkù.
+
+K výpoètùm je mo¾né nìkolik typù koneèných prvkù, které pokrývají 
+vìt¹inu bì¾ných variant úloh mechaniky kontinua, které se vyskytují 
+v oblasti stavební mechaniky.
+
+
+
+\section{Typy koneèných prvkù}
+
+Program uFEM umo¾òuje pro jednotlivé typy problémù pou¾ít nìkolik typù koneèných prvkù,
+které se odli¹ují poètem uzlù a pou¾itými aproximaèními funkcemi, ale
+také charakterem úloh, pro které mohou být pou¾ity (napøíklad jen nìkteré typy
+prvkù je mo¾né vyu¾ít pøi fyzikálnì nelineárním øe¹ení).
+
+V tabulce~\ref{typykp} jsou uvedeny vybrané typy koneèných prvkù,
+které jsou vhodné pro fyzikálnì a geometricky lineární øe¹ení
+jednotlivých problémù mechaniky kontinua.\footnote{Problematika øe¹ení 
+nelinárních úloh je obsahem samostatné pøíruèky.} 
+
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{|l||l|l|}
+\hline
+{\bf Typ problému} & {\bf Koneèné prvky} & {\bf Stupnì volnosti} \\
+\hline
+\hline
+Rovinná pøíhradovina & LINK1 & $u_x, u_y$ \\
+Rovinný rám & BEAM3 & $u_x, u_y, \varphi_z$ \\
+Prostorová pøíhradovina & BEAM6 & $u_x, u_y, u_z$ \\
+Prostorový rám & BEAM7 & $u_x, u_y, u_z, \varphi_x, \varphi_y \varphi_z$ \\
+Stìna & PLANE2, PLANE11 & $u_x, u_y$ \\
+Deska & SLAB5 & $u_y, \varphi_x, \varphi_y$ \\
+Tìleso & SOLID4, SOLID9 & $u_x, u_y, u_z$ \\
+\hline
+\end{tabular}
+\label{typykp}
+\end{center}
+\caption{Základní typy koneèných prvkù v programu uFEM}
+\end{table}
+
+
+\section{Pou¾ívané jednotky a konvence}
+
+V programu nejsou èinìny ¾ádné pøedpoklady  o pou¾ívaných jendotkách
+a jejich volba je ponechána na u¾ivateli. Doporuèuje se pracovat
+v základních jednotkách soustavy SI a v jednotkách z nich odvozených
+($m$, $kg$, $N$, $Pa$).
+
+Pøi tvorbì modelu se pøedpokládá pravotoèivý kartézský systém
+souøadnic. Hodnoty vektorových velièin (posunutí, síly) jsou kladné
+pokud velièiny smìøují ve smìru pøíslu¹né kladné poloosy systému
+souøadnic.  
+
+\begin{figure}[ht]
+\begin{center}
+\scalebox{0.8}{\includegraphics{u-kss.eps}}
+\label{kss}
+\end{center}
+\caption{Pravoúhlý kartézský systém souøadnic}
+\end{figure}
+
+Pøi zadávání jakýchkoli èíselných hodnot je potøebné nezapomínat,
+¾e se pou¾ívá {\bf výhradnì desetinná teèka}.
+
+
+\section{Struktura programu }
+
+Program se skládá ze dvou samostatných souèástí  -- výpoèetního jádra,
+které provádí vlastní výpoèty, a z integrovaného u¾ivatelského
+rozhraní, které slou¾í k interakci s u¾ivatelem a ke tvorbì
+výpoèetních modelù a k vyhodnocování výsledkù. Obì èásti mohou
+pracovat samostatnì,  napøíklad k provozu výpoèetního jádra není
+zapotøebí u¾ivatelské rozhraní.
+
+U¾ivatelské rozhraní je mo¾né ovládat pomocí my¹i a klávesnice,
+pro urychlení práce nebo pro automatizaci nìkterých operací je mo¾né
+pou¾ívat integrovaného pøíkazového jazyka.
+
+
+
+\section{Interakce s dal¹ími programy}
+
+Program uFEM pou¾ívá vlastní formáty datových souborù, které nejsou 
+s jinými programy kompatibilní. V omezené míøe v¹ak umo¾òuje naèítat
+a ukládat formáty nìkterých souvisejících programù.
+
+Je mo¾né naèítat definice sítí koneèných prvkù z programù
+GMSH~\cite{gmsh} a NetGen~\cite{netgen}. V obou pøípadech je nutné
+pou¾ít textovou variantu datového formátu tìchto programù. 
+Oba uvedené programy generují sítì koneèných prvkù tvoøených
+trojúhelníky (ve 2D) nebo ètyøstìny (ve 3D), které jsou v programu
+uFEM pøevedeny na prvky PLANE11 (pro øe¹ení stìn) a SOLID4 (prostorový
+prvek pro øe¹ení tìles).
+
+Vytvoøenou sí» koneèných prvkù je mo¾né ulo¾it ve formì pøíkazového souboru
+kompatibilního s programem ANSYS~\cite{ansys}. V tomto pøípadì se
+neukládají doplòková data koneèných prvkù ({\em Real Constants} v
+terminologii programu ANSYS).

@@ -1,0 +1,109 @@
+% File name: u-cz-inst.tex
+% Date:      2009/11/17 18:18
+% Author:    Jiri Brozovsky
+
+\section{Instalace binární verze}
+
+\subsection{Úvod}
+
+Binární (sestavenou) verzi pou¾ijí v¹ichni u¾ivatelé,
+kteøí se chtìjí program jen nainstalovat. 
+
+U¾ivatelé,
+kteøí potøebují program modifikovat nebo jej chtìjí
+pou¾ívat na nepodporovaném operaèním systému, si musí
+stáhnout zdrojové kódy programu  a provést pøeklad
+probgramu do binární verze samostatnì.
+
+
+\subsection{Unixové operaèní systémy}
+
+\subsubsection{Prerekvizity}
+V operaèních systémech unixového typu je tøeba mít nainstalovanou podporu
+OpenGL a knihovnu {\em gtkglext} (zpravidla jde o balíèek {\tt gtkglext} nebo
+{\em glext}, který by mìl být k dispozici v nabídce správce programù
+pøíslu¹ného\footnote{Zpravidla jde o programy jako {\em Synaptic} nebo {\em
+Aptitude}} operaèního systému).
+
+\subsubsection{Spustitelné soubory}
+Dodaný soubor s binárními soubory je potøebné dekomprimovat\footnote{Pøíkazem
+{\tt tar xzvf soubor.tgz}} a binární soubory {\em gfem} a {\em fem } umístit do
+nìkterého adresáøe, ve kterém operaèní systém hledá spustitelné
+programy\footnote{Obvykle {\tt /usr/bin} nebo {\em /usr/local/bin}.}
+
+\subsubsection{Dokumentace}
+Soubory s koncovkou {\em .1} je potøeba umístit do adresáøe s manuálovými
+stránkami\footnote{Nejèastìji {\em /usr/share/man/man1} nebo {\em
+/usr/man/man1}.} Soubory s doplòkovou dokumentací (pøípona {\em .pdf}) je mo¾né umístit
+dle potøeby.
+
+\subsubsection{Nastavení}
+Pro správnou funkci programu je potøebné do domácího adresáøe ka¾dého u¾ivatele
+umístit soubor {\em tgfemrc} a pøejmenovat jej na {\em .tgfemrc} (s teèkou na
+zaèátku). V tomto souboru je také potøebné nastavit správnou cestu k øe¹ièi
+(programu {\em fem}). Jde o øádek zaèínající slovem {\em
+setsolver}.\footnote{Pokud byl tento soubor umístìn do adresáøe {\em
+/usr/local/bin}, pak správná podoba uvedeného øádku bude {\tt
+setsolver,/usr/local/bin/fem}}
+
+Soubor {\em tgfemrc} je mo¾né mít umístìn i jinde ne¾ v domácím adresáøi
+u¾ivatele, potom je v¹ak potøebné definovat promìnnou prostøedí {\tt
+FEM\_SETUP\_FILE} která bude obsahovat úplnou cestu k uvedenému souboru (na jeho
+jménì potom nezále¾í). Soubor v domácím adresáøi u¾ivatele má v¹ak v¾dy
+pøednost (pokud existuje).
+
+\subsubsection{Spou¹tìní}
+
+Provádí se pøíkazem {\tt gfem} z terminálového emulátoru neno jiného
+spou¹tìcího prostøedku.
+
+\subsection{Operaèní systémy typu Windows}
+
+
+\subsubsection{Prerekvizity}
+
+Podorovány jsou varianty XP a Vista. U star¹ích (ani novìj¹ích) není
+funkènost známa, není v¹ak vylouèena.\footnote{Ov¹em fungování na verzích
+95, 95 a ME ní technicky mo¾né.} V ka¾dém pøípadì musí být k dispozici
+podpora OpenGL, co¾ je v¹ak u vý¹e uvedených {\em \`{a} priori} zaruèeno.
+
+\subsubsection{Instalace}
+
+Instalaèní program staèí spustit a ponechat v¹echny volby na výchozích
+nastaveních. Poku zmìníte místo instalace programu, je nezbytné
+provést nastavení popsané v dal¹ím odstavci.
+
+\subsubsection{Nastavení}
+Pro správnou funkci programu je potøebné mít v pozici {\tt C:/Program Files/uFEM/tgfemrc}
+konfiguraèní soubor pojmenovaný {\em tgfemrc}. Pokud byla pøi instalaci ponechána
+výchozí nastavení, není tøeba s tím nejak manipulovat.
+
+~\\
+{\bf Poznámka:} {\em Bì¾ným u¾ivatelùm se dùraznì doporuèuje ponechat pøi instalaci výchozí nastavení.}
+~\\
+
+Pokud je v¹ak soubor {\em fem.exe} umístìn mimo adresáø {\tt C:/Program Files/uFEM},
+je nezbytné v
+  souboru {\em tgfemrc} potøebné nastavit správnou cestu k øe¹ièi
+ {\em fem.exe}. Jde o øádek zaèínající slovem {\em
+setsolver}.\footnote{Pokud byl tento soubor umístìn do adresáøe {\em
+D:/uFEM}, pak správná podoba uvedeného øádku bude {\tt
+setsolver,D:/uFEM/fem.exe}}
+
+Souèasnì je nutné  definovat promìnnou prostøedí {\tt FEM\_SETUP\_FILE} která
+bude obsahovat úplnou cestu k uvedenému konfiguraènímu souboru {\em tgfemrc}.
+
+\subsection{Mac OS X}
+
+\subsubsection{Prerekvizity a instalace}
+Instalace a pou¾ívání  se neli¹í od operaèních systémù unixového typu.
+Jen je nutné mít nainstalovaný a pøed spu¹tìním programu {\em uFEM} ji¾ bì¾ící
+subsystém {\em X11} (je dodáván na instalaèních médiích Mac OS X).
+Verze Mac OS ni¾¹í ne¾ 10.3 nejsou
+podporovány a program bì¾í jen na poèítaèích s procesory PowerPC (pøípadnì
+na systémech s jejich emulací).
+
+\section{Instalace programu ze zdrojových kódù }
+
+Tato forma instalace je doporuèena jen zku¹eným u¾ivatelùm a programátorùm.
+Potøebné informace najdou v souboru INSTALL v balíku se zdrojovými kódy.

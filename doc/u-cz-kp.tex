@@ -1,0 +1,121 @@
+% File name: u-cz-kp.tex
+% Date:      2009/10/31 11:37
+% Author:    Jiri Brozovsky
+
+\section{Základní mo¾nosti}
+
+Koneèné prvky a jejich uzly je mo¾no zadávat buï na základì
+geometrického modelu (pomocí funkce automatické tvorby pravidelné
+sítì) nebo importem z externích souborù\footnote{Import z externích
+aplikací patøí k pokroèilej¹ím tématlm, a proto není v tomto textu
+popisován.}, pøípadnì pøímým (,,ruèním``) zadáním souøadnic uzlù a
+specifikací parametrù jednotlivých koneèných prvkù, tedy pøíslu¹nosti
+uzlù ke koneèným prvkùm.
+
+
+\section{Automatická tvorba sítì koneèných prvkù}
+
+V pøípadì, ¾e je korektnì sestaven geometrický model (v¹echny {\em
+geometrické objekty}) mají pøiøazena u¾ivatelská èísla existujících
+typù materiálù, sad konstant koneèných prvkù a typù koneèných prvkù a
+nastavené dìlení spoleèných  hran sousedících {\em geometrických objektù} 
+si odpovídá, je mo¾né vytvoøit sí» koneèných prvkù  pomocí
+{\em Stromu pøíkazù}:\\
+{\tt Preprocessor $\rightarrow$ Meshing $\rightarrow$
+Mesh}.\footnote{U vìt¹ích modelù s mnoha {\em geometrickými objekty}
+mù¾e operace trvat del¹í dobu.}
+
+{\bf Pozor:} {\em Automatická tvorba není mo¾ná u porvkù tvaru
+trojúhelníka (napø. PLANE11) ani ètyøstìnu (napøíklad SOLID4).}
+
+\section{Postupy zadávání uzlù a koneèných prvkù}
+
+Jednotlivé {\em koneèné prvky} se zadávají specifikací jejich vlastností
+(tedy pøíslu¹ného u¾ivatelského èísla typu koneèného prvku, sady konstant
+a materiálu) a seznamu pøíslu¹ných {\em uzlù} (v poøadí odpovídajícím
+pøedepsaneímu poøadí uzlù na pøíslu¹ném typu prvku).
+
+\subsection{Uzly}
+{\em Uzly } {,,Nodes``} je mo¾né zadat pomocí
+{\em Stromu pøíkazù}:\\
+{\tt Preprocessor $\rightarrow$ Nodes $\rightarrow$ Create/Change}.
+Existující {\em uzly} je mo¾né kopírovat, zrcadlit (bez omezení)
+nebo mazat v {\tt Preprocessor $\rightarrow$ Nodes $\rightarrow$ ...}.
+
+
+\subsection{Kone\v{c}n\'{e} prvky}
+
+Pøed zadáváním koneèný prvkù je potøebné specifikovat jejich typ a vlastnosti
+pomocí
+{\em Stromu pøíkazù}:\\
+{\tt Preprocessor $\rightarrow$ Elements $\rightarrow$ Set default
+properties}.
+
+{\em Kone\v{c}n\'{e} prvky}  je pak mo¾né zadat
+pomocí 
+{\em Stromu pøíkazù}:\\
+{\tt Preprocessor $\rightarrow$ Elements $\rightarrow$ Create By
+Mouse}. V tomto pøípadì se potøebné {\em uzly} vyberou pomocí my¹i. Je
+v¹ak nutné zadávat uzly v poøadí, které odpovídá èíslování uzlù v
+dokumentaci pro jednotlivé typy koneèných prvkù.\footnote{Poøadí uzlù
+je pro pøíslu¹né tvary koneèných prvkù shodné s poøadím {\em bodù} na
+odpovídajících geometrických objektech -- viz obrázek~\ref{ufobj}.}
+
+
+Takto vytvoøené koneèné prvky je mo¾né libovolnì kopírovat.
+
+\section{Vztah geometrických objektù a koneèných prvkù}
+
+Na rozdíl od jiných podobných programù slou¾í {\em geometrický model} jen
+k vytvoøení sítì koneèných prvkù. Vytvoøené koneèné prvky nejsou
+s {\em geometrickým modelem} dále nijak svázány a dal¹í zmìny
+geometrického
+modelu existující koneèné prvky nejak neovlivní (a zmìny na koneèných
+prvcích se nijak neprojeví na {\em geometrickém modelu}).
+
+
+\section{Podpory v uzlech}
+
+Podpory (vazby) je v programu uFEM mo¾né zadávat pouze do uzlù koneèných
+prvkù. Podporu je mo¾né definovat jen pro takové typy posunutí nebo
+pootoèení, které odpovídají pou¾itému typu koneèného prvku
+
+Je mo¾né pou¾ít tyto typy podpor:
+\begin{itemize}
+\item pevná podpora proti posunutí nebo pootoèení,
+\item pøedepsané posunutí nebo pootoèení,
+\item pru¾né podddajná podpora proti posunutí nebo pootoèení.
+\end{itemize}
+
+Uvedené typy podpor je mo¾né definovat jako
+jednostranné.\footnote{Jejich praktické pou¾ití je ov¹em mo¾né jen
+v nelineárních výpoètech, které v tomto textu nejsou podrobnìji
+rozebírány.}
+
+Zadání podpor je mo¾né provést pomocí 
+{\em Stromu pøíkazù}:\\
+{\tt Preprocessor $\rightarrow$ Displacements $\rightarrow$ Create By Mouse..}
+
+
+\section{Zatí¾ení v uzlech }
+
+V uzlech je mo¾né zadávat bodové síly, pøípadnì momenty (ty jen u koneèných
+prvkù, které mají v uzlech definovýny rotace).\footnote{Program
+pochopitelnì nebude klást odpor zadávání èehokoli kdekoli, ale
+fyzikálnì nepøípustné typy zatí¾ení (tedy napøíklad momenty v uzlech
+stìnových nebo prostorových prvkù) budou ve výpoètu samozøejmì ignorovány.}
+
+Zadání podpor je mo¾né provést pomocí 
+{\em Stromu pøíkazù}:
+{\tt Preprocessor $\rightarrow$ Node Loads $\rightarrow$ Create By Mouse..}
+
+\section{Zatí¾ení vlastní tíhou konstrukce }
+
+Zatí¾ení tíhou konstrukce je mo¾né zadat pomocí
+{\em Stromu pøíkazù}:
+{\tt Preprocessor $\rightarrow$ Acceleration $\rightarrow$ Create/Change}.
+
+V následném dialogu se zadává smìr a velikost pøíslu¹ného gravitaèného
+zrychlení (smìr zrychlení je v¾dy opaèný ne¾ je ¾ádaný smìr tíhové
+síly). Pro správnou funkci je pøi zadávání vlastností materiálu 
+potøebné definovat velikost hustoty  ({\em Density}).

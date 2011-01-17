@@ -1,0 +1,120 @@
+% File name: u-cz-geo.tex
+% Date:      2009/10/28 21:18
+% Author:    Jiri Brozovsky
+
+\section{Základní mo¾nosti}
+
+Mo¾nosti tvorby geometrických modelù jsou v programu uFEM relativnì
+omezené. Je mo¾né tvoøit modely z úseèek (pro øe¹ení rámù apod.),
+a plo¹né modely sestavené z ètyøúhelníkových oblastí.\footnote{Oblasti
+mohou být i trojúhelníkové, nicménì ty se tvoøí degradací ètyøúhelníkù
+a nezaruèují pøíli¹ kvalitní výsledky. Je proto lep¹í se jim pokud
+mo¾no vyhnout.}
+
+V prostoru je mo¾né tvoøit oblasti tvaru pravidelných nebo
+nepravidelných kvádrù, a to i se zakøivenými stìnami (zakøivení
+mù¾e být popsáno kvadratickou funkcí).
+
+Slo¾itìj¹í tvary se sestavují pomocí kombinace jednotlivých
+jednodu¹¹ích obrazcù.
+
+Uvedené objekty je mo¾né pøesouvat a kopírovat, v nìkterých pøípadech
+i otáèet a zrcadlit (jen linie). Pøi pøesunech a kopírování se
+automaticky vyu¾ívají ji¾ existující {\em body} (nové se tvoøí jen
+tehdy, pokud v po¾adovaném místì je¹tì ¾ádný {\em bod} není.)
+
+V souèasné dobì není mo¾né v
+objektech dodateènì vytváøet otvory nebo je dodateènì dìlit na men¹í
+èásti.
+
+
+\begin{figure}[ht]
+\begin{center}
+\scalebox{1.0}{\includegraphics{u-cz-obj.eps}}
+\label{ufobj}
+\end{center}
+\caption{Nejjednodu¹¹í typy geometrických objektù}
+\end{figure}
+
+Je mo¾né mìnit tvar ji¾ existujících objektù, a to pomocí zmìny
+polohy {\em bodù}, které definují jejich vrcholy. 
+
+
+
+\section{Principy zadávání}
+
+Jednotlivé liniové, plo¹né a prostorové objekty se obvykle zadávají
+pomocí jejich vrcholù. Ty musí být tvoøeny ji¾ existujícími {\em
+body}.\footnote{Vybrané typické objekty je mo¾né zadat ,,rovnou``
+a uzly jim vytvoøí program automaticky}.
+
+\subsection{Body}
+{\em Body } {,,Keypoints``} je mo¾né zadat pomocí
+{\em Stromu pøíkazù}:\\
+{\tt Preprocessor $\rightarrow$ Keypoints $\rightarrow$ Create/Change}.
+Existující {\em body} je mo¾né kopírovat, zrcadlit (bez omezení)
+nebo mazat v {\tt Preprocessor $\rightarrow$ Keypoints $\rightarrow$ ...}.
+
+\subsection{Geometrické objekty}
+
+{\em Geometrické objekty} (úseèky, plochy, objemy) je mo¾né zadat
+pomocí 
+{\em Stromu pøíkazù}:\\
+{\tt Preprocessor $\rightarrow$ Geometric Entities $\rightarrow$ Create By Mouse}.
+V tomto pøípadì se potøebné {\em body} vyberou pomocí my¹i.
+
+Pokud je zadávaný objekt pravoúhelníkového tvaru (obdélník, kvádr), je
+mo¾né jej snáze zadat pomocí dialog pøístupného ve 
+{\em Stromu pøíkazù}:\\
+{\tt Preprocessor $\rightarrow$ Geometric Entities $\rightarrow$ Create By Size}.
+Zde je tøeba zadat souøadnice poèáteèního bodu (vrchol $1$
+na obrázku~\ref{ufobj}) a pomocí jeho rozmìrù ve smìrech $x$, $y$ a $z$ ($z$
+je nutné jen pro kvádr).
+
+Takto vytvoøené geometrické objekty je mo¾né libovolnì kopírovat.
+Zrcadlení objektù se dùraznì nedoporuèuje kvùli riziku pozdìj¹ího vytvoøení
+nesprávnì orientovaných koneèných prvkù (s výjimkou úseèek, kde
+uvedený problém nevzniká).
+
+
+\section{Parametry sítì koneèných prvkù}
+
+Hlavním úèelem geometrických objektù je slou¾it jako podklad k
+vytváøení sítì koneèných prvkù. Proto je potøebné objektùm správnì
+nastavit jednotlivé vlastnosti koneèných prvkù (èíslo typu prvku, èíslo
+sady konstant, èíslo materiálu a poèty dílkù na hranách
+objektù).\footnote{Ve skuteènosti program zabrání vytvoøení
+{\em geometrického objektu} urèitého typu, pokud nenalezne ji¾
+nastavený kompatibilní typ koneèného prvku.}
+
+\subsection{Výchozí vlastnosti}
+
+Pøíslu¹né parametry koneèných prvkù je mo¾né nastavit pøed zadáváním
+jednotlivých {\em geometrických objektù} pomocí 
+{\em Stromu pøíkazù}:\\
+{\tt Preprocessor $\rightarrow$ Geometric Entities $\rightarrow$ Set
+Default Properties}. (èíslo typu koneèného prvku, èíslo sady kosntatnt
+prvku, èíslo materiálu)\\
+a {\tt Preprocessor $\rightarrow$ Geometric Entities $\rightarrow$ Set
+Default Division} (výchozí dìlení hrano objektù na dílky). Význam
+parametrù (tedy polohy pøíslu¹ných hran) v dialogu {\tt Set Default Division}
+je uveden na obrázku~\ref{obrdiv}.
+
+
+\begin{figure}[ht]
+\begin{center}
+\scalebox{1.0}{\includegraphics{u-cz-div.eps}}
+\label{obrdiv}
+\end{center}
+\caption{Znaèení hran objektù pro {\em Division}}
+\end{figure}
+
+
+\subsection{Oprava vlastností }
+
+Zadané vlastnosti {\em geometrických objektù} je mo¾né mìnit i po
+jejich vytvoøení. V tomto pøípadì není k dispozici dialog, ale po
+výbìru objektu my¹í je potøebné editovat pøíkaz v pøíkazovém øádku.
+
+
+

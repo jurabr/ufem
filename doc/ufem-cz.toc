@@ -1,0 +1,90 @@
+\contentsline {chapter}{\numberline {1}Úvod}{1}{chapter.1}
+\contentsline {section}{\numberline {1.1}Základní informace}{1}{section.1.1}
+\contentsline {section}{\numberline {1.2}Typy koneèných prvkù}{1}{section.1.2}
+\contentsline {section}{\numberline {1.3}Pou¾ívané jednotky a konvence}{2}{section.1.3}
+\contentsline {section}{\numberline {1.4}Struktura programu }{2}{section.1.4}
+\contentsline {section}{\numberline {1.5}Interakce s dal¹ími programy}{2}{section.1.5}
+\contentsline {chapter}{\numberline {2}První kroky v programu}{4}{chapter.2}
+\contentsline {section}{\numberline {2.1}Základní orientace}{4}{section.2.1}
+\contentsline {subsection}{\numberline {2.1.1}Grafické okno}{4}{subsection.2.1.1}
+\contentsline {subsection}{\numberline {2.1.2}Dal¹í dialogová okna}{5}{subsection.2.1.2}
+\contentsline {subsection}{\numberline {2.1.3}Okna s výpisy}{5}{subsection.2.1.3}
+\contentsline {section}{\numberline {2.2}Umístìní a pojmenování datových souborù}{5}{section.2.2}
+\contentsline {subsection}{\numberline {2.2.1}Jméno úlohy}{5}{subsection.2.2.1}
+\contentsline {subsection}{\numberline {2.2.2}Adresáø pro data}{6}{subsection.2.2.2}
+\contentsline {subsection}{\numberline {2.2.3}Typy souborù}{6}{subsection.2.2.3}
+\contentsline {section}{\numberline {2.3}Postup tvorby modelu}{6}{section.2.3}
+\contentsline {section}{\numberline {2.4}Úvodní pøíklad}{7}{section.2.4}
+\contentsline {subsection}{\numberline {2.4.1}Pøíprava}{7}{subsection.2.4.1}
+\contentsline {subsection}{\numberline {2.4.2}Zadání pøíkladu}{7}{subsection.2.4.2}
+\contentsline {subsection}{\numberline {2.4.3}Zadání vlastností modelu}{8}{subsection.2.4.3}
+\contentsline {subsubsection}{Výbìr typu koneèného prvku}{8}{section*.3}
+\contentsline {subsubsection}{Zadání vlastností koneèného prvku}{8}{section*.4}
+\contentsline {subsubsection}{Zadání typu a vlastností materiálu}{8}{section*.5}
+\contentsline {subsection}{\numberline {2.4.4}Tvorba geometrie modelu}{8}{subsection.2.4.4}
+\contentsline {subsubsection}{Body}{8}{section*.6}
+\contentsline {subsubsection}{Plochy}{9}{section*.7}
+\contentsline {subsection}{\numberline {2.4.5}Parametry sítì koneèných prvkù}{9}{subsection.2.4.5}
+\contentsline {subsection}{\numberline {2.4.6}Tvorba sítì koneèných prvkù}{10}{subsection.2.4.6}
+\contentsline {subsection}{\numberline {2.4.7}Zadání podpor}{10}{subsection.2.4.7}
+\contentsline {subsection}{\numberline {2.4.8}Zadání zatí¾ení}{10}{subsection.2.4.8}
+\contentsline {subsection}{\numberline {2.4.9}Výpoèet}{10}{subsection.2.4.9}
+\contentsline {subsection}{\numberline {2.4.10}Prohlí¾ení výsledkù}{10}{subsection.2.4.10}
+\contentsline {subsection}{\numberline {2.4.11}Ulo¾ení výsledkù}{11}{subsection.2.4.11}
+\contentsline {subsubsection}{Textové výstupy}{11}{section*.8}
+\contentsline {subsubsection}{Grafické výstupy}{11}{section*.9}
+\contentsline {section}{\numberline {2.5}Ukládání a naèítání dat}{12}{section.2.5}
+\contentsline {subsection}{\numberline {2.5.1}Ulo¾ení dat}{12}{subsection.2.5.1}
+\contentsline {subsection}{\numberline {2.5.2}Naètení dat}{12}{subsection.2.5.2}
+\contentsline {section}{\numberline {2.6}Úvodní pøíklad zapsaný pomocí pøíkazù}{12}{section.2.6}
+\contentsline {chapter}{\numberline {3}Operace v grafickém prostøedí}{14}{chapter.3}
+\contentsline {section}{\numberline {3.1}Manipulace s modelem}{14}{section.3.1}
+\contentsline {subsection}{\numberline {3.1.1}Posouvání modelu}{14}{subsection.3.1.1}
+\contentsline {subsection}{\numberline {3.1.2}Otáèení modelu kolem os $x$ a $y$}{14}{subsection.3.1.2}
+\contentsline {subsection}{\numberline {3.1.3}Otáèení modelu kolem osy $z$ }{14}{subsection.3.1.3}
+\contentsline {subsection}{\numberline {3.1.4}Zvìt¹ování a zmen¹ování modelu}{14}{subsection.3.1.4}
+\contentsline {section}{\numberline {3.2}Oznaèování objektù v grafických operacích}{15}{section.3.2}
+\contentsline {section}{\numberline {3.3}Èíslování a zobrazování komponent modelu}{15}{section.3.3}
+\contentsline {section}{\numberline {3.4}Automatické pøekreslování modelu}{15}{section.3.4}
+\contentsline {chapter}{\numberline {4}Geometrický model}{16}{chapter.4}
+\contentsline {section}{\numberline {4.1}Základní mo¾nosti}{16}{section.4.1}
+\contentsline {section}{\numberline {4.2}Principy zadávání}{17}{section.4.2}
+\contentsline {subsection}{\numberline {4.2.1}Body}{17}{subsection.4.2.1}
+\contentsline {subsection}{\numberline {4.2.2}Geometrické objekty}{17}{subsection.4.2.2}
+\contentsline {section}{\numberline {4.3}Parametry sítì koneèných prvkù}{17}{section.4.3}
+\contentsline {subsection}{\numberline {4.3.1}Výchozí vlastnosti}{17}{subsection.4.3.1}
+\contentsline {subsection}{\numberline {4.3.2}Oprava vlastností }{18}{subsection.4.3.2}
+\contentsline {chapter}{\numberline {5}Koneènìprvkový model}{19}{chapter.5}
+\contentsline {section}{\numberline {5.1}Základní mo¾nosti}{19}{section.5.1}
+\contentsline {section}{\numberline {5.2}Automatická tvorba sítì koneèných prvkù}{19}{section.5.2}
+\contentsline {section}{\numberline {5.3}Postupy zadávání uzlù a koneèných prvkù}{19}{section.5.3}
+\contentsline {subsection}{\numberline {5.3.1}Uzly}{19}{subsection.5.3.1}
+\contentsline {subsection}{\numberline {5.3.2}Kone\v {c}n\'{e} prvky}{20}{subsection.5.3.2}
+\contentsline {section}{\numberline {5.4}Vztah geometrických objektù a koneèných prvkù}{20}{section.5.4}
+\contentsline {section}{\numberline {5.5}Podpory v uzlech}{20}{section.5.5}
+\contentsline {section}{\numberline {5.6}Zatí¾ení v uzlech }{20}{section.5.6}
+\contentsline {section}{\numberline {5.7}Zatí¾ení vlastní tíhou konstrukce }{21}{section.5.7}
+\contentsline {chapter}{\numberline {6}Spu¹tìní výpoètu}{22}{chapter.6}
+\contentsline {section}{\numberline {6.1}Lineární výpoèet}{22}{section.6.1}
+\contentsline {section}{\numberline {6.2}Nelineární výpoèet}{22}{section.6.2}
+\contentsline {chapter}{\numberline {7}Práce s výsledky}{24}{chapter.7}
+\contentsline {section}{\numberline {7.1}Textové výpisy}{24}{section.7.1}
+\contentsline {section}{\numberline {7.2}Grafické výstupy}{24}{section.7.2}
+\contentsline {section}{\numberline {7.3}Dal¹í typy výsledkù}{25}{section.7.3}
+\contentsline {section}{\numberline {7.4}Ukládání obrázkù}{26}{section.7.4}
+\contentsline {chapter}{\numberline {8}Instalace programu}{27}{chapter.8}
+\contentsline {section}{\numberline {8.1}Instalace binární verze}{27}{section.8.1}
+\contentsline {subsection}{\numberline {8.1.1}Úvod}{27}{subsection.8.1.1}
+\contentsline {subsection}{\numberline {8.1.2}Unixové operaèní systémy}{27}{subsection.8.1.2}
+\contentsline {subsubsection}{Prerekvizity}{27}{section*.10}
+\contentsline {subsubsection}{Spustitelné soubory}{27}{section*.11}
+\contentsline {subsubsection}{Dokumentace}{27}{section*.12}
+\contentsline {subsubsection}{Nastavení}{28}{section*.13}
+\contentsline {subsubsection}{Spou¹tìní}{28}{section*.14}
+\contentsline {subsection}{\numberline {8.1.3}Operaèní systémy typu Windows}{28}{subsection.8.1.3}
+\contentsline {subsubsection}{Prerekvizity}{28}{section*.15}
+\contentsline {subsubsection}{Instalace}{28}{section*.16}
+\contentsline {subsubsection}{Nastavení}{28}{section*.17}
+\contentsline {subsection}{\numberline {8.1.4}Mac OS X}{29}{subsection.8.1.4}
+\contentsline {subsubsection}{Prerekvizity a instalace}{29}{section*.18}
+\contentsline {section}{\numberline {8.2}Instalace programu ze zdrojových kódù }{29}{section.8.2}

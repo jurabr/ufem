@@ -1,0 +1,943 @@
+\documentclass{article}
+\usepackage{graphics}
+
+\begin{document}
+
+\section{uFEM User's Guide}
+
+\section{Introduction}
+
+\subsection{Overview}
+
+ The uFEM is a computational tool for a static finite
+ element analysis of structures. It includes a command-line
+ solver and a command-line and graphics integrated pre-
+ and postprocessor.
+
+
+
+\subsection{Name}
+
+ The FEM stands for a "Finite Element Method". The starting
+ "u" initialy meant a Greek letter "mu" (because of the small
+ size of the code) but now it has no specific meaning.
+ There were attempts to translate it as an "ultimate FEM" but 
+ much
+ more realistic meaning of the "u" is an "unfinished".
+
+ In this text a "uFEM" refers to the whole package, while the solver	
+ is called a "fem" and user interfaces are  a"tfem" (the terminal
+ one) and a "gfem" (the graphical one).
+
+
+
+\subsection{Current possibilities}
+
+\subsubsection{Finite elements}
+\begin{itemize}
+\item  2D trusses (element 1) and 3D trusses (12)
+\item  2D beams (3)
+\item  plane strain and plane stress elements (2, 11)
+\item  3D elements (hexahedron 4, bricks 8, 9, 10)
+\item  2D slab (5)
+\end{itemize}
+
+\subsubsection{Material models}
+\begin{itemize}
+\item  linear elastic material
+\item  elastoplastic (Chen) with Ohtani's hardening
+\item  smeared crack model for concrete (for 2D only)
+\item  several experimental material types
+\end{itemize}
+
+\subsubsection{Analysis types}
+\begin{itemize}
+\item  linear solution (obviously...)
+\item  linear solution with one-directional boundary conditions
+\item  non-linear Newton-Rapshon solution (for physical non-linearity)
+\item  non-linear Arc-Length Method solution (for physical non-linearity)
+\end{itemize}
+
+\subsection{uFEM components}
+
+\subsubsection{Solver}
+
+ The solver is a non-interactive command-line based application.
+ It can be controlled by input files and through command-line
+ parameters. The solver is a highly portable and can run on
+ all current major operating systems and hardware platforms.
+
+
+
+\subsubsection{Interactive pre and post-processor}
+
+ There is an integrated preprocessing and postprocessing 
+ environment. However, it its possibilities are relatively limited.
+ It is bassicaly command-driven and there is a terminal-only
+ version and a graphical (GUI) application. The GUI one
+ offers menus and dialogs for many commands.
+ The preprocessor has some limited capabilities of structured
+ mesh generation (2D and 3D).
+
+
+
+\section{Solver}
+
+\subsection{Invocation and running}
+
+ The uFEM solver is started by "fem [parameters]". 
+
+
+
+\subsubsection{Basic command-line [parameters]}
+\begin{itemize}
+\item  -p ... indicates that input file is preparsed; uFEM-generated files (by the "export" command) are but hand-written file are not.
+\item  -i FILE ... name of an input file; to use a standard input, use the "-si" instead
+\item  -o FILE ... name of an output file; to use a standard output, use the "-so" instead
+\end{itemize}
+
+\subsubsection{Linear solution}
+
+ No additional parameters are necessary for a linear solution.
+
+
+
+\subsubsection{One-direction boundary conditions}
+
+ The one-directional boundary conditions must be defined
+ in the model. Names of one-directional boundary conditions 
+ the "-" (for compression-only) or the "+" (for tension only) symbols
+ (examples: "ux+" or "stiffy-").
+
+ The iterative solution is currently possible  for linear
+ solver only.
+
+
+
+\paragraph{Required command line parameter:}
+\begin{itemize}
+\item  -d ... starts iterative solver for one-directional boundary conditions.
+\end{itemize}
+
+\subsubsection{Non-linear solution}
+\begin{itemize}
+\item  -nls TYPE ... type of non-linear solver (0 and 1 are for a linear solution, 2 is for a Newton-Raphson)
+\item  -nlstp NUMBER ... number of steps of the solution
+\item  -nlf FILE ... file to save convergence data
+\item  -ln NODE ... number of node that will be monitored (load level and sx, sy, sxy stresses will be saved)
+\item  -lf FILE name of file to store monitoring data
+\item  -ose N ... save every N-th substep
+\item  -osf FILE ... template for names of substeps
+\end{itemize}
+
+\subsubsection{Multi-step solution}
+
+ Unlike many other finite element systems the uFEM doesn't
+ support multi-step solutions (e. g. modelling of construction
+ process of building or time-dependent problems) out of the box.
+ 
+ But it is possible to read the results of the previous solution
+ from a file or from a pipe. And this is a way that uFEM use.
+ 
+ These commands can be used to read data from previous step:
+
+
+\begin{itemize}
+\item  -r RFILE ... read result data from the file named RFILE
+\item  -sr ... read result data from the standard input
+\end{itemize}
+
+\subsection{Input file format}
+
+ The format is described in the feminput(5) manual page.
+
+
+
+\subsection{Output file format}
+
+ TODO
+
+
+
+\section{User Interface}
+
+\subsection{Introduction	}
+
+ User interface can be used to create a computational model,
+ to modify it (a preprocessor), to call a solver
+ and to review results (a postprocessor).
+ There are two alternatives of the user interface -- text-only
+ terminal version and a graphics (GUI) one. They are functionally
+ equivalent, except the graphics capabilities (visualisations of
+ data, visual selections,...) are not available in the text
+ version.
+
+
+
+\subsection{Basic principles}
+
+\subsubsection{Input conventions}
+
+ The program is command-driven and all GUI operations are
+ actually only front-ends to these commands. It is important
+ to remember that a comma "," symbol is a command parameter
+ separator and thus it should not be used in any GUI dialog!
+ The decimal separator is always the dot ".". Even if other
+ applications use commas.
+
+ Many of numeric parameters (node numbers, coordinates) can
+ be ommited. In this case the zero (0.0) is used
+ for floating-point values but the value highest than previous
+ maximum value is used for identifiers (so it is save to don't
+ give a numbers of nodes when they are created, for example).
+ If "yes" or "no" input is expected an empty value means "no". 
+
+ For floating point entries (only!) the mathematical
+ expression evaluation can be used. So it can be written
+ "5*5" instead of "25". Only the "+". "-", "*" and "/" and 
+  operators are possible. No variables nor functions
+ nor constants and variables can be used inside expressions.
+
+
+
+\subsubsection{Work organisation}
+
+ The uFEM requires that hings must be difined in this order:
+
+
+\begin{enumerate}
+\item  finite element types
+\item  real set data (e.g. areas of beams, thicknesses of walls etc.
+\item  material types
+\item  geometric model - lines, areas, volumes (optional)
+\item  finite elements
+\item  loads and boundary conditions
+\end{enumerate}
+
+ Please note that you can create finite element model straightly
+ from nodes and elements or through a geometric model and a mesh
+ generator. But the both alternatives require the element type
+ data, real set data and material data must be given first.
+
+ There is one important limitation: once defined, material nor
+ element type can not be changed (but values of their properties
+ can be).
+
+
+\begin{itemize}
+\item  
+\end{itemize}
+
+\subsection{Invocation and basic setup}
+
+ Just call "tfem" for a text-only version or "gfem" for a GUI one.
+
+ A succesful usage needs some configuration. There is 
+ a configuration file that can be stored in these
+ locations (checked in a given order):
+
+
+\begin{itemize}
+\item  /etc/tgfemrc (or C:/Program Files/ufem/tgfemrc.txt if applicable)
+\item  ~/.tgfemrc
+\item  in a file named according to a UFEM\_CONFIG system variable (if any)
+\end{itemize}
+
+ Please note that system variables may be unaccessible in
+ some environments.
+ The file includes normal uFEM commands. The essential ones are:
+
+
+\begin{itemize}
+\item  "setsolver,full\_path\_to\_solver"
+\item  "datadir,directory\_name" (place where automaticaly named files are stored)
+\item  "ggeom,x0,y0,width,height" (program window position and size)
+\item  "plotprop,autoreplot,yes" (automatic refresh of plotted data - comfortable but slow)
+\item  "outauto,yes" (text output - listings etc. will be saved to automatically named files)
+\item  "outview,viewer\_program\_name" (viewer for text outputs)
+\end{itemize}
+
+ The viewer can be any program which is able to show text
+ files and which can receive files to see through command
+ line. Most text editor and www browser can be used here.
+ The ouput can be a plain text file (can be specified
+ through "outform, plain" command) or a HTML file ("outform,
+ html") or a LaTeX file (outform, tex). The "outform" command
+ can be used in configuration file or can be called in any
+ moment during the program use.
+
+
+
+\subsection{General notes for user interface}
+
+\subsubsection{Outputs}
+
+ Most of text outputs are printed to the Terminal window (in most
+ cases it is a black window with text outputs which is started
+ in the same time as the uFEM's graphical window).
+
+ Outputs from commands which end with "list" (or form
+ commands selected through "List" program menu) can be
+ printed or to Terminal window or they can be shown in
+ separate viewer windows (the viewer program is specified
+ through "outview" command in the configuration file -- see
+ above in the "Invocation and basic setup" section).
+
+
+
+\subsubsection{Help}
+
+ There is a help function: just use the "help" command.
+ The help will be printed to the terminal.
+
+ To obtain help about available finite element types
+ and the parameters of related real sets you can 
+ use the "help,e,type\_number". The "type\_number" parameter
+ can be number or "all".
+
+ To obtain help about available material types
+ and their parameters you can 
+ use the "help,e,type\_number". The "type\_number" parameter
+ can be number or "all".
+
+
+
+\subsubsection{Selections}
+
+ Things (nodes, elements, supports, loads, keypoints
+ and geometric entities) can be selected or unselected.
+ By default everything is selected but many commands operate
+ with whole data sets (e.g. with all nodes) so in some cases
+ it is needed to have only part of data to be selected.
+ Unselected data can not be changed by any command (except
+ the "cleandata" that deletes everything).
+
+ The selection command has a form: "*sel,style,type,direction,value1,value2".
+ The most important commands are:
+
+
+\begin{itemize}
+\item  nsel .. selects nodes
+\item  esel .. selects elements
+\item  dsel .. selects supports (boundary conditions)
+\item  fsel .. selects loads on nodes (forces)
+\item  ksel .. selects keypoints
+\item  gesel .. selects geometric entities
+\end{itemize}
+
+ The "style" parameter can be:
+
+
+\begin{itemize}
+\item  s .. select from full set
+\item  r .. select from current selection
+\item  add .. add to current selection
+\item  u .. unselect from current selection
+\item  all .. select all (no following parameters are needed)
+\item  inve .. inverse current selection (no following parameters are needed)
+\end{itemize}
+
+
+ The "type" depends on a command but common values are:
+
+
+\begin{itemize}
+\item  id .. item identifier ("par1" and "par2" means from..to here)
+\item  pos .. position (nodes, keypoints, elements only), "x", "y" or "z" position must be specified
+\item  mat, elem, rs .. elements can be selected through identifiers of their material and element types or real sets.
+\end{itemize}
+
+\subsection{Opening and saving of model}
+
+ Existing model can be opened by
+ "resume,full\_path\_and\_name\_of\_file" command. A recommended
+ extension for a model file is ".db" (must be included in the
+ "full\_path\_and\_name\_of\_file" parameter).
+
+ Created or edited model can be saved by
+ "save,full\_path\_and\_name\_of\_file" command. If the "save" command
+ is called without parameter then default name (previosly defined
+ by "jobname,my\_name" command") will be used. The same applies to
+ "resume" command if called without parameter.
+
+ There is also a possibility to import a model from a solver's input
+ file (it can be used if an original *.db file is damaged or
+ unavailable). It is accessible through "import,fem,file\_name"
+ command.
+
+
+
+\subsection{Preprocessing}
+
+\subsubsection{Initialization}
+
+ The preprocessor is started by the "prep" command. It is
+ usually not necessary to call it because the preprocessing
+ is a default initial mode. But it is necessary after return
+ from postprocessor - outside the preprocessor, it is impossible
+ to modify the computational model. Also calling of any
+ command that is not allowed in the postprocessor will
+ cause switch to the preprocessor mode.
+
+
+
+\subsubsection{Element type}
+
+ The element type is selected by the: "et,identitier,type\_number".
+ The type\_number is 1 for 2D link etc. 
+
+ To delete an element type use: "etdel,identifier". Please note
+ that it is impossible to delete an element type that is already
+ used in any existing finite element in the model.
+
+ A summary of defined element types can be shovn by: "etlist".
+
+
+
+\subsubsection{Real constants set}
+
+ A finite element properties (sans node locations) are refered
+ here as "real constants". They include thicknesses of 2D
+ elements, cross-section properties of beams etc.
+
+ To define a real set the "rs,id,type\_number" command should be used.
+ The new real set will be numbered "id" and will of the "type\_number"
+ element type (it is the same as fot the "et" command).
+
+ A summary of defined real constants and their
+ values can be shown using a command "rslist".
+
+
+
+\subsubsection{Material type}
+
+ A material type can be defined throught the "mat,id,type\_number"
+ command (use 1 to define a Hook-type material).
+
+ The values can be set with the "mp,type,material\_id,value"
+ command.
+
+ A summary of defined mmaterial types and their properties
+ can be shown using a command "mplist".
+
+
+
+\subsubsection{Geometric model}
+
+\paragraph{Introduction}
+
+ Geometric model represents the shape of a modelled
+ structure. It serves as a basis for a creation
+ of a finite element model. Loads and supports can not
+ be appplied to a geometric model.
+
+ It includes key points and geometric entities (lines,
+ areas, volumes). Key points are used for dfinition of
+ geometric entities and geometric entities serve for
+ creation of finite element mesh.
+
+
+
+\paragraph{Key points}
+
+ Individual key points can be created through "k,number,x,y,z"
+ command.
+
+ Key points can be copied with the "kgen,number,offset\_x,offset\_y,offset\_z" command.
+ Note that the "number" parameter means number of newly created
+ key points (excluding the original ones). All existing key points
+ are copied, if only a subset of key points is meant to be copied
+ then these nodes must be selected first.
+
+ The "kdel,node\_number" can be used to delete a key point.
+
+
+
+\paragraph{Geometric entities}
+
+ Available geometric entities include lines (defined by 2 keypoints), areas
+ (defined by 4 keypoints) and volumes (defined by 8 keypoints).
+ The command for creation of different types of entities are giwen below
+ but there is also a simpler command for creation of entity of predefined
+ size and position in space.
+ The command is "gesize,identitier,type,x0,y0,z0,length\_x,length\_y,length\_z"
+ The type should be:
+
+
+\begin{itemize}
+\item  1 ... line
+\item  2 ... rectangle
+\item  3 ... brick (with 8 keypoints)
+\item  4 ... curvilinear brick (with 20 keypoints)
+\end{itemize}
+
+ The x0,y0,z0 define the position of left bottom angle of entity (on a brick
+ it is on its back side).
+ The "length\_i" parameters define dimensions of entity.
+
+ The dimensions and position of existing  entities can be edited through modifications
+ of coordinates of their keypoints.
+
+
+
+\subparagraph{Properties	}
+
+ Default properties (before the actual antities are created) can be set
+ by "edef,element\_type,real\_set,material" command.
+ The parameters are a user-defined numbers of properties which
+ were previously defined by "et", "rs" and "mat" commands.
+ 
+ Properties of existing entity can be changed with use of
+ "gep,entity\_number,element\_type,real\_set,material" command.
+
+
+
+\subparagraph{Edge division}
+
+ Geometry entities are mainly used as bases for creation of finite element meshes.
+ Only regular meshes can be greated by now and these meshes require defined divisions
+ of edges of entities. The default division (before the entities are created) can 
+ be set be "ddiv,divivision\_number" command. The "divivision\_number" parameter
+ is a integer value.
+
+ Edge divisions of existing entity can be set by 
+ "gediv,entity\_identifier,division\_x,division\_y,division\_z" command.
+
+
+
+\subparagraph{Lines}
+
+ Individual lines can be created with the "l,number,keypoint1,keypoint2" command.
+ The "number" means number of newly created line or it can be a number of existing one 
+ (in this case the existing line is changed to new values). 
+
+ The "ldel,node\_number" can be used to delete a line.
+
+
+
+\subparagraph{Areas}
+
+ Individual areas can be created with the "a,number,keypoint1,keypoint2,keypoint3,keypoint4" command.
+ All four keypoints are mandatory.
+ The "number" means number of newly created area or it can be a number of existing one 
+ (in this case the existing area is changed to new values). Please note that keypoints on area
+ have to be ordered in COUNTER-CLOCKWISE direction.
+
+ The "adel,node\_number" can be used to delete a area.
+
+
+
+\subparagraph{Volumes}
+
+ Individual volumes can be created with the "v,number,keypoint1,keypoint2,...,keypoint8" command.
+ All four keypoints are mandatory.
+ The "number" means number of newly created volume or it can be a number of existing one 
+ (in this case the existing volume is changed to new values). Please note that keypoints on volume
+ have to be ordered in COUNTER-CLOCKWISE direction.
+
+ The "vdel,node\_number" can be used to delete a volume.
+
+
+
+\subsubsection{Finite element mesh}
+
+ The creationg of a finite element mesh is simple.
+ Just use the "mesh" command and the nodes and
+ the elements will be created. There are no
+ settings or parameters needed. But please note
+ that the uFEM can create regular meshes only.
+
+ Entities not idented to be meshed must be unselected.
+
+
+
+\subsubsection{Nodes}
+
+ Individual nodes can be created through "n,identifier,x,y,z"
+ command.
+
+ Nodes can be copied with the "ngen,number,offset\_x,offset\_y,offset\_z" command.
+ Note that the "number" parameter means number of newly created
+ nodes (excluding the original ones). All existing nodes
+ are copied, if only a subset of nodes is meant to be copied
+ then these nodes must be selected first.
+
+ The "ndel,node\_number" can be used to delete a node.
+
+
+
+\subsubsection{Elements}
+
+ Default properties of created element can be predefined
+ by "edef,element\_type,real\_set,material" command.
+ The parameters are a user-defined numbers of properties which
+ were previously defined by "et", "rs" and "mat" commands.
+
+ Individual elements can be created through "e,identifier,element\_type,real\_set,material".
+ This command creates an element but the nodes must be defined by
+ "e,identifier,node\_1,node\_2,..." command (all node identifier have to be given).
+
+ Elements can be copied with the "engen,number,offset\_x,offset\_y,offset\_z" command.
+ Note that the "number" parameter means number of newly created
+ elements (excluding the original ones). All existing elements
+ are copied, if only a subset of elements is meant to be copied
+ then these nodes must be selected first. The command also creates new nodes
+ if they are needed for newly created elements.
+
+ The "edel,node\_number" can be used to delete an element.
+
+
+
+\subsubsection{Boundary conditions}
+
+ Individual boundary conditions can be created through "d,node,type,size"
+ command. The "type" is something like "ux", "uy", "uz" (displacements),
+ "rotx", "roty", "rotz" (rotations), "stiffx", "stiffy", "stiffz" (stiffnesses).
+
+ Please note that current version of uFEM grafics can not show symbols for stiffnesses
+ and they can only be listed by "dlist" command.
+
+ Boundary conditions can be copied with the "dgen,number,offset\_x,offset\_y,offset\_z" command.
+ Note that the "number" parameter means number of newly created
+ boundary conditions (excluding the original ones). All existing boundary conditions
+ are copied, if only a subset of boundary conditions is meant to be copied
+ then these boundary conditions must be selected first.
+
+ The "ddel,bc\_number" can be used to delete a boundary conditions with identifier "bc\_number".
+
+
+
+\subsubsection{Loads}
+
+ Individual loads on nodes can be created through "f,node,type,size"
+ command. The "type" is something like "fx", "fy", "fz" (forces),
+ "mx", "my", "mz" (moments - if applicable).
+
+ Loads on nodes conditions can be copied with the "fgen,number,offset\_x,offset\_y,offset\_z" command.
+ Note that the "number" parameter means number of newly created
+ loads (excluding the original ones). All existing loads
+ are copied, if only a subset of them is meant to be copied
+ then these boundary conditions must be selected first.
+
+ The "fdel,f\_number" can be used to delete a boundary conditions with identifier "f\_number".
+
+
+
+\subsubsection{Data checking}
+
+ Some possible problems in data can be checked. The command
+ tries to find elements with undefined properties or nodes
+ and empty materials. The command fails if a problem is
+ found. The error message with desription of the problem is
+ printed into Terminal window.
+
+ In some cases (for empty real set 
+ data, low number of loads or boundary conditons) only a
+ warning is printed but the commands does not fail. It is
+ because in some special cases are these settings correct.
+
+
+
+\subsection{Solution}
+
+ The solution process includes:
+
+
+\begin{enumerate}
+\item  export of data to a solver-compatible format: "export,fem,file\_name"
+\item  calling of the solver: "system,fem -p -i file\_name -o res\_name"
+\item  postprocessor start: "gpost,1"
+\item  reading of results: "rread,,res\_name"
+\end{enumerate}
+
+ The described operations are done by the "solve" command. The path
+ to the solver must be properly configured for this command.
+
+ Please note that the "solve" command selects all data (including
+ loads) for a solution, so it can not be used for multi-loadstep
+ analysis. The "ssolve" command must be used instead.
+
+
+
+\subsection{Postprocessing}
+
+\subsubsection{Result listing}
+
+\paragraph{Deformations}
+\begin{itemize}
+\item  "prdef" lists deformations in all selected nodes
+\end{itemize}
+
+\paragraph{Reactions}
+\begin{itemize}
+\item  "prrs" lists reactions in all selected nodes
+\end{itemize}
+
+\paragraph{Results on elements}
+\begin{itemize}
+\item  "pres,type1,type2,.." lists results in integration (or other) points on all selected elements. "typei" is something like "s\_x" or "e\_xy". 
+\end{itemize}
+
+\subsubsection{Result plotting}
+
+\paragraph{Deformations}
+\begin{itemize}
+\item  "pldef" plots structure with deformed shape
+\end{itemize}
+
+\paragraph{Reactions}
+\begin{itemize}
+\item  "plrs" plots reactions in all selected nodes
+\end{itemize}
+
+\paragraph{Results on elements}
+\begin{itemize}
+\item  "ples,type1,type2,.." plots results in integration (or other) points on all selected elements. "typei" is something like "s\_x" or "e\_xy". 
+\end{itemize}
+
+\subsubsection{Element selection by results}
+\begin{itemize}
+\item  "esel,style,val,result\_type,value\_from,value\_to", where:\begin{itemize}
+\item  "style" is the same style as is in other selections (s, r, u)
+\item  "result type" is something like "s\_x", "e\_xy", "M\_x"
+\end{itemize}
+\end{itemize}
+
+\subsection{Advanced tasks}
+
+\subsubsection{Graphics view manipulations}
+
+ The graphical image of model can be moved, rotated and resized
+ with use of buttons at the right side of the graphics
+ windows. It is also possible to manipulate it with commands:
+
+
+\begin{itemize}
+\item  moving: "move,direction"
+\item  rotation along axis: "rot,axis"
+\item  zooming: "zoom,zoom\_level" or "unzoom,zoom\_level"
+\end{itemize}
+
+ Please note that "zoom\_level" paramater must alvays
+ be nonzero and positive.
+ Alternatively, the mouse can be used for this task:
+
+
+\begin{itemize}
+\item  dragging with left mouse button pressed ... moves the model
+\item  dragging up and down with center mouse button pressed ... zooms (up) and unzooms (down) the model
+\item  dragging with right mouse button pressed ... rotetes the model
+\end{itemize}
+
+ Please note thatthe model is rotated along its X and Z
+ axes (they are shown in bottom right corner of the
+ graphics window).
+
+
+
+\subsubsection{Multiple load steps}
+
+\paragraph{TODO}
+
+\subsubsection{Advanced data selections}
+
+\paragraph{TODO}
+
+\subsubsection{Variables}
+
+\paragraph{TODO}
+
+\subsubsection{Macros}
+
+ It is possible to write a user scripts (macros) and then call them to
+ provide additional functionality. The user scripts can be
+ saved in text files and called through "input,the\_file"
+ command.
+
+
+
+\paragraph{Macro structure}
+\begin{enumerate}
+\item  "script,name\_of\_script" command
+\item  commands, one command fer line
+\item  "endscript" command
+\end{enumerate}
+
+\paragraph{Use of (already defined) macro}
+
+ The macro can be called through
+ "runscript,name\_of\_script" command.
+
+
+
+\paragraph{Available flow controls}
+\begin{itemize}
+\item  "for" loop:
+\end{itemize}
+
+ The "for" loop must have this structure:
+
+
+\begin{itemize}
+\item  "for,ivariable,from\_value,to\_value" command
+\item  commands (one per line), the "ivariable" can be  used here (in icludes the number of current loop)
+
+\item  "endfor" command
+\end{itemize}
+
+ The "for" loops can be nested.
+
+
+\begin{itemize}
+\item  "if" command:
+\end{itemize}
+
+ This command can be used for conditional execution.
+ It have to have this structure:
+
+
+\begin{itemize}
+\item  "if,value1,condition\_symbol,value2" command
+\end{itemize}
+
+ The "condition\_symbol" can be one of "=",
+ "<", ">", "<=", ">=". The values can also be
+ represented by variables.
+
+
+\begin{itemize}
+\item  commands (one per line)
+\item  "endif" command
+\end{itemize}
+
+\paragraph{Evaluation of expressions}
+
+ Mathematical expessions with variables can be avaluated
+ through "eval" and "ieval" comamnds.
+
+
+
+\subparagraph{Floating point expressions}
+
+ The "eval,result\_variable,variable1,operation,variable2" can be
+ used. The "operation" can be "+", "-", "*", "/".
+
+ This command can not be used if the results is
+ expected to be an integer value.
+
+
+
+\subparagraph{Integer expressions}
+
+ The "ieval,variable1,operation,variable2" can be
+ used. The "operation" can be "+", "-", "*", "/".
+
+
+
+\paragraph{Writing of variables to file}
+
+ The data obtained diring a macro execution also can be
+ saved with "writevar,file\_name,variable\_name" command.
+ The "file\_name" represents a name of a file which will
+ be  appended with the value of "variable\_name" variable.
+
+ There are also other related commands:
+
+
+\begin{itemize}
+\item  "newfile,file\_name" ... creates a new file named "file\_name"; existing file is emptyed
+\item  "writenl,file\_name" ... appends a "new line" symbol to a file named "file\_name" (it is usefull for a formated output)
+\end{itemize}
+
+\paragraph{TODO}
+
+\subsubsection{Advanced configuration}
+
+\paragraph{TODO}
+
+\subsubsection{Saving of graphics}
+\begin{itemize}
+\item  "gl2ppm,file.ppm" saves current graphics image to file "file.ppm"
+\item  "gl2ps,file.eps" saves current graphics image to file "file.eps" (Encapsulated PostScript format); it is very slow and this functionality is optional (it may not be enabled in your uFEM version)
+\end{itemize}
+
+\section{Hardware and operating systems support	}
+
+\subsection{Solver}
+
+ The solver can run on any platform that include an ANSI-compatible
+ C compiler (the C89 is enough). However, some special features
+ (a parallel processing) may require special libraries and 
+ a POSIX-compliant operating environment. It is known that
+ solver can run on Linux (32bit and 64bit PC, ARM and PowerPC
+ platforms), Solaris (SPARC, i386), IRIX (MIPS), AIX (POWER),
+ Mac OS X (PowerPC), Win32.
+
+
+
+\subsection{Text-mode pre and postprocessor}
+
+ This component has the same requirements as the solver has.
+
+
+
+\subsection{Graphics pre and postprocessor}
+
+ For a fully-functional program, these components are required:
+
+
+\begin{itemize}
+\item  Gtk+ 2.x  http://www.gtk.org
+\item  GtkGlExt http://gtkglext.sf.net
+\item  OpenGL http://www.opengl.org
+\item  libTiff (optional - necessary only for outputs)
+\item  libGl2Ps (optional - necessary only for outputs)
+\end{itemize}
+
+ There is an option to build a limited version of program.
+ The limited system needs the Gtk+ 1.x, GtkGlArea and the OpenGL
+ libraries only but it has only a limited GUI funtionality. 	
+
+
+
+\subsection{MS Windows issues}
+
+ Only a fully functional version (but without libtiff and
+ libgl2ps) has been tested. No noticeable issues so far, except
+ unavailability of saving of graphics ouputs (no PPM nor EPS
+ output can be used).
+ The program has a strange (non-native) look here.
+
+
+
+\subsection{Mac OS 10.3 issues}
+
+ Graphic selection are fully functional here but
+ the selection frame is invisible. Also the X11 framework is
+ required to run the uFEM. Only PowerPC-based Macs have been
+ tested so far.
+
+
+
+\subsection{Solaris 8, 9 issues}
+
+ Reading of environment variables causes program exit
+ (e. g. checking of UFEM\_CONFIG - it must not be used here).
+ Solaris 10 is still untested. There are also color issues
+ on SPARC platform (red image).
+
+
+
+\section{Revisions and changes of this text:}
+\begin{itemize}
+\item  Mon Jun 30 21:38:27 CEST 2008: fixes, one-dir loads, ssolve etc.
+\item  Thu May 29 11:24:10 CEST 2008: elements, forces, disps., geom. ents.
+\item  Wed May 28 22:54:53 CEST 2008: postprocessing, material types
+\item  Mon Mar 24 20:43:10 CEST 2008: nodes, keypoints, help, selections
+\item  Wed May 23 01:30:27 CEST 2007: "mat", "mp" commands added
+\item  Wed Feb  7 23:29:25 CEST 2007: "rs" added, multistep finished
+\item  Tue Jan  9 23:30:53 CEST 2007: fixes in solver descripion
+\item  Tue Jan  1 09:10:00 CEST 2007: writing started
+\end{itemize}
+
+\end{document}
