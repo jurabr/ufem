@@ -61,4 +61,4 @@ ufem-cz.dvi: ufem-cz.tex u-cz-uvod.tex u-lit-cz.tex u-cz-1sh.tex u-cz-gfx.tex u-
 
 
 clean:
-	-rm -rf ufem.pdf fem.pdf feminput.pdf tgfem.pdf femcmd.pdf mviz.pdf *.dvi *.log core prog/tui/* prog/fem/* #ufem.tex 
+	-rm -rf ufem.pdf fem.pdf feminput.pdf tgfem.pdf femcmd.pdf mviz.pdf *.dvi *.log *.aux core prog/tui/* prog/fem/* #ufem.tex 
