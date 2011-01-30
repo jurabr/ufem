@@ -45,6 +45,7 @@ extern int    femSolveDynNewmark(double *ofld);
 
 extern long  nDOFlen  ; /* lenght of nDOFfld                        */
 extern long *nDOFfld  ; /* description of DOFs in nodes             */
+extern tVector Fr;/* unballanced forces vector     */
 
 extern char *fem_ssfile ; /* substep result file */
 extern tVector rrr1;       /* current acceleration - Newmark */
@@ -444,7 +445,7 @@ int monte_linear_solver(void)
   femVecClone(&Fr, &u) ;
 #endif
 
-	if ((rv = femEqsCGwJ(&K, &F, &u, FEM_ZERO/10000.0, K.rows)) != AF_OK) { goto memFree; }
+	if ((rv = femEqsCGwSSOR(&K, &F, &u, FEM_ZERO/10000.0, K.rows)) != AF_OK) { goto memFree; }
  	if ((rv = fem_fill_K(AF_YES)) != AF_OK) { goto memFree; }
 
   /* speedup code: */
@@ -456,7 +457,7 @@ memFree:
   return(rv);
 }
 
-/** Filling of results data filed (ofld)
+/** Filling of results data field (ofld)
  * @param ofld field to put data in
  * @return status
  */
