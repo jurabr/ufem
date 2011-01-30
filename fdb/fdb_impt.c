@@ -31,7 +31,7 @@
 
 /** Imports data from "fem" file format 
  *  PREPARSED FEM FILE is expected
- *  Note that not all data are impurted (ignored: random, dynamics,...)
+ *  Note that not all data are imported (ignored: random, dynamics,...)
  *  Note that element/disp/load groups are still ignored
  * @param fr pointer to input file
  * @param opts field of option (or NULL)

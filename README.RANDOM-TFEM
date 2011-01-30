@@ -10,16 +10,16 @@ NODES:
 rval,variable,2,[x=1,y=2,z=3]
 
 LOADS and DISPLACEMENTS on nodes:
-rval,variable,3,node_id,fem_type,direction(1=disp,2=stiffness,3=force),dir(ux=1...rotz=6)
+rval,variable,3,item_id,fem_type(1=disp,2=stiffness,3=force),direction(ux=1...rotz=6)
 
 LOADS on ELEMENS (untested):
 rval,variable,4,element_id,type
 
-DISPLACEMENT RESULTS
-rval,variable,5,node_id,direction(1=disp,2=stiffness,3=force),dir(ux=1...rotz=6)
-
 RAYLEIGH DAMPING
 rval,variable,6,what(1=alpha,2=beta),0,0
+
+DISPLACEMENT RESULTS
+rval,variable,5,node_id,direction(1=disp,2=stiffness,3=force),dir(ux=1...rotz=6)
 
 REACTIONS
 rval,variable,8,node_id,direction(1=disp,2=stiffness,3=force),dir(ux=1...rotz=6)

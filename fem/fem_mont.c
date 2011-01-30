@@ -209,8 +209,6 @@ char *monte_ivar_name(char *param, long pos)
     default: return("empty"); break;
   }
 
-
-
   return("empty");
 }
 
@@ -441,8 +439,18 @@ int monte_linear_solver(void)
  	if ((rv = fem_add_loads()) != AF_OK) { goto memFree; }
  	if ((rv = fem_add_disps(AF_YES)) != AF_OK) { goto memFree; }
 
+  /* speedup code: */
+#if 0
+  femVecClone(&Fr, &u) ;
+#endif
+
 	if ((rv = femEqsCGwJ(&K, &F, &u, FEM_ZERO/10000.0, K.rows)) != AF_OK) { goto memFree; }
  	if ((rv = fem_fill_K(AF_YES)) != AF_OK) { goto memFree; }
+
+  /* speedup code: */
+#if 0
+  femVecClone(&u, &Fr) ;
+#endif
 
 memFree:
   return(rv);

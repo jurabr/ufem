@@ -3671,7 +3671,7 @@ memFree:
 /* ----------------------------------------------- */
 /* RANDOM VARIABLES */
 
-/** Creates node "rval,number,type,item,subitem[,repeat_number]"
+/** Creates random variable "rval,number,type,item,subitem[,repeat_number]"
  * @param cmd command
  * @return status
  */
@@ -3701,7 +3701,7 @@ int func_fem_rv (char *cmd)
 	return ( tuiCmdReact(cmd, rv) ) ;
 }
 
-/** Lists nodes "rvlist,from,to"
+/** Lists random variables "rvlist,from,to"
  * @param cmd command
  * @return status
  */
@@ -3720,7 +3720,7 @@ int func_fem_rv_list (char *cmd)
 	return ( tuiCmdReact(cmd, rv) ) ;
 }
 
-/** Deletes nodes "rvdel,from,to"
+/** Deletes random variables "rvdel,from,to"
  * @param cmd command
  * @return status
  */
