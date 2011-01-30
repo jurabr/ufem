@@ -504,8 +504,8 @@ int monte_fill_ofld_data(double *ofld)
         if ((pos = monte_io_item[i]*KNOWN_DOFS + monte_io_subitem[i]-1) > nDOFlen) {break;}
 				if (femNewmarkEL != AF_YES) {break;}
 				val = fabs(femVecGet(&rrr1, pos)) ;
-        if (ofld[monte_io_var_pos[i-monte_i_len]] > val)
-           { ofld[monte_io_var_pos[i-monte_i_len]] = val ; }
+        if (fabs(ofld[monte_io_var_pos[i-monte_i_len]]) > fabs(val))
+           { ofld[monte_io_var_pos[i-monte_i_len]] = fabs(val) ; }
         break ;
 
         /* ************************************** */

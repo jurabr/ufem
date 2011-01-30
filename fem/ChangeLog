@@ -1,3 +1,12 @@
+### Sun Jan 30 19:30:37 CET 2011
+
+features:
+  + possibility for monte speedup (turnde off by default)
+
+bugfixes:
+  - monte acceleration data saving
+
+
 ### Mon Nov 29 15:27:45 CET 2010
 
 features:

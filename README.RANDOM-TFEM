@@ -18,6 +18,8 @@ rval,variable,4,element_id,type
 RAYLEIGH DAMPING
 rval,variable,6,what(1=alpha,2=beta),0,0
 
+------------------
+
 DISPLACEMENT RESULTS
 rval,variable,7,node_id,dir(ux=1...rotz=6)
 
