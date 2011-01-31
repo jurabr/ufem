@@ -47,6 +47,8 @@
 #define MONTE_VTYPE_RES_D_SUM  16 /* sum of displacements in node (dynamics) */
 #define MONTE_VTYPE_RES_A_MAX  17 /* maximum acceleration (in dynamics)  */
 
+extern long fem_asse_max_disp_simple(double disp_max);
+
 #endif
 
 /* end of fem_mont.h */

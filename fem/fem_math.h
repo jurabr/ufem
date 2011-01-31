@@ -125,6 +125,7 @@ extern void femVecSetZero(tVector *a);
 extern void femVecSetZeroBig(tVector *a);
 extern double femVecNorm(tVector *a);
 extern double femVecNormBig(tVector *a);
+extern double femVecMaxAbs(tVector *a);
 extern int femVecClone(tVector *src, tVector *dest);
 extern int femVecAddVec(tVector *orig, double mult, tVector *addt) ;
 

@@ -2098,6 +2098,38 @@ double femVecNorm(tVector *a)
 	return(sqrt(Norm));
 }
 
+/** Finds maximum value in vector (absolute value)
+ *  @param a     vector
+ *  @return fabs(maximum)
+ */
+double femVecMaxAbs(tVector *a)
+{
+	double Norm, val;
+	int i;
+
+
+	if (a->type == VEC_FULL)
+	{
+	  Norm = fabs(a->data[0]) ;
+		for (i=1; i<a->rows; i++)
+		{
+			val = fabs(a->data[i]) ;
+      if (Norm < val) {Norm = val;}
+		}
+	}
+	else
+	{
+    Norm = fabs(femVecGet(a, 1)) ;
+		for (i=2; i<=a->rows; i++)
+		{
+			val = fabs(femVecGet(a, i));
+      if (Norm < val) {Norm = val;}
+		}
+	}
+
+	return(sqrt(Norm));
+}
+
 /** Adds vector "addt" to "orig" e.g. orig += mult*addt
  * @param orig original vector (to be modified)
  * @param mult scalar multiplier
