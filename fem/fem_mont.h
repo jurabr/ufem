@@ -34,20 +34,22 @@
 #define MONTE_VTYPE_EL          4
 #define MONTE_VTYPE_NLPOS       5 /* node load with its ID */
 #define MONTE_VTYPE_DAMP        6 /* Rayleigh damping data */
+#define MONTE_VTYPE_MAX_D       7 /* maximum individual displacement*/
 
-#define MONTE_VTYPE_RES_D       7 /* must be the first output value */
-#define MONTE_VTYPE_RES_R       8
-#define MONTE_VTYPE_RES_E       9
-#define MONTE_VTYPE_RES_SUM_E  10 /* sum of element results */
-#define MONTE_VTYPE_RES_MAX_E  11 /* max value of elem. res. */
-#define MONTE_VTYPE_RES_MIN_E  12 /* min value of elem. res. */
-#define MONTE_VTYPE_RES_FAIL_E 13 /* 1 for fail, 0 for OK (determined from given elem. res) */
-#define MONTE_VTYPE_RES_D_MAX  14 /* max. displacement in node (dynamics) */
-#define MONTE_VTYPE_RES_D_MIN  15 /* min. displacement in node (dynamics) */
-#define MONTE_VTYPE_RES_D_SUM  16 /* sum of displacements in node (dynamics) */
-#define MONTE_VTYPE_RES_A_MAX  17 /* maximum acceleration (in dynamics)  */
+#define MONTE_VTYPE_RES_D       8 /* must be the first output value */
+#define MONTE_VTYPE_RES_R       9
+#define MONTE_VTYPE_RES_E      10
+#define MONTE_VTYPE_RES_SUM_E  11 /* sum of element results */
+#define MONTE_VTYPE_RES_MAX_E  12 /* max value of elem. res. */
+#define MONTE_VTYPE_RES_MIN_E  13 /* min value of elem. res. */
+#define MONTE_VTYPE_RES_FAIL_E 14 /* 1 for fail, 0 for OK (determined from given elem. res, fails for res>0) */
+#define MONTE_VTYPE_RES_D_MAX  15 /* max. displacement in node (dynamics) */
+#define MONTE_VTYPE_RES_D_MIN  16 /* min. displacement in node (dynamics) */
+#define MONTE_VTYPE_RES_D_SUM  17 /* sum of displacements in node (dynamics) */
+#define MONTE_VTYPE_RES_A_MAX  18 /* maximum acceleration (in dynamics)  */
+#define MONTE_VTYPE_RES_FAIL   19 /* general failure function            */
 
-extern long fem_asse_max_disp_simple(double disp_max);
+extern long fem_asse_max_disp_simple(double disp_max); /* max. displacment test */
 
 #endif
 

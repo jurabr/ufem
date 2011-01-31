@@ -67,6 +67,8 @@ long *monte_io_subitemiter = NULL ; /* repeating value (if needed) */
 
 long monte_fail_funct_id   = -1   ; /* still ignored */
 
+double monte_max_disp      = 0.0  ; /* maximum allowed displacement */  
+
 /* FUNCTIONS */
 
 void monte_io_null(void)
@@ -128,7 +130,7 @@ void monte_nums_of_vars(char *param, long *ilen, long *olen, long *ffunc)
 {
   *ilen = monte_i_len ; /* required number of input variables */
   *olen = monte_o_len ; /* returned number of output variables */
-  *ffunc = -1 ;         /* TODO ... currently not available */
+  *ffunc = monte_fail_funct_id; /* TODO ... currently not available */
   return ;
 }
 
@@ -206,6 +208,13 @@ char *monte_ivar_name(char *param, long pos)
 				else { sprintf(name,"DAMP_BETA"); }
 			return(name);
         break;
+
+    case MONTE_VTYPE_MAX_D:
+				sprintf(name,"MAX_DISP"); 
+			return(name);
+        break;
+
+
 
     default: return("empty"); break;
   }
@@ -582,7 +591,7 @@ int monte_fill_ofld_data(double *ofld)
         }
       break ;
 
-      case MONTE_VTYPE_RES_FAIL_E: /* failure state */
+      case MONTE_VTYPE_RES_FAIL_E: /* failure state: eres>0.0 */
         if (femNewmarkEL != AF_YES)
            { ofld[monte_io_var_pos[i-monte_i_len]] = 0.0 ; }
         val = -1 ;
@@ -605,6 +614,11 @@ int monte_fill_ofld_data(double *ofld)
           if (val  > 0.0) { break ; } /* even speder speedup */
         }
       break ;
+
+      case MONTE_VTYPE_RES_FAIL: /* general failure state */
+        if ((monte_fail_funct_id > -1)&&(monte_max_disp > 0.0))
+           {fem_asse_max_disp_simple(monte_max_disp);}
+      break;
 
     }
   }
@@ -716,6 +730,10 @@ int monte_solution(char *param, double *ifld, double *ofld)
 				   { dynBeta = ifld[monte_io_var_pos[i]] ;  }
       break ;
 
+      case MONTE_VTYPE_MAX_D:
+          monte_max_disp = fabs(ifld[monte_io_var_pos[i]]); 
+      break ;
+
     }
   }
 
@@ -792,6 +810,8 @@ int fem_monte_read_data(FILE *fr)
         monte_io_subitemiter[i]
         );
 #endif /* DEVEL_VERBOSE*/
+    if (monte_io_var_type[i] == MONTE_VTYPE_RES_FAIL) 
+       { monte_fail_funct_id = i-ilen ; }
   }
 
 #endif /* USE_MONTE */
