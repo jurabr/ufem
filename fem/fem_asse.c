@@ -25,6 +25,8 @@
 
 #include "fem.h"
 #include "fem_data.h"
+#include "fem_math.h"
+#include "fem_sol.h"
 
 
 /** ### MATERIAL POINT LEVEL ####  */
