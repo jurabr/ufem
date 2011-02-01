@@ -428,7 +428,7 @@ fem_meqs.o: fem_meqs.c fem_mpi.h fem.h fem_mem.o
 
 
 # assesment routines:
-fem_meqs.o: fem_asse.c fem.h fem_mont.h fem_math.h fem_mem.o
+fem_asse.o: fem_asse.c fem.h fem_mont.h fem_math.h fem_mem.o
 	$(CC) -c $(CFLAGS) fem_asse.c
 
 #
