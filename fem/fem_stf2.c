@@ -55,7 +55,7 @@ int D_HookIso_planeRaw(double E, double nu, long Problem, tMatrix *D)
 						femMatPut(D,1,2,   (Mul * nu) ) ;
 						femMatPut(D,2,1,   (Mul * nu) ) ;
 						femMatPut(D,2,2,   (Mul) ) ;
-						femMatPut(D,3,3,   (Mul*0.5*(1 + nu)) ) ;
+						femMatPut(D,3,3,   (Mul*0.5*(1 - nu)) ) ;
 
 			      break;
 						
