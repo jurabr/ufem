@@ -399,7 +399,7 @@ long fdb_etype_gmsh_to_fem(long gmsh_type)
   return(0);
 }
 
-/** Imports data from GMSH mesh format 
+/** Imports data from GMSH mesh format VERSION 1.0
  *  Note that not all data are imported (only nodes/elements)
  * @param fr pointer to input file
  * @param opts field of option (or NULL)

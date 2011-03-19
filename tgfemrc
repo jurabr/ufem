@@ -8,7 +8,7 @@ plotprop,elemColMat,yes
 plotprop,antiAlias,yes
 plotprop,wireOnly,no
 plotcol,hilightcolor,1,0,1,1
-ggeom,6,24,1268,900
+ggeom,0,24,1268,900
 !* Directory for data files:
 datadir,/tmp
 !* Solver executable (must not end with spaces!):
@@ -18,3 +18,4 @@ outauto,yes
 outview,gvim
 !* Number of processor in use (solver,gui):
 nproc,2,2
+history,20
