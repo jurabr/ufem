@@ -32,6 +32,7 @@ extern int e001_mass(long ePos, tMatrix *M_e);
 extern long e001_rvals(long ePos);
 extern int e001_eload(long ePos, long mode, tVector *F_e);
 extern int e001_res_p_loc(long ePos, long point, double *x, double *y, double *z);
+extern int e001_volume(long ePos, double *val);
 
 int addElem_006(void)
 {
@@ -68,6 +69,7 @@ int addElem_006(void)
 	Elem[type].eload = e001_eload;
 	Elem[type].res_p_loc = e001_res_p_loc;
 	Elem[type].res_node = e000_res_node;
+	Elem[type].volume = e001_volume;
 	return(rv);
 }
 

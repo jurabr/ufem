@@ -726,14 +726,51 @@ int e005_mass(long ePos, tMatrix *M_e)
 
 int e005_volume(long ePos, double *vol)
 {
+	int rv = AF_OK;
   double  width ;
-	/* TODO! */
+	double e,f,fi ;
+	double Li[5] ;
+	long i, j ;
+	tMatrix coord;
+
+	femMatNull(&coord);
+	if ((rv=femFullMatInit(&coord,4,3)) != AF_OK) { rv= AF_ERR_MEM; goto memFree; }
+	e005_fill_coords(&coord);
+
+	for (i=1; i<=4; i++)
+	{
+		j = i+1 ; 
+		if (j > 4) { j = 1 ; }
+		Li[i] = sqrt ( 
+			pow( femMatGet(&coord,j,2) - femMatGet(&coord,i,2), 2)
+			+
+			pow( femMatGet(&coord,j,1) - femMatGet(&coord,i,1), 2)
+		);
+	}
+
+	e = sqrt ( 
+			pow( femMatGet(&coord,3,2) - femMatGet(&coord,1,2), 2)
+			+
+			pow( femMatGet(&coord,3,1) - femMatGet(&coord,1,1), 2)
+		);
+
+	f = sqrt ( 
+			pow( femMatGet(&coord,4,2) - femMatGet(&coord,2,2), 2)
+			+
+			pow( femMatGet(&coord,4,1) - femMatGet(&coord,2,1), 2)
+		);
+
 
 	width = femGetRSValPos(ePos, RS_HEIGHT, 0) ;
 
-	/* TODO */
+	fi = acos (Li[1]*Li[1] + e*e -  Li[2]*Li[2]) / (2.0 * Li[1] * e)
+	   + acos (Li[1]*Li[1] + f*f -  Li[4]*Li[4]) / (2.0 * Li[1] * f) ;
 
-	return(AF_OK);
+	*vol = 0.5 * e * f * sin(fi) ;
+
+memFree:
+  femMatFree(&coord);
+	return(rv);
 }
 
 
@@ -814,6 +851,7 @@ int addElem_005(void)
 	Elem[type].eload = e005_eload;
 	Elem[type].res_p_loc = e005_res_p_loc;
 	Elem[type].res_node = e000_res_node;
+	Elem[type].volume = e005_volume;
 
 	return(rv);
 }
