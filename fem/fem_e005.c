@@ -30,7 +30,7 @@
 
 #ifndef _SMALL_FEM_CODE_
 
-/* nodes of brick */
+/* nodes of slab */
 long p_5_nodes[4]={1,2,3,4};
 
 int fem_D_slab(long ePos, double t, long mode, tMatrix *Dmat)
@@ -722,6 +722,21 @@ int e005_mass(long ePos, tMatrix *M_e)
 
   return(e005_shape_mat(ePos, ro*width,  M_e, AF_YES,0)) ;
 }
+
+
+int e005_volume(long ePos, double *vol)
+{
+  double  width ;
+	/* TODO! */
+
+	width = femGetRSValPos(ePos, RS_HEIGHT, 0) ;
+
+	/* TODO */
+
+	return(AF_OK);
+}
+
+
 
 long e005_rvals(long ePos)
 {
