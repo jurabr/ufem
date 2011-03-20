@@ -20,7 +20,7 @@
    the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA
    02139, USA.
 
-	 FEM Solver - Element 012 (structural brick - 8 nodes)
+	 FEM Solver - Element 012 (structural brick - 20 nodes)
    Orientation of crack is saved inside results.
 
    $Id: fem_e012.c,v 1.1 2004/11/11 21:33:56 jirka Exp $
@@ -33,6 +33,7 @@ extern int e008_stiff(long ePos, long Mode, tMatrix *K_e, tVector *F_e, tVector 
 extern int e008_mass(long ePos, tMatrix *M_e);
 extern int e008_eload(long ePos, long mode, tVector *F_e);
 extern int e008_res_p_loc(long ePos, long point, double *x, double *y, double *z);
+extern int e008_volume(long ePos, double *vol);
 
 long e012_rvals(long ePos)
 {
@@ -82,6 +83,7 @@ int addElem_012(void)
 	Elem[type].eload = e008_eload;
 	Elem[type].res_p_loc = e008_res_p_loc;
 	Elem[type].res_node = e000_res_node;
+	Elem[type].volume = e008_volume;
 	return(rv);
 }
 
