@@ -461,11 +461,9 @@ femVecPrn(Fr_e,"FrE");
 	return(AF_OK);
 }
 
-int e001_mass(long ePos, tMatrix *M_e)
+double e001_lenght(long ePos)
 {
-	int rv = AF_OK;
-	double Ax, ro, mass;
-	double x1,y1,x2,y2,dx,dy, L;
+	double x1,y1,x2,y2,dx,dy;
 
   x1 = femGetNCoordPosX(femGetENodePos(ePos,0));
   y1 = femGetNCoordPosY(femGetENodePos(ePos,0));
@@ -474,7 +472,16 @@ int e001_mass(long ePos, tMatrix *M_e)
 
 	dx = x2 - x1;
 	dy = y2 - y1;
-	L  = sqrt((dy*dy) + (dx*dx));
+
+	return( sqrt((dy*dy) + (dx*dx)));
+}
+
+int e001_mass(long ePos, tMatrix *M_e)
+{
+	int rv = AF_OK;
+	double Ax, ro, mass, L;
+
+	L = e001_lenght(ePos) ;
 
 	Ax = femGetRSValPos(ePos, RS_AREA, 0) ;
 	ro = femGetMPValPos(ePos, MAT_DENS, 0) ;
@@ -491,6 +498,25 @@ int e001_mass(long ePos, tMatrix *M_e)
 	femMatPut(M_e, 2,2, (mass /2.0) ) ;
 	femMatPut(M_e, 3,3, (mass /2.0) ) ;
 	femMatPut(M_e, 4,4, (mass /2.0) ) ;
+
+	return(rv);
+}
+
+int e001_volume(long ePos, double *val)
+{
+	int rv = AF_OK;
+	double Ax ;
+	double L;
+
+	*val = 0 ;
+
+	L = e001_lenght(ePos) ;
+	Ax = femGetRSValPos(ePos, RS_AREA, 0) ;
+	*val = Ax * L ;
+
+#ifdef DEVEL_VERBOSE
+	fprintf(msgout,"Ax = %f, L=%f mass=%f\n",Ax, *val);
+#endif
 
 	return(rv);
 }
@@ -573,6 +599,7 @@ int addElem_001(void)
 	Elem[type].eload = e001_eload;
 	Elem[type].res_p_loc = e001_res_p_loc;
 	Elem[type].res_node = e001_res_node;
+	Elem[type].volume = e001_volume;
 	return(rv);
 }
 

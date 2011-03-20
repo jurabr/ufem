@@ -31,6 +31,7 @@ long e000_rvals(long ePos) { return(0); }
 int e000_eload(long ePos, long mode, tVector *Fe) { return(AF_OK); }
 int e000_res_p_loc(long ePos, long point, double *x, double *y, double *z){return(AF_OK);}
 int e000_res_node(long ePos, long nPos, long type, double *val){return(AF_OK);}
+int e000_volume(long ePos, double *val){return(AF_OK);}
 
 
 int addElem_000(void)
@@ -68,6 +69,7 @@ int addElem_000(void)
 	Elem[type].eload = e000_eload;
 	Elem[type].res_p_loc = e000_res_p_loc;
 	Elem[type].res_node = e000_res_node;
+	Elem[type].volume = e000_volume;
 	return(rv);
 }
 

@@ -94,6 +94,7 @@ typedef struct
 	int (* eload)(long, long, tVector *);  /* element load usage (elem. position, load pos.) */
 	int (* res_p_loc)(long, long, double *, double *, double *); /* x,y,z of element result point */
   int (* res_node)(long, long, long, double *); /* element pos, node pos, result type, value(returned) */
+  int (* volume)(long, double *); /* element pos, volume(returned) */
 } tElem;
 
 /* definitions of data structures */

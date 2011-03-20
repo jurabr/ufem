@@ -589,6 +589,27 @@ memFree:
 	return(rv);
 }
 
+int e003_volume(long ePos, double *vol)
+{
+	int    rv = AF_OK ;
+
+	double x1,y1,x2,y2;
+	double Lx  = 0 ;
+	double Ax  = 0 ;
+
+  x1 = femGetNCoordPosX(femGetENodePos(ePos,0));
+  y1 = femGetNCoordPosY(femGetENodePos(ePos,0));
+
+  x2 = femGetNCoordPosX(femGetENodePos(ePos,1));
+  y2 = femGetNCoordPosY(femGetENodePos(ePos,1));
+
+	Lx = sqrt( pow((y2 - y1), 2) + pow((x2 - x1), 2) );
+	Ax = femGetRSValPos(ePos, RS_AREA, 0) ;
+	*vol = Ax * Lx  ;
+
+	return(rv);
+}
+
 long e003_rvals(long ePos)
 {
 	return(6);
@@ -654,6 +675,7 @@ int addElem_003(void)
 	Elem[type].eload = e003_eload;
 	Elem[type].res_p_loc = e003_res_p_loc;
 	Elem[type].res_node = e000_res_node;
+	Elem[type].volume = e003_volume;
 	return(rv);
 }
 

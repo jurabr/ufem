@@ -380,7 +380,10 @@ int stiffp(
 	tMatrix D; /*  [3][3] ; */
 	tMatrix D_r; /*  [3][3] ; */
 	long    nat ;
-	long    i,j,k ;
+	long    i,j ;
+#if 0
+	long    k ;
+#endif
 	long    igaus, jgaus ;
 	long    ievab, jevab, istre ;
 	long    ipoint = 0;
@@ -503,7 +506,7 @@ int stiffp(
 		{
 			ipoint++;
 
-			/* shape functions, elemental volume: */
+			/* shape functions, element volume: */
 			sfr(nnode, 
 					femVecGet(&posgp,jgaus),
 					femVecGet(&posgp,igaus), 
@@ -946,6 +949,53 @@ int e002_mass(long ePos, tMatrix *M_e)
 	return(rv);
 }
 
+int e002_volume(long ePos, double *vol)
+{
+	int    rv = AF_OK ;
+	long   nnode = 4;
+	long   i;
+	double t,A;
+	tMatrix coord; /* [10][3];  element coordinates */
+
+	if ((rv=femFullMatInit(&coord, 9,2)) != AF_OK) { return(rv); }
+
+	/* Geometry (width, area) and material (density) data: */
+	t  = femGetRSValPos(ePos, RS_HEIGHT, 0) ;
+
+	/* coordinates of element nodal points: */
+	for (i=1; i<= nnode; i++)
+	{
+		femMatPut(&coord,i,1, femGetNCoordPosX(femGetENodePos(ePos, i-1)) );
+		femMatPut(&coord,i,2, femGetNCoordPosY(femGetENodePos(ePos, i-1)) );
+	}
+
+	/* element area computation */
+  A = ( 0.5 *
+		  ( femMatGet(&coord,1 , 1 ) * femMatGet(&coord,2 , 2 )
+			- femMatGet(&coord,2 , 1 ) * femMatGet(&coord,1  , 2 )
+			+ femMatGet(&coord,2 , 1 ) * femMatGet(&coord,3 , 2 )
+			- femMatGet(&coord,3 , 1 ) * femMatGet(&coord,2  , 2 )
+			+ femMatGet(&coord,3 , 1 ) * femMatGet(&coord,1 , 2 )
+			- femMatGet(&coord,1 , 1 ) * femMatGet(&coord,3 , 2 )
+			)
+		)
+	+
+		( 0.5 *
+		  ( femMatGet(&coord,1 , 1 ) * femMatGet(&coord,3 , 2 )
+			- femMatGet(&coord,3 , 1 ) * femMatGet(&coord,1 , 2 )
+			+ femMatGet(&coord,3 , 1 ) * femMatGet(&coord,4 , 2 )
+			- femMatGet(&coord,4 , 1 ) * femMatGet(&coord,3  , 2 )
+			+ femMatGet(&coord,4 , 1 ) * femMatGet(&coord,1 , 2 )
+			- femMatGet(&coord,1 , 1 ) * femMatGet(&coord,4 , 2 )
+			)
+		 );
+
+  *vol = A * t ;
+
+	femMatFree(&coord);
+	return(rv);
+}
+
 long e002_rvals(long ePos)
 {
 	return(76);
@@ -1055,6 +1105,7 @@ int addElem_002(void)
 	Elem[type].eload = e002_eload;
 	Elem[type].res_p_loc = e002_res_p_loc;
 	Elem[type].res_node = e002_res_node;
+	Elem[type].volume = e002_volume;
 	return(rv);
 }
 

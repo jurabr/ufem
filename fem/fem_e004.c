@@ -48,8 +48,10 @@ int e004_stiff(long ePos, long Mode, tMatrix *K_e, tVector *F_e, tVector *Fr_e)
   tVector u_e ;
   tVector epsilon ;
   tVector sigma ;
-  tVector d_sigma ;
+  tVector d_sigma;
+	double  volume ;
 	double x1,y1,x2,y2,x3,y3,x4,y4,z1,z2,z3,z4;
+	double a1,b1,c1,a2,b2,c2,a3,b3,c3 ;
   double val1, val2;
 	long   eT, mT;
 	long   i;
@@ -116,6 +118,18 @@ int e004_stiff(long ePos, long Mode, tMatrix *K_e, tVector *F_e, tVector *Fr_e)
 			eID[ePos],  x1,y1,z1,x2,y2,z2, x3,y3,z3,x4,y4,z4 );
 #endif
 
+	a1 = x2 - x1 ;
+	a2 = y2 - y1 ;
+	a3 = z2 - z1 ;
+
+	b1 = x3 - x1 ;
+	b2 = y3 - y1 ;
+	b3 = z3 - z1 ;
+
+	c1 = x4 - x1 ;
+	c2 = y4 - y1 ;
+	c3 = z4 - z1 ;
+
 	/* "D" creation: */
   if ((rv = fem_D_3D(ePos, 0, eT, mT, NULL, NULL, AF_NO, &D) ) != AF_OK) {goto memFree;}
 
@@ -177,6 +191,8 @@ int e004_stiff(long ePos, long Mode, tMatrix *K_e, tVector *F_e, tVector *Fr_e)
 	
   /* element stiffness matrix: */
   femMatMatMult(&StBtD, &BS, K_e);
+	volume = ( (a1*b2*c3 + c1*a2*b3 + a3*b1*c2) - (c1*b2*a3 + c3*b1*a2 + a1*b3*c2) ) / (6.0) ;
+	femValMatMultSelf(volume, K_e);
 
 
 	/* ====================================================================== */
@@ -337,6 +353,50 @@ int e004_mass(long ePos, tMatrix *M_e)
 	return(rv);
 }
 
+int e004_volume(long ePos, double *vol)
+{
+	int    rv = AF_OK ;
+	double x1,y1,x2,y2,x3,y3,x4,y4,z1,z2,z3,z4 ;
+	double a1,b1,c1,a2,b2,c2,a3,b3,c3 ;
+
+  x1 = femGetNCoordPosX(femGetENodePos(ePos,0));
+  y1 = femGetNCoordPosY(femGetENodePos(ePos,0));
+  z1 = femGetNCoordPosZ(femGetENodePos(ePos,0));
+
+  x2 = femGetNCoordPosX(femGetENodePos(ePos,1));
+  y2 = femGetNCoordPosY(femGetENodePos(ePos,1));
+  z2 = femGetNCoordPosZ(femGetENodePos(ePos,1));
+
+  x3 = femGetNCoordPosX(femGetENodePos(ePos,2));
+  y3 = femGetNCoordPosY(femGetENodePos(ePos,2));
+  z3 = femGetNCoordPosZ(femGetENodePos(ePos,2));
+
+  x4 = femGetNCoordPosX(femGetENodePos(ePos,3));
+  y4 = femGetNCoordPosY(femGetENodePos(ePos,3));
+  z4 = femGetNCoordPosZ(femGetENodePos(ePos,3));
+
+
+	a1 = x2 - x1 ;
+	a2 = y2 - y1 ;
+	a3 = z2 - z1 ;
+
+	b1 = x3 - x1 ;
+	b2 = y3 - y1 ;
+	b3 = z3 - z1 ;
+
+	c1 = x4 - x1 ;
+	c2 = y4 - y1 ;
+	c3 = z4 - z1 ;
+
+	*vol = ( (a1*b2*c3 + c1*a2*b3 + a3*b1*c2) - (c1*b2*a3 + c3*b1*a2 + a1*b3*c2) ) / (6.0) ;
+
+#ifdef DEVEL_VERBOSE
+	fprintf(msgout,"volume = %e \n",volume);
+#endif
+	return(rv);
+}
+
+
 long e004_rvals(long ePos)
 {
 	return(14);
@@ -409,6 +469,7 @@ int addElem_004(void)
 	Elem[type].eload = e004_eload;
 	Elem[type].res_p_loc = e004_res_p_loc;
 	Elem[type].res_node = e000_res_node;
+	Elem[type].volume = e004_volume;
 	return(rv);
 }
 
