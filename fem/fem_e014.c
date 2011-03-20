@@ -27,6 +27,7 @@
 
 
 #ifndef _SMALL_FEM_CODE_
+extern int e007_volume(long ePos, double *vol);
 
 int e014_local_stiff_matrix(long ePos, 
                             long Mode, 
@@ -95,8 +96,6 @@ int e014_local_stiff_matrix(long ePos,
       femMatPut( k_0, i, j, femMatGet(k_0, j, i) ) ;
     }
   }
-
-
 
   femMatPrn(k_0,"K0");
 
@@ -489,6 +488,7 @@ int addElem_014(void)
 	Elem[type].eload = e014_eload;
 	Elem[type].res_p_loc = e014_res_p_loc;
 	Elem[type].res_node = e000_res_node;
+	Elem[type].volume = e007_volume;
 	return(rv);
 }
 

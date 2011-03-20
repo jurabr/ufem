@@ -157,16 +157,19 @@ int e007_stiff(long ePos, long Mode, tMatrix *K_e, tVector *F_e, tVector *Fr_e)
 
 double e007_length(long ePos)
 {
-	double x1,y1,x2,y2,dx,dy;
+	double x1,y1,x2,y2,dx,dy, dz;
 
   x1 = femGetNCoordPosX(femGetENodePos(ePos,0));
   y1 = femGetNCoordPosY(femGetENodePos(ePos,0));
+  z1 = femGetNCoordPosY(femGetENodePos(ePos,0));
   x2 = femGetNCoordPosX(femGetENodePos(ePos,1));
   y2 = femGetNCoordPosY(femGetENodePos(ePos,1));
+  z2 = femGetNCoordPosY(femGetENodePos(ePos,1));
 
 	dx = x2 - x1;
 	dy = y2 - y1;
-	return ( sqrt((dy*dy) + (dx*dx)) );
+	dz = z2 - z1;
+	return ( sqrt((dy*dy) + (dx*dx) + (dz*dz)) );
 }
 
 
