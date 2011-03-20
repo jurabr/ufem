@@ -781,6 +781,41 @@ memFree:
 	return(rv);
 }
 
+int e009_volume(long ePos, double *vol)
+{
+	int rv = AF_OK;
+	double ro;
+  tMatrix M_i ;
+  tVector F_0 ;
+  tVector F_1 ;
+	int i ;
+
+	ro = femGetMPValPos(ePos, MAT_DENS, 0) ;
+
+	femMatNull(&M_i);
+	femVecNull(&F_0);
+	femVecNull(&F_1);
+
+	if ((rv=femFullMatInit(&M_i,24,24)) != AF_OK) { goto memFree; }
+	if ((rv=femVecFullInit(&F_0,24)) != AF_OK) { goto memFree; }
+	if ((rv=femVecFullInit(&F_1,24)) != AF_OK) { goto memFree; }
+	
+	for (i=0; i<8; i++) { femVecPut(&F_0, 1 + 3*i , 1.0); }
+
+	e009_mass(ePos, &M_i);
+	femMatVecMult(&M_i,&F_0, &F_1);
+
+	*vol = 0.0 ;
+	for (i=0; i<8; i++) { *vol += femVecGet(&F_1, 1 + 3*i); }
+	*vol = *vol / ro ; 
+
+memFree:
+	femMatFree(&M_i);
+  femVecFree(&F_0);
+  femVecFree(&F_1);
+	return(rv);
+}
+
 long e009_rvals(long ePos)
 {
 	return(14*27);
@@ -857,6 +892,7 @@ int addElem_009(void)
 	Elem[type].eload = e009_eload;
 	Elem[type].res_p_loc = e008_res_p_loc;
 	Elem[type].res_node = e009_res_node;
+	Elem[type].volume = e009_volume;
 	return(rv);
 }
 

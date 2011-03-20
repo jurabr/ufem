@@ -963,9 +963,7 @@ int e008_volume(long ePos, double *vol)
   tMatrix M_i ;
   tVector F_0 ;
   tVector F_1 ;
-	int i = ;
-
-	eT = femGetETypePos(ePos); 
+	int i ;
 
 	ro = femGetMPValPos(ePos, MAT_DENS, 0) ;
 

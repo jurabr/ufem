@@ -33,6 +33,8 @@ extern int e009_stiff(long ePos, long Mode, tMatrix *K_e, tVector *F_e, tVector 
 extern int e009_mass(long ePos, tMatrix *M_e);
 extern int e009_eload(long ePos, long mode, tVector *F_e);
 extern int e008_res_p_loc(long ePos, long point, double *x, double *y, double *z);
+extern int e009_res_node(long ePos, long nPos, long type, double *val);
+extern int e009_volume(long ePos, double *vol);
 
 extern int e005_shape_mat(long ePos, double mult_val, tMatrix *M_e, int all, long pos_winkler);
 
@@ -104,7 +106,8 @@ int addElem_010(void)
 	Elem[type].rvals = e010_rvals;
 	Elem[type].eload = e009_eload;
 	Elem[type].res_p_loc = e008_res_p_loc;
-	Elem[type].res_node = e000_res_node;
+	Elem[type].res_node = e009_res_node;
+	Elem[type].volume = e009_volume;
 	return(rv);
 }
 
