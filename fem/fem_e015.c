@@ -30,6 +30,7 @@
 #ifndef _SMALL_FEM_CODE_
 extern int D_PlaneHookIso(long ePos, long iPoint, double A, tVector *epsilon, long newM, long Problem, tMatrix *D);
 extern int e011_res_p_loc(long ePos, long point, double *x, double *y, double *z);
+extern int e011_volume(long ePos, double *vol);
 
 double e015_get_L(double x1, double y1, double x2, double y2)
 {
@@ -129,6 +130,7 @@ int e015_mass(long ePos, tMatrix *M_e)
 	return(rv);
 }
 
+
 long e015_rvals(long ePos)
 {
 	return(6);
@@ -174,6 +176,7 @@ int addElem_015(void)
 	Elem[type].eload = e015_eload;
 	Elem[type].res_p_loc = e011_res_p_loc;
 	Elem[type].res_node = e000_res_node;
+	Elem[type].volume = e011_volume;
 	return(rv);
 }
 

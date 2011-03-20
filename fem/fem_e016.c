@@ -50,6 +50,8 @@ extern double sb1d_get_Rt_tension(long ePos,
     double L, 
     double epsilon);
 
+extern int e003_volume(long ePos, double *vol);
+
 
 int e016_local_stiff_matrix(long ePos, long Mode, double Lx, double Ex, double Ax, double EI, double kl1, double kl2,  tMatrix *k_0)
 {
@@ -599,6 +601,7 @@ int addElem_016(void)
 	Elem[type].eload = e016_eload;
 	Elem[type].res_p_loc = e016_res_p_loc;
 	Elem[type].res_node = e000_res_node;
+	Elem[type].volume = e003_volume;
 	return(rv);
 }
 

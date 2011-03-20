@@ -189,12 +189,25 @@ memFree:
 }
 
 /** It should work - according to Zienkiewicz ;-) */
-int e011_mass(long ePos, tMatrix *M_e)
+double e011_area(long ePos)
 {
-	int    rv = AF_OK ;
 	double  x[4] ;
 	double  y[4] ;
 	long   i;
+
+	for (i=1; i<= 3; i++)
+	{
+		x[i] = femGetNCoordPosX(femGetENodePos(ePos, i-1));
+		y[i] = femGetNCoordPosY(femGetENodePos(ePos, i-1));
+	}
+
+	return(0.5*(x[1]*y[2]- x[2]*y[1] + x[2]*y[3]- x[3]*y[2] + x[3]*y[1]- x[1]*y[3]));
+}
+
+/** It should work - according to Zienkiewicz ;-) */
+int e011_mass(long ePos, tMatrix *M_e)
+{
+	int    rv = AF_OK ;
 	double t,ro,A, mult;
 
 	femMatSetZero(M_e);
@@ -203,13 +216,7 @@ int e011_mass(long ePos, tMatrix *M_e)
 	t  = femGetRSValPos(ePos, RS_HEIGHT, 0) ;
 	ro = femGetMPValPos(ePos, MAT_DENS, 0) ;
 
-	for (i=1; i<= 3; i++)
-	{
-		x[i] = femGetNCoordPosX(femGetENodePos(ePos, i-1));
-		y[i] = femGetNCoordPosY(femGetENodePos(ePos, i-1));
-	}
-
-	A=(0.5*(x[1]*y[2]- x[2]*y[1] + x[2]*y[3]- x[3]*y[2] + x[3]*y[1]- x[1]*y[3]));
+	A=e011_area(ePos);
 
 	/* Multiplier: */
 	mult = (ro * t * A) / 3 ;
@@ -237,6 +244,19 @@ int e011_mass(long ePos, tMatrix *M_e)
 	femMatPut(M_e,6,2 , mult * 0.25  );
 	femMatPut(M_e,6,4 , mult * 0.25  );
 	femMatPut(M_e,6,6 , mult * 0.5  );
+
+	return(rv);
+}
+
+int e011_volume(long ePos, double *vol)
+{
+	int    rv = AF_OK ;
+	double t,A;
+
+	t  = femGetRSValPos(ePos, RS_HEIGHT, 0) ;
+
+	A=e011_area(ePos);
+	*vol = (t * A)  ;
 
 	return(rv);
 }
@@ -307,6 +327,7 @@ int addElem_011(void)
 	Elem[type].eload = e011_eload;
 	Elem[type].res_p_loc = e011_res_p_loc;
 	Elem[type].res_node = e000_res_node;
+	Elem[type].volume = e011_volume;
 	return(rv);
 }
 
