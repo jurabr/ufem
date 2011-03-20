@@ -41,7 +41,7 @@ extern void fem_sol_free(void);
 extern int fem_fill_K(long mode);
 extern int fem_add_loads(void);
 extern int fem_add_disps(long disp_mode);
-extern int    femSolveDynNewmark(double *ofld);
+extern int femSolveDynNewmark(double *ofld);
 
 extern long  nDOFlen  ; /* lenght of nDOFfld                        */
 extern long *nDOFfld  ; /* description of DOFs in nodes             */
@@ -630,7 +630,7 @@ int monte_fill_ofld_data(double *ofld)
  * @param ifld random input data field
  * @param ofld output data field
  */
-int monte_solution(char *param, double *ifld, double *ofld)
+int monte_solution(char *param, double *ifld, double *ofld, long if_type)
 {
 	int rv = 0;
   long i, j, pos ;
