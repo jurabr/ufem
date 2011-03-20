@@ -29,7 +29,7 @@
 #ifndef __FEM_H__
 #define __FEM_H__
 
-#define _FEM_VERSION_ "0.1.11"
+#define _FEM_VERSION_ "0.2.2"
 
 /* Included headers: */
 #include <stdio.h>

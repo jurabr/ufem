@@ -391,7 +391,7 @@ int e004_volume(long ePos, double *vol)
 	*vol = ( (a1*b2*c3 + c1*a2*b3 + a3*b1*c2) - (c1*b2*a3 + c3*b1*a2 + a1*b3*c2) ) / (6.0) ;
 
 #ifdef DEVEL_VERBOSE
-	fprintf(msgout,"volume = %e \n",volume);
+	fprintf(msgout,"volume = %e \n", *vol);
 #endif
 	return(rv);
 }
