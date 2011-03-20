@@ -956,6 +956,43 @@ memFree:
 	return(rv);
 }
 
+int e008_volume(long ePos, double *vol)
+{
+	int rv = AF_OK;
+	double ro;
+  tMatrix M_i ;
+  tVector F_0 ;
+  tVector F_1 ;
+	int i = ;
+
+	eT = femGetETypePos(ePos); 
+
+	ro = femGetMPValPos(ePos, MAT_DENS, 0) ;
+
+	femMatNull(&M_i);
+	femVecNull(&F_0);
+	femVecNull(&F_1);
+
+	if ((rv=femFullMatInit(&M_i,60,60)) != AF_OK) { goto memFree; }
+	if ((rv=femVecFullInit(&F_0,60)) != AF_OK) { goto memFree; }
+	if ((rv=femVecFullInit(&F_1,60)) != AF_OK) { goto memFree; }
+	
+	for (i=0; i<20; i++) { femVecPut(&F_0, 1 + 3*i , 1.0); }
+
+	e008_mass(ePos, &M_i);
+	femMatVecMult(&M_i,&F_0, &F_1);
+
+	*vol = 0.0 ;
+	for (i=0; i<20; i++) { *vol += femVecGet(&F_1, 1 + 3*i); }
+	*vol = *vol / ro ; 
+
+memFree:
+	femMatFree(&M_i);
+  femVecFree(&F_0);
+  femVecFree(&F_1);
+	return(rv);
+}
+
 long e008_rvals(long ePos)
 {
 	return(14*27);
