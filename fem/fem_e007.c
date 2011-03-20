@@ -276,6 +276,7 @@ int addElem_007(void)
 	Elem[type].eload = e007_eload;
 	Elem[type].res_p_loc = e007_res_p_loc;
 	Elem[type].res_node = e000_res_node;
+	Elem[type].volume = e007_volume;
 	return(rv);
 }
 

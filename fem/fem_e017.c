@@ -32,6 +32,7 @@
 #ifndef _SMALL_FEM_CODE_
 extern tVector u;
 
+extern int e003_volume(long ePos, double *vol);
 extern double fem_beam2d_ei_val(long epos, double M, double N) ;
 
 int e017_local_stiff_matrix(
@@ -380,6 +381,7 @@ int addElem_017(void)
 	Elem[type].eload = e017_eload;
 	Elem[type].res_p_loc = e017_res_p_loc;
 	Elem[type].res_node = e000_res_node;
+	Elem[type].volume = e003_volume;
 	return(rv);
 }
 
