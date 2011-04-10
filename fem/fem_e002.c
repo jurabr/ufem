@@ -391,15 +391,19 @@ int stiffp(
 	long    mtype ;
 
 	/* sets problem type for "D" computation: */
-  if (thick <= 0.0) 
-  {
-    ProblemType = 1 ; /* plane strain */ 
-  }
-
 	if (eType[ePos] == 2)
 	{
 		ProblemType = 0 ; /* plane stress */
 	}
+  
+  if (thick <= 0.0) 
+  {
+    ProblemType = 1 ; /* plane strain */ 
+  }
+  else
+  {
+    ProblemType = 0 ;
+  }
 
 	/* material type: */
   mtype = Mat[femGetMPTypePos(femGetEMPPos(ePos))].type ;
@@ -518,7 +522,7 @@ int stiffp(
 
 
 			dvolu = djacb * femVecGet(&weigp,igaus)*femVecGet(&weigp,jgaus) ;
-			dvolu = dvolu*thick;
+      if (thick > 0.0) { dvolu = dvolu*thick; }
 
 			/* B matrix: */
       bmatp(&cartd, nnode, &bmatx);
@@ -796,7 +800,7 @@ femMatPrn(Ke,"KE");
 			   {rv=AF_ERR_VAL; goto memFree;/* bad element */}
 
 			dvolu = djacb * femVecGet(&weigp,igaus)*femVecGet(&weigp,jgaus) ;
-			dvolu = dvolu*thick;
+      if (thick > 0.0) { dvolu = dvolu*thick; }
 
 				/* B matrix: */
       	bmatp(&cartd, nnode, &bmatx);
@@ -872,7 +876,6 @@ int e002_stiff(long ePos, long Mode, tMatrix *K_e, tVector *Fe, tVector *Fre)
 
   femLocUtoU_e(&u, ePos, &u_e);
 
-	/*thick = femGetRSValPos(eT, femGetERSPos(ePos), RS_HEIGHT, 0) ; obsolonete */
 	thick = femGetRSValPos(ePos, RS_HEIGHT, 0) ;
 	
 	rv = stiffp(
