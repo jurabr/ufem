@@ -46,8 +46,8 @@ void fdbMatTypeInit_000(long type)
 void fdbMatTypeInit_001(long type)
 {
 	static long id            = 1 ;
-	static long vals          = 3 ;
-	static long val[3]        = {MAT_DENS, MAT_EX, MAT_NU};
+	static long vals          = 4 ;
+	static long val[4]        = {MAT_DENS, MAT_EX, MAT_NU, MAT_PRICE};
 	static long vals_rp       = 3 ;
 	static long val_rp[3]     = {MAT_DENS, MAT_EX, MAT_NU};
 
