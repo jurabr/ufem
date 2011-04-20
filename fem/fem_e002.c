@@ -395,10 +395,9 @@ int stiffp(
   {
     ProblemType = 1 ; /* plane strain */ 
   }
-
-	if (eType[ePos] == 2)
+	else
 	{
-		ProblemType = 0 ; /* plane stress */
+    ProblemType = 0 ; /* plane strain */ 
 	}
 
 	/* material type: */
@@ -518,7 +517,10 @@ int stiffp(
 
 
 			dvolu = djacb * femVecGet(&weigp,igaus)*femVecGet(&weigp,jgaus) ;
-			dvolu = dvolu*thick;
+			if (thick > 0)
+			{
+			  dvolu = dvolu*thick;
+			}
 
 			/* B matrix: */
       bmatp(&cartd, nnode, &bmatx);
@@ -905,6 +907,7 @@ int e002_mass(long ePos, tMatrix *M_e)
 
 	/* Geometry (width, area) and material (density) data: */
 	t  = femGetRSValPos(ePos, RS_HEIGHT, 0) ;
+	if (t <= 0.0) {t = 1.0;} /* plane strain problem */
 	ro = femGetMPValPos(ePos, MAT_DENS, 0) ;
 
 	/* coordinates of element nodal points: */
