@@ -611,7 +611,7 @@ int monte_fill_ofld_data(double *ofld)
             }
             if (val  > 0.0) { break ; } /* speedup */
           }
-          if (val  > 0.0) { break ; } /* even speder speedup */
+          if (val  > 0.0) { break ; } /* even speeder speedup */
         }
       break ;
 
@@ -737,16 +737,28 @@ int monte_solution(char *param, double *ifld, double *ofld, long if_type)
     }
   }
 
+
   femTangentMatrix = AF_NO ; /* workaround - we need empty result fields! */
 
   /* call solver here */
+  if (if_type == 2)
+#if 0
   if (femNewmarkEL == AF_YES) /* transient dynamics: */
+#endif
   {
+    femNewmarkEL = AF_YES ;
     if ((rv =  femSolveDynNewmark(ofld)) != AF_OK) { goto memFree ; }
   }
   else /* falling back to linear solution */
   {
-    if ((rv =  monte_linear_solver()) != AF_OK) { goto memFree ; }
+    if (if_type == 1)
+    {
+      /* todo: price function code here */
+    }
+    else
+    {
+      if ((rv =  monte_linear_solver()) != AF_OK) { goto memFree ; }
+    }
   }
  
   /* RESULTS: fill ofld */
