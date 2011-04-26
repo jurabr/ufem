@@ -633,7 +633,9 @@ int monte_fill_ofld_data(double *ofld)
 int monte_solution(char *param, double *ifld, double *ofld, long if_type)
 {
 	int rv = 0;
-  long i, j, pos ;
+  long i, j, pos, eT ;
+  double price = 0 ;
+  double vprice, evol ;
 
 	for (i=monte_i_len; i< (monte_i_len+monte_o_len); i++)
   {
@@ -742,10 +744,10 @@ int monte_solution(char *param, double *ifld, double *ofld, long if_type)
 
   /* call solver here */
   if (if_type == 2)
+  {
 #if 0
   if (femNewmarkEL == AF_YES) /* transient dynamics: */
 #endif
-  {
     femNewmarkEL = AF_YES ;
     if ((rv =  femSolveDynNewmark(ofld)) != AF_OK) { goto memFree ; }
   }
@@ -753,7 +755,26 @@ int monte_solution(char *param, double *ifld, double *ofld, long if_type)
   {
     if (if_type == 1)
     {
-      /* todo: price function code here */
+      /* TODO: price function code here */
+      price = 0 ;
+
+      for (i=0; i<eLen; i++)
+      {
+        vprice = femGetMPValPos(i, MAT_PRICE, 0) ;
+		    eT = femGetETypePos(i) ;
+        Elem[eT].volume(i, &evol) ;
+        price += vprice * evol ;
+      }
+
+      if (ofld != NULL)
+      {
+        ofld[0] = price ;
+      }
+      else
+      {
+        fprintf(stdout,"%e\n", price);
+      }
+      return(rv);
     }
     else
     {
