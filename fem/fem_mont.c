@@ -755,12 +755,13 @@ int monte_solution(char *param, double *ifld, double *ofld, long if_type)
   {
     if (if_type == 1)
     {
-      /* TODO: price function code here */
+      /* price function code: */
       price = 0 ;
 
       for (i=0; i<eLen; i++)
       {
         vprice = femGetMPValPos(i, MAT_PRICE, 0) ;
+        if (vprice <= 0) {vprice = 1.0 ;}
 		    eT = femGetETypePos(i) ;
         Elem[eT].volume(i, &evol) ;
         price += vprice * evol ;
