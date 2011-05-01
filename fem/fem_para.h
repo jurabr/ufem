@@ -55,6 +55,7 @@ extern long  femDynamics   ;
 extern long  femEigenModal ;
 extern long  femEigenNum   ;
 extern long  femNewmarkEL  ;
+extern long  femComputePriceOnly;
 
 extern int fem_parse_params(int argc, char *argv[]);
 extern char *fem_output_file(void);

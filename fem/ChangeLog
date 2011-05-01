@@ -1,4 +1,12 @@
+### Sun May  1 19:54:12 CEST 2011
+
+features:
+  + price computation (writes price to stdout)
+
+
 ### Sun Apr 10 20:19:42 CEST 2011
+
+features:
   + some more element volume computation stuff (net yet working)
   + change of m001 definition
   + version 0.2.3

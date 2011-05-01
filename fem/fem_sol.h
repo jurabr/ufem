@@ -86,6 +86,9 @@ extern int femAddElemLoad(void);
 
 extern int femSolveEigenInvIter(long max_iter, double eps);
 extern int femSolveEigenLanczos(long max_iter, double eps);
+
+extern double fem_get_struct_price(long volume_only);
+extern int femComputePrice(void);
 #endif
 
 /* end of fem_elem.h */

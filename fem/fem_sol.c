@@ -1528,4 +1528,29 @@ memFree:
 	return(rv);
 }
 
+
+/** computes total price of sturcture based on element volumes
+ *  @return state value
+ */
+int femComputePrice(void)
+{
+	int rv = AF_OK;
+
+ 	if ((rv = femElemTypeInit()) != AF_OK) { goto memFree; }
+ 	if ((rv = femMatTypeInit()) != AF_OK) { goto memFree; }
+
+  fem_sol_null();
+
+ 	if ((rv = fem_dofs()) != AF_OK) { goto memFree; }
+ 	if ((rv = fem_sol_alloc()) != AF_OK) { goto memFree; }
+
+  fprintf( stdout, "%f\n", fem_get_struct_price(AF_NO) ) ;
+
+memFree:
+	fem_sol_free();
+	femDataFree();
+
+	return(rv);
+}
+
 /* end of fem_sol.c */

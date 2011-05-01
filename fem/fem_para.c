@@ -85,6 +85,7 @@ long  femDynamics         = AF_NO ; /* indicates non-static solution */
 long  femEigenModal       = AF_NO ; /* modal solution */
 long  femEigenNum         = 0 ;     /* number of computed mode shapess */
 long  femNewmarkEL        = AF_NO ; /* newmark integration solver */
+long  femComputePriceOnly = AF_NO ; /* computer price and exit    */
 
 FILE *fem_sol_norm_file   = NULL ;
 
@@ -167,6 +168,7 @@ void fem_help(int argc, char *argv[])
 	fprintf(msgout,"   -ao FILE  ... %s\n", _("write alternative results of linear solution to FILE"));
 	fprintf(msgout,"   -at TYPE  ... %s\n", _("type of alternative results (0 .. text, 1 .. VTK legacy)"));
 #endif /* end of _SMALL_FEM_CODE_*/
+	fprintf(msgout,"   -po       ... %s\n", _("compute structure price and write it to stdout"));
 	fprintf(msgout,"   -h        ... %s\n", _("print this help"));
 #endif
 }
@@ -982,6 +984,12 @@ int fem_parse_params(int argc, char *argv[])
 
 
 #endif /* end of _SMALL_FEM_CODE_ */
+
+		if (strcmp(argv[i],"-po") == 0)
+		{
+			femComputePriceOnly = AF_YES ;
+		}
+
 
 		/* help line */
 		if (strcmp(argv[i],"-h") == 0)
