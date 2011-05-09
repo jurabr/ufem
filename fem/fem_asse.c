@@ -28,15 +28,76 @@
 #include "fem_math.h"
 #include "fem_sol.h"
 
+extern double stress2D_J2(tVector *stress) ; /* from fem_ch2d */
+extern double stress3D_J2(tVector *stress) ; /* from fem_chen */
 
 /** ### MATERIAL POINT LEVEL ####  */
 
 /** Max. displacement test
  * @param disp_max maximum allowed displacement (x,y, or z)
+ * @return 0 if passed, non-zero number (usually 1) if failed 
  */
 long fem_asse_max_disp_simple(double disp_max)
 {
   if (femVecMaxAbs(&u) >= fabs(disp_max)) {return(1);} /* failed */
+
+  return(0);
+}
+
+/** Material point failure test - material 4: von Mises plasticity condition 
+ * @param sigma stress vector
+ * @param epsilon strain vector
+ * @param mType type of material
+ * @return 0 if passed, non-zero number (usually 1) if failed 
+ */
+long fem_asse_mat_vmis(tVector *sigma, tVector *epsilon, long ePos)
+{
+  double f_y, s_vmis ;
+
+  f_y = femGetMPValPos(ePos, MAT_F_YC, 0) ;
+  
+  if (sigma->len > 3)
+  {
+    /* 3D case */
+    s_vmis = sqrt( stress3D_J2(sigma) * 3.0 )  ;
+  }
+  else
+  {
+    /* 2D case */
+    s_vmis = sqrt( stress2D_J2(sigma) * 3.0 ) ;
+  }
+
+  if ( s_vmis < fabs(f_y) ) { return(0); } /* passed */
+  else                      { return(1); } /* failed */
+  return(0);
+}
+
+/** Material point failure test wrapper
+ * @param sigma stress vector
+ * @param epsilon strain vector
+ * @param mType type of material
+ * @param ePos position of studied element
+ * @return 0 if passed, non-zero number (usually 1) if failed 
+ */
+long fem_asse_mat_by_type(tVector *sigma, tVector *epsilon, long ePos)
+{
+  long mType ;
+
+  mType = Mat[femGetMPTypePos(femGetEMPPos(ePos))].type ;
+
+  switch (mType)
+  {
+    case 3: /* Chen-Chen concrete */
+      /** TODO some code here */
+      break;
+    case 4: /* von Mises steel */
+      return ( fem_asse_mat_vmis(sigma, epsilon, ePos) );
+      break;
+
+    default:
+      return(0); /* nothing to test */
+      break;
+  }
 
   return(0);
 }
