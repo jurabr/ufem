@@ -1394,4 +1394,553 @@ int fdbExport(char *fname, long format, long *opts, long optlen)
   }
 }
 
+/** Converts uFEM element type to AN**S one 
+ * @param type ufem type number
+ * @return type ans type number
+ */
+long fdb_ufem_et_to_ans(long type)
+{
+  switch (type)
+	{
+		case 1: return(1);  break ;
+		case 2: return(42);  break ;
+		case 3: return(3);  break ;
+		case 4: return(45);  break ;
+		case 5: return(63);  break ;
+		case 7: return(8);  break ; /* TODO: check - link8 ? */
+		case 6: return(1);  break ;
+		case 8: return(195);  break ; /* TODO: check */
+		case 9: return(45);  break ; 
+		case 10: return(45);  break ;
+		case 11: return(42);  break ;
+		case 12: return(195);  break ; /* TODO: check */
+		case 14: return(4);  break ;  /* TODO: check */
+		case 17: return(4);  break ; /* TODO: check */
+
+		default: return(1);  break;
+	}
+}
+
+char *fdb_ufem_mat_to_ans(long matprop)
+{
+	switch (matprop)
+	{
+		case 2 : return("ex"); break ;
+		case 5 : return("nuxy"); break ;
+		case 1 : return("dens"); break ;
+		default: return("x"); break;
+	}
+}
+
+/** Creates batch input file for AN**S software
+ * TODO: finish this!
+ *  Note that element/disp/load groups are still ignored
+ * @param fw pointer to output file
+ * @param opts field of option (or NULL)
+ * @param optlen lenght of "opts"
+ * @return status
+ */
+int fdb_export_to_ans(FILE *fw, long *opts, long optlen)
+{
+  int  rv = AF_OK ;
+	long i, j ;
+	long len, len_all ;
+	long size ;
+	long isize ;
+	long pos;
+	long rep_i ;
+	long etype_id, etype_type;
+  long rtype_pos ;
+  long mtype_pos ;
+  long nload_pos, ndisp_pos;
+	long len_nl, len_nd ;
+	long type, dir;
+	long rset_rep = 0 ;
+	long rset_num = 0 ;
+	char *varstr = NULL ;
+
+  /* Setting up indexes: */
+  fdbInputSyncStats();
+
+  fdbInputRenumFromFlds(ELEM, ELEM_FROM, ELEM_ID, ENODE, ENODE_ELEM);  
+  fdbInputRenumFromFlds(ELOAD, ELOAD_FROM, ELOAD_ID, ELVAL, ELVAL_ELID);
+
+	/* ** Element types  ---------------------------------------  */
+
+	len = fdbInputTabLenSel(ETYPE) ;
+
+	/* number of element types */
+	if (len > 0)
+	{
+		/* description of element types: */
+		for (i=0; i<len; i++)
+		{
+    	if (fdbTestSelect(&InputTab[ETYPE], &inputData.intfld, i) != AF_YES) 
+		   	{ continue ; }
+
+			fprintf(fw,"et,%li,%li\n",
+					fdbInputGetInt(ETYPE, ETYPE_ID, i),
+					fdb_ufem_et_to_ans( fdbInputGetInt(ETYPE, ETYPE_TYPE, i) )
+					);
+		}
+  }
+	fprintf(fw,"\n");
+
+	/* ** Real sets  ---------------------------------------  */
+
+	/* number of real sets */
+#if 0 /* TODO fix this */
+	len = fdbInputTabLenSel(RSET) ;
+
+	if (len > 0)
+	{
+		size = 0 ; /* ! */
+
+		/* description of real sets: */
+		for (i=0; i<len; i++)
+		{
+    	if (fdbTestSelect(&InputTab[RSET], &inputData.intfld, i) != AF_YES) 
+		   	{ continue ; }
+
+			size += fdbInputGetInt(RSET, RSET_NVAL, i) ;
+
+			rset_num = fdbElementType[fdbInputGetInt(RSET, RSET_TYPE, i)].reals_rep ;
+
+			if (rset_num > 0)
+			{
+			 rset_rep = (long)
+				(
+				fdbInputGetInt(RSET, RSET_NVAL, i)
+				-
+				fdbElementType[fdbInputGetInt(RSET, RSET_TYPE, i)].reals
+				) / rset_num ;
+			}
+			if ((rset_rep * rset_num + 
+				fdbElementType[fdbInputGetInt(RSET, RSET_TYPE, i)].reals)
+					<
+				fdbInputGetInt(RSET, RSET_NVAL, i))
+			{
+				rset_rep++ ;
+			}
+
+			fprintf(fw,"rs,%li,%li,%li\n",
+					fdbInputGetInt(RSET, RSET_ID, i),
+					fdbInputGetInt(RSET, RSET_TYPE, i),
+					rset_rep
+					);
+		}
+
+		/* list of properties */
+		for (i=0; i<len; i++)
+		{
+    	if (fdbTestSelect(&InputTab[RSET], &inputData.intfld, i) != AF_YES) 
+		   	{ continue ; }
+
+			isize = fdbInputGetInt(RSET, RSET_NVAL, i) ;
+		
+			fdbInputCountInt(RVAL, RVAL_RSET, 
+				             	fdbInputGetInt(RSET, RSET_ID, i), 
+										 	&pos);
+
+
+			rep_i = 0;
+			for (j=0; j<isize; j++)
+			{
+				if (j < fdbElementType[fdbInputGetInt(RSET, RSET_TYPE, i)].reals)
+				{
+					rep_i = 0 ;
+				}
+				else
+				{
+					rep_i = (long)((j - fdbElementType[fdbInputGetInt(RSET, RSET_TYPE, i)].reals)
+						/ fdbElementType[fdbInputGetInt(RSET, RSET_TYPE, i)].reals_rep + 1) ;
+
+					if (rep_i <= 0) {continue;}
+				}
+
+				fprintf(fw,"r,%s,%li,%e,%li\n",
+            ciGetVarNameFromGrp(
+            fdbFemStrFromInt(fdbInputGetInt(RVAL,RVAL_TYPE,pos+j)),"real"
+						),
+						fdbInputGetInt(RVAL, RVAL_RSET,pos+j),
+						fdbInputGetDbl(RVAL, RVAL_VAL,pos+j),
+						rep_i
+						);
+			}
+		}
+		fprintf(fw,"\n");
+  }
+#endif
+
+#if 0
+	/* ** Material properties  -----------------------------  */
+
+	/* number of material sets */
+	len = fdbInputTabLenSel(MAT) ;
+
+	size = 0 ; /* ! */
+
+	/* description of materia sets: */
+	for (i=0; i<len; i++)
+	{
+    if (fdbTestSelect(&InputTab[MAT], &inputData.intfld, i) != AF_YES) 
+		   { continue ; }
+
+		size += fdbInputGetInt(MAT, MAT_NVAL, i) ;
+
+		rset_num = fdbMatType[fdbInputGetInt(MAT, MAT_TYPE, i)].vals_rp ;
+
+			if (rset_num > 0)
+			{
+			 rset_rep = (long)
+				(
+				fdbInputGetInt(MAT, MAT_NVAL, i)
+				-
+				fdbMatType[fdbInputGetInt(MAT, MAT_TYPE, i)].vals
+				) / rset_num ;
+			}
+			if ((rset_rep * rset_num + 
+				fdbMatType[fdbInputGetInt(MAT, MAT_TYPE, i)].vals)
+					<
+				fdbInputGetInt(MAT, MAT_NVAL, i))
+			{
+				rset_rep++ ;
+			}
+
+	/*	fprintf(fw,"mat,%li,%li,%li\n", fdbInputGetInt(MAT, MAT_ID, i), fdbInputGetInt(MAT, MAT_TYPE, i), rset_rep);*/
+	}
+
+	/* list of properties */
+	for (i=0; i<len; i++)
+	{
+    if (fdbTestSelect(&InputTab[MAT], &inputData.intfld, i) != AF_YES) 
+		   { continue ; }
+
+		isize = fdbInputGetInt(MAT, MAT_NVAL, i) ;
+		
+		fdbInputCountInt(MVAL, MVAL_MAT, 
+				             fdbInputGetInt(MAT, MAT_ID, i), 
+										 &pos);
+
+		rep_i = 0;
+		for (j=0; j<isize; j++)
+		{
+			if (j < fdbMatType[fdbInputGetInt(MAT, MAT_TYPE, i)].vals)
+			{
+				rep_i = 0 ;
+			}
+			else
+			{
+				rep_i = (long)((j - fdbMatType[fdbInputGetInt(MAT, MAT_TYPE, i)].vals)
+					/ fdbMatType[fdbInputGetInt(MAT, MAT_TYPE, i)].vals_rp + 1) ;
+
+				if (rep_i <= 0) {continue;}
+			}
+
+			if ((varstr=fdb_ufem_mat_to_ans(fdbInputGetDbl(MVAL), MVAL_VAL,pos+j)) != "x")
+			{
+
+				fprintf(fw,"mp,%s,%li,%e\n",
+            ciGetVarNameFromGrp(
+            fdbFemStrFromInt(fdbInputGetInt(MVAL,MVAL_TYPE,pos+j)),"material"
+						),
+						fdbInputGetInt(MVAL, MVAL_MAT,pos+j),
+						varstr
+						);
+			}
+			free(varstr); varstr=NULL;
+		}
+	}
+	fprintf(fw,"\n");
+#endif
+
+#if 0
+	/* ** KPs  -------------------------------------------  */
+
+	len_all = fdbInputTabLenAll(KPOINT) ;
+
+	for (i=0; i<len_all; i++)
+	{
+    if (fdbInputTestSelect(KPOINT,i) == AF_YES)
+    {
+	  	fprintf(fw, "k,%li,%e,%e,%e\n", 
+				fdbInputGetInt(KPOINT,KPOINT_ID, i),
+				fdbInputGetDbl(KPOINT,KPOINT_X, i),
+				fdbInputGetDbl(KPOINT,KPOINT_Y, i),
+				fdbInputGetDbl(KPOINT,KPOINT_Z, i)
+			);
+    }
+	}
+
+	fprintf(fw,"\n");
+
+
+	/* ** Geometric entities  ------------------------------  */
+
+	/* number of elements */
+	len = fdbInputTabLenSel(ENTITY) ;
+
+	len_all = fdbInputTabLenAll(ENTITY) ;
+
+	size = 0 ; /* ! */
+
+	/* description of entities: */
+	for (i=0; i<len_all; i++)
+	{
+    if (fdbTestSelect(&InputTab[ENTITY], &inputData.intfld, i) != AF_YES) 
+		   { continue ; }
+
+		size += fdbInputGetInt(ENTITY, ENTITY_KPS, i) ;
+    
+		rtype_pos =	fdbInputGetInt(ENTITY, ENTITY_RS, i);
+		mtype_pos =	fdbInputGetInt(ENTITY, ENTITY_MAT, i);
+
+    if (rtype_pos < 0) {rtype_pos = 0 ;}
+    if (mtype_pos < 0) {mtype_pos = 0 ;}
+
+		fprintf(fw,"gep,%s,%li,%li,%li,%li,%li\n",
+        ciGetVarNameFromGrp( fdbFemStrFromInt(
+				fdbInputGetInt(ENTITY, ENTITY_TYPE, i))
+					,"geom_ent"),
+				fdbInputGetInt(ENTITY, ENTITY_ID, i),
+				fdbInputGetInt(ENTITY, ENTITY_ETYPE, i),
+				rtype_pos,
+				mtype_pos,
+				fdbInputGetInt(ENTITY, ENTITY_SET, i)
+				);
+	}
+
+	/* list of keypoints */
+	for (i=0; i<len_all; i++)
+	{
+    if (fdbTestSelect(&InputTab[ENTITY], &inputData.intfld, i) != AF_YES) 
+		   { continue ; }
+
+		isize = fdbInputGetInt(ENTITY, ENTITY_KPS, i) ;
+
+		pos = fdbInputGetInt(ENTITY, ENTITY_KFROM, i) ;
+		
+		if (isize > 0)
+		{
+			fprintf(fw,"ge,%s,%li",
+        ciGetVarNameFromGrp( fdbFemStrFromInt(
+				fdbInputGetInt(ENTITY, ENTITY_TYPE, i))
+					,"geom_ent"),
+					fdbInputGetInt(ENTKP,ENTKP_ENT, pos)
+					);
+			for (j=0; j<isize; j++)
+			{
+				fprintf(fw,",%li",fdbInputGetInt(ENTKP,ENTKP_KP,pos+j));
+			}
+		}
+		fprintf(fw,"\n");
+	}
+
+	/* list of divisions */
+	for (i=0; i<len_all; i++)
+	{
+    if (fdbTestSelect(&InputTab[ENTITY], &inputData.intfld, i) != AF_YES) 
+		   { continue ; }
+
+		isize = fdbInputCountInt(ENTDIV, ENTDIV_ENT,
+				fdbInputGetInt(ENTITY,ENTITY_ID, i), &pos) ;
+		
+		if (isize > 0)
+		{
+			fprintf(fw,"gediv,%li",
+					fdbInputGetInt(ENTDIV,ENTDIV_ENT, pos)
+					);
+			for (j=0; j<isize; j++)
+			{
+				fprintf(fw,",%li",fdbInputGetInt(ENTDIV,ENTDIV_DIV,pos+j));
+			}
+		}
+		fprintf(fw,"\n");
+	}
+
+	fprintf(fw,"\n");
+#endif
+
+	/* ** Nodes  -------------------------------------------  */
+
+	len_all = fdbInputTabLenAll(NODE) ;
+
+	for (i=0; i<len_all; i++)
+	{
+    if (fdbInputTestSelect(NODE,i) == AF_YES)
+    {
+	  	fprintf(fw, "n,%li,%e,%e,%e\n", 
+				fdbInputGetInt(NODE,NODE_ID, i),
+				fdbInputGetDbl(NODE,NODE_X, i),
+				fdbInputGetDbl(NODE,NODE_Y, i),
+				fdbInputGetDbl(NODE,NODE_Z, i)
+			);
+    }
+	}
+
+	fprintf(fw,"\n");
+
+	/* ** Elements  ----------------------------------------  */
+#if 0
+
+	/* number of elements */
+	len = fdbInputTabLenSel(ELEM) ;
+
+	len_all = fdbInputTabLenAll(ELEM) ;
+
+	size = 0 ; /* ! */
+
+	/* description of elements: */
+	for (i=0; i<len_all; i++)
+	{
+    if (fdbTestSelect(&InputTab[ELEM], &inputData.intfld, i) != AF_YES) 
+		   { continue ; }
+
+		size += fdbInputGetInt(ELEM, ELEM_NODES, i) ;
+		etype_id = fdbInputGetInt(ELEM, ELEM_TYPE, i) ;
+		fdbInputCountInt(ETYPE, ETYPE_ID, etype_id, &pos) ;
+		etype_type = fdbInputGetInt(ETYPE, ETYPE_TYPE, pos) ;
+    
+		rtype_pos =	fdbInputGetInt(ELEM, ELEM_RS, i);
+		mtype_pos =	fdbInputGetInt(ELEM, ELEM_MAT, i);
+
+    if (rtype_pos < 0) {rtype_pos = 0 ;}
+    if (mtype_pos < 0) {mtype_pos = 0 ;}
+
+		fprintf(fw,"ep,%li,%li,%li,%li,%li\n",
+				fdbInputGetInt(ELEM, ELEM_ID, i),
+				etype_id,
+				rtype_pos,
+				mtype_pos,
+				fdbInputGetInt(ELEM, ELEM_SET, i)
+				);
+	}
+
+	/* list of nodes */
+	for (i=0; i<len_all; i++)
+	{
+    if (fdbTestSelect(&InputTab[ELEM], &inputData.intfld, i) != AF_YES) 
+		   { continue ; }
+
+		isize = fdbInputGetInt(ELEM, ELEM_NODES, i) ;
+
+		pos = fdbInputGetInt(ELEM, ELEM_FROM, i) ;
+		
+		if (isize > 0)
+		{
+			fprintf(fw,"e,%li", fdbInputGetInt(ENODE,ENODE_ELEM, pos));
+			for (j=0; j<isize; j++)
+			{
+				fprintf(fw,",%li",fdbInputGetInt(ENODE,ENODE_ID,pos+j));
+			}
+		}
+		fprintf(fw,"\n");
+	}
+
+	fprintf(fw,"\n");
+#endif
+
+	/*  ** Gravitation  ------------------------------------  */
+#if 0
+	if (fdbInputTabLenSel(GRAV) >= 1)
+	{
+		len_all = fdbInputTabLenAll(GRAV) ;
+
+		for (i=0; i<len_all; i++)
+		{
+    if (fdbTestSelect(&InputTab[GRAV], &inputData.intfld, i) != AF_YES) 
+			 { continue ; }
+		
+		fprintf(fw,"accel,%li,%e,%li,%li\n",
+				fdbInputGetInt(GRAV,GRAV_DIR,i),
+				fdbInputGetDbl(GRAV,GRAV_VAL,i),
+				fdbInputGetInt(GRAV,GRAV_SET,i),
+				fdbInputGetInt(GRAV,GRAV_ID,i)
+				);
+		}
+	}
+
+	fprintf(fw,"\n");
+#endif
+
+	/* nodal disp/load data length */
+#if 0
+	len_nd = fdbInputTabLenSel(NDISP) ;
+	len_nl = fdbInputTabLenSel(NLOAD) ;
+	
+	/* nodal disps. + nodal load should be here..  */
+	for (i=0; i<len_nd; i++)
+	{
+    if (fdbTestSelect(&InputTab[NDISP], &inputData.intfld, i) != AF_YES) 
+		   { continue ; }
+
+    ndisp_pos = fdbInputGetInt(NDISP, NDISP_NODE, i);
+
+		fprintf(fw,"d,%li,%s,%e,%li\n",
+				ndisp_pos,
+        ciGetVarNameFromGrp(
+        fdbFemStrFromInt(
+					fdbInputGetInt(NDISP, NDISP_TYPE, i)
+					),"disp"),
+				fdbInputGetDbl(NDISP, NDISP_VAL, i),
+				fdbInputGetInt(NDISP, NDISP_SET, i)
+				); 
+	}
+
+	fprintf(fw,"\n");
+
+	for (i=0; i<len_nl; i++)
+	{
+		if (fdbTestSelect(&InputTab[NLOAD], &inputData.intfld, i) != AF_YES) 
+		   { continue ; }
+
+		fdb_to_fem_nl_type(fdbInputGetInt(NLOAD, NLOAD_TYPE, i), &type, &dir);
+
+    nload_pos = fdbInputGetInt(NLOAD, NLOAD_NODE, i);
+			
+		fprintf(fw,"f,%li,%s,%e,%li\n",
+				nload_pos,
+        ciGetVarNameFromGrp(
+        fdbFemStrFromInt(
+					fdbInputGetInt(NLOAD, NLOAD_TYPE, i)
+					),"load"),
+				fdbInputGetDbl(NLOAD, NLOAD_VAL, i),
+				fdbInputGetInt(NLOAD, NLOAD_SET, i)
+				); 
+	}
+
+	fprintf(fw,"\n");
+#endif
+
+	/* TODO:  element load  should be here... maybe later  */
+#if 0
+	for (i=0; i<fdbInputTabLenAll(ELOAD); i++)
+	{
+    if (fdbTestSelect(&InputTab[ELOAD], &inputData.intfld, i) != AF_YES) 
+		   { continue ; }
+
+		isize = fdbInputGetInt(ELOAD, ELOAD_NVAL, i) ;
+
+		pos = fdbInputGetInt(ELOAD, ELOAD_FROM, i) ;
+		
+		if (isize > 0)
+		{
+			fprintf(fw,"el,%li,%li", 
+					fdbInputGetInt(ELOAD,ELOAD_ELEM, i),
+					fdbInputGetInt(ELOAD,ELOAD_TYPE, i)
+					);
+			for (j=0; j<isize; j++)
+			{
+				fprintf(fw,",%e",fdbInputGetDbl(ELVAL,ELVAL_VAL,pos+j));
+			}
+		}
+		fprintf(fw,"\n");
+	}
+
+	fprintf(fw,"\n");
+#endif
+
+  return(rv);
+}
+
 /* end of fdb_expt.c */
