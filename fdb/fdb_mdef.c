@@ -78,9 +78,9 @@ void fdbMatTypeInit_002(long type)
 void fdbMatTypeInit_003(long type)
 {
 	static long id            = 3 ;
-	static long vals          = 10 ;
-	static long val[10]        = {MAT_DENS, MAT_EX, MAT_NU,
-  MAT_F_YC,MAT_F_YBC,MAT_F_YT,MAT_F_UC,MAT_F_UBC,MAT_F_UT,MAT_E1} ;
+	static long vals          = 11 ;
+	static long val[11]        = {MAT_DENS, MAT_EX, MAT_NU,
+  MAT_F_YC,MAT_F_YBC,MAT_F_YT,MAT_F_UC,MAT_F_UBC,MAT_F_UT,MAT_E1, MAT_PRICE} ;
 	static long vals_rp       = 2 ;
 	static long val_rp[2]     = {MAT_RAMB_K, MAT_RAMB_N} ;
 
@@ -95,8 +95,8 @@ void fdbMatTypeInit_003(long type)
 void fdbMatTypeInit_004(long type)
 {
 	static long  id        = 4 ;
-	static long  vals      = 8 ;
-	static long  val[8]    = {MAT_DENS, MAT_EX, MAT_NU, MAT_G, MAT_COHES, MAT_FRICT, MAT_F_YC, MAT_HARD};
+	static long  vals      = 9 ;
+	static long  val[9]    = {MAT_DENS, MAT_EX, MAT_NU, MAT_G, MAT_COHES, MAT_FRICT, MAT_F_YC, MAT_HARD, MAT_PRICE};
 	static long  vals_rp   = 8 ;
 	static long  val_rp[8] = {MAT_DENS, MAT_EX, MAT_NU, MAT_G, MAT_COHES, MAT_FRICT, MAT_F_YC, MAT_HARD};
 

@@ -135,6 +135,10 @@ int fem_create_cmd_aliases(void)
   if ((rv=ciAddVarGrp("area","1","real")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("width","2","real")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("height","3","real")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("angle1","4","real")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("rreinf1","5","real")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("angle1","6","real")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("rreinf2","7","real")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("ix","8","real")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("iy","9","real")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("iz","10","real")) != AF_OK) {goto memFree;}
@@ -166,6 +170,9 @@ int fem_create_cmd_aliases(void)
   if ((rv=ciAddVarGrp("fuc", "15","material")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("fubc","16","material")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("fut", "17","material")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("cohes", "18","material")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("frict", "19","material")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("hard", "20","material")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("model", "29","material")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("rambk", "30","material")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("rambn", "31","material")) != AF_OK) {goto memFree;}
