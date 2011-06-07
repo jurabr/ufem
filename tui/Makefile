@@ -22,7 +22,6 @@ CFLAGS=$(INCLUDES) -DDISABLE_UNFINISHED $(DEBUG) -DHAVE_HOME_DIR
 ##GFCFLAGS=-I../gfx -D_USE_GFX_ -D_USE_GLUT_UI_ #-DUSE_GLUT
 GFCFLAGS=-I../gfx -I/usr/X11R6/include -D_USE_GFX_ -D_USE_GUI_  -DUSE_GL2PS -I../../gl2ps/ #-D_USE_LIB_TIFF_ -I/sw/include #-DUSE_FOG
 GFCFLAGS=-I../gfx -I/usr/X11R6/include -D_USE_GFX_ -D_USE_GUI_ # -DUSE_GL2PS -I../../gl2ps/ #-D_USE_LIB_TIFF_ -I/sw/include #-DUSE_FOG # no gl2ps
-####GFCFLAGS=-I../gfx -I/usr/X11R6/include -D_USE_G2D_ -D_USE_GUI_  -I/sw/include #-DUSE_FOG
 #GUIFLAGS=$(CFLAGS) $(GFCFLAGS) -I../gui -I../gfx `gtk-config --cflags` -D_USE_GTK_GL_AREA_
 GUIFLAGS=$(CFLAGS) $(GFCFLAGS) -I../gui `pkg-config --cflags gtk+-2.0 gtkglext-1.0` -DFEM_NEW_FILE_DLG
 GUIFLAGS=$(CFLAGS) $(GFCFLAGS) -I../gui `pkg-config --cflags gtk+-2.0 gtkglext-1.0` # old file dialogs here
@@ -50,8 +49,7 @@ GUILIBS=`pkg-config --libs gtkglext-1.0 gtk+-2.0` -lGL -lGLU  $(LIBS) # no gl2ps
 
 OBJECTS=fem_tini.o fem_tclp.o fem_tcmd.o cmd_vars.o cmd_fem.o cmd_res.o cmd_sele.o cmd_macs.o fem_alia.o fem_conf.o fem_solv.o cmd_help.o cmd_solv.o
 GFOBJECTS=fem_gfx.o fem_gfnt.o fem_gclr.o fem_gele.o gfx_e000.o gfx_e001.o gfx_e002.o gfx_e003.o gfx_e004.o gfx_e005.o gfx_e006.o gfx_load.o gfx_disp.o gfx_sele.o gfx_res.o gfx_reac.o gfx_ares.o gfx_ppm.o gfx_k.o gfx_grid.o fem_gent.o gfx_en01.o gfx_en02.o gfx_en03.o gfx_en04.o gfx_path.o
-G2DOBJECTS=
-GOBJECTS=$(GFOBJECTS) $(G2DOBJECTS) fem_gui.o gui_main.o gui_gl.o gui_dlgs.o
+GOBJECTS=$(GFOBJECTS) fem_gui.o gui_main.o gui_gl.o gui_dlgs.o
 
 all: tfem
 
