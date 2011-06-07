@@ -1,3 +1,12 @@
+### Tue Jun  7 21:09:44 CEST 2011
+
+version 0.3.0
+
+features:
+  + temperature variable added
+  + new element 018 (thermal, untested)
+
+
 ### Sun May  1 19:54:12 CEST 2011
 
 features:
