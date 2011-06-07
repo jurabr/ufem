@@ -181,6 +181,7 @@ int fem_create_cmd_aliases(void)
   if ((rv=ciAddVarGrp("crtype", "34","material")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("crshen", "35","material")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("price", "36","material")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("kxx", "37","material")) != AF_OK) {goto memFree;}
 
   /* names of results */
   if ((rv=ciAddVarGrp("f_x","1","result")) != AF_OK) {goto memFree;}

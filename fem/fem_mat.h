@@ -73,6 +73,7 @@
 #define MAT_CRTYPE  34
 #define MAT_GFC     35
 #define MAT_PRICE   36
+#define MAT_KXX     37
 
 
 /* structure for finite element */

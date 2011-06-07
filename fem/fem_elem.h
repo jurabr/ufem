@@ -40,13 +40,14 @@
 #include "fem_sol.h"
 
 /* DOF type definitions (used to describe force/moment direction, too): */
-#define KNOWN_DOFS 6
+#define KNOWN_DOFS 7
 #define U_X   1
 #define U_Y   2
 #define U_Z   3
 #define ROT_X 4
 #define ROT_Y 5
 #define ROT_Z 6
+#define TEMP  7
 
 #define RS_AREA          1
 #define RS_WIDTH         2
