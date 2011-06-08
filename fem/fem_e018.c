@@ -116,13 +116,6 @@ int e018_stiff(long ePos, long Mode, tMatrix *K_e, tVector *Fe, tVector *Fre)
   femValMatMultSelf(A, K_e);
 
 	/* Control prints: */
-	femMatPrn(&S,"S-1 :");
-	femMatPrn(&B,"B :");
-	femMatPrn(&D,"D :");
-	femMatPrn(&StBt,"StBt :");
-	femMatPrn(&BS,"BS :");
-	femMatPrn(&BtD,"StBtD :");
-
 	femMatPrn(K_e,"Ke local:");
 
 

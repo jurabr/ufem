@@ -75,7 +75,7 @@ LD=ld -shared
 #DEBUG=-g -O0 -DRUN_VERBOSE -DDEVEL_VERBOSE -DDEVEL #-D_MATRIX_SAVING_ #-DPSEUDO_SEC 
 #DEBUG=-g -O0 -DRUN_VERBOSE -DDEVEL_VERBOSE -DDEVEL -D_MATRIX_SAVING_ #-DPSEUDO_SEC 
 #DEBUG=-g -O0 -DRUN_VERBOSE -DDEVEL_VERBOSE -DDEVEL -D_MATRIX_SAVING_ #-DPSEUDO_SEC 
-DEBUG=-g -O0 -DRUN_VERBOSE -DDEVEL -DDEVEL_VERBOSE 
+DEBUG=-g -O0 -DRUN_VERBOSE -DDEVEL -DDEVEL_VERBOSE -D_MATRIX_SAVING_
 #DEBUG=-O2 -DRUN_VERBOSE -DDEVEL -DDEVEL_VERBOSE 
 ##DEBUG=-O2 -DRUN_VERBOSE -D_MATRIX_SAVING_ -D_USE_SIGNALS_ -DUSE_FAST_SAPO
 ##### DEBUG=-O3 -DRUN_VERBOSE -D_MATRIX_SAVING_ -D_USE_SIGNALS_ -DUSE_FAST_SAPO
@@ -403,9 +403,6 @@ fem_vmis.o: fem_vmis.c fem_pl3d.h fem_mat.h fem.h
 
 fem_bone.o: fem_bone.c fem_pl3d.h fem_mat.h fem.h
 	$(CC) -c $(CFLAGS) fem_bone.c
-
-fem_lb2d.o: fem_lb2d.c fem_mat.h fem.h
-	$(CC) -c $(CFLAGS) fem_lb2d.c
 
 fem_mrun.o: fem_mrun.c fem_elem.h fem_mat.h
 	$(CC) -c $(CFLAGS) fem_mrun.c

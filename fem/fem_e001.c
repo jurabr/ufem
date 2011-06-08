@@ -515,7 +515,7 @@ int e001_volume(long ePos, double *val)
 	*val = Ax * L ;
 
 #ifdef DEVEL_VERBOSE
-	fprintf(msgout,"Ax = %f, L=%f mass=%f\n",Ax, *val);
+	fprintf(msgout,"Ax = %f, L=%f mass=%f\n",Ax, L, *val);
 #endif
 
 	return(rv);
