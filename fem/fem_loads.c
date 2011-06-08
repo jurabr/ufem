@@ -179,7 +179,7 @@ int femApplyDisp(long nodePos, long dof, double Val)
 			femVecAdd(&F, i, (-1.0 * tmpVal * u_Val));
 
 #ifdef DEVEL_VERBOSE
-  printf(" [%li] Val is %e * %e\n",i, Val, tmpVal);
+  printf(" [%li | %li] Val is %e * %e\n",i, Pos, u_Val, tmpVal);
 #endif
 		}
 
