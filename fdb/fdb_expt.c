@@ -90,7 +90,7 @@ void fdb_to_fem_nd_type(long type_fdb, long *type, long *dir)
 						break ;
 
 		/* + only displacements */
-		case 15: *type = 5 ;
+		case 15: *type = 6 ;
 						*dir  = 1 ;
 						break ;
 		case 16: *type = 5 ;

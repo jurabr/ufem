@@ -53,30 +53,33 @@ void afDispSymbol(
   {
 		/* u:  */
     case 1:
-    case 13:
-    case 25:
+    case 15:
+    case 29:
 			glRotatef(180,0,1,0); break;
     case 2:
-    case 14:
-    case 26:
+    case 16:
+    case 30:
 			glRotatef(270,0,0,1); break;
     case 3:
-    case 15:
-    case 27:
+    case 17:
+    case 31:
 			glRotatef(90,0,1,0); break;
 		/* rot: */
     case 4:
-    case 16:
-    case 28:
+    case 18:
+    case 32:
 			glRotatef(180,0,0,1); break;
     case 5:
-    case 17:
-    case 29:
+    case 19:
+    case 33:
 			glRotatef(270,0,0,1); break;
     case 6:
-    case 18:
-    case 30:
+    case 20:
+    case 34:
 			glRotatef(90,0,1,0); break;
+    case 7: 
+			glRotatef(180,0,1,0);
+      break;
 
     default: glLoadIdentity(); return; break;
   }
@@ -84,8 +87,8 @@ void afDispSymbol(
 
 	glColor4f(r,g,b,tr);
 
-	if ((Dir>=13)&&(Dir<=15)) { glColor4f(1.0, 0.6, 0.3,  1.0) ; }
-	if ((Dir>=25)&&(Dir<=27)) { glColor4f(0.6, 0.6, 1.0,  1.0) ; }
+	if ((Dir>=15)&&(Dir<=20)) { glColor4f(1.0, 0.6, 0.3,  1.0) ; }
+	if ((Dir>=29)&&(Dir<=34)) { glColor4f(0.6, 0.6, 1.0,  1.0) ; }
 	
 	if (plotProp.PlotToFile == AF_YES) 
   { 
@@ -114,7 +117,7 @@ void afDispSymbol(
   }
 
 	/* translations */
-	if ( (Dir <= 3) || ((Dir>=13)&&(Dir<=15)) || ((Dir>=25)&&(Dir<=27)) ) 
+	if ( (Dir <= 3) || ((Dir>=15)&&(Dir<=17)) || ((Dir>=29)&&(Dir<=31)) ) 
 	{
 
 			
@@ -167,6 +170,15 @@ void afDispSymbol(
       glLineWidth(2); 
     }
 
+    if (Dir == 7) /* temperature */
+    {
+	    glBegin(GL_POINTS);
+	      glVertex3f(0,0,0);
+	    glEnd();
+    }
+    else
+    {
+
 		glBegin(GL_POLYGON);
 	    glVertex3f( 0.4*F, 0.3*F,-0.2*F);
 	    glVertex3f(-0.4*F, 0.3*F,-0.2*F);
@@ -202,6 +214,7 @@ void afDispSymbol(
 	    glVertex3f(0, 0.2*F, 0.2*F);
 	    glVertex3f(0, 0.2*F,-0.2*F);
 		glEnd();
+    }
 	
 	  if (plotProp.PlotToFile == AF_YES) 
     { 
@@ -257,30 +270,30 @@ void afStiffSymbol(
 	switch (Dir)
   {
 		/* u:  */
-    case 7:
-    case 19:
-    case 31:
-			glRotatef(180,0,1,0); break;
     case 8:
-    case 20:
-    case 32:
-			glRotatef(270,0,0,1); break;
+    case 22:
+    case 36:
+			glRotatef(180,0,1,0); break;
     case 9:
-    case 21:
-    case 33:
+    case 23:
+    case 37:
+			glRotatef(270,0,0,1); break;
+    case 10:
+    case 24:
+    case 38:
 			glRotatef(90,0,1,0); break;
 		/* rot: */
-    case 10:
-    case 22:
-    case 34:
-			glRotatef(180,0,0,1); break;
     case 11:
-    case 23:
-    case 35:
-			glRotatef(270,0,0,1); break;
+    case 25:
+    case 39:
+			glRotatef(180,0,0,1); break;
     case 12:
-    case 24:
-    case 36:
+    case 26:
+    case 40:
+			glRotatef(270,0,0,1); break;
+    case 13:
+    case 27:
+    case 41:
 			glRotatef(90,0,1,0); break;
 
     default: glLoadIdentity(); return; break;
@@ -290,8 +303,8 @@ void afStiffSymbol(
 	
 	glColor4f(r,g,b,tr);
 
-	if ((Dir>=19)&&(Dir<=24)) { glColor4f(1.0, 0.6, 0.3,  1.0) ; }
-	if ((Dir>=31)&&(Dir<=36)) { glColor4f(0.6, 0.6, 1.0,  1.0) ; }
+	if ((Dir>=22)&&(Dir<=27)) { glColor4f(1.0, 0.6, 0.3,  1.0) ; }
+	if ((Dir>=36)&&(Dir<=41)) { glColor4f(0.6, 0.6, 1.0,  1.0) ; }
 
 	
 	if (plotProp.PlotToFile == AF_YES) 
@@ -322,7 +335,7 @@ void afStiffSymbol(
 
 	
 	/* translation stiffnesses */
-	if ( ((Dir >= 7)&&(Dir <=9)) || ((Dir>=19)&&(Dir<=22)) || ((Dir>=31)&&(Dir<=33)) ) 
+	if ( ((Dir >= 8)&&(Dir <=10)) || ((Dir>=22)&&(Dir<=24)) || ((Dir>=36)&&(Dir<=38)) ) 
 	{
 	  if (plotProp.PlotToFile == AF_YES) 
     { 
