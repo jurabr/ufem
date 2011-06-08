@@ -298,8 +298,8 @@ int femApplyNLoad(long nPos, long Type, long Dir, double Val)
 	if ((Pos = femKpos(nPos, Dir)) <= 0)
 	{
 #ifdef RUN_VERBOSE
-		fprintf(msgout,"[E] %s (%s: %li, %s: %li)\n",
-				_("Cannot add nodal load"), _("node"),femGetNIDPos(nPos) , _("direction"), Dir
+		fprintf(msgout,"[E] %s (%s: %li, %s: %li,  %s: %li)\n",
+				_("Cannot add nodal load"), _("node"),femGetNIDPos(nPos),_("type"), Type, _("direction"), Dir
 				);
 #endif
 	}
@@ -322,6 +322,7 @@ int femApplyNLoad(long nPos, long Type, long Dir, double Val)
 						 return(AF_OK); /* b.c. is added by another function */
 						 break;
 		case 3:  /* force/moment load */
+		case 9:  /* heat */
 						 rv = femVecAdd(&F, Pos, Val) ;
 						 break;
 		default: /* error */
@@ -354,6 +355,7 @@ int femApplyNBC(long nPos, long Type, long Dir, double Val)
 	switch (Type)
 	{
 		case 1:  /* displacement */
+		case 8:  /* temperature  */
 						 rv = femApplyDisp(nPos, Dir, Val);
 						 break;
 		case 2:  /* stifness */

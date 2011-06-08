@@ -111,9 +111,20 @@ int e018_stiff(long ePos, long Mode, tMatrix *K_e, tVector *Fe, tVector *Fre)
 	femMatMatMult(&StBt, &D, &BtD) ;
 
 	femMatMatMult(&B,&S, &BS) ;
-	femMatMatMult(&BtD,  &BtD, K_e) ;
+	femMatMatMult(&BtD,  &BS, K_e) ;
 
   femValMatMultSelf(A, K_e);
+
+	/* Control prints: */
+	femMatPrn(&S,"S-1 :");
+	femMatPrn(&B,"B :");
+	femMatPrn(&D,"D :");
+	femMatPrn(&StBt,"StBt :");
+	femMatPrn(&BS,"BS :");
+	femMatPrn(&BtD,"StBtD :");
+
+	femMatPrn(K_e,"Ke local:");
+
 
 	if (Mode == AF_YES) /* results are computed */
 	{
