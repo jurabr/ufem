@@ -63,109 +63,112 @@ void fdb_to_fem_nd_type(long type_fdb, long *type, long *dir)
 						*dir  = 6 ;
 						break ;
 
-		case 7: *type = 2 ;
+		/* temperature */
+		case 7: *type = 8 ;
+					 *dir  = 7 ;
+						break ;
+
+
+    /* stiffness: */
+		case 8: *type = 2 ;
 						*dir  = 1 ;
 						break ;
-		case 8: *type = 2 ;
+		case 9: *type = 2 ;
 						*dir  = 2 ;
 						break ;
-		case 9: *type = 2 ;
+		case 10: *type = 2 ;
 						*dir  = 3 ;
 						break ;
-		case 10: *type = 2 ;
+		case 11: *type = 2 ;
 						*dir  = 4 ;
 						break ;
-		case 11: *type = 2 ;
+		case 12: *type = 2 ;
 						*dir  = 5 ;
 						break ;
-		case 12: *type = 2 ;
+		case 13: *type = 2 ;
 						*dir  = 6 ;
 						break ;
 
 		/* + only displacements */
-		case 13: *type = 5 ;
+		case 15: *type = 5 ;
 						*dir  = 1 ;
 						break ;
-		case 14: *type = 5 ;
+		case 16: *type = 5 ;
 						*dir  = 2 ;
 						break ;
-		case 15: *type = 5 ;
+		case 17: *type = 5 ;
 						*dir  = 3 ;
 						break ;
-		case 16: *type = 5 ;
+		case 18: *type = 5 ;
 						*dir  = 4 ;
 						break ;
-		case 17: *type = 5 ;
+		case 19: *type = 5 ;
 						*dir  = 5 ;
 						break ;
-		case 18: *type = 5 ;
+		case 20: *type = 5 ;
 						*dir  = 6 ;
 						break ;
 
 		/* + only stiffnesses */
-		case 19: *type = 7 ;
+		case 22: *type = 7 ;
 						*dir  = 1 ;
 						break ;
-		case 20: *type = 7 ;
+		case 23: *type = 7 ;
 						*dir  = 2 ;
 						break ;
-		case 21: *type = 7 ;
+		case 24: *type = 7 ;
 						*dir  = 3 ;
 						break ;
-		case 22: *type = 7 ;
+		case 25: *type = 7 ;
 						*dir  = 4 ;
 						break ;
-		case 23: *type = 7 ;
+		case 26: *type = 7 ;
 						*dir  = 5 ;
 						break ;
-		case 24: *type = 7 ;
+		case 27: *type = 7 ;
 						*dir  = 6 ;
 						break ;
 
 		/* - only displacements */
-		case 25: *type = 4 ;
+		case 29: *type = 4 ;
 						*dir  = 1 ;
 						break ;
-		case 26: *type = 4 ;
+		case 30: *type = 4 ;
 						*dir  = 2 ;
 						break ;
-		case 27: *type = 4 ;
+		case 31: *type = 4 ;
 						*dir  = 3 ;
 						break ;
-		case 28: *type = 4 ;
+		case 32: *type = 4 ;
 						*dir  = 4 ;
 						break ;
-		case 29: *type = 4 ;
+		case 33: *type = 4 ;
 						*dir  = 5 ;
 						break ;
-		case 30: *type = 4 ;
+		case 34: *type = 4 ;
 						*dir  = 6 ;
 						break ;
 
 		/* - only stiffnesses */
-		case 31: *type = 6 ;
+		case 36: *type = 6 ;
 						*dir  = 1 ;
 						break ;
-		case 32: *type = 6 ;
+		case 37: *type = 6 ;
 						*dir  = 2 ;
 						break ;
-		case 33: *type = 6 ;
+		case 38: *type = 6 ;
 						*dir  = 3 ;
 						break ;
-		case 34: *type = 6 ;
+		case 39: *type = 6 ;
 						*dir  = 4 ;
 						break ;
-		case 35: *type = 6 ;
+		case 40: *type = 6 ;
 						*dir  = 5 ;
 						break ;
-		case 36: *type = 6 ;
+		case 41: *type = 6 ;
 						*dir  = 6 ;
 						break ;
 
-		/* temperature */
-		case 37: *type = 8 ;
-						 *dir  = 7 ;
-						break ;
 
 		default:
 				    *type = 0 ;

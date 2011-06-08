@@ -331,11 +331,12 @@ int fdb_import_from_fem(FILE *fr, long *opts, long optlen)
 		switch (set_type)
 		{
 			case 1: /* displacements */
+      case 8:
 				type = 0 + set_dir ;
 				dt = 1 ;
 				break ;
 			case 2: /* stiffnesses */
-				type = 6 + set_dir ;
+				type = 7 + set_dir ;
 				dt = 1 ;
 				break ;
 			case 3: /* forces */
@@ -343,19 +344,19 @@ int fdb_import_from_fem(FILE *fr, long *opts, long optlen)
 				dt = 2 ;
 				break ;
 			case 4: /* displacements one-dir */
-				type = 24 + set_dir ;
+				type = 28 + set_dir ;
 				dt = 1 ;
 				break ;
 			case 5: /* displacements one-dir */
-				type = 12 + set_dir ;
+				type = 14 + set_dir ;
 				dt = 1 ;
 				break ;
 			case 6: /* displacements one-dir */
-				type = 30 + set_dir ;
+				type = 35 + set_dir ;
 				dt = 1 ;
 				break ;
 			case 7: /* displacements one-dir */
-				type = 18 + set_dir ;
+				type = 21 + set_dir ;
 				dt = 1 ;
 				break ;
 

@@ -76,44 +76,46 @@ int fem_create_cmd_aliases(void)
   if ((rv=ciAddVarGrp("rotx","4","disp")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("roty","5","disp")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("rotz","6","disp")) != AF_OK) {goto memFree;}
-  if ((rv=ciAddVarGrp("stiffx","7","disp")) != AF_OK) {goto memFree;}
-  if ((rv=ciAddVarGrp("stiffy","8","disp")) != AF_OK) {goto memFree;}
-  if ((rv=ciAddVarGrp("stiffz","9","disp")) != AF_OK) {goto memFree;}
-  if ((rv=ciAddVarGrp("stiffrx","10","disp")) != AF_OK) {goto memFree;}
-  if ((rv=ciAddVarGrp("stiffry","11","disp")) != AF_OK) {goto memFree;}
-  if ((rv=ciAddVarGrp("stiffrz","12","disp")) != AF_OK) {goto memFree;}
+
+  if ((rv=ciAddVarGrp("temp","7","disp")) != AF_OK) {goto memFree;}
+
+  if ((rv=ciAddVarGrp("stiffx","8","disp")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("stiffy","9","disp")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("stiffz","10","disp")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("stiffrx","11","disp")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("stiffry","12","disp")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("stiffrz","13","disp")) != AF_OK) {goto memFree;}
 
 	/* one-directional boundary conditions (p=plus only, m=minus only): */
-  if ((rv=ciAddVarGrp("ux+","13","disp")) != AF_OK) {goto memFree;}
-  if ((rv=ciAddVarGrp("uy+","14","disp")) != AF_OK) {goto memFree;}
-  if ((rv=ciAddVarGrp("uz+","15","disp")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("ux+","15","disp")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("uy+","16","disp")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("uz+","17","disp")) != AF_OK) {goto memFree;}
 #if 1
-  if ((rv=ciAddVarGrp("rotx+","16","disp")) != AF_OK) {goto memFree;}
-  if ((rv=ciAddVarGrp("roty+","17","disp")) != AF_OK) {goto memFree;}
-  if ((rv=ciAddVarGrp("rotz+","18","disp")) != AF_OK) {goto memFree;}
-  if ((rv=ciAddVarGrp("stiffx+","19","disp")) != AF_OK) {goto memFree;}
-  if ((rv=ciAddVarGrp("stiffy+","20","disp")) != AF_OK) {goto memFree;}
-  if ((rv=ciAddVarGrp("stiffz+","21","disp")) != AF_OK) {goto memFree;}
-  if ((rv=ciAddVarGrp("stiffrx+","22","disp")) != AF_OK) {goto memFree;}
-  if ((rv=ciAddVarGrp("stiffry+","23","disp")) != AF_OK) {goto memFree;}
-  if ((rv=ciAddVarGrp("stiffrz+","24","disp")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("rotx+","18","disp")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("roty+","19","disp")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("rotz+","20","disp")) != AF_OK) {goto memFree;}
+
+  if ((rv=ciAddVarGrp("stiffx+","22","disp")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("stiffy+","23","disp")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("stiffz+","24","disp")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("stiffrx+","25","disp")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("stiffry+","26","disp")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("stiffrz+","27","disp")) != AF_OK) {goto memFree;}
 #endif
 
-  if ((rv=ciAddVarGrp("ux-","25","disp")) != AF_OK) {goto memFree;}
-  if ((rv=ciAddVarGrp("uy-","26","disp")) != AF_OK) {goto memFree;}
-  if ((rv=ciAddVarGrp("uz-","27","disp")) != AF_OK) {goto memFree;}
-#if 1
-  if ((rv=ciAddVarGrp("rotx-","28","disp")) != AF_OK) {goto memFree;}
-  if ((rv=ciAddVarGrp("roty-","29","disp")) != AF_OK) {goto memFree;}
-  if ((rv=ciAddVarGrp("rotz-","30","disp")) != AF_OK) {goto memFree;}
-  if ((rv=ciAddVarGrp("stiffx-","31","disp")) != AF_OK) {goto memFree;}
-  if ((rv=ciAddVarGrp("stiffy-","32","disp")) != AF_OK) {goto memFree;}
-  if ((rv=ciAddVarGrp("stiffz-","33","disp")) != AF_OK) {goto memFree;}
-  if ((rv=ciAddVarGrp("stiffrx-","34","disp")) != AF_OK) {goto memFree;}
-  if ((rv=ciAddVarGrp("stiffry-","35","disp")) != AF_OK) {goto memFree;}
-  if ((rv=ciAddVarGrp("stiffrz-","36","disp")) != AF_OK) {goto memFree;}
-  if ((rv=ciAddVarGrp("temp","37","disp")) != AF_OK) {goto memFree;}
-#endif
+  if ((rv=ciAddVarGrp("ux-","29","disp")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("uy-","30","disp")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("uz-","31","disp")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("rotx-","32","disp")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("roty-","33","disp")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("rotz-","34","disp")) != AF_OK) {goto memFree;}
+
+  if ((rv=ciAddVarGrp("stiffx-","36","disp")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("stiffy-","37","disp")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("stiffz-","38","disp")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("stiffrx-","39","disp")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("stiffry-","40","disp")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("stiffrz-","41","disp")) != AF_OK) {goto memFree;}
 
 
 
