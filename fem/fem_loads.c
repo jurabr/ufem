@@ -92,7 +92,7 @@ int femApplyDisp(long nodePos, long dof, double Val)
 	{
 #ifdef RUN_VERBOSE
 		fprintf(msgout,"[E] %s (%s: %li, %s: %li)\n",
-				_("Cannot add stiffness"), _("node"),femGetNIDPos(nodePos) , _("DOF"), dof
+				_("Cannot add boundary dondition"), _("node"),femGetNIDPos(nodePos) , _("DOF"), dof
 				);
 #endif
 		return(AF_ERR_VAL);

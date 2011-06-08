@@ -112,6 +112,7 @@ int fem_create_cmd_aliases(void)
   if ((rv=ciAddVarGrp("stiffrx-","34","disp")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("stiffry-","35","disp")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("stiffrz-","36","disp")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("temp","37","disp")) != AF_OK) {goto memFree;}
 #endif
 
 
@@ -131,6 +132,7 @@ int fem_create_cmd_aliases(void)
   if ((rv=ciAddVarGrp("mx","4","load")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("my","5","load")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("mz","6","load")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("heat","7","load")) != AF_OK) {goto memFree;}
 
 	/* names of real set properties */
   if ((rv=ciAddVarGrp("area","1","real")) != AF_OK) {goto memFree;}

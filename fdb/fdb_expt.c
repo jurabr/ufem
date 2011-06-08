@@ -162,6 +162,11 @@ void fdb_to_fem_nd_type(long type_fdb, long *type, long *dir)
 						*dir  = 6 ;
 						break ;
 
+		/* temperature */
+		case 37: *type = 7 ;
+						 *dir  = 1 ;
+						break ;
+
 		default:
 				    *type = 0 ;
 						*dir  = 0 ;
@@ -194,6 +199,9 @@ void fdb_to_fem_nl_type(long type_fdb, long *type, long *dir)
 						break ;
 		case 6: *type = 3 ;
 						*dir  = 6 ;
+						break ;
+		case 7: *type = 4 ; /* temperature */
+						*dir  = 1 ;
 						break ;
 
 		default:
