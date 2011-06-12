@@ -198,7 +198,16 @@ int femApplyDisp(long nodePos, long dof, double Val)
 		femMatSetZeroCol(&K, Pos); /* why? */
 
 		femVecPut(&u, Pos, Val);
-		femMatPut(&K, Pos, Pos, (femVecGet(&F,Pos)/u_Val));
+
+    if (fabs(femVecGet(&F,Pos)/u_Val) > FEM_ZERO)
+    {
+		  femMatPut(&K, Pos, Pos, (femVecGet(&F,Pos)/u_Val));
+    }
+    else
+    {
+		  femMatPut(&K, Pos, Pos, 1.0);
+		  femVecPut(&F, Pos, Val);
+    }
 
 #if 1
     if (femDynamics == AF_YES)
