@@ -35,7 +35,7 @@ extern int e011_res_p_loc(long ePos, long point, double *x, double *y, double *z
 int e018_stiff(long ePos, long Mode, tMatrix *K_e, tVector *Fe, tVector *Fre)
 {
 	int     rv = AF_OK;
-	double  A, mult, kxx ;
+	double  A, thick, mult, kxx ;
 	double  x[4] ;
 	double  y[4] ;
 	int     i ;
@@ -61,7 +61,7 @@ int e018_stiff(long ePos, long Mode, tMatrix *K_e, tVector *Fe, tVector *Fre)
 	femMatNull(&BS);
 	femMatNull(&BtD);
 
-	if ((rv = femVecFullInit(&u_e, 6)) != AF_OK) {goto memFree;}
+	if ((rv = femVecFullInit(&u_e, 3)) != AF_OK) {goto memFree;}
 
 	if ((rv = femFullMatInit(&B, 2,3)) != AF_OK) {goto memFree;}
 	if ((rv = femFullMatInit(&Bt, 3,2)) != AF_OK) {goto memFree;}
@@ -81,21 +81,22 @@ int e018_stiff(long ePos, long Mode, tMatrix *K_e, tVector *Fe, tVector *Fre)
 	}
 
 	A = e011_area(ePos);
+	thick = femGetRSValPos(ePos, RS_HEIGHT, 0) ;
 
   femMatPut(&B, 1,1, 1.0) ;
   femMatPut(&B, 2,2, 1.0) ;
 	femMatTran(&B, &Bt) ;
 
-  femMatPut(&S, 1,1, (y[2]-y[3]) );
-  femMatPut(&S, 2,1, (y[3]-y[1]) );
-  femMatPut(&S, 3,1, (y[1]-y[2]) );
+  femMatPut(&S, 1, 1,(y[2]-y[3]) );
+  femMatPut(&S, 1, 2,(y[3]-y[1]) );
+  femMatPut(&S, 1, 3,(y[1]-y[2]) );
 
-  femMatPut(&S, 1,2, (x[3]-x[2]) );
+  femMatPut(&S, 2,1, (x[3]-x[2]) );
   femMatPut(&S, 2,2, (x[1]-x[3]) );
-  femMatPut(&S, 3,2, (x[2]-x[1]) );
+  femMatPut(&S, 2,3, (x[2]-x[1]) );
 
-  femMatPut(&S, 1,3, (x[2]*y[3]-x[3]*y[2]) );
-  femMatPut(&S, 2,3, (x[3]*y[1]-x[1]*y[3]) );
+  femMatPut(&S, 3,1, (x[2]*y[3]-x[3]*y[2]) );
+  femMatPut(&S, 3,2, (x[3]*y[1]-x[1]*y[3]) );
   femMatPut(&S, 3,3, (x[1]*y[2]-x[2]*y[1]) );
 
   mult = 1.0 / (
@@ -103,11 +104,12 @@ int e018_stiff(long ePos, long Mode, tMatrix *K_e, tVector *Fe, tVector *Fre)
       ) ;
 
   femValMatMultSelf(mult, &S);
+
 	femMatTran(&S, &St) ;
 
   kxx = femGetMPValPos(ePos, MAT_KXX, 0) ;
-  femMatPut(&D, 1,1, MAT_KXX );
-  femMatPut(&D, 2,2, MAT_KXX );
+  femMatPut(&D, 1,1, kxx );
+  femMatPut(&D, 2,2, kxx );
 
 	/* stiffness matrix is computed */
 	femMatMatMult(&St,&Bt, &StBt) ;
@@ -116,7 +118,7 @@ int e018_stiff(long ePos, long Mode, tMatrix *K_e, tVector *Fe, tVector *Fre)
 	femMatMatMult(&B,&S, &BS) ;
 	femMatMatMult(&BtD,  &BS, K_e) ;
 
-  femValMatMultSelf(A, K_e);
+  femValMatMultSelf(A*thick, K_e);
 
 	/* Control prints: */
 	femMatPrn(K_e,"Ke local:");
@@ -126,7 +128,10 @@ int e018_stiff(long ePos, long Mode, tMatrix *K_e, tVector *Fe, tVector *Fre)
 	{
   	femLocUtoU_e(&u, ePos, &u_e);
 
-    mult = femVecGet(&u_e, 1) + femVecGet(&u_e, 2) + femVecGet(&u_e, 3) ;
+	  femVecPrn(&u,"u global:");
+	  femVecPrn(&u_e,"u local:");
+
+    mult =  (femVecGet(&u_e, 1) + femVecGet(&u_e, 2) + femVecGet(&u_e, 3)) / 3.0 ;
 
 		if (femTangentMatrix == AF_YES)
 	     { femAddEResVal(ePos, RES_TEMP,  0, mult); }
