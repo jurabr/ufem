@@ -21,8 +21,6 @@
    02139, USA.
 
 	 FEM Solver - solver - header file
-
-  $Id: fem_sol.h,v 1.16 2004/11/11 21:39:25 jirka Exp $
 */
 
 
@@ -57,6 +55,9 @@ extern tVector u;
 extern tVector F;
 extern tVector u_tot;
 
+
+extern long femHaveThermDOFs ;
+extern long femHaveThermLoad ;
 
 /** computes starting position in nDOFfld for node on position node_pos */
 #define nDOFstart(node_pos) (node_pos*KNOWN_DOFS)

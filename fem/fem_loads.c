@@ -35,6 +35,39 @@ extern tVector u_i;
 
 double femRedStiff = 1.0 ;
 
+
+/** Find if there is need for thermal loads on elements
+ * @return AF_YES if there is at leas one temperature load, AF_NO otherwise
+ */
+int femTestThermLoads(void)
+{
+  long i ;
+  
+  for (i=0; i<nlLen; i++) { if (nlType[i] == TEMP) { return(AF_YES); } }
+  return(AF_NO);
+}
+
+/** Find if there is thermal load on structural elements
+ * @return AF_YES if there is, AF_NO if there are only thermal elements
+ */
+int femTestThermStructElems(void)
+{
+  long i, j, eType, nNum ;
+
+  if (femTestThermLoads() == AF_NO) {return(AF_NO);}
+
+  for (i=0; i<rsLen; i++) 
+  {
+    eType = rsType[i] ;
+    nNum  = Elem[eType].dofs ;
+    for (j=0; j<nNum; j++)
+        { if (Elem[eType].ndof[j] != TEMP) {return(AF_YES);} }
+  }
+  
+  return(AF_NO);
+}
+
+
 /** Boundary conditions realization (structural stifness)
  *  @param nodePos node position
  *  @param dof     degree of freedom

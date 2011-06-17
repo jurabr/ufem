@@ -21,8 +21,6 @@
    02139, USA.
 
 	 FEM Solver - solver
-
-  $Id: fem_sol.c,v 1.45 2005/07/11 17:56:17 jirka Exp $
 */
 
 #include "fem_sol.h"
@@ -40,6 +38,9 @@ int  femRunSolIterBC  = AF_NO ;
 int  femTestIterBC    = AF_NO ;
 long femIterBCchange  = 0 ;
 long femIterEchange   = 0 ;
+
+long femHaveThermDOFs = AF_NO ;
+long femHaveThermLoad = AF_NO ;
 
 long  nDOFAct  = 0 ;    /* total number of ACTIVE DOFs in structure (== size of "K" matrix) */
 long  nDOFlen  = 0 ;    /* lenght of nDOFfld                        */
