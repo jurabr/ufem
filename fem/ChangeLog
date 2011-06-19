@@ -1,3 +1,12 @@
+### Sun Jun 19 15:51:01 CEST 2011
+
+version: 0.3.2
+
+features:
+  + new parameters for material 001
+  + testing version of thermal loads on structural triangle
+
+
 ### Sun Jun 12 20:30:54 CEST 2011
 
 version: 0.3.1
