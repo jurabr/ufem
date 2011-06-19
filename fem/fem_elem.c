@@ -88,6 +88,7 @@ long femAddElem(long type)
 	Elem[elemLen].mass  = NULL ;
 	Elem[elemLen].rvals = NULL ;
 	Elem[elemLen].eload = NULL ;
+	Elem[elemLen].therm = NULL ;
 
 	elemLen++;
 	return(Elem[elemLen-1].type);

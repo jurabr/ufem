@@ -188,6 +188,88 @@ memFree:
 	return(rv);
 }
 
+/** Computes temperature load for element 011 */
+int e011_therm(long ePos, long *use, tVector *Te, tVector *Fe)
+{
+	int     rv = AF_OK;
+	long		ProblemType = 0 ; /*  0 = plane stress  */
+	double  thick, temp ;
+  double  alpha = 0.0 ;     /* thermal expansion coeff. */
+	double  A ;
+	double  x[4] ;
+	double  y[4] ;
+	int     i ;
+	tMatrix B ;      /*[3][6]*/
+	tMatrix Bt ;     /*[6][3]*/
+	tMatrix D ;      /*[3][3]*/
+	tMatrix BtD ;    /*[6][3]*/
+	tVector epsilon; /*[6]*/
+
+  *use = AF_YES;
+
+	/* sets problem type for "D" computation: */
+	switch (eType[ePos])
+	{
+		case 11 : ProblemType = 0 ; break; /* plane stress */
+		default : ProblemType = 0 ; break; /* plane stress */
+	}
+
+	femVecNull(&epsilon);
+
+	femMatNull(&B);
+	femMatNull(&Bt);
+	femMatNull(&BtD);
+	femMatNull(&D);
+
+	if ((rv = femVecFullInit(&epsilon, 3)) != AF_OK) {goto memFree;}
+
+	if ((rv = femFullMatInit(&B, 3,6)) != AF_OK) {goto memFree;}
+	if ((rv = femFullMatInit(&Bt, 6,3)) != AF_OK) {goto memFree;}
+	if ((rv = femFullMatInit(&BtD, 6,3)) != AF_OK) {goto memFree;}
+	if ((rv = femFullMatInit(&D, 3,3)) != AF_OK) {goto memFree;}
+
+	thick = femGetRSValPos(ePos, RS_HEIGHT, 0) ;
+  alpha = femGetMPValPos(ePos, MAT_ALPHA, 0) ;
+
+	if (thick <= 0.0) { ProblemType = 1 ; } /* plane strain */ 
+
+	for (i=1; i<= 3; i++)
+	{
+		x[i] = femGetNCoordPosX(femGetENodePos(ePos, i-1));
+		y[i] = femGetNCoordPosY(femGetENodePos(ePos, i-1));
+	}
+
+	A = (0.5*(x[1]*y[2]- x[2]*y[1] + x[2]*y[3]- x[3]*y[2] + x[3]*y[1]- x[1]*y[3]));
+
+	e01_compute_B(x, y, A, &B);
+
+	femMatTran(&B, &Bt) ;
+
+	if ((rv=D_PlaneHookIso(ePos, 0, A, &epsilon, AF_NO, ProblemType, &D)) != AF_OK) 
+		 { goto memFree; }
+
+  /* set temperature strains: */
+  if (thick <= 0.0) {thick = 1.0;}
+  temp = (femVecGet(Te, 1) + femVecGet(Te, 2) + femVecGet(Te, 3)) / 3.0 ;
+  femVecPut(&epsilon, 1, alpha * temp );
+  femVecPut(&epsilon, 2, alpha * temp );
+  femVecPut(&epsilon, 3, 0.0 );
+
+	/* stiffness matrix is computed */
+	femMatMatMult(&Bt,&D, &BtD) ;
+	femMatVecMult(&BtD, &epsilon, Fe) ;
+	femValVecMultSelf(thick * A, Fe) ; 
+	
+memFree:
+	femVecFree(&epsilon);
+
+	femMatFree(&B);
+	femMatFree(&Bt);
+	femMatFree(&BtD);
+	femMatFree(&D);
+	return(rv);
+}
+
 /** It should work - according to Zienkiewicz ;-) */
 double e011_area(long ePos)
 {
@@ -328,6 +410,7 @@ int addElem_011(void)
 	Elem[type].res_p_loc = e011_res_p_loc;
 	Elem[type].res_node = e000_res_node;
 	Elem[type].volume = e011_volume;
+	Elem[type].therm = e011_therm;
 	return(rv);
 }
 

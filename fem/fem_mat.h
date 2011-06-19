@@ -74,6 +74,7 @@
 #define MAT_GFC     35
 #define MAT_PRICE   36
 #define MAT_KXX     37
+#define MAT_ALPHA   38
 
 
 /* structure for finite element */

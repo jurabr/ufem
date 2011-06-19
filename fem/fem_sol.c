@@ -70,6 +70,8 @@ tMatrix KF  ;  /* structure and step matrix for full ALM */
 tVector uLa ;  /* displacement and lambda vectro for full ALM */
 tVector Fra ;  /* load and arc lenght vector for full ALM */
 
+tVector uTemp; /* thermal loads field */
+
 
 /* dynamics - general : */
 tMatrix M;         /* structure mass matrix    */
@@ -159,6 +161,8 @@ void fem_sol_null(void)
 	femVecNull(&u_tot);
 
 	femVecNull(&u_i);
+
+  femVecNull(&uTemp);
 
 
 	nDOFfld = NULL ;
@@ -257,6 +261,11 @@ void fem_sol_free(void)
 	{
 	  femVecFree(&u_i);
 	}
+
+  if (femHaveThermLoad == AF_YES)
+  {
+    femVecFree(&uTemp);
+  }
 
   if (femDynamics == AF_YES)
   {
@@ -369,6 +378,20 @@ int fem_sol_alloc(void)
 	{
 		if ((rv = femVecFullInit(&u_i, nDOFAct)) != AF_OK) { goto memFree; }
 	}
+
+  /* test for thermal loads */
+  if ((femHaveThermLoad=femTestThermStructElems()) == AF_YES)
+  {
+	  if ((rv = femVecFullInit(&uTemp, nLen)) != AF_OK) { goto memFree; }
+
+    for (i=0; i<nlLen; i++) /* filling of temp field: */
+    {
+      if (nlDir[i] == TEMP)
+      {
+        femVecAdd( &uTemp, nlNode[i]+1, nlVal[i] );
+      }
+    }
+  }
 
   if (femDynamics == AF_YES)
   {

@@ -90,6 +90,7 @@ typedef struct
 	long  res_rp;    /* number of REPEATING results */
 	long *nres_rp;   /* list of REPEATING results nres_rp[res_rp] */
 	int (* stiff)(long, long, tMatrix *, tVector *, tVector *); /* element stifness matrix (position,mode,nodal forces,FE,residual) */
+	int (* therm)(long, long *, tVector *, tVector *); /* element stifness matrix (position,mode,nodal forces,FE,residual) */
 	int (* mass )(long, tMatrix *);  /* element mass matrix (position) */
 	long (* rvals)(long);  /* number of element results (position) */
 	int (* eload)(long, long, tVector *);  /* element load usage (elem. position, load pos.) */
@@ -112,6 +113,7 @@ extern int fem_D_2D(long ePos, long iPoint, double A, tVector *epsilon, tVector 
 
 extern int e000_res_p_loc(long ePos, long point, double *x, double *y, double *z);
 extern int e000_res_node(long ePos, long nPos, long type, double *val);
+extern int e000_therm(long ePos, long *use, tVector *Te, tVector *Fe);
 
 #endif
 

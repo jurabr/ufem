@@ -32,6 +32,7 @@
 #endif
 
 extern tVector u_i;
+extern tVector uTemp; /* thermal loads field */
 
 double femRedStiff = 1.0 ;
 
@@ -401,8 +402,11 @@ int femApplyNBC(long nPos, long Type, long Dir, double Val)
 	switch (Type)
 	{
 		case 1:  /* displacement */
-		case 8:  /* temperature  */
-						 rv = femApplyDisp(nPos, Dir, Val);
+    case 8:  /* temperature as DOF:  */
+             if (femHaveThermLoad != AF_YES)
+             {
+						   rv = femApplyDisp(nPos, Dir, Val);
+             }
 						 break;
 		case 2:  /* stifness */
 						 rv = femApplyStiff(nPos, Dir, Val) ;
@@ -605,5 +609,56 @@ int femAddElemLoad(void)
 	
 	return(rv);
 }
+
+/** Adds temperatures as loads to load vector
+ * @return state value
+ */
+int femAddThermLoads(void)
+{
+	int rv = AF_OK;
+	tVector F_e;
+	tVector T_e;
+	long size = 0;
+	long tsize = 0;
+	long eT;
+	long i, j, pos;
+  long use = AF_NO ;
+
+	femVecNull(&F_e);
+
+	for (i=0; i<elLen; i++)
+	{
+		eT = eType[i];
+		tsize = Elem[eT].nodes ;
+		size = Elem[eT].dofs * tsize ;
+
+    if ((rv = femVecFullInit(&F_e, size)) != AF_OK) 
+       { femVecNull(&F_e); return(rv); }
+    if ((rv = femVecFullInit(&T_e, tsize)) != AF_OK) 
+       { femVecNull(&F_e); femVecNull(&T_e); return(rv); }
+
+    /* get temperature field: */
+    for (j=0; j<tsize; j++)
+    {
+      pos = 1 + eNodesL[eFrom[i]+j] ;
+      femVecPut( &T_e, j+1, femVecGet(&uTemp, pos) ) ;
+    }
+
+    /* compute temperature FE: */
+		rv = Elem[eT].therm(i, &use, &T_e, &F_e);
+
+	  /* add localization of F_e here! */
+    if (use == AF_YES)
+    {
+		  rv = femLocF_e(&F_e, i, &F, AF_YES);
+    }
+	
+	  femVecFree(&F_e);
+	  femVecFree(&T_e);
+	}
+	
+	return(rv);
+}
+
 
 /* end of fem_loads.c */

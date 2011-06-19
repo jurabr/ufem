@@ -70,6 +70,7 @@ int addElem_006(void)
 	Elem[type].res_p_loc = e001_res_p_loc;
 	Elem[type].res_node = e000_res_node;
 	Elem[type].volume = e001_volume;
+	Elem[type].therm = e000_therm;
 	return(rv);
 }
 
