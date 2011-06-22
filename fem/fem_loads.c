@@ -36,6 +36,8 @@ extern tVector uTemp; /* thermal loads field */
 
 double femRedStiff = 1.0 ;
 
+int femAddThermLoads(void);
+
 
 /** Find if there is need for thermal loads on elements
  * @return AF_YES if there is at leas one temperature load, AF_NO otherwise
@@ -44,7 +46,7 @@ int femTestThermLoads(void)
 {
   long i ;
   
-  for (i=0; i<nlLen; i++) { if (nlType[i] == TEMP) { return(AF_YES); } }
+  for (i=0; i<nlLen; i++) { if (nlType[i] == 8) { return(AF_YES); } }
   return(AF_NO);
 }
 
@@ -62,7 +64,12 @@ int femTestThermStructElems(void)
     eType = rsType[i] ;
     nNum  = Elem[eType].dofs ;
     for (j=0; j<nNum; j++)
-        { if (Elem[eType].ndof[j] != TEMP) {return(AF_YES);} }
+    { 
+      if (Elem[eType].ndof[j] != TEMP) 
+      {
+        return(AF_YES);
+      } 
+    }
   }
   
   return(AF_NO);
@@ -342,7 +349,7 @@ int femApplyNLoad(long nPos, long Type, long Dir, double Val)
 	long row = 0 ;
 #endif
 
-	if ((Pos = femKpos(nPos, Dir)) <= 0)
+	if (((Pos = femKpos(nPos, Dir)) <= 0) && (Type != 8))
 	{
 #ifdef RUN_VERBOSE
 		fprintf(msgout,"[E] %s (%s: %li, %s: %li,  %s: %li)\n",
@@ -368,6 +375,10 @@ int femApplyNLoad(long nPos, long Type, long Dir, double Val)
 		case 7:
 						 return(AF_OK); /* b.c. is added by another function */
 						 break;
+    case 8:
+             if (femHaveThermLoad == AF_YES)
+                { rv = femAddThermLoads(); }
+             break;
 		case 3:  /* force/moment load */
 		case 9:  /* heat */
 						 rv = femVecAdd(&F, Pos, Val) ;
@@ -390,23 +401,26 @@ int femApplyNBC(long nPos, long Type, long Dir, double Val)
 {
 	int rv = AF_OK ;
 
-	if ((femKpos(nPos, Dir)) <= 0)
-	{
 #ifdef RUN_VERBOSE
-		fprintf(msgout,"[E] %s (%s: %li, %s: %li)\n",
+	if ((femKpos(nPos, Dir)) <= 0) 
+	{
+    if (Type != 8) 
+    {
+		  fprintf(msgout,"[E] %s (%s: %li, %s: %li)\n",
 				_("Cannot add nodal b.c."), _("node"),femGetNIDPos(nPos) , _("direction"), Dir
 				);
-#endif
+    }
 	}
+#endif
 
 	switch (Type)
 	{
 		case 1:  /* displacement */
+             rv = femApplyDisp(nPos, Dir, Val); 
+             break ;
     case 8:  /* temperature as DOF:  */
              if (femHaveThermLoad != AF_YES)
-             {
-						   rv = femApplyDisp(nPos, Dir, Val);
-             }
+                { rv = femApplyDisp(nPos, Dir, Val); }
 						 break;
 		case 2:  /* stifness */
 						 rv = femApplyStiff(nPos, Dir, Val) ;
@@ -626,7 +640,7 @@ int femAddThermLoads(void)
 
 	femVecNull(&F_e);
 
-	for (i=0; i<elLen; i++)
+	for (i=0; i<eLen; i++)
 	{
 		eT = eType[i];
 		tsize = Elem[eT].nodes ;
