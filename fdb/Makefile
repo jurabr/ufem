@@ -56,7 +56,7 @@ RANLIB=-ranlib
 #LIBS=
 #
 
-OBJECTS=fdb.o fdb_io.o fdb_expt.o fdb_impt.o fdb_eans.o fdb_mem.o fdb_math.o fem_eqs.o fem_math.o fem_mem.o fdb_accs.o fdb_sele.o fdb_tdef.o fdb_deps.o fdb_n.o fdb_k.o fdb_fem.o fdb_stat.o fdb_et.o fdb_edef.o fdb_mdef.o fdb_mp.o fdb_rs.o fdb_step.o fdb_e.o fdb_fdef.o fdb_disp.o fdb_nld.o fdb_eld.o fdb_gld.o fdb_nops.o fdb_rops.o fdb_res.o fdb_cres.o fdb_rmc.o fdb_prn.o fdb_csys.o fdb_geom.o fdb_ent.o fdb_mesh.o fdb_kops.o fdb_meas.o fdb_test.o fdb_get.o fdb_rand.o fdb_grid.o fdb_mod.o fdb_exel.o fdb_path.o
+OBJECTS=fdb.o fdb_io.o fdb_expt.o fdb_impt.o fdb_eans.o fdb_mem.o fdb_math.o fem_eqs.o fem_math.o fem_mem.o fdb_accs.o fdb_sele.o fdb_tdef.o fdb_deps.o fdb_n.o fdb_k.o fdb_fem.o fdb_stat.o fdb_et.o fdb_edef.o fdb_mdef.o fdb_mp.o fdb_rs.o fdb_step.o fdb_e.o fdb_fdef.o fdb_disp.o fdb_nld.o fdb_eld.o fdb_gld.o fdb_nops.o fdb_rops.o fdb_res.o fdb_cres.o fdb_rmc.o fdb_prn.o fdb_csys.o fdb_geom.o fdb_ent.o fdb_mesh.o fdb_kops.o fdb_meas.o fdb_test.o fdb_get.o fdb_rand.o fdb_grid.o fdb_mod.o fdb_exel.o fdb_path.o fdb_thst.o
 
 all: libfdb.a
 
@@ -219,6 +219,9 @@ fdb_rand.o: fdb_rand.c fdb.h fdb_fem.h fdb_fem.o ../fem/fem_mont.h
 
 fdb_path.o: fdb_path.c fdb.h fdb_fem.h fdb_res.h
 	$(CC) -c fdb_path.c $(CFLAGS)
+
+fdb_thst.o: fdb_thst.c fdb.h fdb_fem.h fdb_res.h
+	$(CC) -c fdb_thst.c $(CFLAGS)
 
 
 clean:

@@ -367,6 +367,9 @@ extern int func_fem_comp_vec_scale_aniso2D (char *cmd);
 /* testing of data:  */
 extern int func_data_consist_test (char *cmd);
 
+/* multiphysics: */
+extern int func_therm_to_struct(char *cmd);
+
 
 /* support function - reaction after command */
 int tuiCmdReact(char *cmd, int rv)
@@ -697,7 +700,7 @@ int fem_cmd_init (void)
 {
   long count = 0 ;
 
-  ciFuncLen = 269;
+  ciFuncLen = 270;
   ciFunction = (tFunc *) malloc (ciFuncLen * sizeof (tFunc));
   
   /* basic functions */
@@ -1819,6 +1822,11 @@ int fem_cmd_init (void)
 
   ciFunction[count].cmd = "plpath";
   ciFunction[count].func = func_gfx_plot_path;
+  count++;
+
+  /* multiphysics */
+  ciFunction[count].cmd = "therm2struct";
+  ciFunction[count].func = func_therm_to_struct;
   count++;
 
   /* test: */

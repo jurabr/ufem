@@ -39,6 +39,8 @@ extern long  fdbPrnAutoName ;
 extern long  fdbPrnAppendFile ;
 extern char *fdbPrnViewCommand;
 
+extern int fdbFromThermalToStruct(void);
+
 /* ** DATA I/O ** */
 
 /** Writes data to file (in current working directory) "save,filename"
@@ -3951,5 +3953,49 @@ memFree:
 	return ( tuiCmdReact(cmd, rv) ) ;
 }
 
+
+/* ** MULTIPHUSICS (THERMAL->STRUCTURAL ATM) ** */
+
+/** Converts data from thermal analysis to structural: "therm2struct[,newjobname]"
+ * @param cmd command
+ * @return status
+ */
+int func_therm_to_struct(char *cmd)
+{
+  int rv  = AF_OK ;
+  char *jobname = NULL ;
+  long newjobname = AF_NO ;
+
+	FEM_TEST_POSTPROCESSOR
+
+  if (ciParNum(cmd) > 1)
+  {
+    (jobname = ciGetParStrNoExpand(cmd, 1));
+  }
+
+  rv = fdbFromThermalToStruct();
+
+	FEM_TEST_PREPROCESSOR
+
+  if (jobname != NULL)
+  {
+    if (strlen(jobname) >= 1)
+    {
+      ciStrCompr(jobname);
+      if (strlen(jobname) >= 1)
+      {
+        if (femSetJobname(jobname) == AF_OK)
+        {
+          newjobname = AF_YES ;
+        }
+      }
+    }
+  }
+
+  if (newjobname != AF_YES) { femSetJobname("femtherm") ; }
+  
+  if (jobname != NULL) { free(jobname); jobname = NULL ; }
+	return ( tuiCmdReact(cmd, rv) ) ;
+}
 
 /* end of cmd_fem.c */

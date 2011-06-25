@@ -693,3 +693,6 @@ pnchange,node_old,node_new
 
 plpath
 plpath,what,zoom[,path_from,path_to]
+
+therm2struct
+therm2struct[,newjobname]"

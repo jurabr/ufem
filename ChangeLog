@@ -4,9 +4,22 @@ See fem/ChangeLog for solver changes.
 
 
 
+### Sat Jun 25 20:12:13 CEST 2011
+
+version 0.2.55
+
+features:
+  + stationary heat transfer problem (2D only)
+  + transfer of temperatures to plane stress model
+
+
+
 ### Sun Apr 10 20:20:42 CEST 2011
+
+version 0.2.54
+
+features:
   + change of m001 definition
-  + version 0.2.54
 
 
 

@@ -21,8 +21,6 @@
    USA.
 
 	 FEM - text user interface
-
-	 $Id: fem_tui.h,v 1.39 2005/07/11 17:57:09 jirka Exp $
 */
 
 
@@ -36,7 +34,7 @@
 #include "fem_comm.h"
 #include "fdb.h"
 
-#define FEM_TUI_RELEASE "uFEM 0.2.54"
+#define FEM_TUI_RELEASE "uFEM 0.2.55"
 
 #define FEM_TUI_PROMPT "uFEM >"
 
