@@ -32,6 +32,7 @@
 #include "fem.h"
 #include "fem_mem.h"
 #include "fem_elem.h"
+#include "fem_math.h"
 
 /* Memory operations: */
 extern int femDataNull(void);

@@ -196,8 +196,11 @@ int main(int argc, char *argv[])
 #endif
 	
 	/* file names */
-	free(fem_ifile); fem_ifile = NULL ;
-	free(fem_ofile); fem_ofile = NULL ;
+	if (fem_ifile != NULL); free(fem_ifile); fem_ifile = NULL ;
+	if (fem_ofile != NULL); free(fem_ofile); fem_ofile = NULL ;
+	if (fem_rfile != NULL); free(fem_rfile); fem_rfile = NULL ;
+	if (fem_thrfile != NULL); free(fem_thrfile); fem_thrfile = NULL ;
+	if (fem_throfile != NULL); free(fem_throfile); fem_throfile = NULL ;
 	return(rv);
 }
 

@@ -51,7 +51,7 @@ double fem_get_struct_price(long volume_only)
   }
 
 #ifdef DEVEL_VERBOSE
-  fprintf("[ ] %s: %e\n", _("SYSTEM PRICE"), price);
+  fprintf(msgout,"[ ] %s: %e\n", _("SYSTEM PRICE"), price);
 #endif
 
   return(price);

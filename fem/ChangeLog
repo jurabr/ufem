@@ -1,3 +1,16 @@
+### Sat Jun 25 18:21:10 CEST 2011
+
+version 0.3.4
+
+features:
+  + posibility of results transfer thermal->structural
+  + command line parameters added
+
+bugfixes:
+  - working load in thermal solution
+  - more allocation control
+
+
 ### Wed Jun 22 20:59:41 CEST 2011
 
 version: 0.3.3
