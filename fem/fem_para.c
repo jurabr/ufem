@@ -40,9 +40,12 @@ extern double femTestConstA    ;
 long femPreparsedData  = AF_NO ; /* if input data are preparsed             */
 long femReadStdInput   = AF_NO ; /* if input data comes through stdin       */
 long femWriteStdOutput = AF_NO ; /* if output data are send to stdout       */
+long femWriteStdThrOut = AF_NO ; /* if therm output vector is send to stdout*/
 long femUseSaPo        = AF_NO ; /* if saves result data in selected point  */
 long femReadPrevStep   = AF_NO ; /* if there are results from previous step */
+long femReadPrevThr    = AF_NO ; /* if there are results from previous therm*/
 long femPrevStdInput   = AF_NO ; /* if prev. step's results are from stdin  */
+long femPrevThrStdIn   = AF_NO ; /* if prev. step's therm res. from stdin   */
 long femExtraResOut    = AF_NO ; /* if extra LINEAR results will be written */
 long femExtraResType   = 0     ; /* type of extra result data               */
 
@@ -55,6 +58,9 @@ long femThreadMin      = 1 ;     /* minimal size of vector/matrix       */
 char *fem_ifile = NULL ; /* input file       */
 char *fem_ofile = NULL ; /* results          */
 char *fem_rfile = NULL ; /* previous results */
+
+char *fem_thrfile = NULL ; /* previous thermal results */
+char *fem_throfile = NULL ; /* thermal results saving */
 
 char *fem_ssfile = NULL; /* substep result file */
 
@@ -167,6 +173,12 @@ void fem_help(int argc, char *argv[])
 
 	fprintf(msgout,"   -ao FILE  ... %s\n", _("write alternative results of linear solution to FILE"));
 	fprintf(msgout,"   -at TYPE  ... %s\n", _("type of alternative results (0 .. text, 1 .. VTK legacy)"));
+
+
+	fprintf(msgout,"   -to FILE  ... %s\n", _("write thermal results to FILE"));
+	fprintf(msgout,"   -tos      ... %s\n", _("write thermal results to stdout"));
+	fprintf(msgout,"   -ti FILE  ... %s\n", _("read thermal results from FILE"));
+	fprintf(msgout,"   -tis      ... %s\n", _("read thermal results from stdin"));
 #endif /* end of _SMALL_FEM_CODE_*/
 	fprintf(msgout,"   -po       ... %s\n", _("compute structure price and write it to stdout"));
 	fprintf(msgout,"   -h        ... %s\n", _("print this help"));
@@ -982,6 +994,65 @@ int fem_parse_params(int argc, char *argv[])
 			}
 		}
 
+    /* *** THERMAL LOADS **** */
+
+    /* previous step's thermal data file  */
+		if (strcmp(argv[i],"-ti") == 0)
+		{
+			if (argc < (i+2)) 
+			{
+				return(AF_ERR_SIZ);
+			}
+			else
+			{
+				if (argv[i+1][0] == '-')
+				{
+					return(AF_ERR_VAL);
+				}
+				if ((fem_thrfile = fem_set_iofile(argv[i+1])) == NULL)
+				{
+					return(AF_ERR_VAL);
+				}
+        femReadPrevThr = AF_YES ;
+			  femPrevThrStdIn = AF_NO ;
+			}
+		}
+
+    /* std input for therm */
+		if (strcmp(argv[i],"-sr") == 0)
+		{
+			femPrevThrStdIn = AF_YES ;
+      femReadPrevThr = AF_YES ;
+			fem_thrfile = NULL ;
+		}
+
+    /* thermal results file  */
+		if (strcmp(argv[i],"-to") == 0)
+		{
+			if (argc < (i+2)) 
+			{
+				return(AF_ERR_SIZ);
+			}
+			else
+			{
+				if (argv[i+1][0] == '-')
+				{
+					return(AF_ERR_VAL);
+				}
+				if ((fem_throfile = fem_set_iofile(argv[i+1])) == NULL)
+				{
+					return(AF_ERR_VAL);
+				}
+        femWriteStdThrOut = AF_NO ;
+			}
+		}
+
+    /* std input for therm */
+		if (strcmp(argv[i],"-tos") == 0)
+		{
+      femWriteStdThrOut = AF_YES ;
+			fem_throfile = NULL ;
+		}
 
 #endif /* end of _SMALL_FEM_CODE_ */
 

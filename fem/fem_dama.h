@@ -48,6 +48,9 @@ extern int femReadInput(char *str);
 extern int femReadRes(char *fname);
 extern int femWriteRes(char *fname);
 
+extern int femReadThermRes(char *fname, tVector *u);
+extern int femWriteThermDOFS(char *fname, tVector *u);
+
 extern void femOpenSolNormFile(char *fname);
 extern void femWriteSolNorm(long iter, double load_mult, double val, double crit_min, double crit_max);
 extern void femCloseSolNormFile(void);

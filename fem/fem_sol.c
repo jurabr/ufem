@@ -262,7 +262,7 @@ void fem_sol_free(void)
 	  femVecFree(&u_i);
 	}
 
-  if (femHaveThermLoad == AF_YES)
+  if ( (femHaveThermLoad == AF_YES)||(femReadPrevThr == AF_YES) )
   {
     femVecFree(&uTemp);
   }
@@ -380,7 +380,7 @@ int fem_sol_alloc(void)
 	}
 
   /* test for thermal loads */
-  if ((femHaveThermLoad=femTestThermStructElems()) == AF_YES)
+  if (((femHaveThermLoad=femTestThermStructElems()) == AF_YES)||(femReadPrevThr == AF_YES))
   {
 	  if ((rv = femVecFullInit(&uTemp, nLen)) != AF_OK) { goto memFree; }
 
@@ -598,6 +598,12 @@ int fem_sol_res_alloc(void)
   if (femReadPrevStep == AF_YES)
   {
     rv = femReadRes(fem_rfile) ;
+  }
+
+  /* there will be reading of data from previous step (if any) */
+  if (femReadPrevThr == AF_YES)
+  {
+    rv = femReadThermRes(fem_thrfile, &uTemp) ;
   }
 
 	if (rv == AF_OK) {return(rv);}
@@ -1514,6 +1520,9 @@ int femSolve(void)
   if (femReadPrevStep == AF_YES) { femVecAddVec(&u, 1.0, &u_tot); }
 	if ((rv = femWriteRes(fem_output_file())) != AF_OK) { goto memFree; }
 
+  if (femHaveThermDOFs == AF_YES) /* thermal DOFS (if any) */
+     { rv = femWriteThermDOFS(fem_throfile, &uTemp); }
+    
 #ifndef _SMALL_FEM_CODE_
 	if (fem_spec_out_file != NULL)
 	{

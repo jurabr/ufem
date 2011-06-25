@@ -533,6 +533,8 @@ memFree:
 	return(rv);
 }
 
+
+
 /** Writes results
  * @param fname name of file
  * @return 
@@ -960,6 +962,123 @@ void femCloseSolNormFile(void)
     fclose(fem_sol_norm_file);
     fem_sol_norm_file = NULL ;
   }
+}
+
+
+/* **********************************************************
+ * **********************************************************
+ * **********************************************************
+ */ 
+
+/** Writes thermal results vector
+ * @param fname name of results file
+ * @param u vector data to save
+ * @return status
+ */
+int femWriteThermDOFS(char *fname, tVector *u)
+{
+  FILE *fw = NULL ;
+  long  i, len ;
+
+	if ((fname == NULL) && (femWriteStdThrOut == AF_YES) )
+	{
+		fw =stdout ;
+	}
+	else
+	{
+		if ((fw = fopen(fname, "w")) == NULL)
+		{
+#ifdef RUN_VERBOSE
+			fprintf(msgout,"[E] %s!\n", _("Error during thermal result data writing"));
+#endif
+			return(AF_ERR_IO);
+		}
+	}
+
+  /* write data: */
+  len = u->rows ;
+  fprintf(fw, "%li\n", len) ;
+  for (i=1; i<=len; i++) { fprintf(fw, "%e\n", femVecGet(u, i)); }
+
+
+	/* close file: ************************************* */
+	if (fw != stdout)
+	{
+  	if ((fclose(fw)) != 0)
+		{
+#ifdef RUN_VERBOSE
+			fprintf(msgout,"[E] %s!\n",_("Error during closing of thermal result file"));
+#endif
+			fw = NULL;
+			return(AF_ERR_IO);
+		}
+	}
+
+  return(AF_OK);
+}
+
+/** Reads results - result fields have to be already allocated!
+ *  Note: values will be ADDED, NOT REWRITTEN
+ * @param fname name of file
+ * @param u vector to put data in (must be allocated first!)
+ * @return 
+ */
+int femReadThermRes(char *fname, tVector *u)
+{
+	int     rv = AF_OK;
+	FILE   *fr = NULL ;
+  double  val ;
+  long    i, len ;
+
+	/* open file: ************************************** */
+	if ((fname == NULL) && (femPrevThrStdIn == AF_YES) )
+	{
+		fr = stdin ;
+	}
+	else
+	{
+		if ((fr = fopen(fname, "r")) == NULL)
+		{
+#ifdef RUN_VERBOSE
+			fprintf(msgout,"[E] %s!\n", _("Error during reading of previous results"));
+#endif
+			return(AF_ERR_IO);
+		}
+	}
+
+  /* read data: */
+  
+  fscanf(fr, "%li\n", &len) ;
+
+  if (len == u->rows)
+  {
+    for (i=1; i<=len; i++) 
+    { 
+      fscanf(fr, "%lf", &val ); 
+      femVecAdd(u, i, val );
+    }
+  }
+  else
+  {
+#ifdef RUN_VERBOSE
+			fprintf(msgout,"[E] %s!\n",_("Refuse to read thermal data because of size inconsistence"));
+#endif
+      rv = AF_ERR_SIZ ;
+  }
+
+	/* close file: ************************************* */
+	if (fr != stdout)
+	{
+  	if ((fclose(fr)) != 0)
+		{
+#ifdef RUN_VERBOSE
+			fprintf(msgout,"[E] %s!\n",_("Error during closing of previous result file"));
+#endif
+			fr = NULL;
+			return(AF_ERR_IO);
+		}
+	}
+	return(rv);
 }
 
 /* end of fem_io.c */

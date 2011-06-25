@@ -41,12 +41,17 @@
 extern long femPreparsedData  ; 
 extern long femReadStdInput   ; 
 extern long femWriteStdOutput ; 
+extern long femWriteStdThrOut ;
 extern long femUseSaPo        ;
 extern long femReadPrevStep   ;
+extern long femReadPrevThr    ;
 extern long femPrevStdInput   ; 
+extern long femPrevThrStdIn   ; 
 extern char *fem_ifile ;
 extern char *fem_ofile ;
 extern char *fem_rfile ;
+extern char *fem_thrfile ;
+extern char *fem_throfile ;
 extern char *fem_dfile ;
 
 extern long  femBreakSolu ;
