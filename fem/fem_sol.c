@@ -1521,7 +1521,7 @@ int femSolve(void)
 	if ((rv = femWriteRes(fem_output_file())) != AF_OK) { goto memFree; }
 
   if (femHaveThermDOFs == AF_YES) /* thermal DOFS (if any) */
-     { rv = femWriteThermDOFS(fem_throfile, &uTemp); }
+     { rv = femWriteThermDOFS(fem_throfile, &u); }
     
 #ifndef _SMALL_FEM_CODE_
 	if (fem_spec_out_file != NULL)

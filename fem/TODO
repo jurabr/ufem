@@ -1,11 +1,12 @@
 Most important:
 
-- saving sums of reactions in MPI/threaded mode
+- remove MPI code (it's nearly useless)
 - orthotropy in element's direction (for timber etc.)
 - some kind of (s)hell
 - dynamics
 - 3D beam refuses to work
 - speedup: do not alocate K_e for each element
+- heat source loads in nodes (ignored for now)
 
 
 To Do:
@@ -21,10 +22,8 @@ To Do:
 
 Sci-Fi:
 
-- speedup optimalizations for linear solution (see ../MISC)
+- speedup optimalizations for linear solution
 - 2nd order solution (how to do it?)
-- rewrite MPI solution (speedup needed)
-- change MPI result files (include node and element ID)
 - "configure" script
 - (alternative) usage of BLAS/LAPACK/PETSc etc.
 

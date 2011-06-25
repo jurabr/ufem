@@ -33,6 +33,7 @@
 
 extern tVector u_i;
 extern tVector uTemp; /* thermal loads field */
+extern long femHaveThermDOFs; /* therm DOFs indicator */
 
 double femRedStiff = 1.0 ;
 
@@ -57,7 +58,7 @@ int femTestThermStructElems(void)
 {
   long i, j, eType, nNum ;
 
-  if (femTestThermLoads() == AF_NO) {return(AF_NO);}
+  if ((femHaveThermDOFs=femTestThermLoads()) == AF_NO) {return(AF_NO);}
 
   for (i=0; i<rsLen; i++) 
   {
