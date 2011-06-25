@@ -1019,7 +1019,7 @@ int fem_parse_params(int argc, char *argv[])
 		}
 
     /* std input for therm */
-		if (strcmp(argv[i],"-sr") == 0)
+		if (strcmp(argv[i],"-tis") == 0)
 		{
 			femPrevThrStdIn = AF_YES ;
       femReadPrevThr = AF_YES ;
