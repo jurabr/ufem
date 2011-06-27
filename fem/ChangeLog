@@ -1,3 +1,12 @@
+### Mon Jun 27 20:21:33 CEST 2011
+
+version 0.3.5
+
+features:
+  + thermal element 019 (tetrahedron)
+  + thermal load on e004 (untested!)
+
+
 ### Sat Jun 25 18:21:10 CEST 2011
 
 version 0.3.4

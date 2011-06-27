@@ -59,6 +59,7 @@ int fem_create_cmd_aliases(void)
   if ((rv=ciAddVarGrp("solid12","12","etype")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("beam14","14","etype")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("therm18","18","etype")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("therm19","19","etype")) != AF_OK) {goto memFree;}
 
   /* names of material types */
   if ((rv=ciAddVarGrp("hooke1","1","mattype")) != AF_OK) {goto memFree;}

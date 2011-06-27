@@ -186,7 +186,6 @@ int e004_stiff(long ePos, long Mode, tMatrix *K_e, tVector *F_e, tVector *Fr_e)
   femMatTran(&S, &St);
 
 	femMatMatMult(&St, &Bt, &StBt);
-	femMatMatMult(&StBt, &D, &StBtD);
 	femMatMatMult(&B, &S, &BS);
 	
   /* element stiffness matrix: */
@@ -430,6 +429,165 @@ int e004_res_p_loc(long ePos, long point, double *x, double *y, double *z)
 	return(AF_OK);
 }
 
+/** Computes temperature load for element 011 */
+int e004_therm(long ePos, long *use, tVector *Te, tVector *Fe)
+{
+	int     rv = AF_OK; 
+  tMatrix D;      /* 6x6   */
+	tMatrix S;      /* 12x12 */
+	tMatrix St;     /* 12x12 */
+	tMatrix B;      /* 6x12  */
+	tMatrix Bt;     /* 12x6  */
+  tMatrix StBt;   /* 12x6  */
+  tMatrix StBtD;  /* 12x6  */
+  tVector epsilon;
+	double  volume ;
+	double x1,y1,x2,y2,x3,y3,x4,y4,z1,z2,z3,z4;
+	double a1,b1,c1,a2,b2,c2,a3,b3,c3 ;
+  double alpha, temp ;
+	long   eT, mT;
+	long   i;
+
+  *use = AF_YES;
+
+	eT = femGetETypePos(ePos); 
+	mT = femGetEMPPos(ePos); 
+
+  alpha = femGetMPValPos(ePos, MAT_ALPHA, 0) ;
+
+	femMatNull(&D);
+	femMatNull(&S);
+	femMatNull(&St);
+	femMatNull(&B);
+	femMatNull(&Bt);
+	femMatNull(&StBt);
+	femMatNull(&StBtD);
+	femVecNull(&epsilon);
+
+	if ((rv=femFullMatInit(&D,6,6)) != AF_OK) { goto memFree; }
+  if ((rv=femFullMatInit(&S,12,12)) != AF_OK) { goto memFree; }
+	if ((rv=femFullMatInit(&St,12,12)) != AF_OK) { goto memFree; }
+	if ((rv=femFullMatInit(&B,6,12)) != AF_OK) { goto memFree; }
+	if ((rv=femFullMatInit(&Bt,12,6)) != AF_OK) { goto memFree; }
+	if ((rv=femFullMatInit(&StBt,12,6)) != AF_OK) { goto memFree; }
+	if ((rv=femFullMatInit(&StBtD,12,6)) != AF_OK) { goto memFree; }
+	if ((femVecFullInit(&epsilon,6)) != AF_OK) { goto memFree; }
+
+  /* coordinates */
+  x1 = femGetNCoordPosX(femGetENodePos(ePos,0));
+  y1 = femGetNCoordPosY(femGetENodePos(ePos,0));
+  z1 = femGetNCoordPosZ(femGetENodePos(ePos,0));
+
+  x2 = femGetNCoordPosX(femGetENodePos(ePos,1));
+  y2 = femGetNCoordPosY(femGetENodePos(ePos,1));
+  z2 = femGetNCoordPosZ(femGetENodePos(ePos,1));
+
+  x3 = femGetNCoordPosX(femGetENodePos(ePos,2));
+  y3 = femGetNCoordPosY(femGetENodePos(ePos,2));
+  z3 = femGetNCoordPosZ(femGetENodePos(ePos,2));
+
+  x4 = femGetNCoordPosX(femGetENodePos(ePos,3));
+  y4 = femGetNCoordPosY(femGetENodePos(ePos,3));
+  z4 = femGetNCoordPosZ(femGetENodePos(ePos,3));
+	
+#ifdef DEVEL_VERBOSE
+	fprintf(msgout,"E[%li]: x1=%f y1=%f z1=%f, x2=%f y2=%f z2=%f. x3=%f y3=%f z3=%f x4=%f y4=%f z4=%f\n",
+			eID[ePos],  x1,y1,z1,x2,y2,z2, x3,y3,z3,x4,y4,z4 );
+#endif
+
+	a1 = x2 - x1 ;
+	a2 = y2 - y1 ;
+	a3 = z2 - z1 ;
+
+	b1 = x3 - x1 ;
+	b2 = y3 - y1 ;
+	b3 = z3 - z1 ;
+
+	c1 = x4 - x1 ;
+	c2 = y4 - y1 ;
+	c3 = z4 - z1 ;
+
+	/* "D" creation: */
+  if ((rv = fem_D_3D(ePos, 0, eT, mT, NULL, NULL, AF_NO, &D) ) != AF_OK) {goto memFree;}
+
+
+	/* "B" matrix: */
+	femMatSetZero(&B);
+
+	femMatPut(&B, 1,2,  1.0) ;  
+	femMatPut(&B, 2,7,  1.0) ;  
+	femMatPut(&B, 3,12, 1.0) ;  
+	femMatPut(&B, 4,8,  1.0) ;  
+	femMatPut(&B, 5,4,  1.0) ;  
+	femMatPut(&B, 5,10, 1.0) ;  
+	femMatPut(&B, 6,3,  1.0) ;  
+	femMatPut(&B, 6,6,  1.0) ;  
+
+	femMatTran(&B, &Bt);
+
+
+	/* "S" matrix: */
+  for (i=0; i<3; i++)
+  {
+	  femMatPut(&S, 1+i,1+(4*i),  1.0) ;  
+	  femMatPut(&S, 1+i,2+(4*i),  x1) ;  
+	  femMatPut(&S, 1+i,3+(4*i),  y1) ;  
+	  femMatPut(&S, 1+i,4+(4*i),  z1) ;  
+
+	  femMatPut(&S, 4+i,1+(4*i),  1.0) ;  
+	  femMatPut(&S, 4+i,2+(4*i),  x2) ;  
+	  femMatPut(&S, 4+i,3+(4*i),  y2) ;  
+	  femMatPut(&S, 4+i,4+(4*i),  z2) ;  
+
+	  femMatPut(&S, 7+i,1+(4*i),  1.0) ;  
+	  femMatPut(&S, 7+i,2+(4*i),  x3) ;  
+	  femMatPut(&S, 7+i,3+(4*i),  y3) ;  
+	  femMatPut(&S, 7+i,4+(4*i),  z3) ;  
+
+	  femMatPut(&S, 10+i,1+(4*i),  1.0) ;  
+	  femMatPut(&S, 10+i,2+(4*i),  x4) ;  
+	  femMatPut(&S, 10+i,3+(4*i),  y4) ;  
+	  femMatPut(&S, 10+i,4+(4*i),  z4) ;  
+  }
+
+  /* hope this works (inversion of "S"): */
+  if (femLUinverse(&S) != AF_OK)
+  {
+#ifdef RUN_VERBOSE
+    fprintf(msgout, "[E] %s!\n", _("Inversion of S failed"));
+#endif
+  }
+
+  femMatTran(&S, &St);
+
+	volume = ( (a1*b2*c3 + c1*a2*b3 + a3*b1*c2) - (c1*b2*a3 + c3*b1*a2 + a1*b3*c2) ) / (6.0) ;
+
+  /* set temperature strains: */
+  temp = (  femVecGet(Te, 1) + femVecGet(Te, 2)
+       + femVecGet(Te, 3) + femVecGet(Te, 4)  ) / 4.0 ;
+  femVecPut(&epsilon, 1, alpha * temp );
+  femVecPut(&epsilon, 2, alpha * temp );
+  femVecPut(&epsilon, 3, 0.0 );
+
+	/* stiffness matrix is computed */
+	femMatMatMult(&St, &Bt, &StBt);
+	femMatMatMult(&StBt, &D, &StBtD);
+	femMatVecMult(&StBtD, &epsilon, Fe) ;
+	femValVecMultSelf(volume, Fe) ; 
+	
+memFree:
+	femVecFree(&epsilon);
+
+  femMatFree(&D);
+	femMatFree(&S);
+	femMatFree(&St);
+	femMatFree(&B);
+	femMatFree(&Bt);
+	femMatFree(&StBt);
+	femMatFree(&StBtD);
+	return(rv);
+}
+
 int addElem_004(void)
 {
 	int rv = AF_OK;
@@ -470,7 +628,7 @@ int addElem_004(void)
 	Elem[type].res_p_loc = e004_res_p_loc;
 	Elem[type].res_node = e000_res_node;
 	Elem[type].volume = e004_volume;
-	Elem[type].therm = e000_therm;
+	Elem[type].therm = e004_therm;
 	return(rv);
 }
 

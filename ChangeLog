@@ -4,6 +4,15 @@ See fem/ChangeLog for solver changes.
 
 
 
+### Mon Jun 27 20:23:05 CEST 2011
+
+version 0.2.55
+
+features:
+  + thermal element 019 (tetrahedron)
+
+
+
 ### Sat Jun 25 20:12:13 CEST 2011
 
 version 0.2.55

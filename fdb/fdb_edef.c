@@ -28,7 +28,7 @@
 #include "fdb_edef.h"
 #include "fdb_res.h"
 
-#define FDB_ET_NUM 19 /* number of defined element types */
+#define FDB_ET_NUM 20 /* number of defined element types */
 #define FDB_EL_NUM  5 /* number of defined load types */
 
 tET  fdbElementType[FDB_ET_NUM] ;
@@ -1009,6 +1009,53 @@ void fdbElemTypeInit_018(long type)
 	fdbElementType[type].ellist     = ellist ;
 }
 
+void fdbElemTypeInit_019(long type) /* tetrahedron */
+{
+	static long id            = 19 ;
+	static long dim           = 3 ;
+	static long nodes         = 4 ;
+	static long ndofs         = 1 ;
+	static long ndof[1]       = {TEMP} ;
+	static long reals         = 0 ;
+	static long *r            = NULL ;
+	static long reals_rep     = 0 ;
+	static long *r_rep        = NULL ;
+	static long gtype         = 3 ;
+	static long getype        = 3 ;
+	static long eloads        = 0 ;
+	static long *eload        = NULL ;
+	static long res      = 1 ;
+	static long nres[1]  = { RES_TEMP };
+	static long res_rp   = 0 ;
+	static long *nres_rp = NULL;
+  static long ellist_len    = 0 ;
+  static long *ellist     = NULL ;
+
+	fdbElementType[type].id         = id ;
+	fdbElementType[type].dim        = dim ;
+	fdbElementType[type].nodes      = nodes ;
+	fdbElementType[type].ndofs      = ndofs ;
+	fdbElementType[type].ndof       = ndof ;
+	fdbElementType[type].reals      = reals ;
+	fdbElementType[type].r          = r ;
+	fdbElementType[type].reals_rep  = reals_rep ;
+	fdbElementType[type].r_rep      = r_rep ;
+	fdbElementType[type].gtype      = gtype ;
+	fdbElementType[type].getype     = getype ;
+	fdbElementType[type].eloads     = eloads ;
+	fdbElementType[type].eload      = eload ;
+
+	fdbElementType[type].res        = res ;
+	fdbElementType[type].nres       = nres ;
+	fdbElementType[type].res_rp     = res_rp ;
+	fdbElementType[type].nres_rp    = nres_rp ;
+
+	fdbElementType[type].node_res   = node_res_004 ;
+
+	fdbElementType[type].ellist_len = ellist_len ;
+	fdbElementType[type].ellist  = ellist ;
+}
+
 
 /** Empty load */
 void fdbElemLoadTypeInit_000(long type)
@@ -1084,6 +1131,7 @@ void fdbDefElemTypes(void)
 	fdbElemTypeInit_016(16);
 	fdbElemTypeInit_017(17);
 	fdbElemTypeInit_018(18);
+	fdbElemTypeInit_019(19);
 
 	/* Element loads: */
 	fdbElemLoadTypeInit_000(0);
