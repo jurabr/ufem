@@ -203,7 +203,6 @@ int stiffp20(
       femMatPut(&D, 1,1, kxx );
       femMatPut(&D, 2,2, kxx );
 
-
 			
       dbe(&D, &bmatx, &dbmatx, nat);
 
@@ -231,6 +230,7 @@ int stiffp20(
   mirrorK(Ke);
   femValMatMultSelf(A*thick, Ke);
 
+  femMatPrn(Ke, "Ke");
 
   if (Mode == AF_YES)
   {
