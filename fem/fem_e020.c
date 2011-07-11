@@ -97,7 +97,7 @@ int stiffp20(
   double  mult[5] ;
 	
 	/* number of DOFs */
-	nat = 2*nnode ;
+	nat = 1*nnode ;
 
 #ifdef DEVEL
 	if (nat != Ke->rows)
@@ -239,6 +239,8 @@ int stiffp20(
     mult[3] =  femVecGet(re, 2) ;
     mult[4] =  femVecGet(re, 3) ;
 
+    femVecPrn(re, "deformace");
+
     for (i=1; i<=4; i++)
     {
       /* putting of data to iRes field */
@@ -274,7 +276,7 @@ int e020_stiff(long ePos, long Mode, tMatrix *K_e, tVector *Fe, tVector *Fre)
 	/*long    eT    = 2 ;*/
 	tVector u_e;
 
-	if ((rv = femVecFullInit(&u_e, ngaus*nnode)) != AF_OK)
+	if ((rv = femVecFullInit(&u_e, 4)) != AF_OK)
 	{
 #ifdef RUN_VERBOSE
 		fprintf(msgout,"[E] %s %li!\n", _("Out of memory on element"), femGetEIDPos(ePos));
