@@ -102,4 +102,35 @@ long fem_asse_mat_by_type(tVector *sigma, tVector *epsilon, long ePos)
   return(0);
 }
 
+
+/** Checks failure condition in dependence of material and element type
+ * @return 0 if not failed, 1 if failed
+ */
+long fem_asse_fail_cond(void)
+{
+  long i, j, eT;
+  
+  for (i=0; i<eLen; i++)
+  {
+    eT = femGetETypePos(i)
+
+      switch (eT)
+      {
+        case 1:
+          break ;
+        case 2:
+          break ;
+        case 3:
+          break ;
+        case 4:
+          break ;
+        /* TODO - more code here */
+        default: break ;
+      }
+
+  }
+
+  return (0);
+}
+
 /* end of fem_asse.c */
