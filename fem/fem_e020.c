@@ -316,6 +316,7 @@ int addElem_020(void)
 {
 	int rv = AF_OK;
 	static long type     = 20 ;
+	static long dim      = 0 ;
 	static long nodes    = 4 ;
 	static long dofs     = 1 ;
 	static long ndof[1]  = {TEMP} ;
@@ -329,6 +330,7 @@ int addElem_020(void)
 	static long nres_rp[1] = { RES_TEMP} ;
 
 	if (type != femAddElem(type)) {return(AF_ERR_VAL);}
+	Elem[type].dim = dim ;
 	Elem[type].nodes = nodes ;
 	Elem[type].dofs = dofs ;
 	Elem[type].ndof = ndof ;

@@ -22,8 +22,6 @@
 
 	 FEM Solver - Element 012 (structural brick - 20 nodes)
    Orientation of crack is saved inside results.
-
-   $Id: fem_e012.c,v 1.1 2004/11/11 21:33:56 jirka Exp $
 */
 
 #include "fem_elem.h"
@@ -45,6 +43,7 @@ int addElem_012(void)
 {
 	int rv = AF_OK;
 	static long type    = 12 ;
+	static long dim     = 3 ;
 	static long nodes   = 20 ;
 	static long dofs    = 3 ;
 	static long ndof[3] = {U_X,U_Y,U_Z} ;
@@ -65,6 +64,7 @@ int addElem_012(void)
     RES_P_M31,RES_P_M32,RES_P_M33};
 
 	if (type != femAddElem(type)) {return(AF_ERR_VAL);}
+	Elem[type].dim = dim ;
 	Elem[type].nodes = nodes ;
 	Elem[type].dofs = dofs ;
 	Elem[type].ndof = ndof ;

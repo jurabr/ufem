@@ -21,8 +21,6 @@
    02139, USA.
 
 	 FEM Solver - Element 009 (structural brick - 8 nodes)
-
-   $Id: fem_e009.c,v 1.11 2004/11/11 21:39:24 jirka Exp $
 */
 
 #include "fem_elem.h"
@@ -861,6 +859,7 @@ int addElem_009(void)
 {
 	int rv = AF_OK;
 	static long type    = 9 ;
+	static long dim     = 3 ;
 	static long nodes   = 8 ;
 	static long dofs    = 3 ;
 	static long ndof[3] = {U_X,U_Y,U_Z} ;
@@ -874,6 +873,7 @@ int addElem_009(void)
 	static long nres_rp[14] = {RES_SX,RES_SY,RES_SZ,RES_SYZ,RES_SZX,RES_SXY, RES_EX,RES_EY,RES_EZ,RES_EYZ,RES_EZX,RES_EXY,RES_CR1,RES_PSI};
 
 	if (type != femAddElem(type)) {return(AF_ERR_VAL);}
+	Elem[type].dim = dim ;
 	Elem[type].nodes = nodes ;
 	Elem[type].dofs = dofs ;
 	Elem[type].ndof = ndof ;

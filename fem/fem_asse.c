@@ -108,26 +108,32 @@ long fem_asse_mat_by_type(tVector *sigma, tVector *epsilon, long ePos)
  */
 long fem_asse_fail_cond(void)
 {
-  long i, j, eT;
+  long i, j, eT, dim;
   
   for (i=0; i<eLen; i++)
   {
-    eT = femGetETypePos(i)
+    eT = femGetETypePos(i) ;
+    dim = Elem[eT].dim ;
 
-      switch (eT)
+      switch (dim)
       {
-        case 1:
+        case 1: /* link */
+          /* TODO */
           break ;
-        case 2:
+        case 2: /* plane */ 
+          /* TODO */
           break ;
-        case 3:
+        case 3: /* 3D structure */
+          /* TODO */
           break ;
-        case 4:
+        case 4: /* slab/shell */ 
+          /* TODO */
           break ;
-        /* TODO - more code here */
+        case 5: /* beam */
+          /* TODO */
+          break ;
         default: break ;
       }
-
   }
 
   return (0);

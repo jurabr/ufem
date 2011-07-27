@@ -23,8 +23,6 @@
 	 FEM Solver - Element 017 (2D grille)
 
    Note that no element load is used (nodal forces/moments only)
-
-	 $Id: fem_e017.c,v 1.11 2005/07/11 17:56:16 jirka Exp $
 */
 
 #include "fem_elem.h"
@@ -350,6 +348,7 @@ int addElem_017(void)
 {
 	int rv = AF_OK;
 	static long type    = 17 ;
+	static long dim     = 5 ;
 	static long nodes   = 2 ;
 	static long dofs    = 3 ;
 	static long ndof[3] = {U_Z,ROT_X,ROT_Y} ;
@@ -363,6 +362,7 @@ int addElem_017(void)
 	static long nres_rp[3] = {RES_FZ,RES_MX,RES_MY};
 
 	if (type != femAddElem(type)) {return(AF_ERR_VAL);}
+	Elem[type].dim = dim ;
 	Elem[type].nodes = nodes ;
 	Elem[type].dofs = dofs ;
 	Elem[type].ndof = ndof ;

@@ -78,6 +78,7 @@
 typedef struct
 {
 	long  type;   /* element type number */
+	long  dim;    /* dimensionality: 1..link/2..wall/3..3D/4..slab,shell/5..beam */
 	long  nodes;  /* number of nodes     */
 	long  dofs;   /* number of degrees of freedom in one node */
 	long *ndof;   /* list of DOFs in each node (ndof[nodes])  */

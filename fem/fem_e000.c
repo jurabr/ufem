@@ -41,6 +41,7 @@ int addElem_000(void)
 {
 	int rv = AF_OK;
 	static long type    = 0 ;
+	static long dim     = 0 ;
 	static long nodes   = 0 ;
 	static long dofs    = 0 ;
 	static long *ndof = NULL;
@@ -54,6 +55,7 @@ int addElem_000(void)
 	static long *nres_rp = NULL ;
 
 	if (type != femAddElem(type)) {return(AF_ERR_VAL);}
+	Elem[type].dim = dim ;
 	Elem[type].nodes = nodes ;
 	Elem[type].dofs = dofs ;
 	Elem[type].ndof = ndof ;

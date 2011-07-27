@@ -27,8 +27,6 @@
    * there have to be always AT LEAST ONE LAYER
 
    Note that no element load is used (nodal forces/moments only)
-
-	 $Id: fem_e016.c,v 1.11 2005/07/11 17:56:16 jirka Exp $
 */
 
 #include "fem_elem.h"
@@ -570,6 +568,7 @@ int addElem_016(void)
 {
 	int rv = AF_OK;
 	static long type    = 16 ;
+	static long dim     = 5 ;
 	static long nodes   = 2 ;
 	static long dofs    = 3 ;
 	static long ndof[3] = {U_X,U_Y,ROT_Z} ;
@@ -583,6 +582,7 @@ int addElem_016(void)
 	static long nres_rp[4] = {RES_EX,RES_SX,RES_ECR1,RES_ECR2}; /* dtto but in layers */
 
 	if (type != femAddElem(type)) {return(AF_ERR_VAL);}
+	Elem[type].dim = dim ;
 	Elem[type].nodes = nodes ;
 	Elem[type].dofs = dofs ;
 	Elem[type].ndof = ndof ;

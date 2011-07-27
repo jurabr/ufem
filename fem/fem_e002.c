@@ -1067,6 +1067,7 @@ int addElem_002(void)
 {
 	int rv = AF_OK;
 	static long type     = 2 ;
+	static long dim      = 2 ;
 	static long nodes    = 4 ;
 	static long dofs     = 2 ;
 	static long ndof[2]  = {U_X,U_Y} ;
@@ -1086,6 +1087,7 @@ int addElem_002(void)
     RES_ECR1, RES_ECR2, RES_STAT1, RES_STAT2, RES_GCR1} ;
 
 	if (type != femAddElem(type)) {return(AF_ERR_VAL);}
+	Elem[type].dim = dim ;
 	Elem[type].nodes = nodes ;
 	Elem[type].dofs = dofs ;
 	Elem[type].ndof = ndof ;
