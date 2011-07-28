@@ -108,8 +108,24 @@ long fem_asse_mat_by_type(tVector *sigma, tVector *epsilon, long ePos)
  */
 long fem_asse_fail_cond(void)
 {
-  long i, j, eT, dim;
+  long    i, j, eT, dim, ips;
+  static long  result = 0 ;
+  tVector stress3 ;
+  tVector stress6 ;
+  tVector strain3 ;
+  tVector strain6 ;
+
+  femVecNull(&stress3) ;
+  femVecNull(&stress6) ;
+  femVecNull(&strain3) ;
+  femVecNull(&strain6) ;
   
+  if (femVecFullInit(&stress3, 3) != AF_OK) {goto memFree;}
+  if (femVecFullInit(&stress6, 6) != AF_OK) {goto memFree;}
+
+  if (femVecFullInit(&strain3, 3) != AF_OK) {goto memFree;}
+  if (femVecFullInit(&strain6, 6) != AF_OK) {goto memFree;}
+
   for (i=0; i<eLen; i++)
   {
     eT = femGetETypePos(i) ;
@@ -118,13 +134,57 @@ long fem_asse_fail_cond(void)
       switch (dim)
       {
         case 1: /* link */
-          /* TODO */
+          femVecPut(&stress3, 1, femGetEResVal(i, RES_SX, 0) );
+          femVecPut(&stress3, 2, 0.0 );
+          femVecPut(&stress3, 3, 0.0 );
+          if ((result = fem_asse_mat_vmis(&stress3, &strain3, i)) != 0) {return(result);}
+
+          ips = Elem[eT].res_rp ;
+          for (j=1; j<=ips; j++)
+          {
+            femVecPut(&stress3, 1, femGetEResVal(i, RES_SX, j) );
+            femVecPut(&stress3, 2, 0.0 );
+            femVecPut(&stress3, 3, 0.0 );
+            if ((result = fem_asse_mat_vmis(&stress3, &strain3, i)) != 0) {return(result);}
+          }
           break ;
         case 2: /* plane */ 
-          /* TODO */
+          femVecPut(&stress3, 1, femGetEResVal(i, RES_SX, 0) );
+          femVecPut(&stress3, 2, femGetEResVal(i, RES_SY, 0)  );
+          femVecPut(&stress3, 3, femGetEResVal(i, RES_SXY, 0) );
+          if ((result = fem_asse_mat_vmis(&stress3, &strain3, i)) != 0) {return(result);}
+
+          ips = Elem[eT].res_rp ;
+          for (j=1; j<=ips; j++)
+          {
+            femVecPut(&stress3, 1, femGetEResVal(i, RES_SX, j) );
+            femVecPut(&stress3, 2, femGetEResVal(i, RES_SY, j)  );
+            femVecPut(&stress3, 3, femGetEResVal(i, RES_SXY, j) );
+            if ((result = fem_asse_mat_vmis(&stress3, &strain3, i)) != 0) {return(result);}
+          }
           break ;
         case 3: /* 3D structure */
           /* TODO */
+          femVecPut(&stress6, 1, femGetEResVal(i, RES_SX, 0) );
+          femVecPut(&stress6, 2, femGetEResVal(i, RES_SY, 0)  );
+          femVecPut(&stress6, 3, femGetEResVal(i, RES_SZ, 0)  );
+          femVecPut(&stress6, 4, femGetEResVal(i, RES_SYZ, 0) );
+          femVecPut(&stress6, 5, femGetEResVal(i, RES_SZX, 0) );
+          femVecPut(&stress6, 6, femGetEResVal(i, RES_SXY, 0) );
+          if ((result = fem_asse_mat_vmis(&stress6, &strain6, i)) != 0) {return(result);}
+
+          ips = Elem[eT].res_rp ;
+          for (j=1; j<=ips; j++)
+          {
+            femVecPut(&stress6, 1, femGetEResVal(i, RES_SX, j) );
+            femVecPut(&stress6, 2, femGetEResVal(i, RES_SY, j)  );
+            femVecPut(&stress6, 3, femGetEResVal(i, RES_SZ, j)  );
+            femVecPut(&stress6, 4, femGetEResVal(i, RES_SYZ, j) );
+            femVecPut(&stress6, 5, femGetEResVal(i, RES_SZX, j) );
+            femVecPut(&stress6, 6, femGetEResVal(i, RES_SXY, j) );
+            if ((result = fem_asse_mat_vmis(&stress6, &strain6, i)) != 0) {return(result);}
+          }
+
           break ;
         case 4: /* slab/shell */ 
           /* TODO */
@@ -136,7 +196,12 @@ long fem_asse_fail_cond(void)
       }
   }
 
-  return (0);
+memFree:
+  femVecFree(&stress3) ;
+  femVecFree(&stress6) ;
+  femVecFree(&strain3) ;
+  femVecFree(&strain6) ;
+  return (result);
 }
 
 /* end of fem_asse.c */
