@@ -30,6 +30,8 @@
 
 extern double stress2D_J2(tVector *stress) ; /* from fem_ch2d */
 extern double stress3D_J2(tVector *stress) ; /* from fem_chen */
+extern int femPrinc3D(tVector *sx, tVector *s1);
+extern int femGetPrincStress2D(tVector *sigma_x, tVector *sigma_1, double *phi);
 
 /** ### MATERIAL POINT LEVEL ####  */
 
@@ -72,6 +74,43 @@ long fem_asse_mat_vmis(tVector *sigma, tVector *epsilon, long ePos)
   return(0);
 }
 
+/** Material point failure test - material 3: concrete (simplified)
+ * @param sigma stress vector
+ * @param epsilon strain vector
+ * @param mType type of material
+ * @return 0 if passed, non-zero number (usually 1) if failed 
+ */
+long fem_asse_mat_concr(tVector *sigma, tVector *epsilon, long ePos)
+{
+  double f_yt, f_ybc, val_t, val_bc, phi ;
+
+  f_yt  = femGetMPValPos(ePos, MAT_F_YT,  0) ;
+  f_ybc = femGetMPValPos(ePos, MAT_F_YBC, 0) ;
+  
+  if (sigma->len > 3)
+  {
+    /* 3D case */
+    femPrinc3D(sigma, epsilon);
+    val_bc = femVecGet(epsilon, 3);
+  }
+  else
+  {
+    /* 2D case */
+    femGetPrincStress2D(sigma, epsilon, &phi); /* epsilon serves as principal stress vector! */
+    val_bc = femVecGet(epsilon, 2);
+  }
+
+    val_t = femVecGet(epsilon, 1);
+
+  if ( (val_t > fabs(f_yt)) &&(val_bc < (-1.0*fabs(f_ybc)) ) ) 
+       { return(1); } /* failed */
+  else { return(0); } /* passed */
+
+  return(0);
+}
+
+
+
 /** Material point failure test wrapper
  * @param sigma stress vector
  * @param epsilon strain vector
@@ -87,8 +126,8 @@ long fem_asse_mat_by_type(tVector *sigma, tVector *epsilon, long ePos)
 
   switch (mType)
   {
-    case 3: /* Chen-Chen concrete */
-      /** TODO some code here */
+    case 3: /* concrete */
+      return ( fem_asse_mat_concr(sigma, epsilon, ePos) );
       break;
     case 4: /* von Mises steel */
       return ( fem_asse_mat_vmis(sigma, epsilon, ePos) );

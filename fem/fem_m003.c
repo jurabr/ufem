@@ -21,8 +21,6 @@
    02139, USA.
 
 	FEM Solver - Material 003 (3D concrete - Chen+Chen)
-
-  $Id: fem_m003.c,v 1.1 2004/01/19 17:14:20 jirka Exp $
 */
 
 #include "fem_mat.h"
