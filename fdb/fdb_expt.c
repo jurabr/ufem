@@ -288,6 +288,7 @@ int fdb_to_fem_rand(FILE *fw)
 			case MONTE_VTYPE_RES_MAX_E:
 			case MONTE_VTYPE_RES_MIN_E:
 			case MONTE_VTYPE_RES_FAIL_E:
+			case MONTE_VTYPE_RES_FAIL:
 			case MONTE_VTYPE_RES_SUM_E:
 			case MONTE_VTYPE_RES_E:
                               fdbInputCountInt(ELEM, ELEM_ID, item, &pos ); break;

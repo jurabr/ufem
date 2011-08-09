@@ -616,8 +616,22 @@ int monte_fill_ofld_data(double *ofld)
       break ;
 
       case MONTE_VTYPE_RES_FAIL: /* general failure state */
-        if ((monte_fail_funct_id > -1)&&(monte_max_disp > 0.0))
-           {fem_asse_max_disp_simple(monte_max_disp);}
+        if ((monte_fail_funct_id > -1))
+        {
+          if (monte_max_disp > 0.0)
+          {
+            if (fem_asse_max_disp_simple(monte_max_disp) != 0)
+            {
+              ofld[monte_io_var_pos[i-monte_i_len]] = 1.0 ;
+            }
+          }
+             
+          if (fem_asse_fail_cond() != 0)
+          {
+            ofld[monte_io_var_pos[i-monte_i_len]] = 1.0 ;
+          }
+
+        }
       break;
 
     }

@@ -238,6 +238,11 @@ int fdb_rand_check(void)
          * somewhere.... */
         break;
 
+      case MONTE_VTYPE_RES_FAIL_E:
+      case MONTE_VTYPE_RES_FAIL:
+        /* no tests are done here - hopefully damping is defined
+         * somewhere.... */
+        break;
     }
   }
   

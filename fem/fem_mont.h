@@ -50,6 +50,7 @@
 #define MONTE_VTYPE_RES_FAIL   19 /* general failure function            */
 
 extern long fem_asse_max_disp_simple(double disp_max); /* max. displacment test */
+extern long fem_asse_fail_cond(void); /* failure condition */
 
 #endif
 
