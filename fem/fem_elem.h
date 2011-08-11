@@ -73,6 +73,8 @@
 #define RS_STF_Z_2      22
 #define RS_MTYPE        23 /* material type - if needed */
 #define RS_LNUM         24 /* numbers of sublayers */
+#define RS_EXENTR_Y     25 /* excentricity in Y direction */
+#define RS_EXENTR_Z     26 /* excentricity in Y direction */
 
 /* structure for finite element */
 typedef struct

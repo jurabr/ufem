@@ -32,8 +32,8 @@ extern double stress2D_J2(tVector *stress) ; /* from fem_ch2d */
 extern double stress3D_J2(tVector *stress) ; /* from fem_chen */
 extern int femPrinc3D(tVector *sx, tVector *s1);
 extern int femGetPrincStress2D(tVector *sigma_x, tVector *sigma_1, double *phi);
-
-/** ### MATERIAL POINT LEVEL ####  */
+extern double e001_lenght(long ePos);
+extern double e007_length(long ePos);
 
 /** Max. displacement test
  * @param disp_max maximum allowed displacement (x,y, or z)
@@ -141,6 +141,143 @@ long fem_asse_mat_by_type(tVector *sigma, tVector *epsilon, long ePos)
   return(0);
 }
 
+/** Tests elastic stability of links according to Eurocode 3 (one axis only):
+  @param N  normal force - computed
+  @param E  young modullus
+  @param A  element area
+  @param L  element lenght
+  @param tH element height
+  @param tF limit stress
+  @param te initial excentricity
+  @param tI moment of inertia
+  @return status: 1..failed, 0..not failed
+*/
+long fem_steel_link_stability_simple(
+  double N,  /* normal force - computed */
+  double E,  /* young modullus          */
+  double A,  /* element area            */
+  double L,  /* element lenght          */
+  double tH, /* element height          */
+  double tF, /* limit stress            */
+  double te, /* initial excentricity    */
+  double tI  /* moment of inertia       */
+  )
+{
+
+  /* data for solution: */
+  double ti; /* radius of garation      */
+  double tW; /* cross-section modullus  */
+	double Rt, Rc ;
+  double lambda; 
+
+  /* computation of data */
+  ti = sqrt(tI/A);
+  tW = (tI / (0.5*tH)) ;
+
+  /* procedure: */
+  lambda = 1.000 * L / ti ;
+
+  Rc = 
+    ( 
+     (1.0 + ((tF*lambda*lambda)/(FEM_PI*FEM_PI*E))+((te*A)/tW))
+     -
+     sqrt(
+       pow((1.0
+        +
+        ((tF*lambda*lambda)/(FEM_PI*FEM_PI*E))
+        +
+        ((te*A)/(tW))
+        ),2) 
+       - (((4.0*lambda*lambda)/(FEM_PI*FEM_PI*E*A))*A*tF)
+       )
+     )
+    /
+    ((2.0*lambda*lambda)/(FEM_PI*FEM_PI*E*A))
+    ;
+
+	Rt = 0.9 * tF ;
+  
+  if ((N/A) > Rt) 
+	{
+		return(0) ;
+	}
+
+	if ((N) < 0.0)
+	{
+		if (fabs(N) > fabs(Rc)) { return(1); }
+		else { return(0); }
+	}
+	else
+	{
+		return(0);
+	}
+
+}
+
+
+/** Tests elastic stability of links according to Eurocode 3:
+  @param ePos element position 
+  @param eT   element type 
+  @return status: 1..failed, 0..not failed
+*/
+long fem_test_steel_link_stability(long ePos, long eT)
+{
+  long   mType ;
+  long   rv = 0 ;
+  double N;  /* normal force - computed */
+  double E;  /* young modullus          */
+  double tF; /* limit stress            */
+  double A;  /* element area            */
+  double L;  /* element lenght          */
+  
+  double tHy; /* element height          */
+  double tey; /* initial excentricity    */
+  double tIy; /* moment of inertia       */
+
+  double tHz; /* element height          */
+  double tez; /* initial excentricity    */
+  double tIz; /* moment of inertia       */
+
+
+
+  if ((mType = Mat[femGetMPTypePos(femGetEMPPos(ePos))].type) != 4)
+  {
+    /* only type==3 (von Mises) can work here */
+    return(0);
+  }
+
+  N  = femGetEResVal(ePos, RES_FX,0) ;
+  E  = femGetMPValPos(ePos, MAT_EX, 0) ;
+  tF = femGetMPValPos(ePos, MAT_F_YC, 0) ;
+	A  = femGetRSValPos(ePos, RS_AREA, 0) ;
+
+	tHy = femGetRSValPos(ePos, RS_HEIGHT, 0) ;
+	tIy = femGetRSValPos(ePos, RS_INERTIA_Y, 0) ;
+	tey = femGetRSValPos(ePos, RS_EXENTR_Y, 0) ;
+
+  if (Elem[eT].dofs <= 2) /* 2 D link */
+  {
+    L   = e001_lenght(ePos) ;
+    return(fem_steel_link_stability_simple(N,E,A,L,tHy,tF,tey,tIy));
+  }
+  else /* 3D link */
+  {
+    
+    L   = e007_length(ePos) ;
+    if ((rv=fem_steel_link_stability_simple(N,E,A,L,tHy,tF,tey,tIy)) != 0)
+       { return(rv); }
+    else
+    {
+	    tHz = femGetRSValPos(ePos, RS_WIDTH, 0) ;
+	    tIz = femGetRSValPos(ePos, RS_INERTIA_Z, 0) ;
+	    tez = femGetRSValPos(ePos, RS_EXENTR_Z, 0) ;
+      return(fem_steel_link_stability_simple(N,E,A,L,tHz,tF,tez,tIz));
+    }
+  }
+  
+  return(0);
+}
+
 
 /** Checks failure condition in dependence of material and element type
  * @return 0 if not failed, 1 if failed
@@ -185,6 +322,9 @@ long fem_asse_fail_cond(void)
             femVecPut(&stress3, 2, 0.0 );
             femVecPut(&stress3, 3, 0.0 );
             if ((result = fem_asse_mat_vmis(&stress3, &strain3, i)) != 0) {return(result);}
+
+            /* steel link stability: */
+            if ((result = fem_test_steel_link_stability(i, eT)) != 0) {return(result);}
           }
           break ;
         case 2: /* plane */ 

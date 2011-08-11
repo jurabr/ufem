@@ -1,3 +1,12 @@
+### Thu Aug 11 16:00:26 CEST 2011
+
+version 0.3.6
+
+features:
+  + assesment routine for steel links
+  + input data for e001, e007 changed (for assesment)
+
+
 ### Mon Jun 27 20:21:33 CEST 2011
 
 version 0.3.5

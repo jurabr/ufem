@@ -162,6 +162,9 @@ int fem_create_cmd_aliases(void)
   if ((rv=ciAddVarGrp("hinge_y_2","21","real")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("hinge_z_2","22","real")) != AF_OK) {goto memFree;}
 
+  if ((rv=ciAddVarGrp("excentr_y","25","real")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("excentr_z","26","real")) != AF_OK) {goto memFree;}
+
 	/* names of material properties */
   if ((rv=ciAddVarGrp("dens","1","material")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("ex","2","material")) != AF_OK) {goto memFree;}

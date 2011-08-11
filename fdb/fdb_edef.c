@@ -181,8 +181,8 @@ void fdbElemTypeInit_001(long type)
 	static long nodes         = 2 ;
 	static long ndofs         = 2 ;
 	static long ndof[2]       = {U_X,U_Y} ;
-	static long reals         = 1 ;
-	static long r[1]          = {RS_AREA} ;
+	static long reals         = 4 ;
+	static long r[4]          = {RS_AREA, RS_HEIGHT, RS_INERTIA_Y, RS_EXENTR_Y} ;
 	static long reals_rep     = 0 ;
 	static long *r_rep        = NULL ;
 	static long gtype         = 1 ;
@@ -473,8 +473,8 @@ void fdbElemTypeInit_007(long type)
 	static long nodes         = 2 ;
 	static long ndofs         = 3 ;
 	static long ndof[3]       = {U_X,U_Y,U_Z} ;
-	static long reals         = 3 ;
-	static long r[3]          = {RS_AREA,RS_INERTIA_Y,RS_INERTIA_Z} ;
+	static long reals         = 7 ;
+	static long r[7]          = {RS_AREA,RS_INERTIA_Y,RS_INERTIA_Z, RS_HEIGHT, RS_WIDTH, RS_EXENTR_Y, RS_EXENTR_Z};
 	static long reals_rep     = 0 ;
 	static long *r_rep        = NULL ;
 	static long gtype         = 1 ;

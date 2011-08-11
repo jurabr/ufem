@@ -21,15 +21,13 @@
    02139, USA.
 
 	 FEM Solver - header file
-
-  Id: fem.h,v 1.5 2003/04/24 17:19:16 jirka Exp $
 */
 
 
 #ifndef __FEM_H__
 #define __FEM_H__
 
-#define _FEM_VERSION_ "0.3.5"
+#define _FEM_VERSION_ "0.3.6"
 
 /* Included headers: */
 #include <stdio.h>

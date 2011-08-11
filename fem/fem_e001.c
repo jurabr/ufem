@@ -572,8 +572,8 @@ int addElem_001(void)
 	static long nodes   = 2 ;
 	static long dofs    = 2 ;
 	static long ndof[2] = {U_X,U_Y} ;
-	static long rs      = 1 ;
-	static long real[1] = {RS_AREA} ;
+	static long rs      = 4 ;
+	static long real[4] = {RS_AREA, RS_HEIGHT, RS_INERTIA_Y, RS_EXENTR_Y} ;
 	static long rs_rp      = 0 ;
 	static long *real_rp = NULL ;
 	static long res      = 4 ;

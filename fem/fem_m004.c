@@ -21,8 +21,6 @@
    02139, USA.
 
 	FEM Solver - Material 004 (3D plasticity - Drucker-Prager/von Mises)
-
-  $Id: fem_m004.c,v 1.3 2004/04/11 21:12:08 jirka Exp $
 */
 
 #include "fem_mat.h"
