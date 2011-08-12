@@ -196,8 +196,8 @@ long fem_steel_link_stability_simple(
     ;
 
 	Rt = 0.9 * tF ;
-  
-  if ((N/A) > Rt) 
+
+  if ((N/A) > fabs(Rt)) 
 	{
 		return(0) ;
 	}
@@ -238,11 +238,9 @@ long fem_test_steel_link_stability(long ePos, long eT)
   double tez; /* initial excentricity    */
   double tIz; /* moment of inertia       */
 
-
-
   if ((mType = Mat[femGetMPTypePos(femGetEMPPos(ePos))].type) != 4)
   {
-    /* only type==3 (von Mises) can work here */
+    /* only type==4 (von Mises) can work here */
     return(0);
   }
 
@@ -262,7 +260,6 @@ long fem_test_steel_link_stability(long ePos, long eT)
   }
   else /* 3D link */
   {
-    
     L   = e007_length(ePos) ;
     if ((rv=fem_steel_link_stability_simple(N,E,A,L,tHy,tF,tey,tIy)) != 0)
        { return(rv); }
@@ -322,10 +319,9 @@ long fem_asse_fail_cond(void)
             femVecPut(&stress3, 2, 0.0 );
             femVecPut(&stress3, 3, 0.0 );
             if ((result = fem_asse_mat_vmis(&stress3, &strain3, i)) != 0) {return(result);}
-
-            /* steel link stability: */
-            if ((result = fem_test_steel_link_stability(i, eT)) != 0) {return(result);}
           }
+          /* steel link stability: */
+          if ((result = fem_test_steel_link_stability(i, eT)) != 0) {return(result);}
           break ;
         case 2: /* plane */ 
           femVecPut(&stress3, 1, femGetEResVal(i, RES_SX, 0) );

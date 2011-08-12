@@ -51,8 +51,6 @@ double stress2D_J2(tVector *stress)
   s_y  = femVecGet (stress, 2 ) ;
   t_xy = femVecGet (stress, 3 ) ;
 
-  printf("SIGMAS: %e %e %e\n",s_x, s_y, t_xy);
-
   return(
    (pow((s_x-s_y), 2) + (s_x*s_x) + (s_y*s_y) )/6.0 + (t_xy*t_xy)
       );

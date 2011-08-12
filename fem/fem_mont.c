@@ -362,6 +362,12 @@ char *monte_ovar_name(char *param, long pos)
 			return(name);
         break;
 
+    case MONTE_VTYPE_RES_FAIL: 
+      sprintf(name,"RES_FAIL");
+			return(name);
+        break;
+
+
     default: return("empty"); break;
   }
 
@@ -630,7 +636,6 @@ int monte_fill_ofld_data(double *ofld)
           {
             ofld[monte_io_var_pos[i-monte_i_len]] = 1.0 ;
           }
-
         }
       break;
 
