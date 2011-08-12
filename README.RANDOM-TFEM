@@ -21,12 +21,14 @@ rval,variable,6,what(1=alpha,2=beta),0,0
 ------------------
 
 DISPLACEMENT RESULTS
-rval,variable,7,node_id,dir(ux=1...rotz=6)
-
-REACTIONS
 rval,variable,8,node_id,dir(ux=1...rotz=6)
 
+REACTIONS
+rval,variable,9,node_id,dir(ux=1...rotz=6)
+
 ELEMENT RESULTS
-rval,variable,9,elemenet_id,res_type,ipoint
+rval,variable,10,elemenet_id,res_type,ipoint
 
 
+FAILURE FUNCTION (relevant material must be defined: 3,4!)
+rval,variable,19,0,0,0
