@@ -27,7 +27,7 @@ REACTIONS
 rval,variable,9,node_id,dir(ux=1...rotz=6)
 
 ELEMENT RESULTS
-rval,variable,10,elemenet_id,res_type,ipoint
+rval,variable,10,element_id,res_type,ipoint
 
 
 FAILURE FUNCTION (relevant material must be defined: 3,4!)

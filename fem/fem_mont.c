@@ -789,6 +789,7 @@ int monte_solution(char *param, double *ifld, double *ofld, long if_type)
       if (ofld != NULL)
       {
         ofld[0] = price ;
+        fprintf(stdout,"%e\n", price);
       }
       else
       {
