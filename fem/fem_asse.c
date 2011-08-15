@@ -207,11 +207,7 @@ long fem_steel_link_stability_simple(
 	Rt = tF ;
 #endif
 
-  if ((N/A) > fabs(Rt)) 
-	{
-		return(0) ;
-	}
-
+  
 	if ((N) < 0.0)
 	{
 		if (fabs(N) > fabs(Rc)) { return(1); }
@@ -219,7 +215,14 @@ long fem_steel_link_stability_simple(
 	}
 	else
 	{
-		return(0);
+    if ((N/A) > fabs(Rt)) 
+	  {
+		  return(1) ;
+	  }
+    else
+    {
+		  return(0);
+    }
 	}
 
 }
