@@ -155,7 +155,7 @@ void femPlotString(char *Str, double X, double Y, double Z, double *RGB)
   /* black on paper, white on screen (maybe) */
   if (plotProp.PlotToFile == 1)
 	{	
-		if (RGB == NULL) {glColor4f(0,0,0,1);}
+		if (RGB == NULL) { glColor4f(0,0,0,1); }
 		
     glRasterPos3f(X,Y,Z);
 		
@@ -170,6 +170,7 @@ void femPlotString(char *Str, double X, double Y, double Z, double *RGB)
 			glColor4f( plotProp.textColor[0], plotProp.textColor[1],
 			           plotProp.textColor[2], plotProp.textColor[3]);
 		}
+	}
 
     glRasterPos3f(X,Y,Z);
 
@@ -187,7 +188,6 @@ void femPlotString(char *Str, double X, double Y, double Z, double *RGB)
       }
     }
 #endif
-	}
 }
 
 /** Plots string to OpenGL space
