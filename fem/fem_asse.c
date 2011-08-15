@@ -176,27 +176,6 @@ long fem_steel_link_stability_simple(
   /* procedure: */
   lambda = 1.000 * L / ti ;
 
-#if 0
-  Rc = 
-    ( 
-     (1.0 + ( (tF*lambda*lambda )/(FEM_PI*FEM_PI*E))+((te*A)/tW))
-     -
-     sqrt(
-       pow((1.0
-        +
-        ((tF*lambda*lambda)/(FEM_PI*FEM_PI*E))
-        +
-        ((te*A)/(tW))
-        ),2) 
-       - (((4.0*lambda*lambda)/(FEM_PI*FEM_PI*E*A))*A*tF)
-       )
-     )
-    /
-    ((2.0*lambda*lambda)/(FEM_PI*FEM_PI*E*A))
-    ;
-
-	Rt = 0.9 * tF ;
-#else
   R1 = 1.0 + tF*pow(L/ti, 2)/(FEM_PI*FEM_PI*E) + ((L*te)/(ti*ti)) ;
   Rc = (R1 - sqrt(R1*R1 - tF*A*((4.0*pow(L/ti,2))/(FEM_PI*FEM_PI*E*A)))
       ) /
@@ -204,8 +183,7 @@ long fem_steel_link_stability_simple(
      2.0*pow(L/ti,2)/(FEM_PI*FEM_PI*E*A)
     );
     
-	Rt = tF ;
-#endif
+  Rt = tF ;
 
   
 	if ((N) < 0.0)
@@ -320,6 +298,7 @@ long fem_asse_fail_cond(void)
       switch (dim)
       {
         case 1: /* link */
+#if 0
           femVecPut(&stress3, 1, femGetEResVal(i, RES_SX, 0) );
           femVecPut(&stress3, 2, 0.0 );
           femVecPut(&stress3, 3, 0.0 );
@@ -333,6 +312,7 @@ long fem_asse_fail_cond(void)
             femVecPut(&stress3, 3, 0.0 );
             if ((result = fem_asse_mat_vmis(&stress3, &strain3, i)) != 0) {return(result);}
           }
+#endif
           /* steel link stability: */
           if ((result = fem_test_steel_link_stability(i, eT)) != 0) {return(result);}
           break ;
