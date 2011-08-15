@@ -163,11 +163,10 @@ long fem_steel_link_stability_simple(
   double tI  /* moment of inertia       */
   )
 {
-
   /* data for solution: */
   double ti; /* radius of garation      */
   double tW; /* cross-section modullus  */
-	double Rt, Rc ;
+	double Rt, Rc, R1 ;
   double lambda; 
 
   /* computation of data */
@@ -177,9 +176,10 @@ long fem_steel_link_stability_simple(
   /* procedure: */
   lambda = 1.000 * L / ti ;
 
+#if 0
   Rc = 
     ( 
-     (1.0 + ((tF*lambda*lambda)/(FEM_PI*FEM_PI*E))+((te*A)/tW))
+     (1.0 + ( (tF*lambda*lambda )/(FEM_PI*FEM_PI*E))+((te*A)/tW))
      -
      sqrt(
        pow((1.0
@@ -196,6 +196,16 @@ long fem_steel_link_stability_simple(
     ;
 
 	Rt = 0.9 * tF ;
+#else
+  R1 = 1.0 + tF*pow(L/ti, 2)/(FEM_PI*FEM_PI*E) + ((L*te)/(ti*ti)) ;
+  Rc = (R1 - sqrt(R1*R1 - tF*A*((4.0*pow(L/ti,2))/(FEM_PI*FEM_PI*E*A)))
+      ) /
+    (
+     2.0*pow(L/ti,2)/(FEM_PI*FEM_PI*E*A)
+    );
+    
+	Rt = tF ;
+#endif
 
   if ((N/A) > fabs(Rt)) 
 	{
