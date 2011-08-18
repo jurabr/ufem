@@ -189,9 +189,8 @@ int e001_stiff(long ePos, long Mode, tMatrix *K_e, tVector *F_e, tVector *Fr_e)
 	  Ex = femGetMPValPos(ePos, MAT_EX, 0) ;
   }
 
-
 #ifdef DEVEL_VERBOSE
-	fprintf(msgout,"Ax = %e, Ex = %e, L=%f c=%f s=%f\n",Ax,Ex,L,c,s);
+  fprintf(msgout,"Ax = %e, Ex = %e, L=%f c=%f s=%f\n",Ax,Ex,L,c,s);
   fprintf(msgout, "Ex (m=4): %e\n", Ex);
 #endif
 	
@@ -205,7 +204,6 @@ int e001_stiff(long ePos, long Mode, tMatrix *K_e, tVector *F_e, tVector *Fr_e)
 
   FillTlink2d(c, s, &T) ;
 	femMatTran(&T, &T_T) ;
-
   
   if (fem2ndOrder == AF_YES)
   {
@@ -224,6 +222,8 @@ int e001_stiff(long ePos, long Mode, tMatrix *K_e, tVector *F_e, tVector *Fr_e)
   {
     e001_local_stiff_matrix(ePos, Mode, A, B, D,  K_e);
   }
+
+  femMatPrn(K_e, "K_E");
 
 	if (Mode == AF_YES) /* result, F_e, Fr_e */
 	{

@@ -138,7 +138,7 @@ int femEqsCGwJ(tMatrix *a, tVector *b, tVector *x, double eps, long maxIt)
 		{
 			rv = AF_ERR_ZER;
 #ifdef RUN_VERBOSE
- fprintf(msgout,"[ ]   %s[%li][%li] %s\n",_("matrix member"),i,i, _("has zero size"));
+ fprintf(msgout,"[ ]   %s[%li][%li] %s: %e\n",_("matrix member"),i,i, _("has zero size"), M.data[i-1]);
 #endif
 			goto memFree;
 		}
@@ -323,7 +323,7 @@ int femEqsBiCCSwJ(tMatrix *a, tVector *b, tVector *x, double eps, long maxIt)
 		{
 			rv = AF_ERR_ZER;
 #ifdef RUN_VERBOSE
- fprintf(msgout,"[ ]   %s[%li][%li] %s\n",_("matrix member"),i,i, _("has zero size"));
+ fprintf(msgout,"[ ]   %s[%li][%li] %s: %e\n",_("matrix member"),i,i, _("has zero size"),M.data[i-1]);
 #endif
 #if 1
 			goto memFree;
@@ -567,7 +567,7 @@ int femEqsPCGwJ(tMatrix *a, tVector *b, tVector *x, double eps, long maxIt)
 		{
 			rv = AF_ERR_ZER;
 #ifdef DEVEL_VERBOSE
- fprintf(msgout,"[ ]   %s[%li][%li] %s\n",_("matrix member"),i,i, _("has zero size"));
+ fprintf(msgout,"[ ]   %s[%li][%li] %s: %e\n",_("matrix member"),i,i, _("has zero size"), M.data[i-1]);
 #endif
 			goto memFree;
 		}
@@ -1053,7 +1053,7 @@ int femEqsCGwSSOR(tMatrix *a, tVector *b, tVector *x, double eps, long maxIt)
 		{
 			rv = AF_ERR_ZER;
 #ifdef RUN_VERBOSE
- fprintf(msgout,"[ ]   %s[%li][%li] %s\n",_("matrix member"),i,i, _("has zero size"));
+ fprintf(msgout,"[ ]   %s[%li][%li] %s: %e\n",_("matrix member"),i,i, _("has zero size"), val);
 #endif
 			goto memFree;
 		}

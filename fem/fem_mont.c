@@ -460,7 +460,7 @@ int monte_linear_solver(void)
   femVecClone(&Fr, &u) ;
 #endif
 
-	if ((rv = femEqsCGwSSOR(&K, &F, &u, FEM_ZERO/10000.0, K.rows)) != AF_OK) { goto memFree; }
+	if ((rv = femEqsCGwJ(&K, &F, &u, FEM_ZERO/10000.0, K.rows)) != AF_OK) { goto memFree; }
  	if ((rv = fem_fill_K(AF_YES)) != AF_OK) { goto memFree; }
 
   /* speedup code: */
@@ -652,7 +652,7 @@ int monte_fill_ofld_data(double *ofld)
 int monte_solution(char *param, double *ifld, double *ofld, long if_type)
 {
 	int rv = 0;
-  long i, j, pos, eT ;
+  long i, j, pos, pos0, eT ;
   double price = 0 ;
   double vprice, evol ;
 
@@ -677,21 +677,20 @@ int monte_solution(char *param, double *ifld, double *ofld, long if_type)
               ) ;
         break ;
       case MONTE_VTYPE_MAT: 
-          pos =  mpType[monte_io_item[i]] ;
+          pos0 =  mpType[monte_io_item[i]] ;
           pos = femGetRepValIndex(
                     monte_io_item[i], 
                     monte_io_subitem[i], 
 										monte_io_subitemiter[i],
 										mpValL, mpLenL,
 										mpFrom, mpLen,
-                    Mat[pos].val, Mat[pos].num, 
-                    Mat[pos].val_rp, Mat[pos].num_rp
+                    Mat[pos0].val, Mat[pos0].num, 
+                    Mat[pos0].val_rp, Mat[pos0].num_rp
 										);
-          if (pos  > -1)
+          if ((pos  > -1)&&( pos < mpLenL))
           {
             mpValL[pos] = ifld[monte_io_var_pos[i]] ;
           }
-
         break ;
 
       case MONTE_VTYPE_N:
@@ -786,16 +785,8 @@ int monte_solution(char *param, double *ifld, double *ofld, long if_type)
         price += vprice * evol ;
       }
 
-      if (ofld != NULL)
-      {
-        ofld[0] = price ;
-        fprintf(stdout,"%e\n", price); /* necessary for OPTIMIST */
-      }
-      else
-      {
-        fprintf(stdout,"%e\n", price);
-      }
-      return(rv);
+      fprintf(stdout,"%e\n", price);
+      exit(rv);
     }
     else
     {
