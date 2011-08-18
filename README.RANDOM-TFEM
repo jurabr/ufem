@@ -7,7 +7,7 @@ MATERIALS:
 rval,variable,1,mat_id,var_type
 
 NODES:
-rval,variable,2,[x=1,y=2,z=3]
+rval,variable,2,node_id,[x=1,y=2,z=3]
 
 LOADS and DISPLACEMENTS on nodes:
 rval,variable,3,node,type(1=disp,2=stiffness,3=force),direction(ux=1...rotz=6)
