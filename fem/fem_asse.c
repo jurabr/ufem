@@ -153,7 +153,7 @@ long fem_asse_mat_by_type(tVector *sigma, tVector *epsilon, long ePos)
   @return status: 1..failed, 0..not failed
 */
 long fem_steel_link_stability_simple(
-  double N,  /* normal force - computed */
+  double NN,  /* normal force - computed */
   double E,  /* young modullus          */
   double A,  /* element area            */
   double L,  /* element lenght          */
@@ -165,18 +165,16 @@ long fem_steel_link_stability_simple(
 {
   /* data for solution: */
   double ti; /* radius of garation      */
-  double tW; /* cross-section modullus  */
 	double Rt, Rc, R1 ;
-  double lambda; 
+  double N ;
 
   /* computation of data */
   ti = sqrt(tI/A);
-  tW = (tI / (0.5*tH)) ;
+
+  N = (-1.0) * NN ;
 
   /* procedure: */
-  lambda = 1.000 * L / ti ;
-
-  R1 = 1.0 + tF*pow(L/ti, 2)/(FEM_PI*FEM_PI*E) + ((L*te)/(ti*ti)) ;
+  R1 = 1.0 + (tF*pow(L/ti, 2)/(FEM_PI*FEM_PI*E)) + ((L*te*tH*0.5)/(ti*ti)) ;
   Rc = (R1 - sqrt(R1*R1 - tF*A*((4.0*pow(L/ti,2))/(FEM_PI*FEM_PI*E*A)))
       ) /
     (
@@ -185,7 +183,6 @@ long fem_steel_link_stability_simple(
     
   Rt = tF ;
 
-  
 	if ((N) < 0.0)
 	{
 		if (fabs(N) > fabs(Rc)) { return(1); }
@@ -193,7 +190,7 @@ long fem_steel_link_stability_simple(
 	}
 	else
 	{
-    if ((N/A) > fabs(Rt)) 
+    if (fabs(N/A) > fabs(Rt)) 
 	  {
 		  return(1) ;
 	  }
@@ -314,7 +311,10 @@ long fem_asse_fail_cond(void)
           }
 #endif
           /* steel link stability: */
-          if ((result = fem_test_steel_link_stability(i, eT)) != 0) {return(result);}
+          if ((result = fem_test_steel_link_stability(i, eT)) != 0) 
+          {
+             return(result);
+          }
           break ;
         case 2: /* plane */ 
           femVecPut(&stress3, 1, femGetEResVal(i, RES_SX, 0) );

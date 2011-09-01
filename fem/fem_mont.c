@@ -460,7 +460,7 @@ int monte_linear_solver(void)
   femVecClone(&Fr, &u) ;
 #endif
 
-	if ((rv = femEqsCGwJ(&K, &F, &u, FEM_ZERO/10000.0, K.rows)) != AF_OK) { goto memFree; }
+	if ((rv = femEqsCGwSSOR(&K, &F, &u, FEM_ZERO/10000.0, K.rows*3)) != AF_OK) { goto memFree; }
  	if ((rv = fem_fill_K(AF_YES)) != AF_OK) { goto memFree; }
 
   /* speedup code: */
@@ -661,7 +661,6 @@ int monte_solution(char *param, double *ifld, double *ofld, long if_type)
     ofld[monte_io_var_pos[i-monte_i_len]] = 0 ;
 	}
 
-
   /* TODO use ifld */
   for (i=0; i< monte_i_len; i++)
   {
@@ -793,7 +792,7 @@ int monte_solution(char *param, double *ifld, double *ofld, long if_type)
       if ((rv =  monte_linear_solver()) != AF_OK) { goto memFree ; }
     }
   }
- 
+
   /* RESULTS: fill ofld */
 	monte_fill_ofld_data(ofld) ;
   
