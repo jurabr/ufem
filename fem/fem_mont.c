@@ -32,6 +32,11 @@
 #ifdef USE_MONTE
 #include "fem_mont.h"
 
+#ifdef USE_WIN32
+#include <windows.h>
+#define EXPORT __declspec(dllexport)
+#endif
+
 
 extern void fem_sol_null(void);
 extern int fem_dofs(void);
@@ -121,12 +126,20 @@ memFree:
 }
 
 /* MONTE FUNCTIONS */
+#ifdef USE_WIN32
+EXPORT long monte_dlib_interface_type(void) { return(2) ; }
+#else
 long monte_dlib_interface_type(void) 
+#endif
 {
   return(2) ; /* 2 is for the advanced type */
 }
 
+#ifdef USE_WIN32
+EXPORT void monte_nums_of_vars(char *param, long *ilen, long *olen, long *ffunc)
+#else
 void monte_nums_of_vars(char *param, long *ilen, long *olen, long *ffunc)
+#endif
 {
   *ilen = monte_i_len ; /* required number of input variables */
   *olen = monte_o_len ; /* returned number of output variables */
@@ -134,7 +147,11 @@ void monte_nums_of_vars(char *param, long *ilen, long *olen, long *ffunc)
   return ;
 }
 
+#ifdef USE_WIN32
+EXPORT char *monte_ivar_name(char *param, long pos)
+#else
 char *monte_ivar_name(char *param, long pos)
+#endif
 {
   static char name[257];
   char dir[] = "_";
@@ -228,7 +245,11 @@ char *monte_ivar_name(char *param, long pos)
  * @param pos number of variable in field (0..n-1)
  * @return string with variable name
  */
+#ifdef USE_WIN32
+EXPORT char *monte_ovar_name(char *param, long pos)
+#else
 char *monte_ovar_name(char *param, long pos)
+#endif
 {
   static char name[257];
   char dir[]  = "__";
@@ -392,7 +413,11 @@ int monte_prep_outfile(char *param)
 }
 #endif
 
+#ifdef USE_WIN32
+EXPORT int monte_clean_lib_stuff(char *param)
+#else
 int monte_init_lib_stuff(char *param)
+#endif
 {
 #ifdef RUN_VERBOSE
 	msgout = stderr ; /* for output from "fprintf(msgout,...)" */
@@ -649,7 +674,11 @@ int monte_fill_ofld_data(double *ofld)
  * @param ifld random input data field
  * @param ofld output data field
  */
+#ifdef USE_WIN32
+EXPORT int monte_solution(char *param, double *ifld, double *ofld, long if_type /* ignored */)
+#else
 int monte_solution(char *param, double *ifld, double *ofld, long if_type)
+#endif
 {
 	int rv = 0;
   long i, j, pos, pos0, eT ;
@@ -756,7 +785,6 @@ int monte_solution(char *param, double *ifld, double *ofld, long if_type)
     }
   }
 
-
   femTangentMatrix = AF_NO ; /* workaround - we need empty result fields! */
 
   /* call solver here */
@@ -784,7 +812,7 @@ int monte_solution(char *param, double *ifld, double *ofld, long if_type)
         price += vprice * evol ;
       }
 
-      fprintf(stdout,"%e\n", price);
+      printf("%e\n", price);
       exit(rv);
     }
     else

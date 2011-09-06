@@ -54,9 +54,10 @@ LD=ld -shared
 #RANLIB=-i386-mingw32-ranlib
 
 # Win32 Debina/Ubuntu main crosscompiler:
-#CC=i586-mingw32msvc-gcc
+#CC=i586-mingw32msvc-gcc -DWIN32
 #AR=i586-mingw32msvc-ar r
 #RANLIB=-i586-mingw32msvc-ranlib
+#LD=/usr/bin/i586-mingw32msvc-gcc -shared -Wl,--out-implib,shell.a -DUSE_WIN32
 
 # ARM:
 #CC=arm-linux-gcc
@@ -188,6 +189,9 @@ fem: fem.o $(OBJECTS) fem_mont_no.o fem_newm.o $(FEATLIBS)
 
 # library for monte():
 libfem.so: fem_mont.o fem_newmmont.o $(OBJECTS)
+	$(LD) fem_mont.o fem_newmmont.o $(OBJECTS) -o $(@)
+
+libfem.dll: fem_mont.o fem_newmmont.o $(OBJECTS)
 	$(LD) fem_mont.o fem_newmmont.o $(OBJECTS) -o $(@)
 
 
