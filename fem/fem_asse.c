@@ -175,7 +175,7 @@ long fem_steel_link_stability_simple(
 
   /* procedure: */
   R1 = 1.0 + (tF*pow(L/ti, 2)/(FEM_PI*FEM_PI*E)) + ((L*te*tH*0.5)/(ti*ti)) ;
-  Rc = (R1 - sqrt(R1*R1 - tF*A*((4.0*pow(L/ti,2))/(FEM_PI*FEM_PI*E*A)))
+  Rc = (R1 - sqrt(R1*R1 - tF*((4.0*pow(L/ti,2))/(FEM_PI*FEM_PI*E)))
       ) /
     (
      2.0*pow(L/ti,2)/(FEM_PI*FEM_PI*E*A)
@@ -200,6 +200,7 @@ long fem_steel_link_stability_simple(
     }
 	}
 
+	return(0);
 }
 
 
