@@ -48,6 +48,7 @@ long femPrevStdInput   = AF_NO ; /* if prev. step's results are from stdin  */
 long femPrevThrStdIn   = AF_NO ; /* if prev. step's therm res. from stdin   */
 long femExtraResOut    = AF_NO ; /* if extra LINEAR results will be written */
 long femExtraResType   = 0     ; /* type of extra result data               */
+long femComputePE      = AF_NO ; /* compute potential energy                */
 
 #ifdef _USE_THREADS_
 long femUseThreads     = AF_NO ; /* if threads are used                 */
@@ -181,6 +182,7 @@ void fem_help(int argc, char *argv[])
 	fprintf(msgout,"   -tis      ... %s\n", _("read thermal results from stdin"));
 #endif /* end of _SMALL_FEM_CODE_*/
 	fprintf(msgout,"   -po       ... %s\n", _("compute structure price and write it to stdout"));
+	fprintf(msgout,"   -e        ... %s\n", _("compute potential energy and write it to stdout"));
 	fprintf(msgout,"   -h        ... %s\n", _("print this help"));
 #endif
 }
@@ -1060,6 +1062,12 @@ int fem_parse_params(int argc, char *argv[])
 		{
 			femComputePriceOnly = AF_YES ;
 		}
+
+		if (strcmp(argv[i],"-e") == 0)
+		{
+			femComputePE = AF_YES ;
+		}
+
 
 
 		/* help line */

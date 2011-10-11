@@ -149,6 +149,28 @@ void thrFree_K_mutex(void)
 }
 #endif
 
+/* Computes total potential energy of the structure */
+double femCompPE(tMatrix *K, tVector *u, int Print)
+{
+  double Pi = 0 ;
+	long   size ;
+	tVector Ku;
+
+	size = K->rows ;
+	femVecNull(&Ku);
+	if ((femVecFullInit(&Ku, size))!=AF_OK){goto memFree;}
+
+	femMatVecMultBig(K,u, &Ku);
+	Pi = femVecVecMultBig(&Ku, u) ;
+
+	if (Print == AF_YES) { fprintf(msgout, "[ ] %s: %e\n", _("Potential energy"), Pi); }
+
+memFree:
+	femVecFree(&Ku);
+  return(Pi);
+}
+
+
 
 /* sets some of matrices and vectors to NULL */
 void fem_sol_null(void)
@@ -1553,6 +1575,11 @@ int femSolve(void)
 		}
 	}
 #endif
+
+	if (femComputePE == AF_YES)
+	{
+    femCompPE(&K, &u, AF_YES ) ;
+	}
 
 memFree:
 	fem_sol_free();
