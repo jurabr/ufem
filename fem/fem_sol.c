@@ -1285,6 +1285,11 @@ int femSolveBC(void)
   if (femReadPrevStep == AF_YES) { femVecAddVec(&u, 1.0, &u_tot); }
 	if ((rv = femWriteRes(fem_output_file())) != AF_OK) { goto memFree; }
 
+	if (femComputePE == AF_YES)
+	{
+    femCompPE(&K, &u, AF_YES ) ;
+	}
+
 memFree:
 	fem_sol_free();
 	femDataFree();

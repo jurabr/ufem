@@ -1,3 +1,9 @@
+### Wed Oct 12 18:18:31 CEST 2011
+
+features:
+  + computation of potential energy added (lin. solver only)
+
+
 ### Thu Aug 11 16:00:26 CEST 2011
 
 version 0.3.6
