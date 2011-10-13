@@ -3,7 +3,6 @@ Most important:
 - remove MPI code (it's nearly useless)
 - orthotropy in element's direction (for timber etc.)
 - some kind of (s)hell
-- dynamics
 - 3D beam refuses to work
 - speedup: do not alocate K_e for each element
 - heat source loads in nodes (ignored for now)
@@ -30,6 +29,7 @@ Sci-Fi:
 
 
 Fixed:
+- dynamics (acceleration load only)
 - rewrite threads code (fixed?)
 - displacement control in non-linear solution
 - reading of data from previous results
