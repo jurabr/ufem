@@ -403,6 +403,7 @@ printf("LAMBDAS: d=%e  step=%f sum=%f, a_o=%e\n",d_lambda,lambda_step,lambda_sum
 #endif
 		}
 
+	  if (femComputePE == AF_YES) { femCompPE(&K, &u_tot, AF_YES ) ; }
   } /* end of "i .. steps" */
 
 	/* save final results: */
@@ -876,6 +877,8 @@ int femSolveALM(long incr_type)
 		}
 
 		laststp = i ;
+
+	  if (femComputePE == AF_YES) { femCompPE(&K, &u_tot, AF_YES ) ; }
   } /* for i */
 
 	/* save final results: */

@@ -567,6 +567,8 @@ printf("%i %i u=%e normF=%e norm_u=%e i\n",i,j,femVecGet(&u,3),femVecNormBig(&F)
         }
 	      if (femTangentMatrix == AF_YES) { femVecSwitch(&u_tot, &u); } /* really necessary? */
         solID++;
+
+				if (femComputePE == AF_YES) { femCompPE(&K, &u, AF_YES ) ; }
       }
 #endif
 	}
@@ -577,7 +579,6 @@ printf("%i %i u=%e normF=%e norm_u=%e i\n",i,j,femVecGet(&u,3),femVecNormBig(&F)
 	if ((rv = femWriteRes( fem_output_file() )) != AF_OK) { goto memFree; }
 
 	if (femTangentMatrix == AF_YES) { femVecSwitch(&u_tot, &u); } /* really necessary? */
-
 
 #ifdef RUN_VERBOSE
 	fprintf(msgout,"[I] NRM: %s.\n",_("Solution done"));

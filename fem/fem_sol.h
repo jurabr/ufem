@@ -90,6 +90,7 @@ extern int femSolveEigenLanczos(long max_iter, double eps);
 
 extern double fem_get_struct_price(long volume_only);
 extern int femComputePrice(void);
+extern double femCompPE(tMatrix *K, tVector *u, int Print);
 
 extern int femTestThermStructElems(void);
 #endif
