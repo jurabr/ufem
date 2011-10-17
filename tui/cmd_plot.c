@@ -31,6 +31,8 @@
 #include "fdb_mdef.h"
 #include "fdb_geom.h"
 
+extern long femActivePath;
+
 #ifdef _USE_GUI_
 extern int femPlot(void);
 extern void guiResizeMainWin(void);
@@ -53,9 +55,6 @@ extern int femCmdNumProcSolver ;
 #ifdef _USE_GFX_
 #include "fem_gfx.h"
 extern int femGfxWriteConfig_data(char *fname, char *atype);
-#endif
-#ifdef _USE_G2D_
-#include "fem_gfx.h" /* G2D ignores most of GFX */
 #endif
 
 extern int femUIWriteConfigFile(char *fname);
@@ -696,7 +695,79 @@ int func_gui_dialog (char *cmd)
 					) ;
 		}
 
+    if (strcmp(command,"pathdel") == 0)
+		{
+			title[0]=ciAllocStr(_("Path Number"));
+			value[0]=femInputStringFromPathList(-1);
+			femDataDialogSmall(
+					_("Delete Path"),
+					_("pathdel"),
+					1, title, value, AF_YES
+					) ;
+		}
+
+    if (strcmp(command,"actpath") == 0)
+		{
+			title[0]=ciAllocStr(_("Path Number"));
+			value[0]=femInputStringFromPathList(femActivePath);
+			femDataDialogSmall(
+					_("Set Active Path"),
+					_("actpath"),
+					1, title, value, AF_YES
+					) ;
+		}
+
+    if (strcmp(command,"pn") == 0)
+		{
+			title[0]=ciAllocStr(_("Node"));
+			value[0]=ciAllocStr(" ");
+			femDataDialogSmall(
+					_("Add Node to Path"),
+					_("pn"),
+					1, title, value, AF_YES
+					) ;
+		}
+
+    if (strcmp(command,"plpath") == 0)
+		{
+			title[0]=ciAllocStr(_("Type"));
+			value[0]=fdbFemStrEResListInt();
+			femDataDialogSmall(
+					_("Result to Plot on Path"),
+					_("plpath"),
+					1, title, value, AF_YES
+					) ;
+		}
+
+    if (strcmp(command,"prpath") == 0)
+		{
+			title[0]=ciAllocStr(_("Type"));
+			value[0]=fdbFemStrEResListInt();
+			femDataDialogSmall(
+					_("Result to List on Path"),
+					_("prpath"),
+					1, title, value, AF_YES
+					) ;
+		}
+
 		/* ---------------------------- */
+
+    if (strcmp(command,"path") == 0)
+		{
+			title[0]=ciAllocStr(_("Number"));
+			value[0]=ciAllocStr(" ");
+			title[1]=ciAllocStr(_("Name"));
+			value[1]=ciAllocStr(" ");
+			femDataDialogSmall(
+					_("Create Path"),
+					_("path"),
+					2, title, value, AF_YES
+					) ;
+		}
+
+
+
+    
 		/* ---------------------------- */
 		if (strcmp(command,"et") == 0)
 		{

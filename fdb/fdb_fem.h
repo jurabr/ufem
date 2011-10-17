@@ -396,6 +396,9 @@ extern void fdbFreeMatrixSpace(void);
 extern int fdbResizeMatrixSpace(long m_len);
 extern int fdbMatrixPrint(tMatrix *matrix, int type, char *fname, long rewrite);
 
+
+/* path operations */
+extern char *femInputStringFromPathList(long nummm);
 #endif
 
 /* end of fdb_fem.h */

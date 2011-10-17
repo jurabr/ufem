@@ -142,3 +142,43 @@ na tomté¾ místì ve {\em Stromu pøíkazù}.
 
 Pøíklady grafických výstupù programu byly uvedeny napøíklad
 na obrázku~\ref{p1model} nebo na~obrázku~\ref{p1sx}.
+
+
+
+\section{Øezy}
+
+Vybrané velièiny je mo¾né zobrazit ve formì øezù ({\em paths}). 
+Tato funkce není v souèasné dobì dostupná pomocí nabídek 
+nebo {\em Stromu pøíkazù} a je nutné pou¾ít pøíkazy.\footnote{Dal¹ím
+omezením je fakt, ¾e øezy vyu¾ívají stejný algoritmus jako
+vykreslování pomocí pøíkazu {\tt plns}. Pokud pro nìkterý koneèný
+prvek není tento druh vykreslení výsledkù implementován, pak v takovém
+pøípadì nebude fungovat ani kreslení øezù.}
+
+
+Postup vytvoøení øezu:
+\begin{enumerate}
+\item Zadání identifikátoru øezu (èíslo, jméno):\\
+{\tt
+path,[id],name
+}\\
+Kde {\tt id} je nepovinné èíslo øezu a {\tt name} je povinný název
+øezu (libovolný test o délce do 8 znakù bez mezer).
+\item Zadání jednotlivých uzlù definujících øez ({\tt uzel} je èíslo
+uzlu; tento parametr je povinný):
+{\tt \\
+pn,uzel
+}
+\end{enumerate}
+
+Vykreslení výsledku na takto vytvoøeném øezu je mo¾né provést
+pøíkazem {\tt plpath,result,zoom}, kde {\tt result} je identifikátor
+výsledku (napøíklad {\tt $s_x$} pro napìtí $\sigma_x$) a {\tt zoom}
+je nepovinný parametr mìøítka výsledku.
+
+K vypsání existujících øezù je mo¾né pou¾ít pøíkaz {\tt pathlist},
+odstranit øez lze pøíkazem {\tt pathdel,id}, kde {\tt id} je èíslo
+øezu (èíslo je mo¾né zjistit pøíkazem {\tt pathlist}).
+
+Je-li definováno více øezù, je mo¾né vykreslovat výsledky v¾dy jen na
+jednoz z nich -- k jeho volbì slou¾í pøíkaz {\tt actpath,id}.

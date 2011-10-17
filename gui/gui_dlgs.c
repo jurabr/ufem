@@ -959,6 +959,32 @@ GtkWidget *fem_cmd_tree(void)
       gtk_tree_store_set(treeStore,&treeIter,0,_("Node Solution.."),1,"dialog,plns",-1);
 #endif
 
+
+    gtk_tree_store_append(treeStore,&treeIter,&treeIterPar0);
+    gtk_tree_store_set(treeStore,&treeIter,0,_("Paths"),1,"",-1);
+
+      treeIterPar = treeIter;
+      gtk_tree_store_append(treeStore,&treeIter,&treeIterPar);
+      gtk_tree_store_set(treeStore,&treeIter,0,_("Create Path.."),1,"dialog,path",-1);
+
+      gtk_tree_store_append(treeStore,&treeIter,&treeIterPar);
+      gtk_tree_store_set(treeStore,&treeIter,0,_("List Paths"),1,"pathlist",-1);
+
+      gtk_tree_store_append(treeStore,&treeIter,&treeIterPar);
+      gtk_tree_store_set(treeStore,&treeIter,0,_("Delete Path.."),1,"dialog,pathdel",-1);
+
+      gtk_tree_store_append(treeStore,&treeIter,&treeIterPar);
+      gtk_tree_store_set(treeStore,&treeIter,0,_("Set Active Path.."),1,"dialog,actpath",-1);
+
+      gtk_tree_store_append(treeStore,&treeIter,&treeIterPar);
+      gtk_tree_store_set(treeStore,&treeIter,0,_("Add Node to Active Path.."),1,"dialog,pn",-1);
+
+      gtk_tree_store_append(treeStore,&treeIter,&treeIterPar);
+      gtk_tree_store_set(treeStore,&treeIter,0,_("Plot Results on Path.."),1,"dialog,prpath",-1);
+
+      gtk_tree_store_append(treeStore,&treeIter,&treeIterPar);
+      gtk_tree_store_set(treeStore,&treeIter,0,_("List Results on Path.."),1,"dialog,plpath",-1);
+
 #ifndef WIN32
     gtk_tree_store_append(treeStore,&treeIter,&treeIterPar0);
     gtk_tree_store_set(treeStore,&treeIter,0,_("Save Graphics"),1,"",-1);

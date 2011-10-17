@@ -1599,7 +1599,7 @@ char *fdbFemStrEResListInt(void)
 }
 
 
-/* Makes command separated string for possible dispalcement/force * types */
+/* Makes command separated string for possible displacement/force * types */
 char *fdbFemStrSuppForcTypListInt(char *dtype)
 {
   long restypes[270];

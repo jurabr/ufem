@@ -317,4 +317,79 @@ int femPathResPrn(FILE *fw, long path_num, long *res_type, long type_len)
   return(rv);
 }
 
+/** Creates string (comma separated values) from list of paths */
+char *femInputStringFromPathList(long nummm)
+{
+	char  num[1024];
+	char *tmp = NULL ;
+	long  plen = 0 ;
+	long  len = 0 ;
+	long  i,j ;
+
+  for (i=0; i<PATH_NUM; i++)
+  {
+    if (femPath[i].desc[0] == '\0' ) {break;}
+    plen++ ;
+  }
+
+  if (plen < 1) {return(" ");}
+
+
+  if (nummm > -1)
+  {
+    for (j=0; j<1024; j++) { num[j] = '\0' ; }
+		sprintf(num, "%li", (long)(nummm+1));
+    len = strlen(num+1);
+  }
+
+  for (i=0; i<plen; i++)
+  {
+    for (j=0; j<1024; j++) { num[j] = '\0' ; }
+		sprintf(num, "%li", (long)(i+1));
+    len = strlen(num+1);
+  }
+
+  len++;
+  	
+	if ((tmp = (char *)malloc((len+1)*sizeof(char))) == NULL)
+	{
+		return(" ");
+	}
+
+	for (i=0; i<=len; i++) {tmp[i] = '\0';}
+
+  if (nummm > -1)
+  {
+    for (j=0; j<1024; j++) { num[j] = '\0' ; }
+		sprintf(num, "%li", (long)(nummm+1));
+    len = strlen(num+1);
+    strcat(tmp,num);
+  }
+
+  for (i=0; i<plen; i++)
+  {
+    for (j=0; j<1024; j++) { num[j] = '\0' ; }
+		sprintf(num, "%li", i+1);
+
+    if (i == 0)
+    {
+      if (nummm > -1)
+      {
+         strcat(tmp,",");
+      }
+    }
+    else
+    {
+      strcat(tmp,",");
+    }
+    strcat(tmp,num);
+  }
+
+  printf("TMP _%s_\n", tmp);
+
+	return(tmp);
+}
+
+
+
 /* end of fdb_path.c */
