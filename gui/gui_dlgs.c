@@ -977,7 +977,10 @@ GtkWidget *fem_cmd_tree(void)
       gtk_tree_store_set(treeStore,&treeIter,0,_("Set Active Path.."),1,"dialog,actpath",-1);
 
       gtk_tree_store_append(treeStore,&treeIter,&treeIterPar);
-      gtk_tree_store_set(treeStore,&treeIter,0,_("Add Node to Active Path.."),1,"dialog,pn",-1);
+      gtk_tree_store_set(treeStore,&treeIter,0,_("Add Node to Path.."),1,"dialog,pn",-1);
+
+      gtk_tree_store_append(treeStore,&treeIter,&treeIterPar);
+      gtk_tree_store_set(treeStore,&treeIter,0,_("Add Node By Mouse.."),1,"gcreate,p",-1);
 
       gtk_tree_store_append(treeStore,&treeIter,&treeIterPar);
       gtk_tree_store_set(treeStore,&treeIter,0,_("Plot Results on Path.."),1,"dialog,prpath",-1);

@@ -3001,7 +3001,6 @@ int func_gfx_gcreate (char *cmd)
               if (femGfxCrtParam != NULL) 
                  {free(femGfxCrtParam); femGfxCrtParam = NULL;}
               break;
-#if 1
     case 'P':
     case 'p': plotProp.SelAct   = GFX_SELE_CRT_PATH ;
               plotProp.SelStuff = GFX_SELE_NODES ;
@@ -3014,7 +3013,6 @@ int func_gfx_gcreate (char *cmd)
               }
               break;
 
-#endif
     default:  femGfxCleanSelCrtStuff();
 							femGfxUnSetActiveSelectComman();
               fprintf(msgout, "[E] %s: \"%s\"!\n",_("Invalid entity"),dir );
