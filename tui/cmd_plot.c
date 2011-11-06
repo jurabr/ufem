@@ -50,6 +50,7 @@ extern void guiHidePickFrame(void);
 extern void	guiShowPickFrame(void);
 extern int femGUIWriteConfig_data(char *fname, char *atype) ;
 extern int femCmdNumProcSolver ;
+extern long *f_list_existing_rs(long *num);
 #endif
 
 #ifdef _USE_GFX_
@@ -185,6 +186,8 @@ int func_gui_dialog (char *cmd)
 	char  *command = NULL ;
 	char  *title[30] ;
 	char  *value[30] ;
+  long  *fld = NULL ;
+  long   fld_len = 0 ;
   long   enlen ;
   long   etpos, etyp ;
 	long    i ;
@@ -798,7 +801,13 @@ int func_gui_dialog (char *cmd)
 			title[0]=ciAllocStr(_("Identifier"));
 			value[0]=fdbFemStrFromInt(fdbInputFindMaxInt(RSET,RSET_ID)+1);
 			title[1]=ciAllocStr(_("Type"));
+#if 0
 			value[1]=ciListVarsCSV("etype");
+#else
+      fld = f_list_existing_rs(&fld_len);
+			value[1]=ciListVarsListedCSV("etype", fld, fld_len);
+      free(fld); fld=NULL;
+#endif
   		title[2]=ciAllocStr(_("Number of Repeating Data Sets"));
     	value[2]=ciAllocStr("0");
 			femDataDialogSmall(

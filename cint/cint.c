@@ -855,7 +855,7 @@ char *ciDbl2Str(double num)
 #ifndef __C99__
 		sprintf(tmp,"%e",num)  ; /* it's DANGEROUS - C99's snprintf will be better  */
 #else
-		snprintf(tmp,"%e",num,1024)  ; /* it's DANGEROUS - C99's snprintf will be better  */
+		snprintf(tmp,"%e",num,1024)  ; 
 #endif
 	}
 

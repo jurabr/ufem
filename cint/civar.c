@@ -566,7 +566,7 @@ char *ciListVarsCSVpreDef(char *group, long first)
 
 /** Returnes values from given group in string (comma separated)
  * @param group group of variables (string)
- * @param list fist of allowed variables
+ * @param list list of allowed variables
  * @param listlen length of list
  * @return status
  */

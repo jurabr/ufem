@@ -4,12 +4,13 @@ See fem/ChangeLog for solver changes.
 
 
 
-### Sun Nov  6 18:13:26 CET 2011
+### Sun Nov  6 18:59:39 CET 2011
 
 version 0.2.58
 
 features:
   + two more parameters for material 004 (non-compatible data change)
+  + GUI: RS types checked against existing ET in creation dialog
 
 
 

@@ -78,6 +78,11 @@ int f_rset_new_change(long id, long etyp, long rep_num)
 	int  found = AF_NO ;
 	int  i,j,jj ;
 
+  if (etyp <=0)
+  {
+    fprintf(msgout,"[E] %s: %li\n", _("Invalid element type"), etyp);
+		return(AF_ERR_VAL); /* invalid element type */
+  }
 
 	for (i=1; i<fdbElementTypeLen; i++)
 	{
@@ -370,6 +375,34 @@ int f_rs_list_prn(FILE *fw, long from, long to)
 
   rv = fdbPrnCloseFile(fw);
   return(rv);
+}
+
+
+/** Creates field with numbers of existing (and selected) rows */
+long *f_list_existing_rs(long *num)
+{
+  long *tmp = NULL ;
+  long  i, len, len0  ;
+  long  unum = 0 ;
+ *num = 0 ;
+
+  len =  fdbInputTabLenSel(ETYPE) ;
+  len0 =  fdbInputTabLenAll(ETYPE) ;
+
+  if ((tmp = femIntAlloc(len)) == NULL) {return(NULL);}
+
+  for (i=0; i<len0; i++)
+  {
+    if (unum >= len) { break; }
+    if (fdbInputTestSelect(ETYPE, i) == AF_YES)
+    {
+      tmp[unum] = fdbInputGetInt(ETYPE,ETYPE_TYPE,i) ;
+      unum++;
+    }
+  }
+  
+  *num = len ;
+  return(tmp);
 }
 
 /* end of fdb_rs.c */
