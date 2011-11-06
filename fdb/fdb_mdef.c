@@ -95,10 +95,10 @@ void fdbMatTypeInit_003(long type)
 void fdbMatTypeInit_004(long type)
 {
 	static long  id        = 4 ;
-	static long  vals      = 9 ;
-	static long  val[9]    = {MAT_DENS, MAT_EX, MAT_NU, MAT_G, MAT_COHES, MAT_FRICT, MAT_F_YC, MAT_HARD, MAT_PRICE};
-	static long  vals_rp   = 8 ;
-	static long  val_rp[8] = {MAT_DENS, MAT_EX, MAT_NU, MAT_G, MAT_COHES, MAT_FRICT, MAT_F_YC, MAT_HARD};
+	static long  vals      = 11 ;
+	static long  val[11]    = {MAT_DENS, MAT_EX, MAT_NU, MAT_G, MAT_COHES, MAT_FRICT, MAT_F_YC, MAT_HARD, MAT_PRICE, MAT_RAMB_K, MAT_RAMB_N};
+	static long  vals_rp   = 10 ;
+	static long  val_rp[11] = {MAT_DENS, MAT_EX, MAT_NU, MAT_G, MAT_COHES, MAT_FRICT, MAT_F_YC, MAT_HARD, MAT_RAMB_K, MAT_RAMB_N};
 
 	fdbMatType[type].id         = id ;
 	fdbMatType[type].vals       = vals ;

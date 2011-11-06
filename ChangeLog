@@ -4,6 +4,15 @@ See fem/ChangeLog for solver changes.
 
 
 
+### Sun Nov  6 18:13:26 CET 2011
+
+version 0.2.58
+
+features:
+  + two more parameters for material 004 (non-compatible data change)
+
+
+
 ### Mon Oct 17 23:32:20 CEST 2011
 
 features:
