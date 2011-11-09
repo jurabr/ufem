@@ -210,7 +210,7 @@ int vmis_deriv2D(tVector *deriv, tVector *stress)
 
   femVecPut(deriv,1, (2.0*s_x - s_y )) ;
   femVecPut(deriv,2, (2.0*s_y - s_x )) ;
-  femVecPut(deriv,3, (3.0 * t_xy)) ;
+  femVecPut(deriv,3, (6.0 * t_xy)) ;
 
   return(AF_OK);
 }
