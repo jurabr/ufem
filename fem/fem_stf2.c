@@ -34,7 +34,7 @@ extern int D_ConcCrack2D(long ePos, long iPoint, double A, tVector *epsilon, lon
 extern int sbet_get_D( long ePos, long iPoint, double A, tVector *epsilon, tVector *sigma, tVector *sigma_r, long newM, long Problem, tMatrix *D); /* fem_sbet.c */
 extern int fem_m09_D_2d( long ePos, long iPoint, double A, tVector *epsilon, long Mode, long Problem, tMatrix *D); 
 extern int chen2d_D(long ePos, long e_rep, long Problem, tVector *epsilon, long Mode, tMatrix *Dep);
-extern int fem_vmis_D_2D(long ePos, long e_rep, long Problem, tVector *sigma, tVector *epsilon, long Mode, tMatrix *Dep);
+extern int fem_vmis_D_2D(long ePos, long e_rep, long Problem, tVector *epsilon, long Mode, tMatrix *Dep);
 
 int D_Plane_Ortho(double R1, double R2, double nu, double beta, double fi_1, tMatrix *Dcr);
 
@@ -193,7 +193,7 @@ int fem_D_2D(long ePos, long iPoint, double A, tVector *epsilon, tVector *sigma,
         rv = chen2d_D(ePos, iPoint+1, Problem, epsilon, newM, D); 
 				break;
     case 4:
-        rv = fem_vmis_D_2D(ePos, iPoint+1, Problem, sigma, epsilon, newM, D);
+        rv = fem_vmis_D_2D(ePos, iPoint+1, Problem, epsilon, newM, D);
         break ;
 		case 8:
 				rv = sbet_get_D( ePos, iPoint, A, epsilon, sigma, sigma_r, newM, Problem, D);

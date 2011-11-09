@@ -70,7 +70,7 @@ int fem_create_cmd_aliases(void)
   /*if ((rv=ciAddVarGrp("chen3","3","mattype")) != AF_OK) {goto memFree;}*/
   if ((rv=ciAddVarGrp("plastic4","4","mattype")) != AF_OK) {goto memFree;}
   /*if ((rv=ciAddVarGrp("hooke5","5","mattype")) != AF_OK) {goto memFree;}*/
-  if ((rv=ciAddVarGrp("crack8","8","mattype")) != AF_OK) {goto memFree;}
+  /*if ((rv=ciAddVarGrp("crack8","8","mattype")) != AF_OK) {goto memFree;}*/
   /*if ((rv=ciAddVarGrp("clay9","9","mattype")) != AF_OK) {goto memFree;}*/
 
   /* names of boundary conditions */
@@ -146,7 +146,7 @@ int fem_create_cmd_aliases(void)
   if ((rv=ciAddVarGrp("height","3","real")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("angle1","4","real")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("rreinf1","5","real")) != AF_OK) {goto memFree;}
-  if ((rv=ciAddVarGrp("angle1","6","real")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("angle2","6","real")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("rreinf2","7","real")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("ix","8","real")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("iy","9","real")) != AF_OK) {goto memFree;}

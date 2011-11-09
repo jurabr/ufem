@@ -21,8 +21,6 @@
    02139, USA.
 
    FEM Solver - 3D von Mises plasticity condition
-
-   $Id: fem_vmis.c,v 1.2 2004/11/11 21:39:26 jirka Exp $
 */
 
 #include "fem_pl3d.h"
@@ -221,7 +219,6 @@ int vmis_deriv2D(tVector *deriv, tVector *stress)
 int fem_vmis_D_2D(long ePos, 
                   long e_rep, 
                   long Problem, 
-                  tVector *sigma, 
                   tVector *epsilon, 
                   long Mode, 
                   tMatrix *Dep)
@@ -232,24 +229,24 @@ int fem_vmis_D_2D(long ePos,
   double J2, f ;
   double H = 0.0 ;
   tVector deriv ;
+  tVector sigma ;
   tVector old_sigma ;
   tMatrix De ;
   long i ;
 
   femVecNull(&deriv) ;
   femVecNull(&old_sigma) ;
+  femVecNull(&sigma) ;
   femMatNull(&De) ;
 
   if ((rv=femVecFullInit(&deriv, 3)) != AF_OK){goto memFree;}
+  if ((rv=femVecFullInit(&sigma, 3)) != AF_OK){goto memFree;}
   if ((rv=femVecFullInit(&old_sigma, 3)) != AF_OK){goto memFree;}
   if ((rv=femFullMatInit(&De, 3, 3)) != AF_OK){goto memFree;}
 
   femVecPut(&old_sigma,1, femGetEResVal(ePos,RES_SX,e_rep));
   femVecPut(&old_sigma,2, femGetEResVal(ePos,RES_SY,e_rep));
-  femVecPut(&old_sigma,3, femGetEResVal(ePos,RES_SZ,e_rep));
-  femVecPut(&old_sigma,4, femGetEResVal(ePos,RES_SYZ,e_rep));
-  femVecPut(&old_sigma,5, femGetEResVal(ePos,RES_SZX,e_rep));
-  femVecPut(&old_sigma,6, femGetEResVal(ePos,RES_SXY,e_rep));
+  femVecPut(&old_sigma,3, femGetEResVal(ePos,RES_SXY,e_rep));
 
   Ex  = femGetMPValPos(ePos, MAT_EX,   0)  ;
   nu  = femGetMPValPos(ePos, MAT_NU,   0)  ;
@@ -281,10 +278,10 @@ int fem_vmis_D_2D(long ePos,
   
   if (Mode == AF_YES)
   {
-		femMatVecMult(Dep, epsilon, sigma) ;
-    for (i=1; i<=6; i++) { femVecAdd(sigma,i, femVecGet(&old_sigma, i)) ; }
+		femMatVecMult(Dep, epsilon, &sigma) ;
+    for (i=1; i<=3; i++) { femVecAdd(&sigma,i, femVecGet(&old_sigma, i)) ; }
 
-    J2 = stress2D_J2(sigma) ;
+    J2 = stress2D_J2(&sigma) ;
     f = (3.0*fabs(J2)) - (fy*fy) ;
 
     if (f < 0.0)
@@ -297,13 +294,13 @@ int fem_vmis_D_2D(long ePos,
     {
       /* plastic */
       D_HookIso_planeRaw(Ex, nu, Problem, &De);
-      vmis_deriv2D(&deriv, sigma) ;
+      vmis_deriv2D(&deriv, &sigma) ;
       chen_Dep(&deriv, H, &De, Dep) ;
 		  state = 1 ;
     }
 
-		femMatVecMult(Dep, epsilon, sigma) ;
-    for (i=1; i<=3; i++) { femVecAdd(sigma,i, femVecGet(&old_sigma, i)) ; }
+		femMatVecMult(Dep, epsilon, &sigma) ;
+    for (i=1; i<=3; i++) { femVecAdd(&sigma,i, femVecGet(&old_sigma, i)) ; }
 
 	  femPutEResVal(ePos, RES_STAT1, e_rep, state);
 	  femPutEResVal(ePos, RES_STAT2, e_rep, H);
@@ -312,6 +309,7 @@ int fem_vmis_D_2D(long ePos,
 memFree:
   femVecFree(&deriv) ;
   femVecFree(&old_sigma) ;
+  femVecFree(&sigma) ;
   femMatFree(&De) ;
   return(rv) ;
 }
