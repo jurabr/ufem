@@ -44,6 +44,7 @@ int vmis_deriv(tVector *deriv, tVector *stress, double s_e)
   t_zx = femVecGet (stress, 5 ) ;
   t_xy = femVecGet (stress, 6 ) ;
 
+#if 0
   femVecPut(deriv,1, ((2.0)*s_x - s_y - s_z)*1.5) ;
   femVecPut(deriv,2, ((2.0)*s_y - s_x - s_z)*1.5) ;
   femVecPut(deriv,3, ((2.0)*s_z - s_y - s_x)*1.5) ;
@@ -52,6 +53,14 @@ int vmis_deriv(tVector *deriv, tVector *stress, double s_e)
   femVecPut(deriv,6, (1.0 * t_xy)) ;
 
 	femValVecMultSelf(3.0/s_e, deriv);
+#else
+  femVecPut(deriv,1, ((2.0)*s_x - s_y - s_z)) ;
+  femVecPut(deriv,2, ((2.0)*s_y - s_x - s_z)) ;
+  femVecPut(deriv,3, ((2.0)*s_z - s_y - s_x)) ;
+  femVecPut(deriv,4, (6.0 * t_yz)) ;
+  femVecPut(deriv,5, (6.0 * t_zx)) ;
+  femVecPut(deriv,6, (6.0 * t_xy)) ;
+#endif
 
   return(AF_OK);
 }
@@ -228,6 +237,7 @@ int fem_vmis_D_2D(long ePos,
   double Ex, E1, nu, fy ;
   double J2, f ;
   double H = 0.0 ;
+  double k, n ;
   tVector deriv ;
   tVector sigma ;
   tVector old_sigma ;
@@ -252,8 +262,18 @@ int fem_vmis_D_2D(long ePos,
   nu  = femGetMPValPos(ePos, MAT_NU,   0)  ;
   fy  = femGetMPValPos(ePos, MAT_F_YC, 0)  ;
   E1  = femGetMPValPos(ePos, MAT_HARD, 0)  ;
+  if (E1 <= FEM_ZERO)
+  {
+    n  = femGetMPValPos(ePos, MAT_RAMB_N, 0)  ;
+    k  = femGetMPValPos(ePos, MAT_RAMB_K, 0)  ;
+  }
+  else
+  {
+    k = 0.0 ;
+    n = 0.0 ;
+  }
 
-	if (E1 == Ex) 
+	if  (E1 == Ex)
 	{
     return(femD_3D_iso(ePos, Ex, nu, Dep)); /* linear solution */
 	}
