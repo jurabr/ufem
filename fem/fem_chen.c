@@ -333,15 +333,16 @@ int chen_Dep(tVector *deriv, double H, tMatrix *De, tMatrix *Dep)
   fDf = femVecVecMult(deriv, &Df) ;
   ff  = sqrt(fabs(femVecVecMult(deriv, deriv))) ;
 
-  mult = fDf + (H*ff) ; /* is fabs() OK here? */
-
-#if 0
-  mult = fDf ;
+#if 9
+  mult = fDf - (H*ff) ; /* is fabs() OK here? */
+#else
+  mult = fDf - H ;
 #endif
 
 #ifdef DEVEL_VERBOSE
   fprintf(msgout,"fDf=%e H=%e\n", fDf, H);
 #endif
+  fprintf(msgout,"fDf=%e H=%e\n", fDf, H);
 
 #if 0
 #ifdef DEVEL_VERBOSE

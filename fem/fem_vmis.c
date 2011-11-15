@@ -31,6 +31,19 @@ extern int chen_Dep(tVector *deriv, double H, tMatrix *De, tMatrix *Dep);
 extern int D_HookIso_planeRaw(double E, double nu, long Problem, tMatrix *D);
 extern double stress2D_J2(tVector *stress) ;
 
+extern double fem_plast_H_linear(long ePos, 
+                      double E0,
+                      double E1,
+											double fy,
+                      double sigma);
+extern double fem_plast_H_RO(long ePos, 
+                      double k, 
+                      double n, 
+                      double E,
+                      double sigma);
+
+
+
 
 /* elasticity condition derivatives: */
 int vmis_deriv(tVector *deriv, tVector *stress, double s_e)
@@ -224,6 +237,17 @@ int vmis_deriv2D(tVector *deriv, tVector *stress)
   return(AF_OK);
 }
 
+double sigma_vmis2D(tVector *sigma)
+{
+	double sx, sy, sxy;
+
+	sx = femVecGet(sigma,1);
+	sy = femVecGet(sigma,2);
+	sxy = femVecGet(sigma,3);
+
+	return( sqrt((sx*sx + sy*sy -sx*sy + 3*sxy*sxy)));
+}
+
 /** von Mises elastoplastic matrix */
 int fem_vmis_D_2D(long ePos, 
                   long e_rep, 
@@ -279,10 +303,15 @@ int fem_vmis_D_2D(long ePos,
 	}
 	else
 	{
+#if 1
 		H = E1 / (1.0 - (E1/Ex) ) ; /* hardening parameter for bilinear behaviour */
+#else
+		H = fem_plast_H_linear(ePos, Ex, E1, fy, sigma_vmis2D(&sigma) );
+#endif
 	}
 
 	state =  (long)femGetEResVal(ePos, RES_STAT1, e_rep);
+	printf("#, %li\n", state);
 
   if (state == 0)
   {
