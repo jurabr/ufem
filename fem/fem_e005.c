@@ -369,7 +369,6 @@ int e005_shape_mat(long ePos, double mult_val, tMatrix *M_e, int all, long pos_w
 
 	if ((rv=femFullMatInit(&M_i,12,12)) != AF_OK) { goto memFree; }
 
-
 	if ((rv=femFullMatInit(&gauss,ipoints,2)) != AF_OK) { goto memFree; }
 
   /* gauss data */
