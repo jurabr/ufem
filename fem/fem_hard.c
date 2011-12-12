@@ -28,8 +28,7 @@
 
 #ifndef _SMALL_FEM_CODE_
 
-/** Computes Ramberg--Osgood approximation of H 
- */
+/** Computes Ramberg--Osgood approximation of H */
 double fem_plast_H_RO(long ePos, 
                       double k, 
                       double n, 
@@ -38,6 +37,22 @@ double fem_plast_H_RO(long ePos,
 {
   return ( (E / (k * n)) * pow(sigma/E , 1.0-n) );
 }
+
+/** Computes linear approximation of H 
+ */
+double fem_plast_H_linear(long ePos, 
+                      double E0,
+                      double E1,
+											double fy,
+                      double sigma)
+{
+#if 0
+  return ( sigma/ ( ((E0-E1)*(sigma-fy)) / (E0*E1)));
+#else
+  return ( (sigma*E1)/(sigma-fy));
+#endif
+}
+
 
 
 #endif
