@@ -42,7 +42,7 @@ int fem_e005_soil(long ePos,
     tMatrix *Me)
 {
   int rv = AF_OK ;
-  long    i,j;
+  long    i,j, ii, jj ;
   long    ipos = 0 ;
   long    ipoints = 2 ; /* number of integration points */
   double  x,y ;
@@ -51,18 +51,24 @@ int fem_e005_soil(long ePos,
   tMatrix gauss ;
   tMatrix H ;
   tMatrix HT ;
+  tMatrix C ;
+  tMatrix HTC ;
   tMatrix M_i ;
 
   /* cleaning of matrices: */
 	femMatNull(&gauss);
 	femMatNull(&H);
+	femMatNull(&C);
 	femMatNull(&HT);
+	femMatNull(&HTC);
 	femMatNull(&M_i);
 
   /* initialization of matrices: */
 	if ((rv=femFullMatInit(&gauss,ipoints,2)) != AF_OK) { goto memFree; }
 	if ((rv=femFullMatInit(&H,3,12)) != AF_OK) { goto memFree; }
+	if ((rv=femFullMatInit(&C,3,3)) != AF_OK) { goto memFree; }
 	if ((rv=femFullMatInit(&HT,12,3)) != AF_OK) { goto memFree; }
+	if ((rv=femFullMatInit(&HTC,12,3)) != AF_OK) { goto memFree; }
 	if ((rv=femFullMatInit(&M_i,12,12)) != AF_OK) { goto memFree; }
 
   if ((rv=e005_init_gauss(ipoints, &gauss)) != AF_OK) { goto memFree; }
@@ -93,19 +99,32 @@ int fem_e005_soil(long ePos,
 
         femMatSetZero(&M_i) ;
 
-        /* 60,6 x 6,60 = 60,60  */
-        femMatMatMult(&HT, &H, &M_i); /* TODO add "C" matrix here */
+        /* TODO add "C" matrix here
+				 *
+				 *
+				 */
+
+        femMatMatMult(&HT, &C, &HTC); 
+        femMatMatMult(&HTC, &H, &M_i); 
 
 				mult = detj * weight_x * weight_y ;
 
-        /* TODO: add "mult*M_i" to M_e */
+        /*  add "mult*M_i" to M_e: */
+				for (ii=1; ii<=12; ii++)
+        {
+          for (jj=1; jj<=12; jj++)
+          {
+            femMatAdd(Me,ii,jj, mult*femMatGet(&M_i,ii,jj));
+          }
+        }
     }
   }
 
-
 memFree:
   femMatFree(&H);
+  femMatFree(&C);
   femMatFree(&HT);
+  femMatFree(&HTC);
 	femMatFree(&M_i);
   femMatFree(&gauss);
   return(rv);

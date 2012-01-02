@@ -147,7 +147,6 @@ extern int femMatMatMult(tMatrix *a, tMatrix *b, tMatrix *c);
 extern int femMatLinComb(double am, tMatrix *a, double bm, tMatrix *b, tMatrix *c);
 extern int femMatTran(tMatrix *a, tMatrix *b);
 
-
 extern int femMatInv(tMatrix *a);
 
 extern int femEqsCGwJ(tMatrix *a, tVector *b, tVector *x, double eps, long maxIt);
