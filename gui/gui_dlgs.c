@@ -1060,6 +1060,7 @@ void close_prop_cmd(GtkWidget *item, gpointer data)
 	gtk_widget_destroy(propDlg);
 }
 
+#ifndef _USE_GTK_GL_AREA_
 void apply_cmd(GtkWidget *item, gpointer data)
 {
 	long i;
@@ -1078,7 +1079,7 @@ void apply_cmd(GtkWidget *item, gpointer data)
 	
 	for (i=0; i<entry_len; i++)
 	{
-		if ((GTK_IS_COMBO(entry[i])) == TRUE)
+		if (GTK_IS_COMBO(entry[i]) == TRUE)
 		{
 			/* combo */
 			if (
@@ -1146,6 +1147,92 @@ void apply_cmd(GtkWidget *item, gpointer data)
 	/* gtk_widget_destroy(dialogWin); */
 }
 
+void apply_big_cmd(GtkWidget *item, gpointer data)
+{
+	long i,j,k,l, kk;
+  char tmp[FEM_STR_LEN+1];
+	char *cmd = NULL ;
+	char *id = NULL ;
+
+	if (data == NULL)
+	{
+		fprintf(msgout,"[E] %s!\n", _("Command Undefined"));
+		return;
+	}
+
+	cmd = ciGetParStr((char *)data,0) ;
+	id  = ciGetParStr((char *)data,1) ;
+	
+	for (i=0; i<norep_len_big; i++)
+	{
+		if (GTK_IS_COMBO(entry_big[i]) == TRUE)
+		{
+			/* combo */
+        gui_run_cmd(ciStrCat4CmdPers(
+         cmd,
+				 (char *)gtk_label_get_text(GTK_LABEL(label[i])),
+				 id,
+				 (char *)gtk_entry_get_text( GTK_ENTRY(GTK_COMBO(entry_big[i])->entry))
+              ));
+		}
+		else
+		{
+      /* entry  */
+        gui_run_cmd(ciStrCat4CmdPers(
+         cmd,
+				 (char *)gtk_label_get_text(GTK_LABEL(label[i])),
+				 id,
+				 (char *)gtk_entry_get_text(GTK_ENTRY(entry_big[i]))
+              ));
+		}
+	}
+
+
+	for (k=1; k<=rep_len_num; k++)
+  {
+    if (k == 0)
+    {
+      kk = 0 ;
+    }
+    else
+    {
+      kk = norep_len_big ;
+    }
+
+    for (i=0; i<rep_len_big; i++)
+	  {
+      j = (norep_len_big + (k-1)*rep_len_big + i) ;
+
+      for (l=0; l<=FEM_STR_LEN; l++) {tmp[l] = '\0'; }
+      sprintf(tmp,"%li",k+1);
+
+		  if (GTK_IS_COMBO(entry_big[j]) == TRUE)
+		  {
+			  /* combo */
+          gui_run_cmd(ciStrCat5CmdPers(
+          cmd,
+				  (char *)gtk_label_get_text(GTK_LABEL(label[i+kk])),
+					id,
+				  (char *)gtk_entry_get_text( GTK_ENTRY(GTK_COMBO(entry_big[j])->entry)),
+					fdbFemStrFromInt(k)
+                ));
+		  }
+		  else
+		  {
+        /* entry  */
+          gui_run_cmd(ciStrCat5CmdPers(
+          cmd,
+				  (char *)gtk_label_get_text(GTK_LABEL(label[i+kk])),
+					id,
+				  (char *)gtk_entry_get_text(GTK_ENTRY(entry_big[j])),
+					fdbFemStrFromInt(k)
+                ));
+		  }
+	  }
+  }
+	free(cmd); cmd = NULL ;
+	free(id); id = NULL ;
+}
 
 void ok_cmd(GtkWidget *item, gpointer data)
 {
@@ -1153,6 +1240,50 @@ void ok_cmd(GtkWidget *item, gpointer data)
 	apply_cmd(item, data);
 	close_cmd(item, data);
 }
+
+void ok_big_cmd(GtkWidget *item, gpointer data)
+{
+	if (dialogWinBig  != NULL){ gtk_widget_hide((GtkWidget *)dialogWinBig) ; }
+	apply_big_cmd(item, data);
+	close_cmd_big(item, data);
+}
+
+/** Key presses for big dialog */
+gboolean key_press_big (GtkWidget *widget, GdkEventKey *event, gpointer *data)
+{
+  switch (event->keyval)
+  {
+    case GDK_Return:
+					ok_big_cmd(widget, data); 
+      return TRUE ;
+
+    case GDK_Escape: 
+					close_cmd_big(widget, NULL); 
+      return TRUE;
+  }
+
+  return FALSE;
+}
+/** Key presses for normal dialog */
+gboolean key_press_small (GtkWidget *widget, GdkEventKey *event, gpointer *data)
+{
+  switch (event->keyval)
+  {
+    case GDK_Return:
+					ok_cmd(widget, data); 
+      return TRUE ;
+
+    case GDK_Escape: 
+					close_cmd(widget, NULL); 
+      return TRUE;
+  }
+
+  return FALSE;
+}
+#endif
+
+
+
 #endif
 
 /** Dialog for: "command_and_params,VALUE1,VALUE2,..."*/
@@ -1254,6 +1385,11 @@ void femDataDialogSmall(char *title, char *cmd,
       "clicked",G_CALLBACK(ok_cmd), (gpointer) cmd);
 	gtk_widget_show(ok_button) ;
 
+#ifndef _USE_GTK_GL_AREA_
+	g_signal_connect(G_OBJECT(dialogWin), 
+			        "key_press_event", G_CALLBACK(key_press_small), (gpointer) cmd);
+#endif
+
 	if (Apply == AF_YES)
 	{
 		apply_button = gtk_button_new_with_label(_("Apply"));
@@ -1279,102 +1415,7 @@ void femDataDialogSmall(char *title, char *cmd,
 }
 
 /* ---------------------------------------------- */
-
-#ifndef _USE_GTK_GL_AREA_
-void apply_big_cmd(GtkWidget *item, gpointer data)
-{
-	long i,j,k,l, kk;
-  char tmp[FEM_STR_LEN+1];
-	char *cmd = NULL ;
-	char *id = NULL ;
-
-	if (data == NULL)
-	{
-		fprintf(msgout,"[E] %s!\n", _("Command Undefined"));
-		return;
-	}
-
-	cmd = ciGetParStr((char *)data,0) ;
-	id  = ciGetParStr((char *)data,1) ;
 	
-	for (i=0; i<norep_len_big; i++)
-	{
-		if (GTK_IS_COMBO(entry_big[i]) == TRUE)
-		{
-			/* combo */
-        gui_run_cmd(ciStrCat4CmdPers(
-         cmd,
-				 (char *)gtk_label_get_text(GTK_LABEL(label[i])),
-				 id,
-				 (char *)gtk_entry_get_text( GTK_ENTRY(GTK_COMBO(entry_big[i])->entry))
-              ));
-		}
-		else
-		{
-      /* entry  */
-        gui_run_cmd(ciStrCat4CmdPers(
-         cmd,
-				 (char *)gtk_label_get_text(GTK_LABEL(label[i])),
-				 id,
-				 (char *)gtk_entry_get_text(GTK_ENTRY(entry_big[i]))
-              ));
-		}
-	}
-
-
-	for (k=1; k<=rep_len_num; k++)
-  {
-    if (k == 0)
-    {
-      kk = 0 ;
-    }
-    else
-    {
-      kk = norep_len_big ;
-    }
-
-    for (i=0; i<rep_len_big; i++)
-	  {
-      j = (norep_len_big + (k-1)*rep_len_big + i) ;
-
-      for (l=0; l<=FEM_STR_LEN; l++) {tmp[l] = '\0'; }
-      sprintf(tmp,"%li",k+1);
-
-		  if (GTK_IS_COMBO(entry_big[j]) == TRUE)
-		  {
-			  /* combo */
-          gui_run_cmd(ciStrCat5CmdPers(
-          cmd,
-				  (char *)gtk_label_get_text(GTK_LABEL(label[i+kk])),
-					id,
-				  (char *)gtk_entry_get_text( GTK_ENTRY(GTK_COMBO(entry_big[j])->entry)),
-					fdbFemStrFromInt(k)
-                ));
-		  }
-		  else
-		  {
-        /* entry  */
-          gui_run_cmd(ciStrCat5CmdPers(
-          cmd,
-				  (char *)gtk_label_get_text(GTK_LABEL(label[i+kk])),
-					id,
-				  (char *)gtk_entry_get_text(GTK_ENTRY(entry_big[j])),
-					fdbFemStrFromInt(k)
-                ));
-		  }
-	  }
-  }
-	free(cmd); cmd = NULL ;
-	free(id); id = NULL ;
-}
-
-void ok_big_cmd(GtkWidget *item, gpointer data)
-{
-	if (dialogWinBig  != NULL){ gtk_widget_hide((GtkWidget *)dialogWinBig) ; }
-	apply_big_cmd(item, data);
-	close_cmd_big(item, data);
-}
-#endif
 
 /** Dialog for: "command_and_params,VALUE1,VALUE2,..."*/
 void femDataDialogBig(char *title, char *cmd, 
@@ -1540,6 +1581,11 @@ void femDataDialogBig(char *title, char *cmd,
   g_signal_connect(G_OBJECT(ok_button), 
       "clicked",G_CALLBACK(ok_big_cmd), (gpointer) cmd);
 	gtk_widget_show(ok_button) ;
+
+#ifndef _USE_GTK_GL_AREA_
+	g_signal_connect(G_OBJECT(dialogWinBig), 
+			        "key_press_event", G_CALLBACK(key_press_big), (gpointer) cmd);
+#endif
 
 	if (Apply == AF_YES)
 	{

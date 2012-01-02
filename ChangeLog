@@ -4,6 +4,15 @@ See fem/ChangeLog for solver changes.
 
 
 
+### Mon Jan  2 19:32:04 CET 2012
+
+version 0.2.58
+
+features:
+  + <Enter>, <Esc> can be used in dialogs for easier use
+
+
+
 ### Sun Nov  6 18:59:39 CET 2011
 
 version 0.2.58

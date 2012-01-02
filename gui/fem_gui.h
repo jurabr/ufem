@@ -50,6 +50,7 @@
 #include <gtkgl/gtkglarea.h>
 #else                    /* for Gtk+ 2.x */
 #include <gtk/gtkgl.h>
+#include <gdk/gdkkeysyms.h>
 #endif
 #endif
 

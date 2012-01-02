@@ -48,6 +48,7 @@ int fem_e005_soil(long ePos,
   double  x,y ;
   double  detj;
   double  weight_x,weight_y, mult ;
+  double  C1, C2x, C2y ;
   tMatrix gauss ;
   tMatrix H ;
   tMatrix HT ;
@@ -99,10 +100,14 @@ int fem_e005_soil(long ePos,
 
         femMatSetZero(&M_i) ;
 
-        /* TODO add "C" matrix here
-				 *
-				 *
-				 */
+        /* "C" matrix: */
+	      C1  = femGetRSValPos(ePos, RS_WINKLER, 0) ;
+        C2x = 0.0 ;
+        C2y = 0.0 ;
+        femMatSetZero(&C);
+        femMatPut(&C, 1,1, C1);
+        femMatPut(&C, 2,2, C2x);
+        femMatPut(&C, 3,3, C2y);
 
         femMatMatMult(&HT, &C, &HTC); 
         femMatMatMult(&HTC, &H, &M_i); 
