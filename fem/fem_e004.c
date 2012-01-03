@@ -186,13 +186,13 @@ int e004_stiff(long ePos, long Mode, tMatrix *K_e, tVector *F_e, tVector *Fr_e)
   femMatTran(&S, &St);
 
 	femMatMatMult(&St, &Bt, &StBt);
+	femMatMatMult(&StBt, &D, &StBtD);
 	femMatMatMult(&B, &S, &BS);
 	
   /* element stiffness matrix: */
   femMatMatMult(&StBtD, &BS, K_e);
 	volume = ( (a1*b2*c3 + c1*a2*b3 + a3*b1*c2) - (c1*b2*a3 + c3*b1*a2 + a1*b3*c2) ) / (6.0) ;
 	femValMatMultSelf(volume, K_e);
-
 
 	/* ====================================================================== */
 	if (Mode == AF_YES) /* result, F_e, Fr_e */
@@ -229,6 +229,7 @@ int e004_stiff(long ePos, long Mode, tMatrix *K_e, tVector *F_e, tVector *Fr_e)
       femVecPut(&sigma,   i, val2) ; /* current stress  */
       femVecPut(&d_sigma, i, val1) ; /* residual stress */
     }
+
 
     /* saving of results: */
 	  if (femTangentMatrix == AF_YES)
