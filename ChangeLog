@@ -4,6 +4,18 @@ See fem/ChangeLog for solver changes.
 
 
 
+### Fri Jan  6 21:03:55 CET 2012
+
+version 0.2.58
+
+features:
+  + import of tetrahedra mesh from TetGen (tetgen.org)
+
+bugfixes:
+  - bad string in "import" command
+
+
+
 ### Mon Jan  2 19:32:04 CET 2012
 
 version 0.2.58

@@ -796,6 +796,7 @@ int func_fem_import(char *cmd)
 	int    rv = AF_OK ;
 	char   *format  = NULL;
 	char   *fname   = NULL;
+	char   *fname1  = NULL;
 
 	FEM_TEST_PREPROCESSOR
 
@@ -873,17 +874,47 @@ int func_fem_import(char *cmd)
 			}
 			else
 			{
-		  	fprintf(msgout,"[E] %s!\n", _("Invalid file type"));
-      	rv = AF_ERR_VAL ; 
+        if (strcmp(format,"tetgen") == 0)
+        {
+          if (ciParNum(cmd) > 3) 
+          {
+            fname1  = ciGetParStr(cmd, 3) ;
+
+            if (fname1 == NULL)
+            {
+	  	        fprintf(msgout,"[E] %s!\n", _("Invalid name of secodn input file"));
+	            free(fname1) ;  fname1  = NULL ; goto memFree ;
+            }
+            if (strlen(fname1) < 1)
+            {
+	  	        fprintf(msgout,"[E] %s!\n", _("Invalid name of secodn input file"));
+	            free(fname1) ;  fname1  = NULL ; goto memFree ;
+            }
+            if ((fname1[0] == '\0')||(fname1[0] == ' ')||(fname1[0] == '\t')||(fname1[0] == ','))
+            {
+		  	      fprintf(msgout,"[E] %s!\n", _("Invalid name of secodn input file"));
+	            free(fname1) ;  fname1  = NULL ; goto memFree ;
+            }
+
+		  	    rv = fdbImport2(fname, fname1, 4, NULL, 0) ;
+	          free(fname1) ;  fname1  = NULL ; 
+          }
+        }
+        else
+        {
+		  	  fprintf(msgout,"[E] %s!\n", _("Invalid file type"));
+      	  rv = AF_ERR_VAL ; 
+        }
 			}
     }
 	}
 
   if (rv == AF_OK)
   {
-    fprintf(msgout,"[ ]  %s: %s\n",_("Data exported to file"), fname);
+    fprintf(msgout,"[ ]  %s: %s\n",_("Data exported from file"), fname);
   }
 
+memFree:
 	free(format) ; format = NULL ;
 	free(fname) ;  fname  = NULL ;
 

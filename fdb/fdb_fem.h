@@ -173,6 +173,7 @@ extern int fdbInputCleanData(void) ;
 
 extern int fdbExport(char *fname, long format, long *opts, long optlen);
 extern int fdbImport(char *fname, long format, long *opts, long optlen);
+extern int fdbImport2(char *fname, char *fname1, long format, long *opts, long optlen);
 
 
 /* ------------------------------------------------------------------ */

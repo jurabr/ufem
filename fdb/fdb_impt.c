@@ -651,6 +651,125 @@ int fdb_import_from_netgen(FILE *fr, long *opts, long optlen)
 	return(rv);
 }
 
+/** Imports data from NETGEN "neutral" mesh format  (UNTESTED!)
+ *  Note that only nodes and trinagual elems. are imported (no boundary elements)
+ * @param fr pointer to input file
+ * @param opts field of option (or NULL)
+ * @param optlen lenght of "opts"
+ * @return status
+ */
+int fdb_import_from_tetgen(FILE *fr, FILE *fr1, long *opts, long optlen)
+{
+  int  rv     = AF_OK ;
+	long i, j ;
+  long nlen, elen, id, eid, dim, nattr, nmark, nnum ;
+  /*long etyp0, etyp, et_id, set, rset, mat, nnum, pos;*/
+	long rset0, mat, etyp0, pos ;
+  long nodes[5];
+  double x, y, z ;
+  double tmp;
+
+
+  /* Nodes  ------------------------------------ */
+  fscanf(fr,"%li %li %li %li", &nlen, &dim, &nattr, &nmark);
+
+  if (nlen < 1)
+  {
+    fprintf(msgout,"[E] %s!\n", _("Invalid (too low) number of nodes")) ;
+    return(AF_ERR_SIZ);
+  }
+  if (dim != 3)
+  {
+    fprintf(msgout,"[E] %s!\n", _("Only 3D problems can be imported!")) ;
+    return(AF_ERR_SIZ);
+  }
+
+	id = fdbInputFindMaxInt(NODE, NODE_ID) ;
+
+  for (i=0; i<nlen; i++)
+  {
+    fscanf(fr,"%li %lf %lf %lf",&id,  &x, &y, &z);
+    for (j=0; j<nattr; j++) {fscanf(fr,"%lf", &tmp);}
+    for (j=0; j<nmark; j++) {fscanf(fr,"%lf", &tmp);}
+		rv =  f_n_new_change(id, x, y, z) ;
+    if (rv != AF_OK){return(rv);}
+  }
+
+
+  /* Elements  --------------------------------- */
+	etyp0 = fdbInputFindMaxInt(ETYPE, ETYPE_ID) ;
+	rset0 = fdbInputFindMaxInt(RSET, RSET_ID) ;
+	eid   = fdbInputFindMaxInt(ELEM, ELEM_ID) ;
+  mat   = fdbInputFindMaxInt(MAT, MAT_ID) ;
+
+  fscanf(fr1,"%li %li %li", &elen, &nnum, &nattr);
+
+  if (elen < 1)
+  {
+    fprintf(msgout,"[E] %s!\n", _("Invalid (too low) number of elements")) ;
+    return(AF_ERR_SIZ);
+  }
+  if (nnum != 4)
+  {
+    fprintf(msgout,"[E] %s!\n", _("Invalid  number of element nodes")) ;
+    return(AF_ERR_SIZ);
+  }
+
+	etyp0++ ;
+	rset0++ ;
+  mat++ ;
+
+	if ((rv = f_et_new_change(etyp0, 4 )) != AF_OK)
+  {
+    fprintf(msgout,"[E] %s!\n", _("Element type creation failed"));
+    return(rv);
+  }
+
+	if ((rv = f_rset_new_change(rset0, 4, 0)) != AF_OK)
+  {
+     fprintf(msgout,"[E] %s!\n", _("Real set creation failed"));
+     return(rv);
+  }
+
+  if ((rv = f_mat_new_change(mat, 1, 0)) != AF_OK)
+  {
+     fprintf(msgout,"[E] %s!\n", _("Material type creation failed"));
+     return(rv);
+  }
+
+  for (i=0; i<elen; i++)
+  {
+    fscanf(fr1,"%li %li %li %li %li", &eid, &nodes[0], &nodes[1], &nodes[2], &nodes[3] );
+
+    if (nattr > 0)
+    {
+      for (j=0; j<nattr; j++) { fscanf(fr1,"%li", &mat); }
+    }
+
+    if (nattr > 0)
+    {
+		  if (fdbInputCountInt(MAT, MAT_ID, mat, &pos) > 0)
+      {
+        /* no action required */
+      }
+      else
+      {
+        if ((rv = f_mat_new_change(mat, 1, 0)) != AF_OK)
+        {
+          fprintf(msgout,"[E] %s!\n", _("Material type creation failed"));
+          return(rv);
+        }
+      }
+    }
+
+	  f_e_new_change(eid, etyp0, rset0, mat, 4) ;
+
+		f_en_change(eid, nodes, 4) ;
+
+  } /* end for(elen) */
+
+	return(rv);
+}
 
 /** Calls import function
  * @param fname filename (including path and extension, if required)
@@ -706,4 +825,59 @@ int fdbImport(char *fname, long format, long *opts, long optlen)
     }
   }
 }
+
+/** Calls import function
+ * @param fname filename (including path and extension, if required)
+ * @param format file format (1=fem solver input,...)
+ * @param opts field of option (or NULL)
+ * @param optlen lenght of "opts"
+ * @return status
+ */
+int fdbImport2(char *fname, char *fname1, long format, long *opts, long optlen)
+{
+  int     rv  = AF_OK ;
+  FILE   *fr  = NULL ;
+  FILE   *fr1 = NULL ;
+
+  if ((fr = fopen(fname, "r")) == NULL)
+  {
+    fprintf(msgout, "[E] %s!\n", _("Cannot open import file with nodes"));
+    return(AF_ERR_IO);
+  }
+
+  if ((fr1 = fopen(fname1, "r")) == NULL)
+  {
+    fclose(fr);
+    fprintf(msgout, "[E] %s!\n", _("Cannot open import file with elements"));
+    return(AF_ERR_IO);
+  }
+
+  /* import */
+  switch (format)
+  {
+    case 4 : /* "TETGEN" mesh generator format */
+             if ((rv = fdb_import_from_tetgen(fr, fr1, opts, optlen)) != AF_OK)
+                { fprintf(msgout, "[E] %s!\n", _("Import failed")); }
+             break ;
+
+    default: /* unknown format */
+             fprintf(msgout, "[E] %s!\n", _("Unknown format"));
+             rv = AF_ERR_VAL ;
+             break ;
+  }
+
+  if (fclose(fr) != 0)
+  {
+    fprintf(msgout, "[E] %s!\n", _("Cannot close import file with nodes "));
+    rv = AF_ERR_IO;
+  }
+  if (fclose(fr1) != 0)
+  {
+    fprintf(msgout, "[E] %s!\n", _("Cannot close import file with elements"));
+    rv = AF_ERR_IO;
+  }
+
+  return(rv) ;
+}
+
 /* end of fdb_impt.c */
