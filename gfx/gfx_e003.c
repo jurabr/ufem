@@ -347,21 +347,21 @@ int gfx_e003_nres(long pos, long etype, long res)
 	  glEnd();
 
 	  glBegin(GL_POLYGON);
-	  	glVertex3f ( node[0][0], node[0][1], node[0][2] ) ;
-	      femGetResColor3f(val[0], &r, &g, &b); glColor4f(r,g,b,1.0);
-	  	glVertex3f ( node[2][0], node[2][1], node[2][2] ) ;
-	      femGetResColor3f(val[2], &r, &g, &b); glColor4f(r,g,b,1.0);
 	  	glVertex3f ( node[3][0], node[3][1], node[3][2] ) ;
 	      femGetResColor3f(val[3], &r, &g, &b); glColor4f(r,g,b,1.0);
+	  	glVertex3f ( node[2][0], node[2][1], node[2][2] ) ;
+	      femGetResColor3f(val[2], &r, &g, &b); glColor4f(r,g,b,1.0);
+	  	glVertex3f ( node[0][0], node[0][1], node[0][2] ) ;
+	      femGetResColor3f(val[0], &r, &g, &b); glColor4f(r,g,b,1.0);
 	  glEnd();
 
 	  glBegin(GL_POLYGON);
 	  	glVertex3f ( node[0][0], node[0][1], node[0][2] ) ;
 	      femGetResColor3f(val[0], &r, &g, &b); glColor4f(r,g,b,1.0);
-	  	glVertex3f ( node[3][0], node[3][1], node[3][2] ) ;
-	      femGetResColor3f(val[3], &r, &g, &b); glColor4f(r,g,b,1.0);
 	  	glVertex3f ( node[1][0], node[1][1], node[1][2] ) ;
 	      femGetResColor3f(val[1], &r, &g, &b); glColor4f(r,g,b,1.0);
+	  	glVertex3f ( node[3][0], node[3][1], node[3][2] ) ;
+	      femGetResColor3f(val[3], &r, &g, &b); glColor4f(r,g,b,1.0);
 	  glEnd();
 
 	  glBegin(GL_POLYGON);
