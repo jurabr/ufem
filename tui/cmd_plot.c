@@ -81,7 +81,7 @@ int func_gui_replot (char *cmd)
 	/* should be changed later with something more flexible */
 	if (femUI_Mode == FEM_UI_MODE_POST)
 	{ 
-    if ((plotStuff.eres != AF_YES)&&(plotStuff.path != AF_YES))
+    if ((plotStuff.eres != AF_YES)&&(plotStuff.path != AF_YES)&&(plotStuff.nres != AF_YES))
     {
       femSetPlotTitle(_("Results")) ;
     }

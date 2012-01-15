@@ -248,6 +248,14 @@ int fem_create_cmd_aliases(void)
 
   if ((rv=ciAddVarGrp("s_temp","71","result")) != AF_OK) {goto memFree;}
 
+  if ((rv=ciAddVarGrp("u_x","-1","result")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("u_y","-2","result")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("u_z","-3","result")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("rot_x","-4","result")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("rot_y","-5","result")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("rot_z","-6","result")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("u_temp","-7","result")) != AF_OK) {goto memFree;}
+
   /* gfx view parameters  */
   if ((rv=ciAddVarGrp("move_pos","1","view")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("move_neg","-1","view")) != AF_OK) {goto memFree;}

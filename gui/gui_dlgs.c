@@ -952,12 +952,12 @@ GtkWidget *fem_cmd_tree(void)
       gtk_tree_store_set(treeStore,&treeIter,0,_("Reactions"),1,"plrs",-1);
 
       gtk_tree_store_append(treeStore,&treeIter,&treeIterPar);
-      gtk_tree_store_set(treeStore,&treeIter,0,_("Element Solution.."),1,"dialog,ples",-1);
+      gtk_tree_store_set(treeStore,&treeIter,0,_("On Element.."),1,"dialog,ples",-1);
 
-#ifndef DISABLE_UNFINISHED
+/*#ifndef DISABLE_UNFINISHED*/
       gtk_tree_store_append(treeStore,&treeIter,&treeIterPar);
-      gtk_tree_store_set(treeStore,&treeIter,0,_("Node Solution.."),1,"dialog,plns",-1);
-#endif
+      gtk_tree_store_set(treeStore,&treeIter,0,_("On Nodes.."),1,"dialog,plns",-1);
+/*#endif*/
 
 
     gtk_tree_store_append(treeStore,&treeIter,&treeIterPar0);

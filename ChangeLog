@@ -4,7 +4,7 @@ See fem/ChangeLog for solver changes.
 
 
 
-### Sun Jan 15 15:34:17 CET 2012
+### Sun Jan 15 18:59:57 CET 2012
 
 version 0.2.61
 
@@ -13,6 +13,7 @@ features:
 
 bugfixes:
   - Czech documentation
+  - missing item label in plns
 
 
 
