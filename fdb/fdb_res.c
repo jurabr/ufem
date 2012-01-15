@@ -1610,6 +1610,11 @@ int fdbAvResPrepareData(long len, long *times, long *types)
   int   dataok = AF_YES ;
   long  i ;
 
+  if (len > 1)
+  {
+    if (types[0] < 0) {return(AF_OK);}
+  }
+  
   /* place test here: data may be special,
    * if not then search inside normal data */
 
@@ -1676,12 +1681,28 @@ int fdbAvResMaxMin(long pos, double *max, double *min)
 double fdbAvResGetVal(long type, long n_pos)
 {
   int    i ;
+  double val ;
 
-  for (i=0; i<aResLen; i++)
+  if (type > 0)
   {
-    if (aRes[i].type == type)
+    for (i=0; i<aResLen; i++)
     {
-      return(aRes[i].data[n_pos]) ;
+      if (aRes[i].type == type)
+      {
+        return(aRes[i].data[n_pos]) ;
+      }
+    }
+  }
+  else
+  {
+    if (type < 0)
+    {
+      if (labs(type) <= KNOWN_DOFS)
+      {
+        i = n_pos ;
+        val = ResNode[ResActStep].data[ResNode[ResActStep].from[i]+(labs(type)-1)];
+        return(val);
+      }
     }
   }
   return(0.0) ;

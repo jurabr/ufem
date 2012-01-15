@@ -34,7 +34,7 @@
 #include "fem_comm.h"
 #include "fdb.h"
 
-#define FEM_TUI_RELEASE "uFEM 0.2.60"
+#define FEM_TUI_RELEASE "uFEM 0.2.61"
 
 #define FEM_TUI_PROMPT "uFEM >"
 

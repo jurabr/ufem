@@ -206,7 +206,15 @@ int femGfxNodeResults(long res_type)
     return(rv) ; 
   }
 
-  fdbAvResMaxMin(0, &max, &min) ;
+  if (res_type < 0) /* displacements */
+  {
+    if (labs(res_type) > KNOWN_DOFS ) {return(AF_ERR_VAL);}
+    fdbResMaxMinNode(labs(res_type)-1, &max, &min);
+  }
+  else /* Really averaged results */
+  {
+    fdbAvResMaxMin(0, &max, &min) ;
+  }
 
 	femColPalSet(&femPal, plotProp.palLen, max, min); /* setting of colors */
 
