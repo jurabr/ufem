@@ -732,35 +732,37 @@ int f_ent_create_dim( long type, long id, double x, double y, double z, double d
 }
 
 
-/** Creates rectangular area from given coordinates (x,y,dx,dy)
+/** Creates brck from area
  *
  */
 int f_ent_extrude_area(
     long  area_id, 
-    long  kps_len, 
-    long *kps, 
+    long  d_len, /* 1 or 2 */
+    double *dx0, 
+    double *dy0,
+    double *dz0,
     long  et, 
     long  rs,
     long  mat,
-    long  div)
+    long  zdiv)
 {
   int rv= AF_OK ;
-  long   posi ;
   long   nid[20] ;
   double xi[20] ;
   double yi[20] ;
   double zi[20] ;
-  long   i ;
-  long   klen ;
-  long   type, type3d, pos ;
+  long   i, i_pos ;
+  long   pos, npos, type, posi, dpos ;
+  long   div[3];
   int    test ;
+  long   id = 0;
+  long   klen ;
+  double dx[2] ;
+  double dy[2] ;
+  double dz[2] ;
 
-  long   id ;
-  double x,y,z,dx,dy,dz ;
 
-  for (i=0; i<20; i++) { xi[i] = 0 ; yi[i] = 0 ; zi[i] = 0 ; }
-
-  /* TODO Get area type */
+  /* Get area type */
   if (fdbInputCountInt(ENTITY,ENTITY_ID, area_id, &pos) < 1)
   {
 #ifdef RUN_VERBOSE
@@ -771,79 +773,150 @@ int f_ent_extrude_area(
 
   type = fdbInputGetInt(ENTITY,ENTITY_TYPE,pos) ;
 
-#if 0
+  if ((type != 2) && (type != 5))
+  {
+    fprintf(stdout,"[E] %s!\n", _("This entity type can not be extruded"));
+    return(AF_ERR_VAL);
+  }
+
+  /* get divisions: */
+  if (fdbInputCountInt(ENTDIV, ENTDIV_ENT, area_id, &dpos) < 1)
+	{
+    fprintf(msgout,"[E] %s!\n", _("Invalid entity - please delete it"));
+    return(AF_ERR_EMP);
+	}
+  for (i=0; i<2; i++) { div[i] = fdbInputGetInt(ENTDIV, ENTDIV_DIV, dpos+i); }
+  div[2] = zdiv ;
+
+  if (d_len > 1)
+  {
+    for (i=0; i<2; i++) /* TODO replace with roper code */
+    {
+      dx[i] = dx0[i];
+      dy[i] = dy0[i];
+      dz[i] = dz0[i];
+    }
+  }
+  else
+  {
+    dx[0] = dx0[0] * 0.5;
+    dy[0] = dy0[0] * 0.5;
+    dz[0] = dz0[0] * 0.5;
+
+    dx[1] = dx0[0] ;
+    dy[1] = dy0[0] ;
+    dz[1] = dz0[0] ;
+  }
+
+  for (i=0; i<20; i++) { xi[i] = 0 ; yi[i] = 0 ; zi[i] = 0 ; nid[i] = -1 ; }
+
   switch (type)
   {
-    case 2: klen =  4 ;
-            xi[0] = x    ; yi[0] = y    ;
-            xi[1] = x+dx ; yi[1] = y    ;
-            xi[2] = x+dx ; yi[2] = y+dy ;
-            xi[3] = x    ; yi[3] = y+dy ;
+    case 2: /* rectangle -> brick */
+      klen = 8 ;
+      for (i=0; i<4; i++) /* get nodes from area */
+      {
+  	    npos = fdbEntKpPos(pos, i) ;
+        nid[i] = fdbInputGetInt(KPOINT, KPOINT_ID, pos);
+	      xi[i] = fdbInputGetDbl(KPOINT, KPOINT_X, npos) ;
+	      yi[i] = fdbInputGetDbl(KPOINT, KPOINT_Y, npos) ;
+	      zi[i] = fdbInputGetDbl(KPOINT, KPOINT_Z, npos) ;
+      }
 
-            break ;
-    case 3: klen =  8 ;
-            xi[0] = x    ; yi[0] = y    ; zi[0] = z ;
-            xi[1] = x+dx ; yi[1] = y    ; zi[1] = z ;
-            xi[2] = x+dx ; yi[2] = y+dy ; zi[2] = z ;
-            xi[3] = x    ; yi[3] = y+dy ; zi[3] = z ;
+      for (i=4; i<8; i++) /* expand nodes */
+      {
+        xi[i] = xi[i-4] + dx[0] ;
+        yi[i] = yi[i-4] + dy[0] ;
+        zi[i] = zi[i-4] + dz[0] ;
 
-            for (i=4; i<8; i++)
-            {
-              xi[i] = xi[i-4] ;
-              yi[i] = yi[i-4] ;
-              zi[i] = z + dz ;
-            }
+        posi = -1 ;
+	      posi = found_suitable_kpoint(xi[i], yi[i], zi[i], fdbDistTol, &test);
 
-            break ;
-    case 4: klen = 20 ;
-            xi[0] = x    ; yi[0] = y    ; zi[0] = z ;
-            xi[1] = x+(0.5)*dx ; yi[1] = y    ; zi[1] = z ;
-            xi[2] = x+dx ; yi[2] = y    ; zi[2] = z ;
-            xi[3] = x+dx ; yi[3] = y+(0.5*dy)    ; zi[3] = z ;
-            xi[4] = x+dx ; yi[4] = y+dy    ; zi[4] = z ;
-            xi[5] = x+(0.5*dx) ; yi[5] = y+dy    ; zi[5] = z ;
-            xi[6] = x ; yi[6] = y+dy    ; zi[6] = z ;
-            xi[7] = x ; yi[7] = y+(0.5*dy)    ; zi[7] = z ;
+        if (posi < 0)
+        {
+          if (f_k_new_change(0, xi[i], yi[i], zi[i], &nid[i]) != AF_OK){return(AF_ERR);}
+          if (fdbInputCountInt(KPOINT, KPOINT_ID, nid[i], &posi) <= 0){return(AF_ERR);}
+        }
+        else
+        {
+          nid[i] = fdbInputGetInt(KPOINT, KPOINT_ID, posi) ;
+        }
+      }
+      break ;
 
-            xi[8] = x ; yi[8] = y  ; zi[8] = z+(0.5*dz) ;
-            xi[9] = x+dx ; yi[9] = y  ; zi[9] = z+(0.5*dz) ;
-            xi[10] = x+dx; yi[10] = y+dy ; zi[10] = z+(0.5*dz) ;
-            xi[11] = x; yi[11] = y+dy ; zi[11] = z+(0.5*dz) ;
+    case 5 /* cv rectangle -> cv brick */:
+      klen = 20 ;
+      for (i=0; i<8; i++) /* get nodes from area */
+      {
+  	    npos = fdbEntKpPos(pos, i) ;
+        nid[i] = fdbInputGetInt(KPOINT, KPOINT_ID, pos);
+	      xi[i] = fdbInputGetDbl(KPOINT, KPOINT_X, npos) ;
+	      yi[i] = fdbInputGetDbl(KPOINT, KPOINT_Y, npos) ;
+	      zi[i] = fdbInputGetDbl(KPOINT, KPOINT_Z, npos) ;
+      }
 
-            for (i=12; i<20; i++)
-            {
-              xi[i] = xi[i-12] ;
-              yi[i] = yi[i-12] ;
-              zi[i] = z + dz ;
-            }
+      for (i=8; i<12; i++) /* expand nodes */
+      {
+        i_pos = (i - 8) * 2 ; /* 0 2 4 6 */
 
-            break ;
+        xi[i] = xi[i_pos] + dx[0] ;
+        yi[i] = yi[i_pos] + dy[0] ;
+        zi[i] = zi[i_pos] + dz[0] ;
+
+        posi = -1 ;
+	      posi = found_suitable_kpoint(xi[i], yi[i], zi[i], fdbDistTol, &test);
+
+        if (posi < 0)
+        {
+          if (f_k_new_change(0, xi[i], yi[i], zi[i], &nid[i]) != AF_OK){return(AF_ERR);}
+          if (fdbInputCountInt(KPOINT, KPOINT_ID, nid[i], &posi) <= 0){return(AF_ERR);}
+        }
+        else
+        {
+          nid[i] = fdbInputGetInt(KPOINT, KPOINT_ID, posi) ;
+        }
+      }
+
+      for (i=12; i<20; i++) /* expand nodes */
+      {
+        i_pos = (i - 12)  ; /* 0 2 4 6 */
+
+        xi[i] = xi[i_pos] + dx[1] ;
+        yi[i] = yi[i_pos] + dy[1] ;
+        zi[i] = zi[i_pos] + dz[1] ;
+
+        posi = -1 ;
+	      posi = found_suitable_kpoint(xi[i], yi[i], zi[i], fdbDistTol, &test);
+
+        if (posi < 0)
+        {
+          if (f_k_new_change(0, xi[i], yi[i], zi[i], &nid[i]) != AF_OK){return(AF_ERR);}
+          if (fdbInputCountInt(KPOINT, KPOINT_ID, nid[i], &posi) <= 0){return(AF_ERR);}
+        }
+        else
+        {
+          nid[i] = fdbInputGetInt(KPOINT, KPOINT_ID, posi) ;
+        }
+      }
+      break ;
+
     default: 
             fprintf(msgout,"[E] %s!\n",_("Invalid type of geometric entity"));
             return(AF_ERR_VAL); 
             break;
   }
 
-
-  for (i=0; i<klen; i++)
+  /* Common for both types: */
+  if ((rv=f_entkp_change(id, nid, klen, type)) != AF_OK )
   {
-    posi = -1 ;
-	  posi = found_suitable_kpoint(xi[i], yi[i], zi[i], fdbDistTol, &test);
-
-    if (posi < 0)
-    {
-      if (f_k_new_change(0, xi[i], yi[i], zi[i], &nid[i]) != AF_OK){return(AF_ERR);}
-      if (fdbInputCountInt(KPOINT, KPOINT_ID, nid[i], &posi) <= 0){return(AF_ERR);}
-    }
-    else
-    {
-      nid[i] = fdbInputGetInt(KPOINT, KPOINT_ID, posi) ;
-    }
+    return(rv);
+  }
+  else
+  {
+	  id = fdbInputFindMaxInt(ENTITY, ENTITY_ID) ;
+    f_entkp_div_change(id, div, 3);
   }
 
-  if ((rv=f_entkp_change(id, nid, klen, type)) != AF_OK ){return(rv);}
-
-#endif
   return(rv);
 }
 
