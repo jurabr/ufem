@@ -149,6 +149,42 @@ int fdbMeshEnt001(long entPos)
 }
 
 
+void fdbMeshGeomFuncCvRect(double *xr, double *yr, double *zr, double xi, double yi, double zi, double *x, double *y, double *z)
+{
+  int i ;
+  double xv[21] = {0,-1, 0, 1, 1, 1,-1,-1,-1,-1, 1, 1,-1,-1, 0, 1, 1, 1, 0,-1,-1};
+  double yv[21] = {0,-1,-1,-1, 0, 1, 1, 1, 0,-1,-1, 1, 1,-1,-1,-1, 0, 1, 1, 1, 0};
+  double zv[21] = {0,0,0,0,0,0,0,0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+	long p_a_nodes[8]={1,3,5,7,13,15,17,19};
+	long p_b_nodes[4]={2,6,14,18};
+	long p_c_nodes[4]={4,8,16,20};
+
+  *x = 0.0 ;
+  *y = 0.0 ;
+  *z = 0.0 ;
+
+  for (i=0; i<4; i++)
+  {
+    *x += 0.25*(1.0+xv[p_a_nodes[i]]*xi)*(1.0+yv[p_a_nodes[i]]*yi)*(1.0+zv[p_a_nodes[i]]*zi) *(xv[p_a_nodes[i]]*xi+yv[p_a_nodes[i]]*yi+zv[p_a_nodes[i]]*zi-1.0) * xr[p_a_nodes[i]-1]  ;
+    *y += 0.25*(1.0+xv[p_a_nodes[i]]*xi)*(1.0+yv[p_a_nodes[i]]*yi)*(1.0+zv[p_a_nodes[i]]*zi) *(xv[p_a_nodes[i]]*xi+yv[p_a_nodes[i]]*yi+zv[p_a_nodes[i]]*zi-1.0) * yr[p_a_nodes[i]-1]  ;
+    *z += 0.25*(1.0+xv[p_a_nodes[i]]*xi)*(1.0+yv[p_a_nodes[i]]*yi)*(1.0+zv[p_a_nodes[i]]*zi) *(xv[p_a_nodes[i]]*xi+yv[p_a_nodes[i]]*yi+zv[p_a_nodes[i]]*zi-1.0) * zr[p_a_nodes[i]-1]  ;
+  }
+
+	for (i=0; i<2; i++)
+  {
+    *x += 0.5*(1.0-xi*xi)*(1.0+yv[p_b_nodes[i]]*yi)*(1.0+zv[p_b_nodes[i]]*zi) * xr[p_b_nodes[i]-1]  ;
+    *y += 0.5*(1.0-xi*xi)*(1.0+yv[p_b_nodes[i]]*yi)*(1.0+zv[p_b_nodes[i]]*zi) * yr[p_b_nodes[i]-1]  ;
+    *z += 0.5*(1.0-xi*xi)*(1.0+yv[p_b_nodes[i]]*yi)*(1.0+zv[p_b_nodes[i]]*zi) * zr[p_b_nodes[i]-1]  ;
+  }
+
+	for (i=0; i<2; i++)
+  {
+    *x += 0.5*(1.0+xv[p_c_nodes[i]]*xi)*(1.0-yi*yi)*(1.0+zv[p_c_nodes[i]]*zi) * xr[p_c_nodes[i]-1]  ;
+    *y += 0.5*(1.0+xv[p_c_nodes[i]]*xi)*(1.0-yi*yi)*(1.0+zv[p_c_nodes[i]]*zi) * yr[p_c_nodes[i]-1]  ;
+    *z += 0.5*(1.0+xv[p_c_nodes[i]]*xi)*(1.0-yi*yi)*(1.0+zv[p_c_nodes[i]]*zi) * zr[p_c_nodes[i]-1]  ;
+  }
+}
+
 void fdbMeshGeomFuncRect(double *xr, double *yr, double *zr, double xi, double yi, double zi, double *x, double *y, double *z)
 {
   int i ;
@@ -180,9 +216,9 @@ int fdbMeshEnt002(long entPos)
   long   i, j ;
   long   sum ;
   double x,y,z ;
-  double xi[4] ;
-  double yi[4] ;
-  double zi[4] ;
+  double xi[8] ;
+  double yi[8] ;
+  double zi[8] ;
 
   entnum = fdbInputGetInt(ENTITY, ENTITY_ID, entPos) ;
 
@@ -211,7 +247,7 @@ int fdbMeshEnt002(long entPos)
   }
 
 
-  for (i=0; i<4; i++)
+  for (i=0; i<8; i++)
   {
   	npos = fdbEntKpPos(entPos, i) ;
 	  xi[i] = fdbInputGetDbl(KPOINT, KPOINT_X, npos) ;
@@ -955,6 +991,140 @@ int fdbMeshEnt004(long entPos)
   return(rv);
 }
 
+int fdbMeshEnt005(long entPos)
+{
+  int    rv = AF_OK ;
+  long  *nodes = NULL ;
+  long   entnum ;
+  long   ilen,jlen, nlen, npos, posn, n_id, e_id ;
+	int    test ;
+  long   et, rs, mat, set ;
+  long   enodelist[4] ;
+  long   i, j ;
+  long   sum ;
+  double x,y,z ;
+  double xi[8] ;
+  double yi[8] ;
+  double zi[8] ;
+
+  entnum = fdbInputGetInt(ENTITY, ENTITY_ID, entPos) ;
+
+  if (fdbInputCountInt(ENTDIV, ENTDIV_ENT, entnum, &posn) >= 2)
+  {
+    ilen = fdbInputGetInt(ENTDIV, ENTDIV_DIV, posn) ;
+    jlen = fdbInputGetInt(ENTDIV, ENTDIV_DIV, posn+1) ;
+  }
+  else
+  {
+    return(AF_ERR_EMP);
+  }
+
+  if ((ilen < 1) || (jlen < 1))
+  { 
+    return(AF_ERR_VAL) ;
+  }
+  else
+  { 
+    nlen = (ilen+1)*(jlen+1) ;
+  }
+
+  if ((nodes=femIntAlloc(nlen+1)) == NULL)
+  {
+    return(AF_ERR_MEM) ;
+  }
+
+
+  for (i=0; i<8; i++)
+  {
+  	npos = fdbEntKpPos(entPos, i) ;
+	  xi[i] = fdbInputGetDbl(KPOINT, KPOINT_X, npos) ;
+	  yi[i] = fdbInputGetDbl(KPOINT, KPOINT_Y, npos) ;
+	  zi[i] = fdbInputGetDbl(KPOINT, KPOINT_Z, npos) ;
+  }
+
+  sum = 0 ;
+
+  for (j=0; j<=jlen; j++)
+  {
+    for (i=0; i<=ilen; i++)
+    {
+      /* nodes: */
+      fdbMeshGeomFuncCvRect(
+        xi, yi, zi, 
+        (2.0*((((double)i+0.0)/(double)ilen))) - 1.0, 
+        (2.0*((((double)j+0.0)/(double)jlen))) - 1.0, 
+        0, 
+        &x, &y, &z) ;
+
+			if ((i==0)||(i==ilen)||(j==0)||(j==jlen)||(fdbMeshCheckAllNodes==AF_YES))
+			{
+				npos = found_suitable_node(x, y, z, fdbDistTol, &test);
+			}
+			else
+			{
+				test = AF_NO ;
+			}
+
+      if (test == AF_YES)
+	    {
+		    /* existing node */
+		    n_id = fdbInputGetInt(NODE, NODE_ID, npos) ;
+	    }
+	    else
+	    {
+		    /* new node */
+		    if ((rv=f_n_new_change(0, x, y, z)) != AF_OK)
+		    {
+			    fprintf(msgout, "[E] %s!\n", _("Meshing failed"));
+          femIntFree(nodes) ;
+			    return(rv);
+		    }
+		    n_id = fdbInputFindMaxInt(NODE, NODE_ID) ;
+	    }
+
+	    nodes[sum] = n_id ;
+      sum++ ;
+    }
+  }    
+
+  et  = fdbInputGetInt(ENTITY, ENTITY_ETYPE, entPos) ;
+  rs  = fdbInputGetInt(ENTITY, ENTITY_RS,    entPos) ;
+  mat = fdbInputGetInt(ENTITY, ENTITY_MAT,   entPos) ;
+  set = fdbInputGetInt(ENTITY, ENTITY_SET,   entPos) ;
+
+  /* elements: FOUR-NODES ELEMENTS ONLY */
+  for (i=0; i<(ilen); i++)
+  {
+    for (j=0; j<(jlen); j++)
+    {
+      if ((rv=f_e_new_change(0, et, rs, mat, set)) != AF_OK)
+		  {
+		    fprintf(msgout, "[E] %s!\n", _("Creating of element failed"));
+		    femIntFree(nodes) ;
+		    return(rv);
+		  }
+  
+		  e_id = fdbInputFindMaxInt(ELEM, ELEM_ID) ;
+
+      enodelist[0] = nodes[i + j*(ilen+1) + 0] ;
+      enodelist[1] = nodes[i + j*(ilen+1) + 1] ;
+      enodelist[2] = nodes[i + (j+1)*(ilen+1) + 1] ;
+      enodelist[3] = nodes[i + (j+1)*(ilen+1) + 0] ;
+  
+      if ((rv=f_en_change(e_id, enodelist, 4))  != AF_OK)
+		  {
+		    fprintf(msgout, "[E] %s!\n", _("Creating of element failed (bad nodes)"));
+		    femIntFree(nodes) ;
+		    return(rv);
+		  }
+    }
+  }
+
+  femIntFree(nodes) ;
+
+  return(rv);
+}
+
 /* ------------------------------------------------ */
 
 /** Creates finite element mesh from geometry data
@@ -980,6 +1150,7 @@ int fdbGeomCreateMesh(void)
 
     	switch(fdbInputGetInt(ENTITY, ENTITY_TYPE, i))
     	{
+      	case 5: if ((rv=fdbMeshEnt005(i)) != AF_OK) {goto onError;} break;
       	case 4: if ((rv=fdbMeshEnt004(i)) != AF_OK) {goto onError;} break;
       	case 3: if ((rv=fdbMeshEnt003(i)) != AF_OK) {goto onError;} break;
       	case 2: if ((rv=fdbMeshEnt002(i)) != AF_OK) {goto onError;} break;

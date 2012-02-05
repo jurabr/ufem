@@ -4,6 +4,15 @@ See fem/ChangeLog for solver changes.
 
 
 
+### Sun Feb  5 18:36:35 CET 2012
+
+version 0.2.62
+
+features:
+  + new geometry - curvilinear rectangle
+
+
+
 ### Sun Jan 15 18:59:57 CET 2012
 
 version 0.2.61

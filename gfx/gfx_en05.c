@@ -80,9 +80,9 @@ int gfx_en_005(long pos)
 		zf[i] = z ;
   }
 
-	xf[9] = xf[0] ;
-	yf[9] = yf[0] ;
-	zf[9] = zf[0] ;
+	xf[8] = xf[0] ;
+	yf[8] = yf[0] ;
+	zf[8] = zf[0] ;
 
   x = sx / 8.0 ;
   y = sy / 8.0 ;
