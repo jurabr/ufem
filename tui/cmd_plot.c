@@ -1195,7 +1195,7 @@ int func_gui_dialog (char *cmd)
 		if (strcmp(command,"gesize") == 0)
 		{
 			title[0]=ciAllocStr(_("Entity Type"));
-			value[0]=ciAllocStr("rectangle,brick,cvbrick");
+			value[0]=ciAllocStr("rectangle,cvrectangle,brick,cvbrick");
 			title[1]=ciAllocStr(_("Number"));
 			value[1]=ciAllocStr(" ");
 			title[2]=ciAllocStr(_("Start X"));

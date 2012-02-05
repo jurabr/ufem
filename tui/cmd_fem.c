@@ -564,7 +564,7 @@ int func_fem_entity_create_dim (char *cmd)
 	if (ciParNum(cmd) > 1) { type = ciGetParInt(cmd, 1) ; }
 	if (ciParNum(cmd) > 2) { id   = ciGetParInt(cmd, 2) ; }
 
-	if ((type <2) || (type > 4))
+	if ((type <2) || (type > 5))
 	{
 		rv = AF_ERR_VAL ;
 		fprintf(msgout,"[E] %s!\n", _("Invalid entity type"));

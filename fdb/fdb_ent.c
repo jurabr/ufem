@@ -21,11 +21,7 @@
    USA.
 
 	 FEM Database - geometric entities
-
-	 $Id: fdb_ent.c,v 1.7 2005/02/12 18:34:50 jirka Exp $
 */
-
-/* UNFINISHED !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  */
 
 extern double fdbDistTol ;
 extern long found_suitable_kpoint(double x, double y, double z, double tol, int *test);
@@ -696,6 +692,17 @@ int f_ent_create_dim( long type, long id, double x, double y, double z, double d
             }
 
             break ;
+    case 5: klen = 8 ;
+            xi[0] = x    ; yi[0] = y    ; zi[0] = z ;
+            xi[1] = x+(0.5)*dx ; yi[1] = y    ; zi[1] = z ;
+            xi[2] = x+dx ; yi[2] = y    ; zi[2] = z ;
+            xi[3] = x+dx ; yi[3] = y+(0.5*dy)    ; zi[3] = z ;
+            xi[4] = x+dx ; yi[4] = y+dy    ; zi[4] = z ;
+            xi[5] = x+(0.5*dx) ; yi[5] = y+dy    ; zi[5] = z ;
+            xi[6] = x ; yi[6] = y+dy    ; zi[6] = z ;
+            xi[7] = x ; yi[7] = y+(0.5*dy)    ; zi[7] = z ;
+            break ;
+
     default: 
             fprintf(msgout,"[E] %s!\n",_("Invalid type of geometric entity"));
             return(AF_ERR_VAL); 
@@ -721,6 +728,122 @@ int f_ent_create_dim( long type, long id, double x, double y, double z, double d
 
   if ((rv=f_entkp_change(id, nid, klen, type)) != AF_OK ){return(rv);}
 
+  return(rv);
+}
+
+
+/** Creates rectangular area from given coordinates (x,y,dx,dy)
+ *
+ */
+int f_ent_extrude_area(
+    long  area_id, 
+    long  kps_len, 
+    long *kps, 
+    long  et, 
+    long  rs,
+    long  mat,
+    long  div)
+{
+  int rv= AF_OK ;
+  long   posi ;
+  long   nid[20] ;
+  double xi[20] ;
+  double yi[20] ;
+  double zi[20] ;
+  long   i ;
+  long   klen ;
+  long   type, type3d, pos ;
+  int    test ;
+
+  long   id ;
+  double x,y,z,dx,dy,dz ;
+
+  for (i=0; i<20; i++) { xi[i] = 0 ; yi[i] = 0 ; zi[i] = 0 ; }
+
+  /* TODO Get area type */
+  if (fdbInputCountInt(ENTITY,ENTITY_ID, area_id, &pos) < 1)
+  {
+#ifdef RUN_VERBOSE
+    fprintf(msgout, "[E] %s: %li!\n", _("Invalid area"), area_id);
+#endif
+    return(AF_ERR_IO);
+  }
+
+  type = fdbInputGetInt(ENTITY,ENTITY_TYPE,pos) ;
+
+#if 0
+  switch (type)
+  {
+    case 2: klen =  4 ;
+            xi[0] = x    ; yi[0] = y    ;
+            xi[1] = x+dx ; yi[1] = y    ;
+            xi[2] = x+dx ; yi[2] = y+dy ;
+            xi[3] = x    ; yi[3] = y+dy ;
+
+            break ;
+    case 3: klen =  8 ;
+            xi[0] = x    ; yi[0] = y    ; zi[0] = z ;
+            xi[1] = x+dx ; yi[1] = y    ; zi[1] = z ;
+            xi[2] = x+dx ; yi[2] = y+dy ; zi[2] = z ;
+            xi[3] = x    ; yi[3] = y+dy ; zi[3] = z ;
+
+            for (i=4; i<8; i++)
+            {
+              xi[i] = xi[i-4] ;
+              yi[i] = yi[i-4] ;
+              zi[i] = z + dz ;
+            }
+
+            break ;
+    case 4: klen = 20 ;
+            xi[0] = x    ; yi[0] = y    ; zi[0] = z ;
+            xi[1] = x+(0.5)*dx ; yi[1] = y    ; zi[1] = z ;
+            xi[2] = x+dx ; yi[2] = y    ; zi[2] = z ;
+            xi[3] = x+dx ; yi[3] = y+(0.5*dy)    ; zi[3] = z ;
+            xi[4] = x+dx ; yi[4] = y+dy    ; zi[4] = z ;
+            xi[5] = x+(0.5*dx) ; yi[5] = y+dy    ; zi[5] = z ;
+            xi[6] = x ; yi[6] = y+dy    ; zi[6] = z ;
+            xi[7] = x ; yi[7] = y+(0.5*dy)    ; zi[7] = z ;
+
+            xi[8] = x ; yi[8] = y  ; zi[8] = z+(0.5*dz) ;
+            xi[9] = x+dx ; yi[9] = y  ; zi[9] = z+(0.5*dz) ;
+            xi[10] = x+dx; yi[10] = y+dy ; zi[10] = z+(0.5*dz) ;
+            xi[11] = x; yi[11] = y+dy ; zi[11] = z+(0.5*dz) ;
+
+            for (i=12; i<20; i++)
+            {
+              xi[i] = xi[i-12] ;
+              yi[i] = yi[i-12] ;
+              zi[i] = z + dz ;
+            }
+
+            break ;
+    default: 
+            fprintf(msgout,"[E] %s!\n",_("Invalid type of geometric entity"));
+            return(AF_ERR_VAL); 
+            break;
+  }
+
+
+  for (i=0; i<klen; i++)
+  {
+    posi = -1 ;
+	  posi = found_suitable_kpoint(xi[i], yi[i], zi[i], fdbDistTol, &test);
+
+    if (posi < 0)
+    {
+      if (f_k_new_change(0, xi[i], yi[i], zi[i], &nid[i]) != AF_OK){return(AF_ERR);}
+      if (fdbInputCountInt(KPOINT, KPOINT_ID, nid[i], &posi) <= 0){return(AF_ERR);}
+    }
+    else
+    {
+      nid[i] = fdbInputGetInt(KPOINT, KPOINT_ID, posi) ;
+    }
+  }
+
+  if ((rv=f_entkp_change(id, nid, klen, type)) != AF_OK ){return(rv);}
+
+#endif
   return(rv);
 }
 

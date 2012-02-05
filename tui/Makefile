@@ -48,7 +48,7 @@ GUILIBS=`pkg-config --libs gtkglext-1.0 gtk+-2.0` -lGL -lGLU  $(LIBS) # no gl2ps
 #GUILIBS=-L../../gl2ps -lgl2ps-w32 `export PKG_CONFIG_PATH=/usr/local/i386-mingw32/lib/pkgconfig && pkg-config --libs gtk+-2.0` libgdkglext-win32-1.0.dll.a libgtkglext-win32-1.0.dll.a libopengl32.a libglu32.a  $(LIBS) # for windows
 
 OBJECTS=fem_tini.o fem_tclp.o fem_tcmd.o cmd_vars.o cmd_fem.o cmd_res.o cmd_sele.o cmd_macs.o fem_alia.o fem_conf.o fem_solv.o cmd_help.o cmd_solv.o
-GFOBJECTS=fem_gfx.o fem_gfnt.o fem_gclr.o fem_gele.o gfx_e000.o gfx_e001.o gfx_e002.o gfx_e003.o gfx_e004.o gfx_e005.o gfx_e006.o gfx_load.o gfx_disp.o gfx_sele.o gfx_res.o gfx_reac.o gfx_ares.o gfx_ppm.o gfx_k.o gfx_grid.o fem_gent.o gfx_en01.o gfx_en02.o gfx_en03.o gfx_en04.o gfx_path.o
+GFOBJECTS=fem_gfx.o fem_gfnt.o fem_gclr.o fem_gele.o gfx_e000.o gfx_e001.o gfx_e002.o gfx_e003.o gfx_e004.o gfx_e005.o gfx_e006.o gfx_load.o gfx_disp.o gfx_sele.o gfx_res.o gfx_reac.o gfx_ares.o gfx_ppm.o gfx_k.o gfx_grid.o fem_gent.o gfx_en01.o gfx_en02.o gfx_en03.o gfx_en04.o gfx_en05.o gfx_path.o
 GOBJECTS=$(GFOBJECTS) fem_gui.o gui_main.o gui_gl.o gui_dlgs.o
 
 all: tfem
@@ -209,6 +209,9 @@ gfx_en03.o: ../gfx/gfx_en03.c ../gfx/fem_gele.h ../gfx/fem_gfx.h fem_tui.h ../fd
 
 gfx_en04.o: ../gfx/gfx_en04.c ../gfx/fem_gele.h ../gfx/fem_gfx.h fem_tui.h ../fdb/fdb.h ../cint/cint.h ../fem/fem.h
 	$(CC) -c ../gfx/gfx_en04.c $(CFLAGS) $(GFCFLAGS)
+
+gfx_en05.o: ../gfx/gfx_en05.c ../gfx/fem_gele.h ../gfx/fem_gfx.h fem_tui.h ../fdb/fdb.h ../cint/cint.h ../fem/fem.h
+	$(CC) -c ../gfx/gfx_en05.c $(CFLAGS) $(GFCFLAGS)
 
 gfx_path.o: ../gfx/gfx_path.c ../gfx/fem_gele.h ../gfx/fem_gfx.h fem_tui.h ../fdb/fdb.h ../cint/cint.h ../fem/fem.h
 	$(CC) -c ../gfx/gfx_path.c $(CFLAGS) $(GFCFLAGS)

@@ -267,6 +267,7 @@ int fem_create_cmd_aliases(void)
   if ((rv=ciAddVarGrp("rectangle","2","geom_ent")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("brick","3","geom_ent")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("cvbrick","4","geom_ent")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("cvrectangle","5","geom_ent")) != AF_OK) {goto memFree;}
 
   /* plane */
   if ((rv=ciAddVarGrp("pxy","0","pplane")) != AF_OK) {goto memFree;}

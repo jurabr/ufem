@@ -21,8 +21,6 @@
    USA.
 
 	 Graphics output for "fem" (pre|post)processor - element plotting
-
-	 $Id: fem_gent.c,v 1.4 2004/04/29 19:09:36 jirka Exp $
 */
 
 #include "fem_gele.h"
@@ -36,6 +34,7 @@ extern int gfx_en_001(long pos) ;
 extern int gfx_en_002(long pos) ;
 extern int gfx_en_003(long pos) ;
 extern int gfx_en_004(long pos) ;
+extern int gfx_en_005(long pos) ;
 
 
 int femGfxOneEntity(long i)
@@ -57,6 +56,7 @@ int femGfxOneEntity(long i)
       case  2: gfx_en_002(i) ; break ;
       case  3: gfx_en_003(i) ; break ;
       case  4: gfx_en_004(i) ; break ;
+      case  5: gfx_en_005(i) ; break ;
       default: rv = AF_ERR_VAL ; break ;
     }
 

@@ -21,14 +21,12 @@
    02139, USA.
 
 	 FEM Database - definitions of geometric entities
-
-	 $Id: fdb_geom.c,v 1.9 2004/12/29 19:03:32 jirka Exp $
 */
 
 #include "fdb_geom.h"
 
-long     fdbGeomEntLen = 5 ;
-tGeomEnt fdbGeomEnt[5] ;
+long     fdbGeomEntLen = 6 ;
+tGeomEnt fdbGeomEnt[6] ;
 
 /* empty element */
 int fdbGeomEntInit000(long num)
@@ -180,6 +178,37 @@ int fdbGeomEntInit004(long num)
 	return(rv);
 }
 
+/* curvilinear rectangle */
+int fdbGeomEntInit005(long num)
+{
+	int rv = AF_OK ;
+	static long  type     = 5 ;
+	static long  kps      = 8 ;
+	static long  divs     = 2 ;
+	static long  lines    = 4 ;
+  static long  divtp[4] = {1,2,1,2} ;
+  static long  divk1[4] = {0,2,4,6} ;
+  static long  divk2[4] = {2,4,6,0} ;
+	static long  etypes   = 3 ;
+	static long  etype[3] = {2,5,20} ;
+
+	if (num != type) {fprintf(msgout,"[E] %s %li!\n",
+			_("Fatal error at the geometry type"),num);
+			exit(AF_ERR_VAL);}
+
+	fdbGeomEnt[num].type   = type ;
+	fdbGeomEnt[num].kps    = kps ;
+	fdbGeomEnt[num].divs   = divs ;
+	fdbGeomEnt[num].lines  = lines ;
+	fdbGeomEnt[num].divtp  = divtp ;
+	fdbGeomEnt[num].divk1  = divk1 ;
+	fdbGeomEnt[num].divk2  = divk2 ;
+	fdbGeomEnt[num].etypes = etypes ;
+	fdbGeomEnt[num].etype  = etype ;
+	return(rv);
+}
+
+
 /* Initialization of the geometry */
 int fdbGeomEntInit(void)
 {
@@ -188,6 +217,7 @@ int fdbGeomEntInit(void)
 	fdbGeomEntInit002(2);
 	fdbGeomEntInit003(3);
 	fdbGeomEntInit004(4);
+	fdbGeomEntInit005(5);
 	return(AF_OK);
 }
 
