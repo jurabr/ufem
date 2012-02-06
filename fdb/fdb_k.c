@@ -357,6 +357,28 @@ int f_k_join_all(void)
   return(rv);
 }
 
+/** Computes distance between two keypoints
+ * @param k1 first keypoint
+ * @param k2 second keypoint
+ * @param dx,dy,dz distances in x,y,z directions (results)
+ * @return status
+ */
+int f_k_dist(long k1, long k2, double *dx, double *dy, double *dz)
+{
+  long pos1, pos2;
 
+  *dx = 0 ;
+  *dy = 0 ;
+  *dz = 0 ;
+
+  if (fdbInputCountInt(KPOINT, KPOINT_ID, k1, &pos1) < 1) {return(AF_ERR_EMP);}
+  if (fdbInputCountInt(KPOINT, KPOINT_ID, k2, &pos2) < 1) {return(AF_ERR_EMP);}
+
+  *dx = (fdbInputGetDbl(KPOINT, KPOINT_X, pos2) - fdbInputGetDbl(KPOINT, KPOINT_X, pos1)) ;
+  *dy = (fdbInputGetDbl(KPOINT, KPOINT_Y, pos2) - fdbInputGetDbl(KPOINT, KPOINT_Y, pos1)) ;
+  *dz = (fdbInputGetDbl(KPOINT, KPOINT_Z, pos2) - fdbInputGetDbl(KPOINT, KPOINT_Z, pos1)) ;
+  
+  return(AF_OK);
+}
 
 /* end of fdb_k.c */

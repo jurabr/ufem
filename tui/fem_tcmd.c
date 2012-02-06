@@ -283,6 +283,7 @@ extern int func_fem_volume_del (char *cmd);
 extern int func_fem_ge_prop (char *cmd);
 extern int func_fem_ge_kps (char *cmd);
 extern int func_fem_entity_create_dim (char *cmd);
+extern int func_fem_entity_aextrude (char *cmd);
 extern int func_fem_ge_divs (char *cmd);
 extern int func_fem_ge_list (char *cmd);
 extern int func_fem_ge_del (char *cmd);
@@ -700,7 +701,7 @@ int fem_cmd_init (void)
 {
   long count = 0 ;
 
-  ciFuncLen = 270;
+  ciFuncLen = 271;
   ciFunction = (tFunc *) malloc (ciFuncLen * sizeof (tFunc));
   
   /* basic functions */
@@ -1518,6 +1519,10 @@ int fem_cmd_init (void)
 
   ciFunction[count].cmd = "gesize";
   ciFunction[count].func = func_fem_entity_create_dim ;
+  count++;
+
+  ciFunction[count].cmd = "aextrude";
+  ciFunction[count].func = func_fem_entity_aextrude ;
   count++;
 
   ciFunction[count].cmd = "gediv";

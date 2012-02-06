@@ -324,12 +324,14 @@ int f_entkp_change(long id, long *nodes, long nodes_len, long ent_type)
 
 		etyp = fdbInputGetInt(ETYPE, ETYPE_TYPE, etpos);
 
+#if 0
     if (fdbElementType[etyp].nodes > nodes_len)
     {
       fprintf(msgout,"[E] %s!\n",_("Bad number of nodes"));
       free(node_pos); node_pos = NULL ;
       return(AF_ERR_VAL); /* bad number of nodes added! */
     }
+#endif
 
     if ((rv = f_ent_new_change(newid, ent_type,
                                 fdbSetInputDefET(0),
@@ -732,15 +734,13 @@ int f_ent_create_dim( long type, long id, double x, double y, double z, double d
 }
 
 
-/** Creates brck from area
+/** Creates brick from area
  *
  */
 int f_ent_extrude_area(
     long  area_id, 
-    long  d_len, /* 1 or 2 */
-    double *dx0, 
-    double *dy0,
-    double *dz0,
+    long  k_len,
+    long *klist,
     long  et, 
     long  rs,
     long  mat,
@@ -751,6 +751,10 @@ int f_ent_extrude_area(
   double xi[20] ;
   double yi[20] ;
   double zi[20] ;
+  double *dx0 = NULL ;
+  double *dy0 = NULL ;
+  double *dz0 = NULL ;
+  long   d_len; 
   long   i, i_pos ;
   long   pos, npos, type, posi, dpos ;
   long   div[3];
@@ -760,6 +764,14 @@ int f_ent_extrude_area(
   double dx[2] ;
   double dy[2] ;
   double dz[2] ;
+  double x0[8];
+  double y0[8];
+  double z0[8];
+  long   j, jmult ;
+  long   vtype = 3 ;
+
+  ldiv_t divval ;
+  int last = 0 ;
 
 
   /* Get area type */
@@ -779,6 +791,56 @@ int f_ent_extrude_area(
     return(AF_ERR_VAL);
   }
 
+  /* Allocate space (dx0, dy0, dz0) */
+  d_len = 0 ;
+  if (type == 5)
+  {
+    vtype = 4 ;
+    if (k_len < 3 ) 
+    {
+      d_len = 2;
+      last  = 1 ;
+    }
+    else
+    {
+      divval = ldiv(k_len-1, 2) ;
+      d_len = k_len+divval.rem ; 
+      if (divval.rem != 0) { last  = 1 ; }
+    }
+  }
+  else /* type == 2 */
+  {
+    vtype = 3 ;
+    d_len = k_len - 1 ;
+  }
+
+  if (k_len < 2 ) {d_len = 0;}
+
+  if (d_len < 1)
+  {
+    fprintf(stdout,"[E] %s!\n", _("This entity type can not be extruded"));
+    return(AF_ERR_VAL);
+  }
+  if ((dx0 = femDblAlloc(d_len)) == NULL) {rv =AF_ERR_MEM; goto memFree;}
+  if ((dy0 = femDblAlloc(d_len)) == NULL) {rv =AF_ERR_MEM; goto memFree;} 
+  if ((dz0 = femDblAlloc(d_len)) == NULL) {rv =AF_ERR_MEM; goto memFree;} 
+
+  /* Compute dx0, dy0, dz0 */
+  for (i=0; i<d_len; i++)
+  {
+    if ( (i == (d_len - 1)) && (last == 1) )
+    {
+      f_k_dist(klist[i+1], klist[i], &dx0[i], &dy0[i], &dz[i]);
+      dx0[i-1] = 0.5*dx0[i] ;
+      dy0[i-1] = 0.5*dy0[i] ;
+      dz0[i-1] = 0.5*dz0[i] ;
+    }
+    else
+    {
+      f_k_dist(klist[i+1], klist[i], &dx0[i], &dy0[i], &dz0[i]);
+    }
+  }
+
   /* get divisions: */
   if (fdbInputCountInt(ENTDIV, ENTDIV_ENT, area_id, &dpos) < 1)
 	{
@@ -788,25 +850,18 @@ int f_ent_extrude_area(
   for (i=0; i<2; i++) { div[i] = fdbInputGetInt(ENTDIV, ENTDIV_DIV, dpos+i); }
   div[2] = zdiv ;
 
-  if (d_len > 1)
+  if (type == 2)
   {
-    for (i=0; i<2; i++) /* TODO replace with roper code */
-    {
-      dx[i] = dx0[i];
-      dy[i] = dy0[i];
-      dz[i] = dz0[i];
-    }
+    jmult = 1 ;
   }
   else
   {
-    dx[0] = dx0[0] * 0.5;
-    dy[0] = dy0[0] * 0.5;
-    dz[0] = dz0[0] * 0.5;
-
-    dx[1] = dx0[0] ;
-    dy[1] = dy0[0] ;
-    dz[1] = dz0[0] ;
+    jmult = 2 ;
   }
+  
+
+  for (j=0; j< d_len; j+=jmult)
+  {
 
   for (i=0; i<20; i++) { xi[i] = 0 ; yi[i] = 0 ; zi[i] = 0 ; nid[i] = -1 ; }
 
@@ -814,13 +869,30 @@ int f_ent_extrude_area(
   {
     case 2: /* rectangle -> brick */
       klen = 8 ;
-      for (i=0; i<4; i++) /* get nodes from area */
+
+      dx[0] = dx0[j];
+      dy[0] = dy0[j];
+      dz[0] = dz0[j];
+
+      if (j == 0)
       {
-  	    npos = fdbEntKpPos(pos, i) ;
-        nid[i] = fdbInputGetInt(KPOINT, KPOINT_ID, pos);
-	      xi[i] = fdbInputGetDbl(KPOINT, KPOINT_X, npos) ;
-	      yi[i] = fdbInputGetDbl(KPOINT, KPOINT_Y, npos) ;
-	      zi[i] = fdbInputGetDbl(KPOINT, KPOINT_Z, npos) ;
+        for (i=0; i<4; i++) /* get nodes from area */
+        {
+  	      npos = fdbEntKpPos(pos, i) ;
+          nid[i] = fdbInputGetInt(KPOINT, KPOINT_ID, pos);
+	        xi[i] = fdbInputGetDbl(KPOINT, KPOINT_X, npos) ;
+	        yi[i] = fdbInputGetDbl(KPOINT, KPOINT_Y, npos) ;
+	        zi[i] = fdbInputGetDbl(KPOINT, KPOINT_Z, npos) ;
+        }
+      }
+      else
+      {
+        for (i=0; i<4; i++)
+        {
+         xi[i] = x0[i] ;
+         yi[i] = y0[i] ;
+         zi[i] = z0[i] ;
+        }
       }
 
       for (i=4; i<8; i++) /* expand nodes */
@@ -828,7 +900,10 @@ int f_ent_extrude_area(
         xi[i] = xi[i-4] + dx[0] ;
         yi[i] = yi[i-4] + dy[0] ;
         zi[i] = zi[i-4] + dz[0] ;
+      }
 
+      for (i=0; i<8; i++) /* expand nodes */
+      {
         posi = -1 ;
 	      posi = found_suitable_kpoint(xi[i], yi[i], zi[i], fdbDistTol, &test);
 
@@ -842,17 +917,47 @@ int f_ent_extrude_area(
           nid[i] = fdbInputGetInt(KPOINT, KPOINT_ID, posi) ;
         }
       }
+
+      for (i=0; i<4; i++)
+      {
+        x0[i] = xi[i] ;
+        y0[i] = yi[i] ;
+        z0[i] = zi[i] ;
+      }
       break ;
 
     case 5 /* cv rectangle -> cv brick */:
       klen = 20 ;
-      for (i=0; i<8; i++) /* get nodes from area */
+
+      if ((j+2) >= d_len) {break;}
+
+      dx[0] = dx0[j] ;
+      dy[0] = dy0[j] ;
+      dz[0] = dz0[j] ;
+
+      dx[1] = dx0[j+2] ;
+      dy[1] = dy0[j+2] ;
+      dz[1] = dz0[j+2] ;
+
+      if (j == 0)
       {
-  	    npos = fdbEntKpPos(pos, i) ;
-        nid[i] = fdbInputGetInt(KPOINT, KPOINT_ID, pos);
-	      xi[i] = fdbInputGetDbl(KPOINT, KPOINT_X, npos) ;
-	      yi[i] = fdbInputGetDbl(KPOINT, KPOINT_Y, npos) ;
-	      zi[i] = fdbInputGetDbl(KPOINT, KPOINT_Z, npos) ;
+        for (i=0; i<8; i++) /* get nodes from area */
+        {
+  	      npos = fdbEntKpPos(pos, i) ;
+          nid[i] = fdbInputGetInt(KPOINT, KPOINT_ID, pos);
+	        xi[i] = fdbInputGetDbl(KPOINT, KPOINT_X, npos) ;
+	        yi[i] = fdbInputGetDbl(KPOINT, KPOINT_Y, npos) ;
+	        zi[i] = fdbInputGetDbl(KPOINT, KPOINT_Z, npos) ;
+        }
+      }
+      else
+      {
+        for (i=0; i<8; i++)
+        {
+         xi[i] = x0[i] ;
+         yi[i] = y0[i] ;
+         zi[i] = z0[i] ;
+        }
       }
 
       for (i=8; i<12; i++) /* expand nodes */
@@ -862,7 +967,19 @@ int f_ent_extrude_area(
         xi[i] = xi[i_pos] + dx[0] ;
         yi[i] = yi[i_pos] + dy[0] ;
         zi[i] = zi[i_pos] + dz[0] ;
+      }
 
+      for (i=12; i<20; i++) /* expand nodes */
+      {
+        i_pos = (i - 12)  ; /* 0 2 4 6 */
+
+        xi[i] = xi[i_pos] + dx[1] ;
+        yi[i] = yi[i_pos] + dy[1] ;
+        zi[i] = zi[i_pos] + dz[1] ;
+      }
+      
+      for (i=0; i<20; i++)
+      {
         posi = -1 ;
 	      posi = found_suitable_kpoint(xi[i], yi[i], zi[i], fdbDistTol, &test);
 
@@ -877,26 +994,11 @@ int f_ent_extrude_area(
         }
       }
 
-      for (i=12; i<20; i++) /* expand nodes */
+      for (i=0; i<8; i++)
       {
-        i_pos = (i - 12)  ; /* 0 2 4 6 */
-
-        xi[i] = xi[i_pos] + dx[1] ;
-        yi[i] = yi[i_pos] + dy[1] ;
-        zi[i] = zi[i_pos] + dz[1] ;
-
-        posi = -1 ;
-	      posi = found_suitable_kpoint(xi[i], yi[i], zi[i], fdbDistTol, &test);
-
-        if (posi < 0)
-        {
-          if (f_k_new_change(0, xi[i], yi[i], zi[i], &nid[i]) != AF_OK){return(AF_ERR);}
-          if (fdbInputCountInt(KPOINT, KPOINT_ID, nid[i], &posi) <= 0){return(AF_ERR);}
-        }
-        else
-        {
-          nid[i] = fdbInputGetInt(KPOINT, KPOINT_ID, posi) ;
-        }
+        x0[i] = xi[i] ;
+        y0[i] = yi[i] ;
+        z0[i] = zi[i] ;
       }
       break ;
 
@@ -907,7 +1009,7 @@ int f_ent_extrude_area(
   }
 
   /* Common for both types: */
-  if ((rv=f_entkp_change(id, nid, klen, type)) != AF_OK )
+  if ((rv=f_entkp_change(id, nid, klen, vtype)) != AF_OK )
   {
     return(rv);
   }
@@ -916,7 +1018,12 @@ int f_ent_extrude_area(
 	  id = fdbInputFindMaxInt(ENTITY, ENTITY_ID) ;
     f_entkp_div_change(id, div, 3);
   }
+  } /**/
 
+memFree:
+  femDblFree(dx0);
+  femDblFree(dy0);
+  femDblFree(dz0);
   return(rv);
 }
 

@@ -194,6 +194,7 @@ extern int f_e_change_set(long id, long set);
 
 extern int f_n_split_through_e_pos(long kPos);
 extern int f_n_split_through_e_id(long id);
+extern int f_n_dist(long k1, long k2, double *dx, double *dy, double *dz);
 
 extern int f_et_new_change(long id, long etyp);
 extern int f_et_delete(long id);
@@ -251,6 +252,16 @@ extern int f_k_gen_1d(long num, long mode, long dir, double dx, double dy, doubl
 extern int f_k_split_through_ge_pos(long kPos);
 extern int f_k_split_through_ge_id(long id);
 extern int f_k_join_all(void);
+extern int f_k_dist(long k1, long k2, double *dx, double *dy, double *dz);
+
+extern int f_ent_extrude_area(
+    long  area_id, 
+    long  k_len,
+    long *klist,
+    long  et, 
+    long  rs,
+    long  mat,
+    long  zdiv);
 
 extern int f_ent_new_change(long id, long ent_type, long et, long rs, long mat, long set);
 extern int f_entkp_change(long id, long *nodes, long nodes_len, long ent_type);

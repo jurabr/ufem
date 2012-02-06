@@ -210,7 +210,7 @@ int f_n_list_prn(FILE *fw, long from, long to)
 
 /** Make 2 nodes from one and link them with separate nodes
  * Note: it assimes one unique KP id per entity!
- * @param kPos position of keypoint
+ * @param kPos position of node
  * @return status
  */
 int f_n_split_through_e_pos(long kPos)
@@ -270,13 +270,13 @@ int f_n_split_through_e_pos(long kPos)
 
 /** Make 2 nodes from one and link them with separate elements
  * Note: it assumes one unique node id per elements!
- * @param is number (ID) of the keypoint
+ * @param is number (ID) of the node
  * @return status
  */
 int f_n_split_through_e_id(long id)
 {
   long kPos ;
-  if (fdbInputCountInt(KPOINT, KPOINT_ID, id, &kPos) > 0)
+  if (fdbInputCountInt(NODE, NODE_ID, id, &kPos) > 0)
   {
     return( f_n_split_through_e_pos(kPos) );
   }
@@ -393,5 +393,31 @@ int f_n_join_all(void)
   fprintf(msgout,"[ ]    %s: %li.\n",_("Number of removed nodes"), count);
   return(rv);
 }
+
+/** Computes distance between two nodes
+ * @param k1 first node
+ * @param k2 second node
+ * @param dx,dy,dz distances in x,y,z directions (results)
+ * @return status
+ */
+int f_n_dist(long k1, long k2, double *dx, double *dy, double *dz)
+{
+  long pos1, pos2;
+
+  *dx = 0 ;
+  *dy = 0 ;
+  *dz = 0 ;
+
+  if (fdbInputCountInt(NODE, NODE_ID, k1, &pos1) < 1) {return(AF_ERR_EMP);}
+  if (fdbInputCountInt(NODE, NODE_ID, k2, &pos2) < 1) {return(AF_ERR_EMP);}
+
+  *dx = fdbInputGetDbl(NODE, NODE_X, pos2) - fdbInputGetDbl(NODE, NODE_X, pos1) ;
+  *dy = fdbInputGetDbl(NODE, NODE_Y, pos2) - fdbInputGetDbl(NODE, NODE_Y, pos1) ;
+  *dz = fdbInputGetDbl(NODE, NODE_Z, pos2) - fdbInputGetDbl(NODE, NODE_Z, pos1) ;
+  
+  return(AF_OK);
+}
+
+
 
 /* end of fdb_n.c */
