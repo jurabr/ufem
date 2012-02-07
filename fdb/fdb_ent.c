@@ -1003,9 +1003,9 @@ int f_ent_extrude_area(
 
       for (i=0; i<8; i++)
       {
-        x0[i] = xi[i] ;
-        y0[i] = yi[i] ;
-        z0[i] = zi[i] ;
+        x0[i] = xi[i+12] ;
+        y0[i] = yi[i+12] ;
+        z0[i] = zi[i+12] ;
       }
       break ;
 
