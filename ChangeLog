@@ -4,6 +4,17 @@ See fem/ChangeLog for solver changes.
 
 
 
+### Tue Feb  7 20:44:11 CET 2012
+
+features:
+  + aextrude command 
+
+bugfixes:
+  - extrude for 4-node areas fixed
+  - extrude for 8-node areas fixed
+
+
+
 ### Sun Feb  5 18:36:35 CET 2012
 
 version 0.2.62

@@ -484,6 +484,9 @@ gelist
 gedel
 "gedel,from,to"
 
+aextrude
+"aextrude,area,et,rs,mat,k1,k2[,k3,k4,k5,k6,k7,k8]"
+
 (l|a|v)p
 "[lav]p,number,etype,real,mat [,set]"
 

@@ -285,7 +285,6 @@ int f_entkp_change(long id, long *nodes, long nodes_len, long ent_type)
   long nnodes = 0 ;
   long *node_pos = NULL ;
 	long etpos;
-	long etyp;
   int  i ;
 
   if ((node_pos=(long *)malloc(sizeof(long)*nodes_len))!=NULL)
@@ -321,17 +320,6 @@ int f_entkp_change(long id, long *nodes, long nodes_len, long ent_type)
       free(node_pos); node_pos = NULL ;
 			return(AF_ERR_VAL);
 		}
-
-		etyp = fdbInputGetInt(ETYPE, ETYPE_TYPE, etpos);
-
-#if 0
-    if (fdbElementType[etyp].nodes > nodes_len)
-    {
-      fprintf(msgout,"[E] %s!\n",_("Bad number of nodes"));
-      free(node_pos); node_pos = NULL ;
-      return(AF_ERR_VAL); /* bad number of nodes added! */
-    }
-#endif
 
     if ((rv = f_ent_new_change(newid, ent_type,
                                 fdbSetInputDefET(0),
@@ -811,8 +799,17 @@ int f_ent_extrude_area(
     else
     {
       divval = ldiv(k_len-1, 2) ;
-      d_len = k_len+divval.rem ; 
-      if (divval.rem != 0) { last  = 1 ; }
+      d_len = (k_len-1) ; 
+      if ((divval.rem) != 0) 
+      { 
+        d_len++ ;
+        last  = 1 ; 
+        if ((type != 2) && (type != 5))
+        {
+          fprintf(stdout,"[E] %s!\n", _("One more keypoint is necessary for dragging path"));
+          return(AF_ERR_VAL);
+        }
+      }
     }
   }
   else /* type == 2 */
@@ -936,15 +933,15 @@ int f_ent_extrude_area(
     case 5 /* cv rectangle -> cv brick */:
       klen = 20 ;
 
-      if ((j+2) >= d_len) {break;}
+      /* if ((j+2) >= d_len) {break;}*/
 
       dx[0] = dx0[j] ;
       dy[0] = dy0[j] ;
       dz[0] = dz0[j] ;
 
-      dx[1] = dx0[j+2] ;
-      dy[1] = dy0[j+2] ;
-      dz[1] = dz0[j+2] ;
+      dx[1] = dx0[j+1] ;
+      dy[1] = dy0[j+1] ;
+      dz[1] = dz0[j+1] ;
 
       if (j == 0)
       {
@@ -978,11 +975,11 @@ int f_ent_extrude_area(
 
       for (i=12; i<20; i++) /* expand nodes */
       {
-        i_pos = (i - 12)  ; /* 0 2 4 6 */
+        i_pos = (i - 12)  ; 
 
-        xi[i] = xi[i_pos] + dx[1] ;
-        yi[i] = yi[i_pos] + dy[1] ;
-        zi[i] = zi[i_pos] + dz[1] ;
+        xi[i] = xi[i_pos] + dx[0] + dx[1] ;
+        yi[i] = yi[i_pos] + dy[0] + dy[1] ;
+        zi[i] = zi[i_pos] + dz[0] + dz[1] ;
       }
       
       for (i=0; i<20; i++)

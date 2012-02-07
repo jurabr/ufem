@@ -27,7 +27,7 @@
 #ifndef __FEM_VERSION_H__
 #define __FEM_VERSION_H__
 
-#define FEM_TUI_RELEASE "uFEM 0.2.62c"
+#define FEM_TUI_RELEASE "uFEM 0.2.62d"
 
 #endif
 
