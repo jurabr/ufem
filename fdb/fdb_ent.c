@@ -734,8 +734,15 @@ int f_ent_create_dim( long type, long id, double x, double y, double z, double d
 }
 
 
-/** Creates brick from area
- *
+/** Creates brick from area by extrusion/dragging along path defined by keypoints
+ * @param area_id id number of area to be extruded
+ * @param k_len number of keypoints (drag path definition)
+ * @param klist array of keypoint id numbers
+ * @param et element type vor created volume(s)
+ * @param rs reals set type vor created volume(s)
+ * @param mat material type type vor created volume(s)
+ * @param zdiv division (number of elements) along drag path for each volume
+ * @return status
  */
 int f_ent_extrude_area(
     long  area_id, 
@@ -830,14 +837,14 @@ int f_ent_extrude_area(
   {
     if ( (i == (d_len - 1)) && (last == 1) )
     {
-      f_k_dist(klist[i+1], klist[i], &dx0[i], &dy0[i], &dz[i]);
+      f_k_dist(klist[i], klist[i+1], &dx0[i], &dy0[i], &dz[i]);
       dx0[i-1] = 0.5*dx0[i] ;
       dy0[i-1] = 0.5*dy0[i] ;
       dz0[i-1] = 0.5*dz0[i] ;
     }
     else
     {
-      f_k_dist(klist[i+1], klist[i], &dx0[i], &dy0[i], &dz0[i]);
+      f_k_dist(klist[i], klist[i+1], &dx0[i], &dy0[i], &dz0[i]);
     }
   }
 
@@ -920,9 +927,9 @@ int f_ent_extrude_area(
 
       for (i=0; i<4; i++)
       {
-        x0[i] = xi[i] ;
-        y0[i] = yi[i] ;
-        z0[i] = zi[i] ;
+        x0[i] = xi[i+4] ;
+        y0[i] = yi[i+4] ;
+        z0[i] = zi[i+4] ;
       }
       break ;
 
@@ -1009,6 +1016,7 @@ int f_ent_extrude_area(
   }
 
   /* Common for both types: */
+	id=0;
   if ((rv=f_entkp_change(id, nid, klen, vtype)) != AF_OK )
   {
     return(rv);
