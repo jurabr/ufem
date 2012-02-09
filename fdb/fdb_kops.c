@@ -225,11 +225,12 @@ int f_ent_k_gen_1d(long num, long mode, long dir, double dx, double dy, double d
 {
 	int    rv = AF_OK ;
 	long   nelem ;
-	long   i,j,k, jj ;
+	long   i,j,k, jj, jk ;
 	double ox, oy, oz ;
 	long   count, ncount, nncount ;
 	long   ekpoints ;
 	long  *ekpointlist = NULL ;
+	long  *ekpointlist2 = NULL ;
   long   en_div_len = 0 ;
   long   en_div[10] ;
   long   posn ; /*for "en_div" */
@@ -268,6 +269,12 @@ int f_ent_k_gen_1d(long num, long mode, long dir, double dx, double dy, double d
 
 			if ((ekpointlist = femIntAlloc(ekpoints)) == NULL)
 			{
+				fprintf(msgout, "[E] %s!\n", _("Out of memory"));
+				return(AF_ERR_MEM);
+			}
+      if ((ekpointlist2 = femIntAlloc(ekpoints)) == NULL)
+			{
+        free(ekpointlist);
 				fprintf(msgout, "[E] %s!\n", _("Out of memory"));
 				return(AF_ERR_MEM);
 			}
@@ -356,8 +363,34 @@ int f_ent_k_gen_1d(long num, long mode, long dir, double dx, double dy, double d
 			{
 				fprintf(msgout, "[E] %s!\n", _("Copying of entity failed (on whole element)"));
 				femIntFree(ekpointlist) ;
+				femIntFree(ekpointlist2) ;
 				return(rv);
 			}
+
+      /* Kpoint order fix: */
+      switch (enttype)
+      {
+        case 2:
+        case 5:
+          for (jk=0; jk<ekpoints; jk++)
+            { ekpointlist2[jk] = ekpointlist[ekpoints-jk-1]; }
+          for (jk=0; jk<ekpoints; jk++)
+            { ekpointlist[jk] = ekpointlist2[jk]; }
+          break;
+
+        case 3:
+        case 4:
+          /* TODO - test and fix */
+          for (jk=0; jk<ekpoints; jk++)
+            { ekpointlist2[jk] = ekpointlist[ekpoints-jk-1]; }
+          for (jk=0; jk<ekpoints; jk++)
+            { ekpointlist[jk] = ekpointlist2[jk]; }
+
+          break;
+      }
+
+
+
 			
 			e_id = fdbInputFindMaxInt(ENTITY, ENTITY_ID) ;
 
@@ -365,8 +398,10 @@ int f_ent_k_gen_1d(long num, long mode, long dir, double dx, double dy, double d
 			{
 				fprintf(msgout, "[E] %s!\n", _("Copying of entity failed (on kpoints)"));
 				femIntFree(ekpointlist) ;
+				femIntFree(ekpointlist2) ;
 				return(rv);
 			}
+
 
       if (en_div_len > 0) 
       { 
@@ -375,6 +410,7 @@ int f_ent_k_gen_1d(long num, long mode, long dir, double dx, double dy, double d
 
 			count++ ;
 			femIntFree(ekpointlist) ;
+			femIntFree(ekpointlist2) ;
 		}
 	}
 
