@@ -624,10 +624,8 @@ GtkWidget *fem_cmd_tree(void)
       gtk_tree_store_append(treeStore,&treeIter,&treeIterPar);
       gtk_tree_store_set(treeStore,&treeIter,0,_("Copy.."),1,"dialog,gekgen",-1);
 
-#ifndef DISABLE_UNFINISHED
       gtk_tree_store_append(treeStore,&treeIter,&treeIterPar);
-      gtk_tree_store_set(treeStore,&treeIter,0,_("Mirror.."),1,"dialog,enmirror",-1);
-#endif
+      gtk_tree_store_set(treeStore,&treeIter,0,_("Mirror.."),1,"dialog,gekmirror",-1);
 
       gtk_tree_store_append(treeStore,&treeIter,&treeIterPar);
       gtk_tree_store_set(treeStore,&treeIter,0,_("Delete.."),1,"dialog,gedel",-1);
