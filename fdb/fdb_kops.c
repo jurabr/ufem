@@ -378,19 +378,29 @@ int f_ent_k_gen_1d(long num, long mode, long dir, double dx, double dy, double d
             { ekpointlist[jk] = ekpointlist2[jk]; }
           break;
 
-        case 3:
-        case 4:
-          /* TODO - test and fix */
-          for (jk=0; jk<ekpoints; jk++)
-            { ekpointlist2[jk] = ekpointlist[ekpoints-jk-1]; }
+				case 3: /*normal brick: */
+          for (jk=0; jk<4; jk++)
+          { 
+						ekpointlist2[jk] = ekpointlist[ekpoints-jk-1-4]; 
+						ekpointlist2[jk+4] = ekpointlist[ekpoints-jk-1]; 
+					}
           for (jk=0; jk<ekpoints; jk++)
             { ekpointlist[jk] = ekpointlist2[jk]; }
-
+          break;
+				case 4: /* curvilinear brick: */
+					for (jk=0; jk<8; jk++)
+          { 
+						ekpointlist2[jk] = ekpointlist[ekpoints-jk-1-12]; 
+						ekpointlist2[jk+12] = ekpointlist[ekpoints-jk-1]; 
+					}
+					for (jk=8; jk<12; jk++)
+					{
+						ekpointlist2[jk+8] = ekpointlist[12-jk-1]; 
+					}
+          for (jk=0; jk<ekpoints; jk++)
+            { ekpointlist[jk] = ekpointlist2[jk]; }
           break;
       }
-
-
-
 			
 			e_id = fdbInputFindMaxInt(ENTITY, ENTITY_ID) ;
 
