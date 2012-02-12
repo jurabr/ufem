@@ -604,6 +604,7 @@ int func_fem_entity_aextrude (char *cmd)
   long   et, rs,mat ;
   long   k[10];
   long   klen = 0 ;
+  long   i, type ;
 
 	FEM_TEST_PREPROCESSOR
 	
@@ -631,7 +632,22 @@ int func_fem_entity_aextrude (char *cmd)
 	if (ciParNum(cmd) > 13) { k[8] = ciGetParInt(cmd, 13) ; klen++; }
 	if (ciParNum(cmd) > 14) { k[9] = ciGetParInt(cmd, 14) ; klen++; }
 
-  rv =  f_ent_extrude_area(area, klen, k, et, rs, mat, fdbSetInputDefDiv(0)); 
+  if (ciTestStringALL(cmd,1) == AF_YES) /* changing all selected elements  */
+  {
+    for (i=0; i< fdbInputTabLenAll(ENTITY); i++ )
+    {
+      type = fdbInputGetInt(ENTITY, ENTITY_TYPE, i);
+      if ((type == 2)||(type == 5))
+      {
+        area = fdbInputGetInt(ENTITY, ENTITY_ID, i) ;
+        rv =  f_ent_extrude_area(area, klen, k, et, rs, mat, fdbSetInputDefDiv(0)); 
+      }
+    }
+  }
+  else
+  {
+    rv =  f_ent_extrude_area(area, klen, k, et, rs, mat, fdbSetInputDefDiv(0)); 
+  }
 
 memFree:
 	return ( tuiCmdReact(cmd, rv) ) ;

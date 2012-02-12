@@ -777,6 +777,10 @@ int f_ent_extrude_area(
 #endif
     return(AF_ERR_IO);
   }
+  if (fdbInputTestSelect(ENTITY, pos) != AF_YES)
+  {
+    return(AF_ERR_IO); /* not selected => nothing to do */
+  }
 
   type = fdbInputGetInt(ENTITY,ENTITY_TYPE,pos) ;
 
@@ -795,6 +799,8 @@ int f_ent_extrude_area(
     {
       d_len = 2;
       last  = 1 ;
+      fprintf(stdout,"[E] %s!\n", _("One more keypoint is necessary for dragging path"));
+      return(AF_ERR_VAL);
     }
     else
     {
