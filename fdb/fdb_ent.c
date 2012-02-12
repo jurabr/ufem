@@ -622,7 +622,7 @@ int f_ent_list_prn(FILE *fw, long from, long to, long ent_type)
 /** Creates rectangular area from given coordinates (x,y,dx,dy)
  *
  */
-int f_ent_create_dim( long type, long id, double x, double y, double z, double dx, double dy, double dz)
+int f_ent_create_dim(long type, long id, double x0, double y0, double z0, double dx0, double dy0, double dz0)
 {
   int rv= AF_OK ;
   long   posi ;
@@ -630,11 +630,16 @@ int f_ent_create_dim( long type, long id, double x, double y, double z, double d
   double xi[20] ;
   double yi[20] ;
   double zi[20] ;
+  double x,y,z, dx, dy ,dz;
   long   i ;
   long   klen;
   int    test ;
 
   for (i=0; i<20; i++) { xi[i] = 0 ; yi[i] = 0 ; zi[i] = 0 ; }
+
+  /* Conversion from current coordinate system to default cartesian:*/
+  fdbCSysGetXYZ(x0, y0, z0, &x, &y, &z);
+  fdbCSysGetXYZ(dx0, dy0, dz0, &dx, &dy, &dz);
 
   switch (type)
   {

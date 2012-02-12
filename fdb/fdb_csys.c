@@ -21,8 +21,6 @@
    USA.
 
 	 Database for FEM: coordinate systems
-
-	 $Id: fdb_csys.c,v 1.4 2004/04/28 19:18:41 jirka Exp $
 */
 
 #include <math.h>
