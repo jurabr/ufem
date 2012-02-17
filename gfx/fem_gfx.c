@@ -22,7 +22,6 @@
 
 	 Graphics output for "fem" (pre|post)processor - main file
 
-	 $Id: fem_gfx.c,v 1.43 2005/02/21 22:05:52 jirka Exp $
 */
 
 #include "fem_gfx.h"
@@ -50,6 +49,7 @@ tPlotTran  plotTranFld[GFX_MAX_PLOT_VIEW] ;
 
 char *femPlotFile = NULL ;
 
+void femCoordCross(int full); /* prototype of coordinate cross drawing */
 
 /** Computes viewport parameters
  * @param ix actual window width
@@ -932,7 +932,7 @@ int femPrePlot(long x0, long y0, long x1, long y1, int NoClean)
 	return(AF_OK);
 }
 
-void femCoordCross(void)
+void femCoordCross(int full)
 {
 	double R=0.3;
 	double S;
@@ -942,60 +942,77 @@ void femCoordCross(void)
 	
 	S = R/8;
 
-	glLoadIdentity();
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
+  if (full != AF_YES) 
+  { 
+    X = PoSX(0) ;
+    Y = PoSY(0) ;
+    Z = PoSZ(0) ;
+    /* glTranslatef(X,Y,Z);  */
+  }
+  else
+  {
 
-	glTranslatef(0.5,0.5,0);
+	  glLoadIdentity();
+	  glMatrixMode(GL_MODELVIEW);
+	  glLoadIdentity();
 
-  glRotatef(plotTran.rot_x, 1.0, 0.0, 0.0) ; /* x  */
-  glRotatef(plotTran.rot_y, 0.0, 1.0, 0.0) ; /* y  */
-  glRotatef(plotTran.rot_z, 0.0, 0.0, 1.0) ; /* z  */
+    glTranslatef(0.5,0.5,0);
+
+    glRotatef(plotTran.rot_x, 1.0, 0.0, 0.0) ; /* x  */
+    glRotatef(plotTran.rot_y, 0.0, 1.0, 0.0) ; /* y  */
+    glRotatef(plotTran.rot_z, 0.0, 0.0, 1.0) ; /* z  */
+  }
 
 	/* X axis */
 	glColor4f(1,0,0,1);
-	glBegin(GL_POLYGON);
+  if (full == AF_YES) { glBegin(GL_POLYGON); }
+  else {glBegin(GL_LINE_STRIP); }
 	glVertex3f(X,Y,Z);
 	glVertex3f(X+R,Y,Z);
 	glVertex3f(X,Y,Z+S);
 	glEnd();
-	glBegin(GL_POLYGON);
+  if (full == AF_YES) { glBegin(GL_POLYGON); }
+  else {glBegin(GL_LINE_STRIP); }
 	glVertex3f(X,Y,Z);
 	glVertex3f(X+R,Y,Z);
 	glVertex3f(X,Y+S,Z);
 	glEnd();
 
-	femPlotString("x",X+R,Y,Z,NULL);
+  if (full == AF_YES) {	femPlotString("x",X+R,Y,Z,NULL); }
 
   /* Y axis */
 	glColor4f(0,0,1,1);
-	glBegin(GL_POLYGON);
+  if (full == AF_YES) { glBegin(GL_POLYGON); }
+  else {glBegin(GL_LINE_STRIP); }
 	glVertex3f(X,Y,Z);
 	glVertex3f(X,Y+R,Z);
 	glVertex3f(X+S,Y,Z);
 	glEnd();
-	glBegin(GL_POLYGON);
+  if (full == AF_YES) { glBegin(GL_POLYGON); }
+  else {glBegin(GL_LINE_STRIP); }
 	glVertex3f(X,Y,Z);
 	glVertex3f(X,Y+R,Z);
 	glVertex3f(X,Y,Z+S);
 	glEnd();
 	
-	femPlotString("y",X,Y+R,Z,NULL);
+	if (full == AF_YES) {	femPlotString("y",X,Y+R,Z,NULL); }
 	
   /* Z axis */
 	glColor4f(0,1,0,1);
-	glBegin(GL_POLYGON);
+  if (full == AF_YES) { glBegin(GL_POLYGON); }
+  else {glBegin(GL_LINE_STRIP); }
 	glVertex3f(X,Y,Z);
 	glVertex3f(X,Y,Z+R);
 	glVertex3f(X+S,Y,Z);
 	glEnd();
-	glBegin(GL_POLYGON);
+  if (full == AF_YES) { glBegin(GL_POLYGON); }
+  else {glBegin(GL_LINE_STRIP); }
 	glVertex3f(X,Y,Z);
 	glVertex3f(X,Y,Z+R);
 	glVertex3f(X,Y+S,Z);
 	glEnd();
 	
-  femPlotString("z",X,Y,Z+R,NULL);
+  if (full == AF_YES) {	femPlotString("z",X,Y,Z+R,NULL); }
 }
 
 /* Returnes actual date */
@@ -1022,6 +1039,8 @@ void femPostPlot(long x0, long y0,int x1, int y1, int Mode)
   float item = 1;
 	char  str[FEM_STR_LEN+1];
 	int   i;
+
+  femCoordCross(AF_NO);
 
 	for (i=0; i<FEM_STR_LEN; i++) { str[i] = '\0'; }
 
@@ -1139,7 +1158,7 @@ void femPostPlot(long x0, long y0,int x1, int y1, int Mode)
 			GFX_DESC_LEN/2, 
 			GFX_DESC_LEN/2);
 
-  femCoordCross();
+  femCoordCross(AF_YES);
 
   if (activePlotView >= (maxPlotView-1))
   {
