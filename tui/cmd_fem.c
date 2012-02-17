@@ -1304,6 +1304,8 @@ int func_fem_create_mesh (char *cmd)
 
 	FEM_TEST_PREPROCESSOR
 
+  fdbCoodSysSet(FDB_CSYS_CART, 0, 0, 0); /* set CSYS to the default cartesian */
+
   rv = fdbGeomCreateMesh() ;
   
 	return ( tuiCmdReact(cmd, rv) ) ;
