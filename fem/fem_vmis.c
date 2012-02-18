@@ -306,7 +306,7 @@ int fem_vmis_D_2D(long ePos,
 #if 1
 		H = E1 / (1.0 - (E1/Ex) ) ; /* hardening parameter for bilinear behaviour */
 #else
-		H = fem_plast_H_linear(ePos, Ex, E1, fy, sigma_vmis2D(&sigma) );
+		H = fem_plast_H_linear(ePos, Ex, E1, fy, sigma_vmis2D(&old_sigma) );
 #endif
 	}
 
@@ -325,13 +325,14 @@ int fem_vmis_D_2D(long ePos,
     chen_Dep(&deriv, H, &De, Dep) ; /* should work in 2D, too */
   }
   
+	/* NEW matrix: */
   if (Mode == AF_YES)
   {
 		femMatVecMult(Dep, epsilon, &sigma) ;
     for (i=1; i<=3; i++) { femVecAdd(&sigma,i, femVecGet(&old_sigma, i)) ; }
 
     J2 = stress2D_J2(&sigma) ;
-    f = (3.0*fabs(J2)) - (fy*fy) ;
+    f = (3.0*fabs(J2)) - fabs(fy*fy) ;
 
     if (f < 0.0)
     {
