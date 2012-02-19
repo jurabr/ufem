@@ -224,10 +224,11 @@ memFree:
 /* elasticity condition derivatives: */
 int vmis_deriv2D(tVector *deriv, tVector *stress)
 {
-  double s_x, s_y, t_xy;
+  double s_x, s_y, t_xy, s_q;
 
-  s_x  = femVecGet (stress, 1 ) ;
-  s_y  = femVecGet (stress, 2 ) ;
+  s_q =  (femVecGet(stress,1) + femVecGet(stress,2)) / 3.0 ;
+  s_x  = femVecGet (stress, 1 ) - s_q ;
+  s_y  = femVecGet (stress, 2 ) - s_q ;
   t_xy = femVecGet (stress, 3 ) ;
 
   femVecPut(deriv,1, (2.0*s_x - s_y )) ;
@@ -266,7 +267,7 @@ int fem_vmis_D_2D(long ePos,
   tVector sigma ;
   tVector old_sigma ;
   tMatrix De ;
-  long i ;
+  long i, j ;
 
   femVecNull(&deriv) ;
   femVecNull(&old_sigma) ;
@@ -282,14 +283,22 @@ int fem_vmis_D_2D(long ePos,
   femVecPut(&old_sigma,2, femGetEResVal(ePos,RES_SY,e_rep));
   femVecPut(&old_sigma,3, femGetEResVal(ePos,RES_SXY,e_rep));
 
+	state =  (long)femGetEResVal(ePos, RES_STAT1, e_rep);
+	H     = femGetEResVal(ePos, RES_STAT2, e_rep);
+
   Ex  = femGetMPValPos(ePos, MAT_EX,   0)  ;
   nu  = femGetMPValPos(ePos, MAT_NU,   0)  ;
   fy  = femGetMPValPos(ePos, MAT_F_YC, 0)  ;
   E1  = femGetMPValPos(ePos, MAT_HARD, 0)  ;
+
+printf("HHH = %e (status %li) [%li] \n", H, state, e_rep);
+femVecPrn(epsilon,"EPSILON");
+
   if (E1 <= FEM_ZERO)
   {
     n  = femGetMPValPos(ePos, MAT_RAMB_N, 0)  ;
     k  = femGetMPValPos(ePos, MAT_RAMB_K, 0)  ;
+    E1 = 0.0 ;
   }
   else
   {
@@ -297,29 +306,12 @@ int fem_vmis_D_2D(long ePos,
     n = 0.0 ;
   }
 
-	if  (E1 == Ex)
-	{
-    return(femD_3D_iso(ePos, Ex, nu, Dep)); /* linear solution */
-	}
-	else
-	{
-#if 1
-		H = E1 / (1.0 - (E1/Ex) ) ; /* hardening parameter for bilinear behaviour */
-#else
-		H = fem_plast_H_linear(ePos, Ex, E1, fy, sigma_vmis2D(&old_sigma) );
-#endif
-	}
-
-	state =  (long)femGetEResVal(ePos, RES_STAT1, e_rep);
-	printf("#, %li\n", state);
-
-  if (state == 0)
+  if ((state == 0)||(E1 == Ex))
   {
     D_HookIso_planeRaw(Ex, nu, Problem, Dep);
   }
   else
   {
-
     D_HookIso_planeRaw(Ex, nu, Problem, &De);
     vmis_deriv2D(&deriv, &old_sigma) ;
     chen_Dep(&deriv, H, &De, Dep) ; /* should work in 2D, too */
@@ -328,29 +320,48 @@ int fem_vmis_D_2D(long ePos,
 	/* NEW matrix: */
   if (Mode == AF_YES)
   {
-		femMatVecMult(Dep, epsilon, &sigma) ;
-    for (i=1; i<=3; i++) { femVecAdd(&sigma,i, femVecGet(&old_sigma, i)) ; }
+    D_HookIso_planeRaw(Ex, nu, Problem, &De);
 
-    J2 = stress2D_J2(&sigma) ;
-    f = (3.0*fabs(J2)) - fabs(fy*fy) ;
-
-    if (f < 0.0)
+    for (j=0; j<10; j++) 
     {
-      /* elastic */
-      D_HookIso_planeRaw(Ex, nu, Problem, Dep);
-      state = 0 ;
-    }
-    else
-    {
-      /* plastic */
-      D_HookIso_planeRaw(Ex, nu, Problem, &De);
-      vmis_deriv2D(&deriv, &sigma) ;
-      chen_Dep(&deriv, H, &De, Dep) ;
-		  state = 1 ;
-    }
+		  femMatVecMult(Dep, epsilon, &sigma) ;
+      for (i=1; i<=3; i++) { femVecAdd(&sigma,i, femVecGet(&old_sigma, i)) ; }
 
-		femMatVecMult(Dep, epsilon, &sigma) ;
-    for (i=1; i<=3; i++) { femVecAdd(&sigma,i, femVecGet(&old_sigma, i)) ; }
+      if  (E1 == Ex)
+	    {
+        D_HookIso_planeRaw(Ex, nu, Problem, Dep); /* linear solution */
+        break;
+	    }
+	    else
+	    {
+#if 1
+		    H = E1 / (1.0 - (E1/Ex) ) ; /* hardening parameter for bilinear behaviour */
+#else
+		    H = fem_plast_H_linear(ePos, Ex, E1, fy, sigma_vmis2D(&sigma) );
+#endif
+	    }
+      H = 0.0 ;
+
+      J2 = stress2D_J2(&sigma) ;
+      f = (3.0*(J2)) - (fy*fy) ;
+
+      if (f < 0.0)
+      {
+        /* elastic */
+        D_HookIso_planeRaw(Ex, nu, Problem, Dep);
+        state = 0 ;
+      }
+      else
+      {
+        /* plastic */
+        vmis_deriv2D(&deriv, &sigma) ;
+        chen_Dep(&deriv, H, &De, Dep) ;
+		    state = 1 ;
+      }
+
+printf("NORMS [%li] Dep=%e, De=%e | %e \n",j, femMatNorm(Dep), femMatNorm(&De), femMatNorm(&De) - femMatNorm(Dep));
+
+    } /* for j */
 
 	  femPutEResVal(ePos, RES_STAT1, e_rep, state);
 	  femPutEResVal(ePos, RES_STAT2, e_rep, H);

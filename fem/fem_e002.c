@@ -21,8 +21,6 @@
    02139, USA.
 
 	 FEM Solver - element 002 (isoparametric plane) definition
-
-	 $Id: fem_e002.c,v 1.19 2004/11/11 21:39:24 jirka Exp $
 */
 
 #include "fem_elem.h"

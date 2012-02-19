@@ -333,22 +333,19 @@ int chen_Dep(tVector *deriv, double H, tMatrix *De, tMatrix *Dep)
   fDf = femVecVecMult(deriv, &Df) ;
   ff  = sqrt(fabs(femVecVecMult(deriv, deriv))) ;
 
-#if 9
-  mult = fDf - (H*ff) ; /* is fabs() OK here? */
+#if 1
+  mult = fDf - fabs(H*ff) ; /* is fabs() OK here? */
 #else
   mult = fDf - H ;
 #endif
 
-#ifdef DEVEL_VERBOSE
-  fprintf(msgout,"fDf=%e H=%e\n", fDf, H);
-#endif
-  fprintf(msgout,"fDf=%e H=%e\n", fDf, H);
-
-#if 0
+#if 1
 #ifdef DEVEL_VERBOSE
   femMatPrn(De,"De");
   femVecPrn(deriv,"deriv");
+  femVecPrn(&fD,"fD");
   femVecPrn(&Df,"Df");
+	femMatPrn(&Dtmp,"D_TMP");
   fprintf(msgout,"fDf = %f H=%f (H*ff) = %f ff = %f mult = %f \n",fDf,H,H*ff,ff,mult);
 #endif
 #endif
@@ -363,9 +360,8 @@ int chen_Dep(tVector *deriv, double H, tMatrix *De, tMatrix *Dep)
 
   femMatLinComb(1.0, De, -1.0/mult, &Dtmp, Dep) ;
 
-#if 0
+#if 1
 	femMatPrn(De,"D_E");
-	femMatPrn(&Dtmp,"D_TMP");
 	femMatPrn(Dep,"D_EP");
 #endif
 
