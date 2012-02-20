@@ -224,16 +224,19 @@ memFree:
 /* elasticity condition derivatives: */
 int vmis_deriv2D(tVector *deriv, tVector *stress)
 {
-  double s_x, s_y, t_xy, s_q;
+  double s_x, s_y, t_xy, s_q, J2, mult;
 
   s_q =  (femVecGet(stress,1) + femVecGet(stress,2)) / 3.0 ;
   s_x  = femVecGet (stress, 1 ) - s_q ;
   s_y  = femVecGet (stress, 2 ) - s_q ;
   t_xy = femVecGet (stress, 3 ) ;
 
-  femVecPut(deriv,1, (2.0*s_x - s_y )) ;
-  femVecPut(deriv,2, (2.0*s_y - s_x )) ;
-  femVecPut(deriv,3, (6.0 * t_xy)) ;
+  J2 = 0.5*(s_x*s_x + s_y*s_y) + t_xy*t_xy ;
+  mult = sqrt(3.0) / (2.0 * sqrt(J2) ) ;
+
+  femVecPut(deriv,1, mult*(s_x  )) ;
+  femVecPut(deriv,2, mult*(s_y )) ;
+  femVecPut(deriv,3, mult*(2.0 * t_xy)) ;
 
   return(AF_OK);
 }
@@ -291,9 +294,6 @@ int fem_vmis_D_2D(long ePos,
   fy  = femGetMPValPos(ePos, MAT_F_YC, 0)  ;
   E1  = femGetMPValPos(ePos, MAT_HARD, 0)  ;
 
-printf("HHH = %e (status %li) [%li] \n", H, state, e_rep);
-femVecPrn(epsilon,"EPSILON");
-
   if (E1 <= FEM_ZERO)
   {
     n  = femGetMPValPos(ePos, MAT_RAMB_N, 0)  ;
@@ -322,7 +322,7 @@ femVecPrn(epsilon,"EPSILON");
   {
     D_HookIso_planeRaw(Ex, nu, Problem, &De);
 
-    for (j=0; j<10; j++) 
+    for (j=0; j<2; j++) 
     {
 		  femMatVecMult(Dep, epsilon, &sigma) ;
       for (i=1; i<=3; i++) { femVecAdd(&sigma,i, femVecGet(&old_sigma, i)) ; }
@@ -340,7 +340,6 @@ femVecPrn(epsilon,"EPSILON");
 		    H = fem_plast_H_linear(ePos, Ex, E1, fy, sigma_vmis2D(&sigma) );
 #endif
 	    }
-      H = 0.0 ;
 
       J2 = stress2D_J2(&sigma) ;
       f = (3.0*(J2)) - (fy*fy) ;
@@ -358,9 +357,6 @@ femVecPrn(epsilon,"EPSILON");
         chen_Dep(&deriv, H, &De, Dep) ;
 		    state = 1 ;
       }
-
-printf("NORMS [%li] Dep=%e, De=%e | %e \n",j, femMatNorm(Dep), femMatNorm(&De), femMatNorm(&De) - femMatNorm(Dep));
-
     } /* for j */
 
 	  femPutEResVal(ePos, RES_STAT1, e_rep, state);

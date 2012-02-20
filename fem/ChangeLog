@@ -1,3 +1,9 @@
+### Mon Feb 20 21:10:57 CET 2012
+
+bugfixes:
+  - von Mises 2D works (well, sort of) with ALM (ToDO: with NRM)
+
+
 ### Sun Nov  6 18:12:18 CET 2011
 
 version 0.3.7

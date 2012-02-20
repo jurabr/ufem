@@ -150,7 +150,7 @@ int femSolveFullALM(void)
 	prev_lambda = d_lambda ;
   
   /* steps: */
-  for (i=1; i<=(steps*4); i++)
+  for (i=1; i<=(steps*2); i++)
   {
     converged = AF_NO ;
 
@@ -588,7 +588,7 @@ int femSolveALM(long incr_type)
  	if ((rv = fem_sol_alloc()) != AF_OK) { goto memFree; }
  	if ((rv = fem_sol_res_alloc()) != AF_OK) { goto memFree; } /* __must__ be done _before_ adding of loads! */
 
-  for (i=1; i<= steps*26; i++)
+  for (i=1; i<= steps*4; i++)
   {
     converged = AF_NO ;
 
@@ -843,7 +843,7 @@ int femSolveALM(long incr_type)
 				femVecSwitch(&u_tot, &u); 
 			}
 
-			if (((lambda*multR) >= 1.4)||((lambda*multR) <= 0.004)) {break;} /* 1.0 is enough */
+			if (((lambda*multR) >= 1.01)||((lambda*multR) <= 0.004)) {break;} /* 1.0 is enough */
 
       femBackResGet();
 			need_repeat = AF_NO ;
