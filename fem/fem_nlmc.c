@@ -29,12 +29,10 @@
 #ifndef _SMALL_FEM_CODE_
 #ifdef USE_NLMC
 
+#if 0
 #ifdef _USE_THREADS_
 #define NLMC_THREADS 1
 #endif
-
-#if 0
-#define NLMC_THREADS 1 
 #endif
 
 #ifdef NLMC_THREADS
