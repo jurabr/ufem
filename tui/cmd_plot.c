@@ -1430,7 +1430,7 @@ int func_gui_dialog (char *cmd)
 			title[0]=ciAllocStr(_("Non-linear solver type"));
 			value[0]=ciAllocStr("Linear,NRM,ALM");
 			title[1]=ciAllocStr(_("Number of substeps"));
-			value[1]=ciAllocStr("40");
+			value[1]=ciAllocStr("100");
 			title[2]=ciAllocStr(_("Number of iterations"));
 			value[2]=ciAllocStr("200");
 			title[3]=ciAllocStr(_("Nth substep to save"));
