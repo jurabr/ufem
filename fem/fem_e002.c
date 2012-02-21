@@ -379,9 +379,6 @@ int stiffp(
 	tMatrix D_r; /*  [3][3] ; */
 	long    nat ;
 	long    i,j ;
-#if 0
-	long    k ;
-#endif
 	long    igaus, jgaus ;
 	long    ievab, jevab, istre ;
 	long    ipoint = 0;

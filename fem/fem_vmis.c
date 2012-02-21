@@ -270,7 +270,7 @@ int fem_vmis_D_2D(long ePos,
   tVector sigma ;
   tVector old_sigma ;
   tMatrix De ;
-  long i, j ;
+  long i ;
 
   femVecNull(&deriv) ;
   femVecNull(&old_sigma) ;
@@ -320,44 +320,37 @@ int fem_vmis_D_2D(long ePos,
 	/* NEW matrix: */
   if (Mode == AF_YES)
   {
-    D_HookIso_planeRaw(Ex, nu, Problem, &De);
+    if  (E1 == Ex)
+	  {
+      D_HookIso_planeRaw(Ex, nu, Problem, Dep); /* linear solution */
+	  }
+	  else
+	  {
+      D_HookIso_planeRaw(Ex, nu, Problem, &De);
 
-    for (j=0; j<1; j++) 
-    {
-			femVecSetZero(&sigma);
-		  femMatVecMult(Dep, epsilon, &sigma) ;
+	    femMatVecMult(Dep, epsilon, &sigma) ;
       for (i=1; i<=3; i++) { femVecAdd(&sigma,i, femVecGet(&old_sigma, i)) ; }
-
-      if  (E1 == Ex)
-	    {
-        D_HookIso_planeRaw(Ex, nu, Problem, Dep); /* linear solution */
-        break;
-	    }
-	    else
-	    {
-		    H = fem_plast_H_linear(ePos, Ex, E1, fy, sigma_vmis2D(&sigma) );
-	    }
 
       J2 = stress2D_J2(&sigma) ;
       f = (3.0*(J2)) - (fy*fy) ;
-
-      if (f < 0.0)
+  
+      if (f < 0.0) /* elastic */
       {
-        /* elastic */
         D_HookIso_planeRaw(Ex, nu, Problem, Dep);
         state = 0 ;
       }
-      else
+      else /* plastic */
       {
-        /* plastic */
+		    H = fem_plast_H_linear(ePos, Ex, E1, fy, sigma_vmis2D(&sigma) );
+      
         vmis_deriv2D(&deriv, &sigma) ;
         chen_Dep(&deriv, H, &De, Dep) ;
 		    state = 1 ;
       }
-    } /* for j */
 
-	  femPutEResVal(ePos, RES_STAT1, e_rep, state);
-	  femPutEResVal(ePos, RES_STAT2, e_rep, H);
+	    femPutEResVal(ePos, RES_STAT1, e_rep, state);
+	    femPutEResVal(ePos, RES_STAT2, e_rep, H);
+	  }
   }
 
 memFree:
