@@ -448,16 +448,12 @@ int stiffp(
 		if ((rv=femFullMatInit(&D_r, 3, 3)) != AF_OK){goto memFree;}
 	}
 
-
 	/* coordinates of element nodal points: */
 	for (i=1; i<= nnode; i++)
 	{
 		femMatPut(&coord,i,1, femGetNCoordPosX(femGetENodePos(ePos, i-1)) );
 		femMatPut(&coord,i,2, femGetNCoordPosY(femGetENodePos(ePos, i-1)) );
 
-#ifdef DEVEL_VERBOSE
-	fprintf(msgout,"x = %f y= %f\n", femMatGet(&coord,i,1), femMatGet(&coord,i,2));
-#endif
 		for (j=1; j<=2; j++)
 		{
 		  femMatPut(&elcod,j,i,  femMatGet(&coord,i,j) );
@@ -486,10 +482,6 @@ int stiffp(
 		 );
 
 	A = A / pow((double)ngaus,2) ; 
-
-#ifdef DEVEL_VERBOSE
-	fprintf(msgout,"A = %f\n", A);
-#endif
 
 	/* values for gauss: */
 	gaussq(ngaus, &posgp, &weigp);
@@ -532,18 +524,8 @@ int stiffp(
 				  for (j=1; j<=nat; j++)
 				  {
 					  femVecAdd(&epsilon,i, (femMatGet(&bmatx,i,j) * femVecGet(re,j)) );
-#ifdef SUCHARDA
-						printf(" %2.20f", femMatGet(&bmatx,i,j));
-#endif
 				  }
-#ifdef SUCHARDA
-					printf("\n");
-#endif
 			  }
-
-#if 0
-				printf("EPSILON: %f %f %f\n", femVecGet(&epsilon,1), femVecGet(&epsilon,2), femVecGet(&epsilon,3));
-#endif
 
 				/* previous step matrix: */
 				if ((rv=fem_D_2D(ePos, ipoint, A, &epsilon, NULL,NULL, AF_NO, ProblemType, &D_r)) != AF_OK) 
@@ -557,10 +539,6 @@ int stiffp(
 			   	  { goto memFree; }
 			}
 
-#if 0
-			femMatPrn(&D, "D_old");
-#endif
-
 			if (Mode == AF_YES)
 			{
 				/* putting of data to iRes field */
@@ -568,7 +546,6 @@ int stiffp(
 				{
 					if (mtype == 2) /* "pseudo sec" */
 					{
-					/* start of NEW CODE --------------------------------------- */
 					femVecPut(&sigma_0, 1,  femGetEResVal(ePos, RES_SX, ipoint+1)) ;
 					femVecPut(&sigma_0, 2,  femGetEResVal(ePos, RES_SY, ipoint+1)) ;
 					femVecPut(&sigma_0, 3,  femGetEResVal(ePos, RES_SXY, ipoint+1)) ;
@@ -612,8 +589,6 @@ int stiffp(
 				fprintf(msgout,"\nSIGMA: %f %f %f\n", femVecGet(&sigma,1), femVecGet(&sigma,2), femVecGet(&sigma,3));
 				fprintf(msgout,"\nSIGMA_R: %f %f %f\n", femVecGet(&sigma_r,1), femVecGet(&sigma_r,2), femVecGet(&sigma_r,3));
 #endif
-				/*printf("\nSIGMA: %f %f %f\n", femVecGet(&epsilon,1), femVecGet(&epsilon,2), femVecGet(&epsilon,3));*/
-					/* end of NEW CODE ----------------------------------------- */
 					}
 					else /* mtype */
 					{
@@ -646,22 +621,12 @@ int stiffp(
 	      	    femAddEResVal(ePos, RES_SY,  ipoint+1, femVecGet(&sigma,2));
 	      	    femAddEResVal(ePos, RES_SXY, ipoint+1, femVecGet(&sigma,3));
 #endif
-
-
-#if 0
-printf("s=%e s0=%e sf=%e \n",femVecGet(&sigma,1),femVecGet(&sigma_0,1),femVecGet(&sigma_r,1));
-#endif
-
             }
             else /* mtype != 8*/
             {
 			  	    femAddEResVal(ePos, RES_EX,  ipoint+1, femVecGet(&epsilon,1));
 	      	    femAddEResVal(ePos, RES_EY,  ipoint+1, femVecGet(&epsilon,2));
 	      	    femAddEResVal(ePos, RES_EXY, ipoint+1, femVecGet(&epsilon,3));
-
-#ifdef DEVEL_VERBOSE
-					    /*fprintf(msgout,"\nEPSILON: %f %f %f\n", femVecGet(&epsilon,1), femVecGet(&epsilon,2), femVecGet(&epsilon,3));*/
-#endif
 
 					    if ((rv=fem_D_2D(ePos, ipoint, A, &epsilon, NULL,NULL, AF_YES, ProblemType, &D)) != AF_OK) 
 			   	      { goto memFree; }
@@ -687,22 +652,6 @@ printf("s=%e s0=%e sf=%e \n",femVecGet(&sigma,1),femVecGet(&sigma_0,1),femVecGet
 #endif
             } /* mtype <> 8 */
 					} /* mtype */
-#if 0
-        /* ************************************* */
-        printf("IPOINT ------------------- %li\n", ipoint);
-        femMatPrn(&D,"DMAT");
-        femVecSetZero(&sigma) ;
-        femMatVecMult(&D, &epsilon, &sigma) ;
-        femVecPrn(&epsilon,"EPSI:");
-        femVecSetZero(&epsilon) ;
-        femGetPrincStress2D(&sigma, &epsilon, &dvolu);
-        /*
-        femGetPrincStress2D(&epsilon, &sigma, &dvolu);
-        */
-        femVecPrn(&epsilon,"HLAVNI NAP");
-        femVecPrn(&sigma,"SIGMA??");
-        printf("VAL = %e\n", dvolu);
-#endif
 				}
 				else
 				{

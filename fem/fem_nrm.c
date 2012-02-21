@@ -194,8 +194,8 @@ int femSolveNRM(long incr_type)
 	int rv = AF_OK;
 	double multF = 1.0 ;   /* load multiplier      */
 	double multSum = 0.0 ; /* total load multiplier*/
-	double crit  = 2e-6 ;  /* convergence criteria (might be 2%) */
-	double rsize = 1e18 ;  /* max residuum size    */
+	double crit  = 2e-8 ;  /* convergence criteria (might be 2%) */
+	double rsize = 1e20 ;  /* max residuum size    */
 	double normF = 0.0 ;
 	double normFr= 0.0 ;
 	int steps    = 1;      /* number of steps      */

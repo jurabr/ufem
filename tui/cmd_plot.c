@@ -1218,7 +1218,6 @@ int func_gui_dialog (char *cmd)
 					) ;
 		}
 
-#if 1
     if (strcmp(command,"gcreate_ge") == 0)
 		{
 			title[0]=ciAllocStr(_("Entity Type"));
@@ -1431,9 +1430,9 @@ int func_gui_dialog (char *cmd)
 			title[0]=ciAllocStr(_("Non-linear solver type"));
 			value[0]=ciAllocStr("Linear,NRM,ALM");
 			title[1]=ciAllocStr(_("Number of substeps"));
-			value[1]=ciAllocStr("20");
+			value[1]=ciAllocStr("40");
 			title[2]=ciAllocStr(_("Number of iterations"));
-			value[2]=ciAllocStr("333");
+			value[2]=ciAllocStr("200");
 			title[3]=ciAllocStr(_("Nth substep to save"));
 			value[3]=ciAllocStr("1");
 			title[4]=ciAllocStr(_("Node to track"));
@@ -1460,7 +1459,6 @@ int func_gui_dialog (char *cmd)
 					) ;
 		}
 
-#endif
 
 		/* ---------------------------- */
 		/* ---------------------------- */
