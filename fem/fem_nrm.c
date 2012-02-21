@@ -27,13 +27,6 @@
 
 #define LASTNORMLEN 4
 
-#ifdef USE_NLMC
-extern int nlmInit2D_m902(void);
-extern int nlmExit2D_m902(void);
-extern int nlmSetStatus2D_m902(long Mode);
-extern int nlmcUpdateStatus_e2m9(void);
-#endif
-
 /* from fem_sol.c: */
 extern void fem_sol_null(void);
 extern void fem_sol_free(void);
@@ -89,10 +82,6 @@ void fem_nrm_signal_stop(int sig_num)
 
 	if (femTangentMatrix == AF_YES) { femVecSwitch(&u_tot, &u); }
 	femWriteRes( fem_output_file() );
-#ifdef USE_NLMC
-  nlmExit2D_m902();
-	femBackResFree();
-#endif
 	fem_sol_free();
 	femDataFree();
 	femResFree();
@@ -242,11 +231,6 @@ int femSolveNRM(long incr_type)
  	if ((rv = fem_sol_alloc()) != AF_OK) { goto memFree; }
  	if ((rv = fem_sol_res_alloc()) != AF_OK) { goto memFree; } /* __must__ be done _before_ adding of loads! */
 
-#ifdef USE_NLMC
-  nlmInit2D_m902();
-  femBackResNull();
-#endif
-
 	if (femTangentMatrix == AF_YES) { femVecSetZeroBig(&u_tot) ; }
 
   femGetSumReactInit(femSumReactName); /* sum of reactions */
@@ -342,20 +326,6 @@ printf("%i  u=%e normF=%e norm_u=%e\n",i,femVecGet(&u,3),femVecNormBig(&F),femVe
 			fprintf(msgout,"[ ] NRM %s: %3i / %3i, %s: %3i / %3i\n",_("step"),i,steps,_("iteration"),j,substeps);
 #endif
 
-#ifdef USE_NLMC
-			femMatSetZeroBig(&K); /* NLMC */
-			femVecSetZeroBig(&F); /* NLMC */
-			femVecSetZeroBig(&Fr); /* NLMC */
-      femBackResGet(); /* NLMC*/
- 			if ((rv = fem_fill_K(AF_YES)) != AF_OK) { goto memFree; } /*NLMC*/
-			nlmSetStatus2D_m902(AF_YES); /* NLMC */
-      femBackResPut();
-      nlmcUpdateStatus_e2m9(); /* NLMC */
-
-			femVecSetZeroBig(&F); /* NLMC */
-			femVecSetZeroBig(&Fr); /* NLMC */
-#endif
-
 			femVecSetZeroBig(&Fr);
 			femVecSetZeroBig(&F);
 
@@ -380,19 +350,6 @@ printf("%i  u=%e normF=%e norm_u=%e\n",i,femVecGet(&u,3),femVecNormBig(&F),femVe
 #endif
 				goto memFree;
 			}
-
-#if 0 /* THIS IS ONLY FOR TESTING !!!!!!!! */
-      {
-	      if (femTangentMatrix == AF_YES) { femVecSwitch(&u_tot, &u); } /* really necessary? */
-        solSimNum = multSum ;
-	      if ((rv = femWriteRes(femSubStepFname(j))) != AF_OK)
-        { 
-          goto memFree; 
-        }
-	      if (femTangentMatrix == AF_YES) { femVecSwitch(&u_tot, &u); } /* really necessary? */
-        solID++;
-      }
-#endif
 
 			/* convergence testing: */
 			if ((normFr/normF) <= crit)
@@ -585,10 +542,6 @@ printf("%i %i u=%e normF=%e norm_u=%e i\n",i,j,femVecGet(&u,3),femVecNormBig(&F)
 #endif
 
 memFree:
-#ifdef USE_NLMC
-  nlmExit2D_m902();
-	femBackResFree();
-#endif
 	fem_sol_free();
 	femDataFree();
 	femResFree();
