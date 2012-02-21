@@ -46,14 +46,8 @@ double fem_plast_H_linear(long ePos,
 											double fy,
                       double sigma)
 {
-#if 0
-  return ( sigma/ ( ((E0-E1)*(sigma-fy)) / (E0*E1)));
-#else
-  return ( (sigma*E1)/(sigma-fy));
-#endif
+  return ( E1 / (1.0 - (E1/E0)) );
 }
-
-
 
 #endif
 

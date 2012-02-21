@@ -322,8 +322,9 @@ int fem_vmis_D_2D(long ePos,
   {
     D_HookIso_planeRaw(Ex, nu, Problem, &De);
 
-    for (j=0; j<2; j++) 
+    for (j=0; j<1; j++) 
     {
+			femVecSetZero(&sigma);
 		  femMatVecMult(Dep, epsilon, &sigma) ;
       for (i=1; i<=3; i++) { femVecAdd(&sigma,i, femVecGet(&old_sigma, i)) ; }
 
@@ -334,11 +335,7 @@ int fem_vmis_D_2D(long ePos,
 	    }
 	    else
 	    {
-#if 1
-		    H = E1 / (1.0 - (E1/Ex) ) ; /* hardening parameter for bilinear behaviour */
-#else
 		    H = fem_plast_H_linear(ePos, Ex, E1, fy, sigma_vmis2D(&sigma) );
-#endif
 	    }
 
       J2 = stress2D_J2(&sigma) ;
