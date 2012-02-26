@@ -1345,11 +1345,11 @@ int fem_cmd_init (void)
   ciFunction[count].func = func_fem_solve ;
   count++;
 
-  ciFunction[count].cmd = "psolve";
+  ciFunction[count].cmd = "ssolve";
   ciFunction[count].func = func_fem_solve ;
   count++;
 
-  ciFunction[count].cmd = "ssolve";
+  ciFunction[count].cmd = "psolve";
   ciFunction[count].func = func_fem_prev_solve ;
   count++;
 
