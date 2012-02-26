@@ -218,6 +218,7 @@ extern int func_gfx_plns (char *cmd);
 
 /* solver */
 extern int func_fem_solve(char *cmd);
+extern int func_fem_prev_solve(char *cmd);
 
 
 /* prep+post: */
@@ -701,7 +702,7 @@ int fem_cmd_init (void)
 {
   long count = 0 ;
 
-  ciFuncLen = 271;
+  ciFuncLen = 272;
   ciFunction = (tFunc *) malloc (ciFuncLen * sizeof (tFunc));
   
   /* basic functions */
@@ -1344,8 +1345,12 @@ int fem_cmd_init (void)
   ciFunction[count].func = func_fem_solve ;
   count++;
 
-  ciFunction[count].cmd = "ssolve";
+  ciFunction[count].cmd = "psolve";
   ciFunction[count].func = func_fem_solve ;
+  count++;
+
+  ciFunction[count].cmd = "ssolve";
+  ciFunction[count].func = func_fem_prev_solve ;
   count++;
 
   ciFunction[count].cmd = "gpres";

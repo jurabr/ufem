@@ -316,9 +316,9 @@ int fem_vmis_D_2D(long ePos,
       }
       else /* plastic */
       {
-		    H = fem_plast_H_linear(ePos, Ex, E1, fy, sigma_vmis2D(&sigma) );
+		    H = fem_plast_H_linear(ePos, Ex, E1, fy, sigma_vmis2D(&old_sigma) );
       
-        vmis_deriv2D(&deriv, &sigma) ;
+        vmis_deriv2D(&deriv, &old_sigma) ;
         chen_Dep(&deriv, H, &De, Dep) ;
 		    state = 1 ;
       }

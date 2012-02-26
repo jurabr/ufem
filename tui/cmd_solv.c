@@ -524,6 +524,38 @@ int func_fem_solve(char *cmd)
   ciRunCmd("nplot"); /* gfx.. */
   ciRunCmd("eplot"); /* gfx.. */
 
+  if (rv == AF_OK)
+  {
+	  ciAddVarGrp("last_solver_cmd",  cmd,"solver");
+  }
+
+	return ( tuiCmdReact(cmd, rv) ) ;
+}
+
+
+/** Executes previous succesfull solver command (if any): "psolve"
+ * @param cmd command
+ * @return status
+ */
+int func_fem_prev_solve(char *cmd)
+{
+	int   rv = AF_OK ;
+  char *tam = NULL ;
+
+  if ((tam=ciGetVarVal("last_solver_cmd")) == NULL)
+  {
+    fprintf(msgout,"[E] %s!\n",_("No previous solver command"));
+	  return ( tuiCmdReact(cmd, AF_ERR_EMP) ) ;
+  }
+
+  if ( (strlen(tam) < 1) || (tam[0] == ' ' ) )
+  {
+    fprintf(msgout,"[E] %s!\n",_("No previous solver command"));
+	  return ( tuiCmdReact(cmd, AF_ERR_EMP) ) ;
+  }
+
+  rv = ciRunCmd(tam) ;
+
 	return ( tuiCmdReact(cmd, rv) ) ;
 }
 
