@@ -42,7 +42,7 @@ extern double fem_plast_H_RO(long ePos,
                       double E,
                       double sigma);
 
-
+/* Material status values: 0=linear, 1=plastic, -1=unloading */
 
 
 /* elasticity condition derivatives: */
@@ -175,9 +175,9 @@ int fem_vmis_D_3D(long ePos,
       }
       else /* plastic */
       {
-		    H = fem_plast_H_linear(ePos, Ex, E1, fy, compute_sigma_e(sigma) );
+		    H = fem_plast_H_linear(ePos, Ex, E1, fy, compute_sigma_e(&old_sigma) );
       
-        vmis_deriv(&deriv, sigma) ;
+        vmis_deriv(&deriv, &old_sigma) ; /* seems to work better */
         chen_Dep(&deriv, H, &De, Dep) ;
 		    state = 1 ;
       }
@@ -238,9 +238,10 @@ int fem_vmis_D_2D(long ePos,
   int rv = AF_OK ;
   long   state = 0 ;
   double Ex, E1, nu, fy ;
-  double J2, f ;
+  double f ;
   double H = 0.0 ;
   double k, n ;
+  double s_eqv, s_eqv2 ;
   tVector deriv ;
   tVector sigma ;
   tVector old_sigma ;
@@ -281,7 +282,7 @@ int fem_vmis_D_2D(long ePos,
     n = 0.0 ;
   }
 
-  if ((state == 0)||(E1 == Ex))
+  if ((state < 1)||(E1 == Ex))
   {
     D_HookIso_planeRaw(Ex, nu, Problem, Dep);
   }
@@ -306,23 +307,50 @@ int fem_vmis_D_2D(long ePos,
 	    femMatVecMult(Dep, epsilon, &sigma) ;
       for (i=1; i<=3; i++) { femVecAdd(&sigma,i, femVecGet(&old_sigma, i)) ; }
 
-      J2 = stress2D_J2(&sigma) ;
-      f = (3.0*(J2)) - (fy*fy) ;
-  
-      if (f < 0.0) /* elastic */
-      {
-        D_HookIso_planeRaw(Ex, nu, Problem, Dep);
-        state = 0 ;
-      }
-      else /* plastic */
-      {
-		    H = fem_plast_H_linear(ePos, Ex, E1, fy, sigma_vmis2D(&old_sigma) );
-      
-        vmis_deriv2D(&deriv, &old_sigma) ;
-        chen_Dep(&deriv, H, &De, Dep) ;
-		    state = 1 ;
-      }
+      /* material status testing: */
+      s_eqv2 = (3.0 * stress2D_J2(&sigma) ) ;
+      s_eqv = sqrt(s_eqv2);
 
+      f = s_eqv2 - (fy*fy) ; /* vailure condition */
+
+      if (state == 0)
+      {
+        /* still elastic */
+        if (f <= 0.0)
+        {
+          state = 0 ; /* continues to be elastic */
+        }
+        else
+        {
+          state = 1 ; /* yields */
+        }
+      }
+      else
+      {
+        if (s_eqv < sqrt(3.0*stress2D_J2(&old_sigma)))
+        {
+          state = -1 ; /* unloading */
+        }
+        else
+        {
+          state = 1 ; /* plastic */
+        }
+      }
+  
+      switch (state) /* new matrix computation: */
+      {
+        case 1: /* plastic */
+          H = fem_plast_H_linear(ePos, Ex, E1, fy, sigma_vmis2D(&old_sigma) );
+          vmis_deriv2D(&deriv, &old_sigma) ; /* works better with old_sigma !? */
+          chen_Dep(&deriv, H, &De, Dep) ;
+          break;
+        case 0: /* elastic */
+        case -1: /* plastic unloading */
+        default: /* error */
+          D_HookIso_planeRaw(Ex, nu, Problem, Dep);
+          break ;
+      }
+      
 	    femPutEResVal(ePos, RES_STAT1, e_rep, state);
 	    femPutEResVal(ePos, RES_STAT2, e_rep, H);
 	  }

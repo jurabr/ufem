@@ -1,5 +1,6 @@
 Most important:
 
+- NRM speedup for von Mises (skip most of linear part)
 - remove MPI code (it's nearly useless)
 - orthotropy in element's direction (for timber etc.)
 - some kind of (s)hell
@@ -13,10 +14,8 @@ To Do:
 - some constitutive models for masonry (in progress)
 - von Mises plasticity (at least) for 2D elements
 - make beam element better (element loads etc.)
-- documentation
-- multi load steps in one data file or other way to read
-  the changing data (for dynamics etc.)
 - more plasticity conditions
+- documentation
 
 
 Sci-Fi:
@@ -29,6 +28,7 @@ Sci-Fi:
 
 
 Fixed:
+- data input for dynamics (acceleration only!)
 - dynamics (acceleration load only)
 - rewrite threads code (fixed?)
 - displacement control in non-linear solution
