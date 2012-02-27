@@ -341,7 +341,7 @@ int func_fem_solve(char *cmd)
       }
       else { steps = (long)(2*((double)steps/2.0)); }
 
-      if ((iters=ciGetParInt(cmd,4)) <= 1) { iters = 333 ; }
+      if ((iters=ciGetParInt(cmd,3)) <= 1) { iters = 334 ; }
 
       if ((nsave=ciGetParInt(cmd,4)) <= 1) { nsave = 1 ; }
       else { if (nsave > steps) {nsave=steps;}}
@@ -428,10 +428,11 @@ int func_fem_solve(char *cmd)
       case 6:
         /* TODO: construct the parameters: */
         for (i=0; i< (FEM_STR_LEN*2+1); i++) { params[i] = '\0' ; }
-        sprintf(params,"-ssor -p %s -nlnbrk -nls %li -nlstp %li -nlf %s -ose %li -osf %s -ln %li -lf %s -lrf %s -np %i",
+        sprintf(params,"-ssor -p %s -nlnbrk -nls %li -nlstp %li -nlit %li -nlf %s -ose %li -osf %s -ln %li -lf %s -lrf %s -np %i",
             ret_minus_p(itersp),
             solver,
             steps,
+            iters,
             ciSetPath(femGetDataDir(), femGetJobname(), "norm"),
             nsave,
             ciSetPath(femGetDataDir(), femGetJobname(), "it"),

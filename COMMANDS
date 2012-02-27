@@ -388,6 +388,8 @@ solve
 ssolve
 "ssolve"
 
+psolve
+"psolve"
 
 gpost
 "gpost,number_of_result_sets"
