@@ -208,21 +208,6 @@ int fem_vmis_D_3D(long ePos,
           femD_3D_iso(ePos,Ex, nu, Dep);
           break ;
       }
-#if 0
-      if (f < 0.0) /* elastic */
-      {
-        femD_3D_iso(ePos,Ex, nu, Dep); /* linear solution */
-        state = 0 ;
-      }
-      else /* plastic */
-      {
-		    H = fem_plast_H_linear(ePos, Ex, E1, fy, compute_sigma_e(&old_sigma) );
-      
-        vmis_deriv(&deriv, &old_sigma) ; /* seems to work better */
-        chen_Dep(&deriv, H, &De, Dep) ;
-		    state = 1 ;
-      }
-#endif
 
 	    femPutEResVal(ePos, RES_CR1, e_rep, state);
 	    femPutEResVal(ePos, RES_PSI, e_rep, H);
