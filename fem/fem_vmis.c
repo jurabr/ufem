@@ -99,7 +99,8 @@ int fem_vmis_D_3D(long ePos,
   int rv = AF_OK ;
   long   state = 0 ;
   double Ex, E1, nu, fy, n, k ;
-  double J2, f ;
+  double s_eqv, s_eqv2 ;
+  double f ;
   double H = 0.0 ;
   tVector deriv ;
   tVector old_sigma ;
@@ -141,7 +142,7 @@ int fem_vmis_D_3D(long ePos,
     n = 0.0 ;
   }
 
-	if ((state == 0)||(E1 == Ex)) 
+	if ((state < 1)||(E1 == Ex)) 
 	{
     return(femD_3D_iso(ePos, Ex, nu, Dep)); /* linear solution */
 	}
@@ -149,7 +150,7 @@ int fem_vmis_D_3D(long ePos,
 	{
     femD_3D_iso(ePos, Ex, nu, &De);
     vmis_deriv(&deriv, &old_sigma) ;
-    chen_Dep(&deriv, H, &De, Dep) ; /* should work in 2D, too */
+    chen_Dep(&deriv, H, &De, Dep) ;
 	}
     
   if (Mode == AF_YES)
@@ -165,9 +166,49 @@ int fem_vmis_D_3D(long ePos,
 	    femMatVecMult(Dep, epsilon, sigma) ;
       for (i=1; i<=6; i++) { femVecAdd(sigma,i, femVecGet(&old_sigma, i)) ; }
 
-      J2 = stress3D_J2(sigma) ;
-      f = (3.0*(J2)) - (fy*fy) ;
+      s_eqv2 = (3.0 * stress3D_J2(sigma) ) ;
+      s_eqv = sqrt(s_eqv2);
+
+      f = s_eqv2 - (fy*fy) ;
+
+      if (state == 0)
+      {
+        /* still elastic */
+        if (f <= 0.0)
+        {
+          state = 0 ; /* continues to be elastic */
+        }
+        else
+        {
+          state = 1 ; /* yields */
+        }
+      }
+      else
+      {
+        if (s_eqv < sqrt(3.0*stress3D_J2(&old_sigma)))
+        {
+          state = -1 ; /* unloading */
+        }
+        else
+        {
+          state = 1 ; /* plastic */
+        }
+      }
   
+      switch (state) /* new matrix computation: */
+      {
+        case 1: /* plastic */
+          H = fem_plast_H_linear(ePos, Ex, E1, fy, compute_sigma_e(&old_sigma) );
+          vmis_deriv(&deriv, &old_sigma) ; /* works better with old_sigma !? */
+          chen_Dep(&deriv, H, &De, Dep) ;
+          break;
+        case 0: /* elastic */
+        case -1: /* plastic unloading */
+        default: /* error */
+          femD_3D_iso(ePos,Ex, nu, Dep);
+          break ;
+      }
+#if 0
       if (f < 0.0) /* elastic */
       {
         femD_3D_iso(ePos,Ex, nu, Dep); /* linear solution */
@@ -181,6 +222,7 @@ int fem_vmis_D_3D(long ePos,
         chen_Dep(&deriv, H, &De, Dep) ;
 		    state = 1 ;
       }
+#endif
 
 	    femPutEResVal(ePos, RES_CR1, e_rep, state);
 	    femPutEResVal(ePos, RES_PSI, e_rep, H);
