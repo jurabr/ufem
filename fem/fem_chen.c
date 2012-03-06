@@ -73,6 +73,32 @@ double stress3D_J2(tVector *stress)
   return(val) ;
 }
 
+double stress3D_J2dev(tVector *stress)
+{
+  double val = 0.0 ;
+  double s_x, s_y, s_z, t_xy, t_yz, t_zx, s_h ;
+
+  s_h =  (femVecGet(stress,1) + femVecGet(stress,2) + femVecGet(stress,3)) / 3.0 ;
+
+  s_x  = femVecGet (stress, 1 ) - s_h ;
+  s_y  = femVecGet (stress, 2 ) - s_h ;
+  s_z  = femVecGet (stress, 3 ) - s_h ;
+  t_zx = femVecGet (stress, 4 ) ;
+  t_yz = femVecGet (stress, 5 ) ;
+  t_xy = femVecGet (stress, 6 ) ;
+
+  val = (
+      (pow((s_x-s_y),2) + 
+       pow((s_y-s_z),2) + 
+       pow((s_z-s_x),2))
+      /6.0) + 
+    t_xy*t_xy + t_yz*t_yz + t_zx*t_zx ;
+  
+  return(val) ;
+}
+
+
+
 
 /** Chen's constants: */
 

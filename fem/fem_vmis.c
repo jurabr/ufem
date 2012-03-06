@@ -26,10 +26,12 @@
 #include "fem_pl3d.h"
 
 /* from "fem_chen.c": */
-extern double stress3D_J2(tVector *stress);
+extern double stress3D_I1(tVector *stress);
+extern double stress3D_J2dev(tVector *stress);
 extern int chen_Dep(tVector *deriv, double H, tMatrix *De, tMatrix *Dep);
 extern int D_HookIso_planeRaw(double E, double nu, long Problem, tMatrix *D);
-extern double stress2D_J2(tVector *stress) ;
+extern double stress2D_I1(tVector *stress);
+extern double stress2D_J2dev(tVector *stress) ;
 
 extern double fem_plast_H_linear(long ePos, 
                       double E0,
@@ -46,11 +48,12 @@ extern double fem_plast_H_RO(long ePos,
 
 
 /* elasticity condition derivatives: */
-int vmis_deriv(tVector *deriv, tVector *stress)
+int vmis_deriv(tVector *deriv, tVector *stress, long type, double alpha)
 {
-  double s_x, s_y, s_z, s_q, t_xy, t_yz, t_zx, mult, J2 ;
+  double s_x, s_y, s_z, s_q, t_xy, t_yz, t_zx, mult, mult1, J2 ;
 
   s_q =  (femVecGet(stress,1) + femVecGet(stress,2) + femVecGet(stress,3)) / 3.0 ;
+
   s_x  = femVecGet (stress, 1 ) - s_q ;
   s_y  = femVecGet (stress, 2 ) - s_q ;
   s_z  = femVecGet (stress, 3 ) - s_q ;
@@ -58,13 +61,22 @@ int vmis_deriv(tVector *deriv, tVector *stress)
   t_zx = femVecGet (stress, 5 ) ;
   t_xy = femVecGet (stress, 6 ) ;
 
-
   J2 = 0.5*(s_x*s_x + s_y*s_y + s_z*s_z) + t_xy*t_xy + t_yz*t_yz + t_zx*t_zx ;
-  mult = sqrt(3.0) / (2.0 * sqrt(J2) ) ;
 
-  femVecPut(deriv,1, mult*(s_x )) ;
-  femVecPut(deriv,2, mult*(s_y )) ;
-  femVecPut(deriv,3, mult*(s_z )) ;
+  if (type == 1) /* von mises */
+  {
+    mult = sqrt(3.0) / (2.0 * sqrt(J2) ) ;
+    mult1 = 0 ;
+  }
+  else /* drucker-prager */
+  {
+    mult = 1.0 / (2.0 * sqrt(J2) ) ;
+    mult1 = 1.0 ;
+  }
+
+  femVecPut(deriv,1, alpha*mult1 + mult*(s_x )) ;
+  femVecPut(deriv,2, alpha*mult1 + mult*(s_y )) ;
+  femVecPut(deriv,3, alpha*mult1 + mult*(s_z )) ;
   femVecPut(deriv,4, mult*(2.0 * t_yz)) ;
   femVecPut(deriv,5, mult*(2.0 * t_zx)) ;
   femVecPut(deriv,6, mult*(2.0 * t_xy)) ;
@@ -99,12 +111,17 @@ int fem_vmis_D_3D(long ePos,
   int rv = AF_OK ;
   long   state = 0 ;
   double Ex, E1, nu, fy, n, k ;
-  double s_eqv, s_eqv2 ;
+  double s_eqv2 ;
   double f ;
+  double cohes, frict ;
   double H = 0.0 ;
   tVector deriv ;
   tVector old_sigma ;
   tMatrix De ;
+  long type    = 1 ;
+  double alpha = 0.0 ;
+  double kk    = 0.0 ;
+  double prev ;
   long i ;
 
   femVecNull(&deriv) ;
@@ -130,6 +147,19 @@ int fem_vmis_D_3D(long ePos,
   fy  = femGetMPValPos(ePos, MAT_F_YC, 0)  ;
   E1  = femGetMPValPos(ePos, MAT_HARD, 0)  ;
 
+  if (fabs(fy) > FEM_ZERO)
+  {
+    type = 1 ;
+  }
+  else
+  {
+    type = 0;
+    cohes  = femGetMPValPos(ePos, MAT_COHES, 0)  ;
+    frict  = femGetMPValPos(ePos, MAT_FRICT, 0)  ;
+    alpha = ( 2.0 * sin(frict)) / (sqrt(3.0) * (3.0 - sin(frict)) ) ;
+    kk    = ( 6.0 * cohes * cos(frict)) / (sqrt(3.0) * (3.0 - sin(frict)) ) ;
+  }
+
   if (E1 <= FEM_ZERO)
   {
     n  = femGetMPValPos(ePos, MAT_RAMB_N, 0)  ;
@@ -149,7 +179,7 @@ int fem_vmis_D_3D(long ePos,
 	else
 	{
     femD_3D_iso(ePos, Ex, nu, &De);
-    vmis_deriv(&deriv, &old_sigma) ;
+    vmis_deriv(&deriv, &old_sigma, type, alpha) ;
     chen_Dep(&deriv, H, &De, Dep) ;
 	}
     
@@ -166,10 +196,20 @@ int fem_vmis_D_3D(long ePos,
 	    femMatVecMult(Dep, epsilon, sigma) ;
       for (i=1; i<=6; i++) { femVecAdd(sigma,i, femVecGet(&old_sigma, i)) ; }
 
-      s_eqv2 = (3.0 * stress3D_J2(sigma) ) ;
-      s_eqv = sqrt(s_eqv2);
+      if (type == 1)
+      {
+        s_eqv2 = (3.0 * stress3D_J2dev(sigma) ) ;
+        prev = (3.0*stress3D_J2dev(&old_sigma)) ;
 
-      f = s_eqv2 - (fy*fy) ;
+        f = s_eqv2 - (fy*fy) ;
+      }
+      else
+      {
+        s_eqv2 = alpha*stress3D_I1(sigma) + (stress3D_J2dev(sigma) ) ;
+        prev   = alpha*stress3D_I1(&old_sigma) + (stress3D_J2dev(&old_sigma) ) ;
+
+        f = s_eqv2 - kk ;
+      }
 
       if (state == 0)
       {
@@ -185,7 +225,7 @@ int fem_vmis_D_3D(long ePos,
       }
       else
       {
-        if (s_eqv < sqrt(3.0*stress3D_J2(&old_sigma)))
+        if (s_eqv2 < prev)
         {
           state = -1 ; /* unloading */
         }
@@ -199,7 +239,7 @@ int fem_vmis_D_3D(long ePos,
       {
         case 1: /* plastic */
           H = fem_plast_H_linear(ePos, Ex, E1, fy, compute_sigma_e(&old_sigma) );
-          vmis_deriv(&deriv, &old_sigma) ; /* works better with old_sigma !? */
+          vmis_deriv(&deriv, &old_sigma, type, alpha) ; /* works better with old_sigma !? */
           chen_Dep(&deriv, H, &De, Dep) ;
           break;
         case 0: /* elastic */
@@ -224,9 +264,9 @@ memFree:
 /** 2D VERSION OF VON MISES *************************** */
 
 /* elasticity condition derivatives: */
-int vmis_deriv2D(tVector *deriv, tVector *stress)
+int vmis_deriv2D(tVector *deriv, tVector *stress, long type, double alpha)
 {
-  double s_x, s_y, t_xy, s_q, J2, mult;
+  double s_x, s_y, t_xy, s_q, J2, mult, mult1 ;
 
   s_q =  (femVecGet(stress,1) + femVecGet(stress,2)) / 3.0 ;
   s_x  = femVecGet (stress, 1 ) - s_q ;
@@ -234,10 +274,20 @@ int vmis_deriv2D(tVector *deriv, tVector *stress)
   t_xy = femVecGet (stress, 3 ) ;
 
   J2 = 0.5*(s_x*s_x + s_y*s_y) + t_xy*t_xy ;
-  mult = sqrt(3.0) / (2.0 * sqrt(J2) ) ;
 
-  femVecPut(deriv,1, mult*(s_x  )) ;
-  femVecPut(deriv,2, mult*(s_y )) ;
+  if (type == 1) /* von mises */
+  {
+    mult = sqrt(3.0) / (2.0 * sqrt(J2) ) ;
+    mult1 = 0 ;
+  }
+  else /* drucker-prager */
+  {
+    mult = 1.0 / (2.0 * sqrt(J2) ) ;
+    mult1 = 1.0 ;
+  }
+
+  femVecPut(deriv,1, alpha*mult1 + mult*(s_x  )) ;
+  femVecPut(deriv,2, alpha*mult1 + mult*(s_y )) ;
   femVecPut(deriv,3, mult*(2.0 * t_xy)) ;
 
   return(AF_OK);
@@ -267,12 +317,17 @@ int fem_vmis_D_2D(long ePos,
   double Ex, E1, nu, fy ;
   double f ;
   double H = 0.0 ;
+  double cohes, frict ;
   double k, n ;
-  double s_eqv, s_eqv2 ;
+  double s_eqv2 ;
   tVector deriv ;
   tVector sigma ;
   tVector old_sigma ;
   tMatrix De ;
+  long type    = 1 ;
+  double alpha = 0.0 ;
+  double kk    = 0.0 ;
+  double prev ;
   long i ;
 
   femVecNull(&deriv) ;
@@ -297,6 +352,19 @@ int fem_vmis_D_2D(long ePos,
   fy  = femGetMPValPos(ePos, MAT_F_YC, 0)  ;
   E1  = femGetMPValPos(ePos, MAT_HARD, 0)  ;
 
+  if (fabs(fy) > FEM_ZERO)
+  {
+    type = 1 ;
+  }
+  else
+  {
+    type = 0;
+    cohes  = femGetMPValPos(ePos, MAT_COHES, 0)  ;
+    frict  = femGetMPValPos(ePos, MAT_FRICT, 0)  ;
+    alpha = ( 2.0 * sin(frict)) / (sqrt(3.0) * (3.0 - sin(frict)) ) ;
+    kk    = ( 6.0 * cohes * cos(frict)) / (sqrt(3.0) * (3.0 - sin(frict)) ) ;
+  }
+
   if (E1 <= FEM_ZERO)
   {
     n  = femGetMPValPos(ePos, MAT_RAMB_N, 0)  ;
@@ -316,7 +384,7 @@ int fem_vmis_D_2D(long ePos,
   else
   {
     D_HookIso_planeRaw(Ex, nu, Problem, &De);
-    vmis_deriv2D(&deriv, &old_sigma) ;
+    vmis_deriv2D(&deriv, &old_sigma, type, alpha) ;
     chen_Dep(&deriv, H, &De, Dep) ; /* should work in 2D, too */
   }
   
@@ -334,11 +402,20 @@ int fem_vmis_D_2D(long ePos,
 	    femMatVecMult(Dep, epsilon, &sigma) ;
       for (i=1; i<=3; i++) { femVecAdd(&sigma,i, femVecGet(&old_sigma, i)) ; }
 
-      /* material status testing: */
-      s_eqv2 = (3.0 * stress2D_J2(&sigma) ) ;
-      s_eqv = sqrt(s_eqv2);
+      if (type == 1)
+      {
+        s_eqv2 = (3.0 * stress2D_J2dev(&sigma) ) ;
+        prev = (3.0*stress2D_J2dev(&old_sigma)) ;
 
-      f = s_eqv2 - (fy*fy) ; /* vailure condition */
+        f = s_eqv2 - (fy*fy) ;
+      }
+      else
+      {
+        s_eqv2 = alpha*stress2D_I1(&sigma) + (stress2D_J2dev(&sigma) ) ;
+        prev   = alpha*stress2D_I1(&old_sigma) + (stress2D_J2dev(&old_sigma) ) ;
+
+        f = s_eqv2 - kk ;
+      }
 
       if (state == 0)
       {
@@ -354,7 +431,7 @@ int fem_vmis_D_2D(long ePos,
       }
       else
       {
-        if (s_eqv < sqrt(3.0*stress2D_J2(&old_sigma)))
+        if (s_eqv2 < prev)
         {
           state = -1 ; /* unloading */
         }
@@ -368,7 +445,7 @@ int fem_vmis_D_2D(long ePos,
       {
         case 1: /* plastic */
           H = fem_plast_H_linear(ePos, Ex, E1, fy, sigma_vmis2D(&old_sigma) );
-          vmis_deriv2D(&deriv, &old_sigma) ; /* works better with old_sigma !? */
+          vmis_deriv2D(&deriv, &old_sigma, type, alpha) ; /* works better with old_sigma !? */
           chen_Dep(&deriv, H, &De, Dep) ;
           break;
         case 0: /* elastic */

@@ -56,6 +56,26 @@ double stress2D_J2(tVector *stress)
       );
 }
 
+/** Computes 2nd invariant of stress deviator J2
+ * @param stress  3-compoment stress vector {s_x, s_y, s_xy}
+ * @return J2 */
+double stress2D_J2dev(tVector *stress)
+{
+  double s_x, s_y, t_xy, s_q;
+
+  s_q =  (femVecGet(stress,1) + femVecGet(stress,2)) / 3.0 ;
+
+  s_x  = femVecGet (stress, 1 ) - s_q ;
+  s_y  = femVecGet (stress, 2 ) - s_q ;
+  t_xy = femVecGet (stress, 3 ) ;
+
+  return(
+   (pow((s_x-s_y), 2) + (s_x*s_x) + (s_y*s_y) )/6.0 + (t_xy*t_xy)
+      );
+}
+
+
+
 /** Computes material data for Chen yield criteria
  * @param fc  compresive strenth
  * @param fbc  biaxial compresive strenth
