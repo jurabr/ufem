@@ -463,7 +463,7 @@ int chen2d_D(long ePos, long e_rep, long Problem,
         H = chen2d_H_Ohtani(ePos, status, Ex,
             sigma_c, sigma_bc, sigma_t, I1, J2) ;
 #else
-        H = 1E6 * FEM_ZERO ;
+        H = fem_plast_H_linear(ePos, Ex, Ex*0.01, fyc, 0 ); /* testing value */
 #endif
 
         /* get elastoplastic matrix */
