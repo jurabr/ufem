@@ -110,18 +110,12 @@ long chen2d_check_yield(double I1, double J2,
     double Ac, double At, double tau2c, double tau2t)
 {
   if ( (I1 <= 0.0) && ((sqrt(J2) + (I1/3.0) ) <= 0.0) )
-  {
-printf("Test C-C %e\n",(J2 + (Ac*I1)/3.0 - tau2c));
-    /* compression-compression zone: */
-    if ((J2 + (Ac*I1)/3.0 - tau2c) > 0)
-       { return(-1) ; /* plastic */ }
+  { /* compression-compression zone: */
+    if ((J2 + (Ac*I1)/3.0 - tau2c) > 0) { return(-1) ;  }
   }
   else
-  {
-    /* other zones: */
-printf("Test C-T %e (I1=%e, J2=%e At=%e, tau2t=%e)\n",(J2 - (I1*I1)/6.0 + (At*I1)/3.0 - tau2t),I1,J2, At, tau2t);
-    if ((J2 - ((I1*I1)/6.0) + ((At*I1)/3.0) - tau2t) > 0)
-       { return(1) ; /* plastic */ }
+  { /* other zones: */
+    if ((J2 - ((I1*I1)/6.0) + ((At*I1)/3.0) - tau2t) > 0) { return(1) ; }
   }
   return(0) ; /* must be elastic... */
 }
@@ -150,7 +144,6 @@ int chen2d_alpha_beta(double Ay, double Au, double tau2y, double tau2u,
  * @param beta_c beta intermediate parameter for compression
  * @param alpha_t alpha intermediate parameter for tension
  * @param beta_t beta intermediate parameter for tension
- * @param a relation a=sigma_bc/sigma_c (initial)
  * @param sigma_c equivalent unixal compression limit
  * @param sigma_bc equivalent biaxial compression limit
  * @param sigma_t equivalent unixal tension limit
@@ -160,10 +153,10 @@ int chen2d_equivalent_limits(
     double I1, double J2,
     double alpha_c, double beta_c, 
     double alpha_t, double beta_t,
-    double a,
     double *sigma_c, double *sigma_bc, double *sigma_t,
     double *tau2c, double *tau2t)
-{ /* TODO: verify these equation: */
+{ /* TODO: verify these equation - they have not to work: */
+#if 0
   *tau2c = fabs((J2 + (beta_c*I1)/3.0) / (1.0 - (alpha_c*I1)/3.0)) ;
   *tau2t = fabs((J2-((beta_t*I1)/3.0)+(I1*I1/6.0))/(1.0-(alpha_t*I1)/3.0)) ;
 
@@ -174,6 +167,7 @@ int chen2d_equivalent_limits(
 fprintf(msgout,"EQUIV I1=%e, J2=%e, ac=%e, bc=%e, at=%e bt=%e\n", 
     I1, J2, alpha_c, beta_c, alpha_t, beta_t
     );
+#endif
   return(AF_OK);
 }
 
@@ -356,7 +350,7 @@ int chen2d_D(long ePos, long e_rep, long Problem,
   long i, j ;
   double Ex, nu ;
   double f_yc, f_ybc, f_yt, f_uc, f_ubc, f_ut ;
-  double alpha_c, beta_c, alpha_t, beta_t, a, H , sum ;
+  double alpha_c, beta_c, alpha_t, beta_t, H , sum ;
   double Auc, Aut, tauu2c, tauu2t ;
   double Ayc, Ayt, tauy2c, tauy2t ;
   double tau2c, tau2t ;
@@ -381,6 +375,7 @@ int chen2d_D(long ePos, long e_rep, long Problem,
   /* get current material status: 0=elastic ; -1=CC; +1=other */
 	status = (long) femGetEResVal(ePos, RES_STAT1, e_rep);
 
+	/* material properties: */
   Ex = femGetMPValPos(ePos, MAT_EX, 0)  ;
   nu = femGetMPValPos(ePos, MAT_NU, 0)  ;
 
@@ -392,27 +387,23 @@ int chen2d_D(long ePos, long e_rep, long Problem,
   f_ubc = femGetMPValPos(ePos, MAT_F_UBC, 0) ;
   f_ut  = femGetMPValPos(ePos, MAT_F_UT, 0)  ;
 
-  a = 0.5 * ( (f_ubc/f_uc) + (f_ybc / f_yc) ) ;
-
   H = 0.0 ;
 
   /* get initial/previous matrix */
-  if (status == 0)
+  if ((status == 0)||(status ==2))
   {
-    /* elastic */
-    D_HookIso_planeRaw(Ex, nu, Problem, Dep);
+    D_HookIso_planeRaw(Ex, nu, Problem, Dep); /* elastic or unloading */
   }
-  else
+  else /* plastic */
   {
     femVecPut(&deriv,1, femGetEResVal(ePos, RES_ECR1, e_rep)); 
     femVecPut(&deriv,2, femGetEResVal(ePos, RES_ECR2, e_rep)); 
     femVecPut(&deriv,3, femGetEResVal(ePos, RES_GCR1, e_rep)); 
-	  H = femGetEResVal(ePos, RES_DIR3, e_rep);
+	  H = femGetEResVal(ePos, RES_STAT2, e_rep);
 
     D_HookIso_planeRaw(Ex, nu, Problem, &De);
     chen_Dep(&deriv, H, &De, Dep) ;
   }
-    
   
   if (Mode == AF_YES) /* new matrix */
   {
@@ -429,26 +420,17 @@ int chen2d_D(long ePos, long e_rep, long Problem,
     J2 =  stress2D_J2(&sigma) ;
 
     /* get data for yield condition */
-    chen2d_get_A_tau2_y(f_yc, f_ybc, f_yt,
-		  &Ayc, &Ayt, &tauy2c, &tauy2t) ;
+    chen2d_get_A_tau2_y(f_yc, f_ybc, f_yt, &Ayc, &Ayt, &tauy2c, &tauy2t);
 
     /* check plasticity condition */
     status =  chen2d_check_yield(I1, J2, Ayc, Ayt, tauy2c, tauy2t);
+		if ((status == 0)&&(status_old != 0)) {status = 2 ;} /* respect unloading */
 
-printf("STATUS[%li,%li] = %li\n", ePos, e_rep, status);
-
-    if (status == 0)
+    if ((status == 0)||(status == 2))
     {
-      if (status_old == 0)
-      {
-        /* elastic matrix - nothing to do */
-      }
-      else
-      {
-        /* must be unloading */
-        femMatSetZero(Dep) ;
-        femMatCloneDiffToEmpty(&De, Dep);
-      }
+      /* elastic or unloading */
+      femMatSetZero(Dep) ;
+      femMatCloneDiffToEmpty(&De, Dep);
     }
     else /* plastic */
     {
@@ -460,11 +442,11 @@ printf("STATUS[%li,%li] = %li\n", ePos, e_rep, status);
       chen2d_alpha_beta(Ayc, Auc, tauy2c, tauu2c, &alpha_c, &beta_c) ;
       chen2d_alpha_beta(Ayt, Aut, tauy2t, tauu2t, &alpha_t, &beta_t) ;
 
-      for (j=0; j<100; j++) /* loop for precision */
+      for (j=0; j<1; j++) /* TODO: rewrite loop for precision */
       {
-        /* compute intermediate equation parameters: */
+        /* TODO compute intermediate equation parameters: */
         chen2d_equivalent_limits( I1, J2,
-            alpha_c, beta_c, alpha_t, beta_t, a,
+            alpha_c, beta_c, alpha_t, beta_t, 
             &sigma_c, &sigma_bc, &sigma_t,
             &tau2c, &tau2t) ;
 
@@ -483,7 +465,6 @@ printf("STATUS[%li,%li] = %li\n", ePos, e_rep, status);
 #else
         H = 1E6 * FEM_ZERO ;
 #endif
-fprintf(msgout,"H is %e\n", H);
 
         /* get elastoplastic matrix */
         chen_Dep(&deriv, H, &De, Dep) ;
@@ -503,10 +484,7 @@ fprintf(msgout,"H is %e\n", H);
         }
         sum = sqrt(sum) ;
 
-        if (sum < 1e-6)
-        {
-          break ; /* OK */
-        }
+        if (sum < 1e-6) { break ; /* OK */ }
         else
         {
           femVecClone(&sigma, &sigma_ps) ; /* save current vector */
@@ -525,7 +503,7 @@ fprintf(msgout,"H is %e\n", H);
     femPutEResVal(ePos, RES_ECR1, e_rep, femVecGet(&deriv,1)); 
     femPutEResVal(ePos, RES_ECR2, e_rep, femVecGet(&deriv,2)); 
     femPutEResVal(ePos, RES_GCR1, e_rep, femVecGet(&deriv,3)); 
-	  femPutEResVal(ePos, RES_DIR3, e_rep, H );
+	  femPutEResVal(ePos, RES_STAT2, e_rep, H );
   }
 
 memFree:
