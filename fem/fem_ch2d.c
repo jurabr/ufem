@@ -177,6 +177,52 @@ fprintf(msgout,"EQUIV I1=%e, J2=%e, ac=%e, bc=%e, at=%e bt=%e\n",
   return(AF_OK);
 }
 
+/** TODO Computes equivalent stresses fc, fbc, ft for given stress
+ * state
+ * */
+int chen2d_solve_eq_stresses(
+    long   zone, /* -1 = C-C, 1=ost. */
+    double I1, 
+    double J2,  
+    double alfac,
+    double betac,
+    double alfat,
+    double betat,
+    double a, /* fybc/fc */
+    double *fc, 
+    double *fbc,
+    double *ft)
+{
+  double tau2t, At ;
+  double tau2c, Ac ;
+  double ft1, ft2 ;
+  if (zone >= 0)
+  {
+    tau2t = ((J2 + (I1*((2.0*betat) - I1)/6.0))/(1.0 - (alfat*I1/3.0)));
+    At = alfat * tau2t + betat ;
+
+    ft1 = ((-1.0)*(At + (pow((pow((2.0*At), 2.0) + (24.0*tau2t)), (1.0/2.0))*(1.0)/2.0)));
+    ft2 = ((-1.0)*(At + (pow((pow((2.0*At), 2.0) + (24.0*tau2t)), (1.0/2.0))*(-1.0)/2.0)));
+
+
+    *fbc = 0.0 ;
+  }
+  else
+  {
+    tau2c = ((J2 + (betac*I1/3.0))/(1.0 - (alfac*I1/3.0)));
+    Ac = alfac * tau2c + betac ;
+
+    *ft = 0.0 ;
+  }
+  /*auto-generated from mathomatic for C-C:
+   * a=fybc/fyc 
+   */
+#if 0
+  fc = (pow((((6.0*t2c) + (3.0*((pow(pow((t2c*((2.0*a) - 1.0)), 2.0), (1.0/2.0))*sign1) - t2c)/a))/(4.0 - (2.0*a))), (1.0/2.0))*sign2);
+#endif
+  return(AF_OK);
+}
+
 /** Computes the derivations of plascicity condition for C-C
  * @param alpha_c alpha intermediate parameter for compression
  * @param beta_c beta intermediate parameter for compression
@@ -378,7 +424,8 @@ int chen2d_D(long ePos, long e_rep, long Problem,
   if ((rv=femVecFullInit(&deriv, 3)) != AF_OK){goto memFree;}
   if ((rv=femFullMatInit(&De, 3, 3)) != AF_OK){goto memFree;}
 
-  /* get current material status: 0=elastic ; -1=CC; +1=other */
+  /* get current material status: 0=elastic ; -1=CC; +1=other ;
+   * 2=unloading */
 	status = (long) femGetEResVal(ePos, RES_STAT1, e_rep);
 
   Ex = femGetMPValPos(ePos, MAT_EX, 0)  ;
