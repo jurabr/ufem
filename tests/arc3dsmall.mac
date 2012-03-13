@@ -80,6 +80,7 @@ eplot
 nsel,s,loc,y,0
 d,all,ux
 d,all,uy
+d,all,uz
 
 !* force on top:
 nsel,s,loc,x,5
