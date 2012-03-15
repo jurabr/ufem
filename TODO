@@ -1,0 +1,149 @@
+Solver:
+=======
+
+Please see the TODO file in the "fem" subdirectory.
+
+
+
+User Interface:
+===============
+
+The most important:
+
+- (fdb) mesh: check only sides really connected to other geom. ent.
+- (gui) NRM ignores numbers of iterations from GUI
+- (gfx) selections in multiview mode
+- (gfx) incorrect orientation of results on 3D links
+- (fdb) export/reading of multiple load steps
+- (fdb) finish APDL export
+- (gfx) near infinite size of reactions if absolute values are < 1.0
+- (gui) menu and dialogs for time nodes/load steps
+
+
+To Do:
+
+- (fdb) import of multiple forces in one node from *.fem
+- (fdb) command log needs to be fflushed (!?)
+- (fdb) more data testing before solution
+- (gfx) infinite size of reactions if no loads are defined
+- (gfx) results on beams
+- (fdb) enhance mesh generator and line divisions
+- (gfx) data size indicator should be hidden if not in use
+- (fdb) import of random variables from *.fem
+
+
+Sci-Fi:
+
+- (fdb) undo/redo function
+- (gui) "busy" cursor for all commands - Gtk+-2.0 problem?!
+- (gfx) gl2ps for Win32
+- (fdb) speedup for meshing, element copying and moving 
+- (gfx) finish/correct aspect ratio in box zooming
+- (gfx) fix results on 3D links
+- (gui) configuration dialogs
+- (fdb) export of results to third-party codes: SILO (VisIt)
+- (fdb) more geometric entities
+- (gfx) optional user-customizable clipping planes
+- (   ) threads for time consuming operations
+- (   ) "configure" script
+- (   ) documentation
+- (   ) optional "osmesa.h" (parallel?) off-screen rendering for tfem
+- (gfx) antialiasing - check and fix OpenGL settings !!
+- (gfx) output to "png" format
+- (fdb) DXF (IGES?) geometry import
+- (fdb) DXF geometry export
+
+
+---------------------------------------------------------------------
+
+
+Fixed:
+
+- (fdb) path operations (selecting, printing)
+- (gfx) coordinate axes symbol for point [0,0,0]
+- (fdb) computing of results on nodes (some elements)
+- (gfx) plotting of results on nodes (some elements)
+- (gfx) colors for deformations (ux, uy, uz only)
+- (gfx) colors of force values in gl2ppm/gl2ps (now not inverted) 
+- (fdb) coredump on one-directional stiffnesses (maybe also in fem)
+- (fdb) numbering of repeating items (material) starts from 0 !?!
+- (fdb) help list possible element results
+- (fdb) repeating data indices in "export,mac"
+- (fdb) export to "mac" (list of commands) format
+- (fdb) printing/saving of current program setup (solver,...)
+- (fdb) join/merge command for nodes or keypoints
+- (fdb) fix export of empty real sets (done through fem import)
+- (fdb) "gesize" for easy (curvilinear) volumes
+- (fdb) filling of variables with data from pre/postprocessor (sort of..)
+- (fdb) ksplit, nsplit commands (make two from one)
+- (gui) command-line history
+- (fdb) ndel,all (ddel,all) codedumps ?!
+- (gui) box zooming (command, gui and selection code) - sort of and XY only
+- (gfx) incorrect element boundaries in results (element 2)
+- (gfx) wrong direction of moments (?!)
+- (gfx) grid for picking
+- (   ) Monte Carlo data creation (commands only)
+- (fdb) check and fix low-level table deleting code (bug was in  the fdb_fem.c)
+- (tui) "set list" command for results sets
+- (gui) segfault after file selection dialog on amd64 (Gtk+ 2.4+ problem?)
+- (fdb) rewrite reading of results from MPI
+- (fdb) von Mises stress inside computed results
+- (   ) computing/visualisation of custom data (princ. stresses...)
+- (   ) full support for element results
+- (   ) commands for easy changing of elem/load set
+- (fdb) data testing before solution - at least one material must exist
+- (gui) dialog box for divisions (no such thing is necessary - mouse added)
+- (fdb) time nodes/load steps
+- (fdb) change reading of result file (after it will be changed in solver)
+- (gui) freezes if nonzero number of repeating data is opted in dialog
+- (tui) default filename for "save" and "resu" commands
+- (gui) jobname dialog
+- (   ) emptying of data
+- (fdb) dependencies (are set by hands)
+- (fdb) problems when deleting elements (only?)
+- (gui) hide/show functionality for tree and toolbar (startup only)
+- (fdb) user-level I/O functions 
+- (fdb) reading of results from parallel soulution!!!
+- (cint) loops, if..else, etc.
+- (gui) "nmove" and "kmove" dialogs functions
+- (fdb) "nmove" and "kmove" functions - changing of coordinates
+- (fdb) geometric model manipulations
+- (fdb) selection of geometric model stuff
+- (fdb) geometric model
+- (gui) tree width can be changed by user
+- (gfx) box selections
+- (gui) box selections
+- (fdb) export of data to "fem" in preparsed mode (raw export only for now)
+- (gfx) "tiff" image saving
+- (gui) text outputs in GUI
+- (fdb) listings: elist, mplist, rslist, results,..
+- (doc) manual page
+- (doc) command manual (actually a manpage)
+- (fdb) cyllindric coordinates
+- (gui) selections
+- (fdb) fix strange "etlist" behaviour 
+- (gui) menus, dialogs,.. 
+- (gfx) saving plot to bitmap
+- (   ) number ALL for "f", "d",...
+- (   ) mirroring of stuff.. (but it's VERY TRICKY - may work only for 1D)
+- (gfx) picking
+- (gui) picking
+- (fdb) selections
+- (tui) selections
+- (gfx) selection of format for saving of plot
+- (tui) configuration (config. file? variables?)
+- (gfx) plot saving (gl2ps)
+- (   ) copying of loads, displacements
+- (   ) copying of nodes and elements
+- (fdb) testing/debugginq of deleting of FEM items (may not work)
+- (gfx) plot settings
+- (fdb) deleting of items located in two tables is incorrect (tables should be sync'd)
+- (fdb) deleting produces some mess (empty items)!
+- (fdb) export of data to "fem"
+- (cint) commands don't accepts semilogaritmic numbers (!?)
+- (cint) classes of variables
+- (cint) automatic conversion ("Ex" -> "4") in ciGetPar(Int|Dbl|Str)
+- (gui) start of writing GUI
+- (fdb) finish reading of data from file
+- (fdb) error in real set and material values!
+- (cint) variables

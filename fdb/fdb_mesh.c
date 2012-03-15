@@ -21,11 +21,7 @@
    USA.
 
 	 FEM Database - finite element mesh creation
-
-   $Id: fdb_mesh.c,v 1.8 2005/02/12 18:34:50 jirka Exp $
 */
-
-/* Note: It is UNTESTED. It probably will not work. */
 
 #include "fdb_geom.h"
 
@@ -35,6 +31,10 @@ extern long found_suitable_node(double x, double y, double z, double tol, int *t
 
 long fdbMeshCheckAllNodes = AF_NO ;
 
+/** Meshes LINE entity (must be two-node) 
+ * @param entPos entity index
+ * @return status
+ */
 int fdbMeshEnt001(long entPos)
 {
   int    rv = AF_OK ;
@@ -204,6 +204,10 @@ void fdbMeshGeomFuncRect(double *xr, double *yr, double *zr, double xi, double y
   }
 }
 
+/** Meshes AREA entity (must be four-node or eight-node) 
+ * @param entPos entity index
+ * @return status
+ */
 int fdbMeshEnt002(long entPos)
 {
   int    rv = AF_OK ;
@@ -356,154 +360,11 @@ void fdbMeshGeomFuncBrick(double *xr, double *yr, double *zr, double xi, double 
   }
 }
 
-#if 0
-int fdbMeshEnt003(long entPos) /* original version (slow) */
-{
-  int    rv = AF_OK ;
-  long  *nodes = NULL ;
-  long   entnum ;
-  long   ilen,jlen,klen, nlen, npos, posn, n_id, e_id ;
-	int    test ;
-  long   et, rs, mat, set ;
-  long   enodelist[8] ;
-  long   i, j, k ;
-  long   sum ;
-  double x,y,z ;
-  double xi[8] ;
-  double yi[8] ;
-  double zi[8] ;
-
-  entnum = fdbInputGetInt(ENTITY, ENTITY_ID, entPos) ;
-
-  if (fdbInputCountInt(ENTDIV, ENTDIV_ENT, entnum, &posn) >= 3)
-  {
-    ilen = fdbInputGetInt(ENTDIV, ENTDIV_DIV, posn) ;
-    jlen = fdbInputGetInt(ENTDIV, ENTDIV_DIV, posn+1) ; /* was: +8 */
-    klen = fdbInputGetInt(ENTDIV, ENTDIV_DIV, posn+2) ; /* was: +1 */
-  }
-  else
-  {
-    return(AF_ERR_EMP);
-  }
-
-  if ((ilen < 1) || (jlen < 1) || (klen < 1))
-  { 
-    return(AF_ERR_VAL) ;
-  }
-  else
-  { 
-    nlen = (ilen+1)*(jlen+1)*(klen+1) ;
-  }
-
-  if ((nodes=femIntAlloc(nlen+1)) == NULL)
-  {
-    return(AF_ERR_MEM) ;
-  }
-
-
-  for (i=0; i<8; i++)
-  {
-  	npos = fdbEntKpPos(entPos, i) ;
-	  xi[i] = fdbInputGetDbl(KPOINT, KPOINT_X, npos) ;
-	  yi[i] = fdbInputGetDbl(KPOINT, KPOINT_Y, npos) ;
-	  zi[i] = fdbInputGetDbl(KPOINT, KPOINT_Z, npos) ;
-  }
-
-  sum = 0 ;
-
-  for (k=0; k<=klen; k++)
-  {
-    for (j=0; j<=jlen; j++)
-    {
-      for (i=0; i<=ilen; i++)
-      {
-        /* nodes: */
-        fdbMeshGeomFuncBrick(
-          xi, yi, zi, 
-          (2.0*((((double)i+0.0)/(double)ilen))) - 1.0, 
-          (2.0*((((double)j+0.0)/(double)jlen))) - 1.0, 
-          (2.0*((((double)k+0.0)/(double)klen))) - 1.0, 
-          &x, &y, &z) ;
-
-				if ((i==0)||(j==0)||(k==0)||(i==ilen)||(j==jlen)||(k==klen)||(fdbMeshCheckAllNodes==AF_YES))
-				{
-					npos = found_suitable_node(x, y, z, fdbDistTol, &test);
-				}
-				else
-				{
-					test = AF_NO ;
-				}
-
-        if (test == AF_YES)
-		    {
-			    /* existing node */
-			    n_id = fdbInputGetInt(NODE, NODE_ID, npos) ;
-		    }
-		    else
-		    {
-			    /* new node */
-			    if ((rv=f_n_new_change(0, x, y, z)) != AF_OK)
-			    {
-				    fprintf(msgout, "[E] %s!\n", _("Meshing failed"));
-            femIntFree(nodes) ;
-				    return(rv);
-			    }
-			    n_id = fdbInputFindMaxInt(NODE, NODE_ID) ;
-		    }
-
-		    nodes[sum] = n_id ;
-        sum++ ;
-      }
-    }    
-  }
-
-  et  = fdbInputGetInt(ENTITY, ENTITY_ETYPE, entPos) ;
-  rs  = fdbInputGetInt(ENTITY, ENTITY_RS,    entPos) ;
-  mat = fdbInputGetInt(ENTITY, ENTITY_MAT,   entPos) ;
-  set = fdbInputGetInt(ENTITY, ENTITY_SET,   entPos) ;
-
-  /* elements: EIGHT-NODES ELEMENTS ONLY */
-  for (i=0; i<(ilen); i++)
-  {
-    for (j=0; j<(jlen); j++)
-    {
-      for (k=0; k<(klen); k++)
-      {
-        if ((rv=f_e_new_change(0, et, rs, mat, set)) != AF_OK)
-		    {
-			    fprintf(msgout, "[E] %s!\n", _("Creating of element failed"));
-			    femIntFree(nodes) ;
-			    return(rv);
-		    }
-  
-		    e_id = fdbInputFindMaxInt(ELEM, ELEM_ID) ;
-  
-        enodelist[0] = nodes[i + k*((ilen+1)*(jlen+1))+j*(ilen+1) + 0] ;
-        enodelist[1] = nodes[i + k*((ilen+1)*(jlen+1))+j*(ilen+1) + 1] ;
-        enodelist[2] = nodes[i + k*((ilen+1)*(jlen+1))+(j+1)*(ilen+1) + 1] ;
-        enodelist[3] = nodes[i + k*((ilen+1)*(jlen+1))+(j+1)*(ilen+1) + 0] ;
-
-        enodelist[4] = nodes[i + (k+1)*((ilen+1)*(jlen+1))+j*(ilen+1) + 0] ;
-        enodelist[5] = nodes[i + (k+1)*((ilen+1)*(jlen+1))+j*(ilen+1) + 1] ;
-        enodelist[6] = nodes[i + (k+1)*((ilen+1)*(jlen+1))+(j+1)*(ilen+1) + 1] ;
-        enodelist[7] = nodes[i + (k+1)*((ilen+1)*(jlen+1))+(j+1)*(ilen+1) + 0] ;
-      
-        if ((rv=f_en_change(e_id, enodelist, 8))  != AF_OK)
-		    {
-			    fprintf(msgout, "[E] %s!\n", _("Creating of element failed (bad nodes)"));
-			    femIntFree(nodes) ;
-			    return(rv);
-		    }
-      }
-    }
-  }
-
-  femIntFree(nodes) ;
-
-  return(rv);
-}
-#else
 /** New version of brick mesher: */
+/** Meshes BRICK entity (must be eight-node or twelve-node) 
+ * @param entPos entity index
+ * @return status
+ */
 int fdbMeshEnt003(long entPos)
 {
   int    rv = AF_OK ;
@@ -627,6 +488,8 @@ int fdbMeshEnt003(long entPos)
 	/*actnpos = startnpos ;*/
 	actnpos = 0 ;
 
+  /* this makes things extremelly slow (too much searches and
+   * verifications) */
   for (k=0; k<=klen; k++)
   {
     for (j=0; j<=jlen; j++)
@@ -670,7 +533,6 @@ int fdbMeshEnt003(long entPos)
     }    
   }
 
-
 	if (n_tot > 0)
 	{
     fdbInputAppendTableRow(NODE, n_tot, &startnpos) ;
@@ -705,12 +567,6 @@ int fdbMeshEnt003(long entPos)
 		startenpos = 0 ;
 	}
 	actenpos = 0 ;
-
-
-#if 0
-  fdbInputAppendTableRow(ELEM, elen, &startepos) ;
-  fdbInputAppendTableRow(ENODE, enlen, &startenpos) ;
-#endif
 
   for (k=0; k<(klen); k++)
   {
@@ -754,7 +610,6 @@ int fdbMeshEnt003(long entPos)
     }
   }
 
-  /* TODO: change ELEM ENODE */
   if (e_tot > 0)
 	{
     fdbInputAppendTableRow(ELEM, e_tot, &startepos) ;
@@ -797,7 +652,6 @@ memFree:
 
   return(rv);
 }
-#endif
 
 /* ------------------------------------------------ */
 
