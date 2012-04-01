@@ -731,9 +731,9 @@ int f_ent_create_dim(long type, long id, double x0, double y0, double z0, double
  * @param area_id id number of area to be extruded
  * @param k_len number of keypoints (drag path definition)
  * @param klist array of keypoint id numbers
- * @param et element type vor created volume(s)
- * @param rs reals set type vor created volume(s)
- * @param mat material type type vor created volume(s)
+ * @param et element type for created volume(s)
+ * @param rs reals set type for created volume(s)
+ * @param mat material type type for created volume(s)
  * @param zdiv division (number of elements) along drag path for each volume
  * @return status
  */
@@ -784,7 +784,7 @@ int f_ent_extrude_area(
   }
   if (fdbInputTestSelect(ENTITY, pos) != AF_YES)
   {
-    return(AF_ERR_IO); /* not selected => nothing to do */
+    return(AF_ERR_EMP); /* not selected => nothing to do */
   }
 
   type = fdbInputGetInt(ENTITY,ENTITY_TYPE,pos) ;
@@ -1042,5 +1042,202 @@ memFree:
   femDblFree(dz0);
   return(rv);
 }
+
+
+/** Creates area from line by extrusion/dragging along path defined by keypoints
+ * @param area_id id number of line to be extruded
+ * @param k_len number of keypoints (drag path definition)
+ * @param klist array of keypoint id numbers
+ * @param et element type for created volume(s)
+ * @param rs reals set type for created volume(s)
+ * @param mat material type type for created volume(s)
+ * @param zdiv division (number of elements) along drag path for each volume
+ * @return status
+ */
+int f_ent_extrude_line(
+    long  area_id, 
+    long  k_len,
+    long *klist,
+    long  et, 
+    long  rs,
+    long  mat,
+    long  zdiv)
+{
+  int rv= AF_OK ;
+  long   nid[20] ;
+  double xi[20] ;
+  double yi[20] ;
+  double zi[20] ;
+  double *dx0 = NULL ;
+  double *dy0 = NULL ;
+  double *dz0 = NULL ;
+  long   d_len; 
+  long   i, i_pos ;
+  long   pos, npos, type, posi, dpos ;
+  long   div[3];
+  int    test ;
+  long   id = 0;
+  long   klen ;
+  double dx[2] ;
+  double dy[2] ;
+  double dz[2] ;
+  double x0[8];
+  double y0[8];
+  double z0[8];
+  long   j, jmult ;
+  long   vtype = 2 ;
+
+  ldiv_t divval ;
+  int last = 0 ;
+
+
+  /* Get area type */
+  if (fdbInputCountInt(ENTITY,ENTITY_ID, area_id, &pos) < 1)
+  {
+#ifdef RUN_VERBOSE
+    fprintf(msgout, "[E] %s: %li!\n", _("Invalid line"), area_id);
+#endif
+    return(AF_ERR_IO);
+  }
+  if (fdbInputTestSelect(ENTITY, pos) != AF_YES)
+  {
+    return(AF_ERR_EMP); /* not selected => nothing to do */
+  }
+
+  type = fdbInputGetInt(ENTITY,ENTITY_TYPE,pos) ;
+
+  if ((type != 2) && (type != 5))
+  {
+    fprintf(stdout,"[E] %s!\n", _("This entity type can not be extruded"));
+    return(AF_ERR_VAL);
+  }
+
+  /* Allocate space (dx0, dy0, dz0) */
+  d_len = 0 ;
+  
+  d_len = k_len - 1 ;
+
+  if (k_len < 2 ) {d_len = 0;}
+
+  if (d_len < 1)
+  {
+    fprintf(stdout,"[E] %s!\n", _("This entity type can not be extruded"));
+    return(AF_ERR_VAL);
+  }
+  if ((dx0 = femDblAlloc(d_len)) == NULL) {rv =AF_ERR_MEM; goto memFree;}
+  if ((dy0 = femDblAlloc(d_len)) == NULL) {rv =AF_ERR_MEM; goto memFree;} 
+  if ((dz0 = femDblAlloc(d_len)) == NULL) {rv =AF_ERR_MEM; goto memFree;} 
+
+  /* Compute dx0, dy0, dz0 */
+  for (i=0; i<d_len; i++)
+  {
+    if ( (i == (d_len - 1)) && (last == 1) )
+    {
+      f_k_dist(klist[i], klist[i+1], &dx0[i], &dy0[i], &dz[i]);
+      dx0[i-1] = 0.5*dx0[i] ;
+      dy0[i-1] = 0.5*dy0[i] ;
+      dz0[i-1] = 0.5*dz0[i] ;
+    }
+    else
+    {
+      f_k_dist(klist[i], klist[i+1], &dx0[i], &dy0[i], &dz0[i]);
+    }
+  }
+
+  /* get divisions: */
+  if (fdbInputCountInt(ENTDIV, ENTDIV_ENT, area_id, &dpos) < 1)
+	{
+    fprintf(msgout,"[E] %s!\n", _("Invalid entity - please delete it"));
+    return(AF_ERR_EMP);
+	}
+  for (i=0; i<2; i++) { div[i] = fdbInputGetInt(ENTDIV, ENTDIV_DIV, dpos+i); }
+  div[2] = zdiv ;
+
+  jmult = 1 ;
+
+  for (j=0; j< d_len; j+=jmult)
+  {
+
+  for (i=0; i<20; i++) { xi[i] = 0 ; yi[i] = 0 ; zi[i] = 0 ; nid[i] = -1 ; }
+
+  switch (type)
+  {
+    case 1: /* line -> area */
+      klen = 8 ;
+
+      dx[0] = dx0[j];
+      dy[0] = dy0[j];
+      dz[0] = dz0[j];
+
+      if (j == 0)
+      {
+        for (i=0; i<2; i++) /* get nodes from line */
+        {
+  	      npos = fdbEntKpPos(pos, i) ;
+          nid[i] = fdbInputGetInt(KPOINT, KPOINT_ID, pos);
+	        xi[i] = fdbInputGetDbl(KPOINT, KPOINT_X, npos) ;
+	        yi[i] = fdbInputGetDbl(KPOINT, KPOINT_Y, npos) ;
+	        zi[i] = fdbInputGetDbl(KPOINT, KPOINT_Z, npos) ;
+        }
+      }
+      
+
+      for (i=2; i<4; i++) /* expand nodes */
+      {
+        xi[i] = xi[i-2] + dx[0] ;
+        yi[i] = yi[i-2] + dy[0] ;
+        zi[i] = zi[i-2] + dz[0] ;
+      }
+
+      for (i=0; i<4; i++) /* expand nodes */
+      {
+        posi = -1 ;
+	      posi = found_suitable_kpoint(xi[i], yi[i], zi[i], fdbDistTol, &test);
+
+        if (posi < 0)
+        {
+          if (f_k_new_change(0, xi[i], yi[i], zi[i], &nid[i]) != AF_OK){return(AF_ERR);}
+          if (fdbInputCountInt(KPOINT, KPOINT_ID, nid[i], &posi) <= 0){return(AF_ERR);}
+        }
+        else
+        {
+          nid[i] = fdbInputGetInt(KPOINT, KPOINT_ID, posi) ;
+        }
+      }
+
+      for (i=0; i<2; i++)
+      {
+        x0[i] = xi[i+4] ;
+        y0[i] = yi[i+4] ;
+        z0[i] = zi[i+4] ;
+      }
+      break ;
+
+    default: 
+            fprintf(msgout,"[E] %s!\n",_("Invalid type of geometric entity"));
+            return(AF_ERR_VAL); 
+            break;
+  }
+
+  /* Common for both types: */
+	id=0;
+  if ((rv=f_entkp_change(id, nid, klen, vtype)) != AF_OK )
+  {
+    return(rv);
+  }
+  else
+  {
+	  id = fdbInputFindMaxInt(ENTITY, ENTITY_ID) ;
+    f_entkp_div_change(id, div, 2);
+  }
+  } /**/
+
+memFree:
+  femDblFree(dx0);
+  femDblFree(dy0);
+  femDblFree(dz0);
+  return(rv);
+}
+
 
 /* end of fdb_ent.c */
