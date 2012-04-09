@@ -654,6 +654,67 @@ memFree:
 }
 
 
+/** Creates volume by extrusion from area: "lextrude,line,et,rs,mat,k1,k2[,k3]
+ * @param cmd command
+ * @return status
+ */
+int func_fem_entity_lextrude (char *cmd)
+{
+	int    rv  = AF_OK ;
+  long   area ; /* it's line, actually */
+  long   et, rs,mat ;
+  long   k[10];
+  long   klen = 0 ;
+  long   i, type ;
+
+	FEM_TEST_PREPROCESSOR
+	
+	if ((ciParNum(cmd)) < 6) 
+	{
+		rv = AF_ERR_VAL ;
+		fprintf(msgout,"[E] %s!\n", _("All parameters are required: area,et,rs,mat,k1,k2"));
+		goto memFree;
+	}
+
+	area = ciGetParInt(cmd, 1) ; 
+	et   = ciGetParInt(cmd, 2) ; 
+	rs   = ciGetParInt(cmd, 3) ; 
+	mat  = ciGetParInt(cmd, 4) ; 
+
+  klen = 0 ;
+	if (ciParNum(cmd) > 5) { k[0] = ciGetParInt(cmd, 5) ; klen++; }
+	if (ciParNum(cmd) > 6) { k[1] = ciGetParInt(cmd, 6) ; klen++; }
+	if (ciParNum(cmd) > 7) { k[2] = ciGetParInt(cmd, 7) ; klen++; }
+	if (ciParNum(cmd) > 8) { k[3] = ciGetParInt(cmd, 8) ; klen++; }
+	if (ciParNum(cmd) > 9) { k[4] = ciGetParInt(cmd, 9) ; klen++; }
+	if (ciParNum(cmd) > 10) { k[5] = ciGetParInt(cmd, 10) ; klen++; }
+	if (ciParNum(cmd) > 11) { k[6] = ciGetParInt(cmd, 11) ; klen++; }
+	if (ciParNum(cmd) > 12) { k[7] = ciGetParInt(cmd, 12) ; klen++; }
+	if (ciParNum(cmd) > 13) { k[8] = ciGetParInt(cmd, 13) ; klen++; }
+	if (ciParNum(cmd) > 14) { k[9] = ciGetParInt(cmd, 14) ; klen++; }
+
+  if (ciTestStringALL(cmd,1) == AF_YES) /* changing all selected elements  */
+  {
+    for (i=0; i< fdbInputTabLenAll(ENTITY); i++ )
+    {
+      type = fdbInputGetInt(ENTITY, ENTITY_TYPE, i);
+      if ((type == 2)||(type == 5))
+      {
+        area = fdbInputGetInt(ENTITY, ENTITY_ID, i) ;
+        rv =  f_ent_extrude_area(area, klen, k, et, rs, mat, fdbSetInputDefDiv(0)); 
+      }
+    }
+  }
+  else
+  {
+    rv =  f_ent_extrude_line(area, klen, k, et, rs, mat, fdbSetInputDefDiv(0)); 
+  }
+
+memFree:
+	return ( tuiCmdReact(cmd, rv) ) ;
+}
+
+
 
 /** Sets entity divisions "ed,number,nodes.."
  * @param cmd command

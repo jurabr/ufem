@@ -262,6 +262,16 @@ extern int f_ent_extrude_area(
     long  rs,
     long  mat,
     long  zdiv);
+extern int f_ent_extrude_line(
+    long  area_id, 
+    long  k_len,
+    long *klist,
+    long  et, 
+    long  rs,
+    long  mat,
+    long  zdiv);
+
+
 
 extern int f_ent_new_change(long id, long ent_type, long et, long rs, long mat, long set);
 extern int f_entkp_change(long id, long *nodes, long nodes_len, long ent_type);
