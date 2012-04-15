@@ -109,12 +109,17 @@ int chen2d_get_A_tau2_y(double fc, double fbc, double ft,
 long chen2d_check_yield(double I1, double J2,
     double Ac, double At, double tau2c, double tau2t)
 {
-  if ( (I1 <= 0.0) && ((sqrt(J2) + (I1/3.0) ) <= 0.0) )
+  if ( (I1 < 0.0) && ((sqrt(J2) + (I1/3.0) ) < 0.0) )
   { /* compression-compression zone: */
+printf("C-C\n");
     if ((J2 + (Ac*I1)/3.0 - tau2c) > 0) { return(-1) ;  }
   }
   else
   { /* other zones: */
+
+if ( (I1 >= 0.0) && ((sqrt(J2) + (I1/3.0) ) >= 0.0) ) { printf("T-T\n"); }
+else { printf("C-T\n"); }
+
     if ((J2 - ((I1*I1)/6.0) + ((At*I1)/3.0) - tau2t) > 0) { return(1) ; }
   }
   return(0) ; /* must be elastic... */
@@ -131,7 +136,7 @@ int chen2d_alpha_beta(double Ay, double Au, double tau2y, double tau2u,
         double *alpha, double *beta)
 {
   *alpha = (Au - Ay) / (tau2u - tau2y) ;
-  *beta  = ( Ay*tau2u - Au*tau2y ) / (tau2u - tau2y) ; /* TODO: check! */
+  *beta  = ( Ay*tau2u - Au*tau2y ) / (tau2u - tau2y) ; 
   return(AF_OK);
 }
 
@@ -150,12 +155,29 @@ int chen2d_alpha_beta(double Ay, double Au, double tau2y, double tau2u,
  * @return status
  */
 int chen2d_equivalent_limits(
+    long   status,
+    double ratio,
     double I1, double J2,
     double alpha_c, double beta_c, 
     double alpha_t, double beta_t,
-    double *sigma_c, double *sigma_bc, double *sigma_t,
-    double *tau2c, double *tau2t)
+    double *sigma_c, double *sigma_bc, double *sigma_t
+    )
 { /* TODO: verify these equation - they have not to work: */
+  double t2 ;
+  
+  if (status == -1) /* C-C */
+  {
+    /* TODO */
+  }
+  else /*  T-T, C-T, T-C */
+  {
+    /* TODO */
+    t2 = ( J2 + (beta_t*I1)/3.0 - (I1*I1)/6 ) / (1.0 - (alpha_t*I1)/3.0 ) ;
+    *sigma_t = sqrt(6.0*t2) ;
+    *sigma_c = ratio * (*sigma_t) ;
+    *sigma_bc = 1.2 * (*sigma_c) ;
+    
+  }
 #if 0
   *tau2c = fabs((J2 + (beta_c*I1)/3.0) / (1.0 - (alpha_c*I1)/3.0)) ;
   *tau2t = fabs((J2-((beta_t*I1)/3.0)+(I1*I1/6.0))/(1.0-(alpha_t*I1)/3.0)) ;
@@ -440,13 +462,17 @@ int chen2d_D(long ePos, long e_rep, long Problem,
   if ((status == 0)||(status ==2))
   {
     D_HookIso_planeRaw(Ex, nu, Problem, Dep); /* elastic or unloading */
+printf("LINEAR - OLD !\n");
   }
   else /* plastic */
   {
+printf("PLASTIC - OLD !\n");
     femVecPut(&deriv,1, femGetEResVal(ePos, RES_ECR1, e_rep)); 
     femVecPut(&deriv,2, femGetEResVal(ePos, RES_ECR2, e_rep)); 
     femVecPut(&deriv,3, femGetEResVal(ePos, RES_GCR1, e_rep)); 
 	  H = femGetEResVal(ePos, RES_STAT2, e_rep);
+
+printf("DERIV %e  %e  %e\n", femVecGet(&deriv,1), femVecGet(&deriv,2), femVecGet(&deriv,3));
 
     D_HookIso_planeRaw(Ex, nu, Problem, &De);
     chen_Dep(&deriv, H, &De, Dep) ;
@@ -455,6 +481,7 @@ int chen2d_D(long ePos, long e_rep, long Problem,
   if (Mode == AF_YES) /* new matrix */
   {
     status_old = status ;
+    D_HookIso_planeRaw(Ex, nu, Problem, &De); 
 
     /* get current total stress: */
     femMatVecMult(Dep, epsilon, &sigma) ;
@@ -462,6 +489,8 @@ int chen2d_D(long ePos, long e_rep, long Problem,
     femVecAdd(&sigma,1, femGetEResVal(ePos, RES_SX, e_rep)); 
     femVecAdd(&sigma,2, femGetEResVal(ePos, RES_SY, e_rep)); 
     femVecAdd(&sigma,3, femGetEResVal(ePos, RES_SXY, e_rep)); 
+
+printf("SIGMA: %e  %e  %e\n", femVecGet(&sigma,1), femVecGet(&sigma,2), femVecGet(&sigma,3));
 
     I1 =  stress2D_I1(&sigma) ;
     J2 =  stress2D_J2(&sigma) ;
@@ -473,29 +502,31 @@ int chen2d_D(long ePos, long e_rep, long Problem,
     status =  chen2d_check_yield(I1, J2, Ayc, Ayt, tauy2c, tauy2t);
 		if ((status == 0)&&(status_old != 0)) {status = 2 ;} /* respect unloading */
 
+printf("STATUS [%li,%li]: %li\n", ePos, e_rep, status);
+
     if ((status == 0)||(status == 2))
     {
       /* elastic or unloading */
-      femMatSetZero(Dep) ;
-      femMatCloneDiffToEmpty(&De, Dep);
+      D_HookIso_planeRaw(Ex, nu, Problem, Dep); /* elastic or unloading */
+
+printf("LINEAR\n");
+
     }
     else /* plastic */
     {
-      /* TODO: check unloading somewhere here! */
+printf("PLASTIC!\n");
       
-      chen2d_get_A_tau2_y(f_uc, f_ubc, f_ut,
-		    &Auc, &Aut, &tauu2c, &tauu2t) ;
+      chen2d_get_A_tau2_y(f_uc, f_ubc, f_ut, &Auc, &Aut, &tauu2c, &tauu2t) ; 
 
       chen2d_alpha_beta(Ayc, Auc, tauy2c, tauu2c, &alpha_c, &beta_c) ;
       chen2d_alpha_beta(Ayt, Aut, tauy2t, tauu2t, &alpha_t, &beta_t) ;
 
-      for (j=0; j<1; j++) /* TODO: rewrite loop for precision */
-      {
-        /* TODO compute intermediate equation parameters: */
-        chen2d_equivalent_limits( I1, J2,
-            alpha_c, beta_c, alpha_t, beta_t, 
-            &sigma_c, &sigma_bc, &sigma_t,
-            &tau2c, &tau2t) ;
+      /* TODO compute intermediate equation parameters: */
+      chen2d_equivalent_limits(status,
+          0.5*(f_uc/f_ut + f_yc/f_yt),
+          I1, J2,
+          alpha_c, beta_c, alpha_t, beta_t, 
+          &sigma_c, &sigma_bc, &sigma_t) ;
 
         /* derivatives */
         chen2d_derivations_ct( alpha_t, beta_t,
@@ -506,44 +537,26 @@ int chen2d_D(long ePos, long e_rep, long Problem,
             &deriv );
 
         /* get H: */
-#if 1
-        H = chen2d_H_Ohtani(ePos, status, Ex,
-            sigma_c, sigma_bc, sigma_t, I1, J2) ;
-#else
-        H = fem_plast_H_linear(ePos, Ex, Ex*0.01, fyc, 0 ); /* testing value */
-#endif
+        H = chen2d_H_Ohtani(ePos, status, Ex, sigma_c, sigma_bc, sigma_t, I1, J2) ;
 
         /* get elastoplastic matrix */
         chen_Dep(&deriv, H, &De, Dep) ;
+
+        femMatPrn(&De,"DE");
+        femMatPrn(Dep,"DEP");
       
         /* get NEW current total stress: */
         femMatVecMult(Dep, epsilon, &sigma) ;
+
+printf("SIGMA PL0: %e  %e  %e\n", femVecGet(&sigma,1), femVecGet(&sigma,2), femVecGet(&sigma,3));
 
         femVecAdd(&sigma,1, femGetEResVal(ePos, RES_SX, e_rep)); 
         femVecAdd(&sigma,2, femGetEResVal(ePos, RES_SY, e_rep)); 
         femVecAdd(&sigma,3, femGetEResVal(ePos, RES_SXY, e_rep)); 
 
-        /* precision control:  */
-        sum = 0 ;
-        for (i=1; i<=3; i++)
-        {
-          sum += pow(femVecGet(&sigma_ps, i)-femVecGet(&sigma, i), 2);
-        }
-        sum = sqrt(sum) ;
+printf("SIGMA PL:  %e  %e  %e\n", femVecGet(&sigma,1), femVecGet(&sigma,2), femVecGet(&sigma,3));
 
-        if (sum < 1e-6) { break ; /* OK */ }
-        else
-        {
-          femVecClone(&sigma, &sigma_ps) ; /* save current vector */
-
-          /* new: I1, J2 */
-          I1 =  stress2D_I1(&sigma) ;
-          J2 =  stress2D_J2(&sigma) ;
-        }
-      }
     } /* if plastic */
-
-    /* TODO */
 
     /* save status */
 	  femPutEResVal(ePos, RES_STAT1, e_rep, (double)status);
