@@ -11,7 +11,6 @@ User Interface:
 The most important:
 
 - (fdb) mesh: check only sides really connected to other geom. ent.
-- (gui) NRM ignores numbers of iterations from GUI
 - (gfx) selections in multiview mode
 - (gfx) incorrect orientation of results on 3D links
 - (fdb) export/reading of multiple load steps
@@ -59,6 +58,7 @@ Sci-Fi:
 
 Fixed:
 
+- (gui) NRM ignores numbers of iterations from GUI
 - (fdb) path operations (selecting, printing)
 - (gfx) coordinate axes symbol for point [0,0,0]
 - (fdb) computing of results on nodes (some elements)
