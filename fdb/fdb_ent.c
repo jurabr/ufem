@@ -1023,6 +1023,10 @@ int f_ent_extrude_area(
             break;
   }
 
+  fdbSetInputDefET(et);
+  fdbSetInputDefRS(rs);
+  fdbSetInputDefMAT(mat);
+
   /* Common for both types: */
 	id=0;
   if ((rv=f_entkp_change(id, nid, klen, vtype)) != AF_OK )
@@ -1218,6 +1222,10 @@ int f_ent_extrude_line(
             return(AF_ERR_VAL); 
             break;
   }
+
+  fdbSetInputDefET(et);
+  fdbSetInputDefRS(rs);
+  fdbSetInputDefMAT(mat);
 
   /* Common for both types: */
 	id=0;

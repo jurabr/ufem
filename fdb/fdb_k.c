@@ -28,7 +28,7 @@
 extern double fdbDistTol ; /* from fdb_nops.c*/
 
 /** Creates new kpoint or changes existing
- * @param id number of kpoint (0 == new kpoint with defaukt number)
+ * @param id number of kpoint (0 == new kpoint with default number)
  * @param x x-coordinate
  * @param y y-coordinate
  * @param z z-coordinate
