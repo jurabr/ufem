@@ -74,7 +74,7 @@ double gfxDefShapeCoord(long node_pos, long node_dir)
 /** Computes deformed shape multiplier
  * @return status
  */
-void gfxSetDefShapeMult(void)
+void gfxSetDefShapeMult(double max0)
 {
 	double mult = 0;
   double max  = 0 ;
@@ -84,24 +84,31 @@ void gfxSetDefShapeMult(void)
 	{
 		if (ResNode[ResActStep].empty != AF_YES)
 		{
-      if (fdbResMaxMinAny(&ResNode[ResActStep], &max, &min) == AF_OK)
+      if (fabs(max0) < FEM_ZERO)
       {
-        mult = fabs(max) ;
-        if (mult < fabs(min)) {mult = fabs(min);}
-
-        if ( (mult > 0) && (fabs(plotProp.Max) > 0) ) 
-        { 
-          plotStuff.dof_mult = plotProp.Max / (10*mult) ;
+        if (fdbResMaxMinAny(&ResNode[ResActStep], &max, &min) == AF_OK)
+        {
+          mult = fabs(max) ;
+          if (mult < fabs(min)) {mult = fabs(min);}
+  
+          if ( (mult > 0) && (fabs(plotProp.Max) > 0) ) 
+          { 
+            plotStuff.dof_mult = plotProp.Max / (10*mult) ;
+          }
+          else          
+          { 
+            plotStuff.dof_mult = 1.0 ; 
+          }
         }
-        else          
-        { 
-          plotStuff.dof_mult = 1.0 ; 
+        else
+        {
+          plotStuff.def_shape = AF_NO ;
+          plotStuff.dof_mult = 1.0 ;
         }
       }
       else
       {
-        plotStuff.def_shape = AF_NO ;
-        plotStuff.dof_mult = 1.0 ;
+        plotStuff.dof_mult = plotProp.Max / (10*fabs(max0)) ;
       }
 		}
 	}

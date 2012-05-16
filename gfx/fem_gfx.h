@@ -171,6 +171,8 @@ typedef struct
 	double move_step ; /* step for moving - in lenght units */
 	double rot_step ;  /* angle step  */
 	double zoom_step ; /* zoom step   */
+
+  double max_view ; /* user-changeable fixed deformation limit */
 }tPlotTran ;
 
 typedef struct
@@ -266,6 +268,7 @@ extern long gfxActFromPath ;
 extern long gfxActToPath   ;
 
 extern int femResetTran(void);
+extern void femSetTramMaxView(double max);
 extern void femDefaultPlotProp(void) ;
 extern int femPrePlot(long x0, long y0, long x1, long y1, int NoClean);
 extern void femPostPlot(long x0, long y0, int length, int width, int Mode);
@@ -298,7 +301,7 @@ extern int femGfxDisps(void);
 extern int femGfxResReacts(void);
 
 extern double gfxDefShapeCoord(long node_pos, long node_dir);
-extern void gfxSetDefShapeMult(void);
+extern void gfxSetDefShapeMult(double max0);
 extern int femGfxElemResults(long res_type);
 extern int femGfxNodeResults(long res_type);
 

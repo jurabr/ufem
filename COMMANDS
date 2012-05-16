@@ -330,6 +330,9 @@ rot
 view
 "view,(front|back|top|bottom|left|right|iso|aiso)"
 
+fixplotdef
+"fixplotdef,size"
+
 vpmode
 "vpmode,mode[0|1|2|3]""
 

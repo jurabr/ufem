@@ -1049,6 +1049,10 @@ pgrid
 \fBpgrid,plane,dx,dy,num_x,num_y,x0,y0,z0,angle_in_plane, angle_out_of_plane\fP
 Plots a grid. It can be used to create keypoints and nodes through "gcreate".
 .TP
+fixplotdef
+\fBfixplotdef[,size]\fP adjust maximum deformations against maximum
+value of \fI size \fP. Empty parameter or zero means no adjustment.
+.TP
 vpmode
 \fBvpmode,mode[0|1|2|3]\fP
 Sets a multiview mode (0=one window, 1,2=two,3=four windows);

@@ -2280,6 +2280,21 @@ int func_gfx_reset (char *cmd)
 #endif
 }
 
+/** force setting of maximum deformation : "fixplotdef,size"
+ * @param cmd command
+ * @return status
+ */
+int func_gfx_sef_view_def (char *cmd)
+{
+#ifdef _USE_GFX_
+  double max = 0.0 ;
+
+  if (ciParNum(cmd) > 1) { max = ciGetParDbl(cmd,1) ; }
+  femSetTramMaxView(max) ;
+#endif
+	return ( tuiCmdReact(cmd, AF_OK) ) ;
+}
+
 /** move: "move,dir,dist"
  * @param cmd command
  * @return status

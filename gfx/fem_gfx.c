@@ -462,8 +462,23 @@ int femResetTran(void)
   plotTran.move_step = 1.0 ;
   plotTran.rot_step  = 1.0 ;
   plotTran.zoom_step = 0.1 ;
+
+  plotTran.max_view = 0.0 ;
   return(AF_OK);
 }
+
+void femSetTramMaxView(double max)
+{
+  if (fabs(max) < FEM_ZERO)
+  {
+    plotTran.max_view = 0.0 ;
+  }
+  else
+  {
+    plotTran.max_view = fabs(max) ;
+  }
+}
+
 #endif
 
 /** Sets title of plot */
@@ -582,7 +597,7 @@ void femDefaultPlotProp(void)
   plotProp.antiAlias    = AF_NO ;
 
 	plotProp.Max   =  1.0 ;
-	plotProp.Max   = -1.0 ;
+	plotProp.Min   = -1.0 ;
 
 	plotProp.DiffX = 0.0 ;
 	plotProp.DiffX = 0.0 ;
@@ -1399,7 +1414,7 @@ int femPlotStuff(int length0, int width0, int Mode)
   /* Postprocessor ============================  */
   if (femUI_Mode == FEM_UI_MODE_POST)
   {
-    gfxSetDefShapeMult();
+    gfxSetDefShapeMult(plotTran.max_view);
     
     if (plotStuff.react == AF_YES)
     {
