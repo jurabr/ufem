@@ -1793,7 +1793,6 @@ int fdb_export_to_ans(FILE *fw, long *opts, long optlen)
 	fprintf(fw,"\n");
 
 	/* ** Elements  ----------------------------------------  */
-#if 0
 
 	/* number of elements */
 	len = fdbInputTabLenSel(ELEM) ;
@@ -1819,20 +1818,19 @@ int fdb_export_to_ans(FILE *fw, long *opts, long optlen)
     if (rtype_pos < 0) {rtype_pos = 0 ;}
     if (mtype_pos < 0) {mtype_pos = 0 ;}
 
-		fprintf(fw,"ep,%li,%li,%li,%li,%li\n",
-				fdbInputGetInt(ELEM, ELEM_ID, i),
-				etype_id,
-				rtype_pos,
-				mtype_pos,
-				fdbInputGetInt(ELEM, ELEM_SET, i)
-				);
+		fprintf(fw,"type,%li\n",etype_id);
+		fprintf(fw,"real,%li\n",rtype_pos);
+		fprintf(fw,"mat,%li\n",mtype_pos);
+#if 0
 	}
 
 	/* list of nodes */
 	for (i=0; i<len_all; i++)
 	{
+
     if (fdbTestSelect(&InputTab[ELEM], &inputData.intfld, i) != AF_YES) 
 		   { continue ; }
+#endif
 
 		isize = fdbInputGetInt(ELEM, ELEM_NODES, i) ;
 
@@ -1840,7 +1838,7 @@ int fdb_export_to_ans(FILE *fw, long *opts, long optlen)
 		
 		if (isize > 0)
 		{
-			fprintf(fw,"e,%li", fdbInputGetInt(ENODE,ENODE_ELEM, pos));
+			fprintf(fw,"e,");
 			for (j=0; j<isize; j++)
 			{
 				fprintf(fw,",%li",fdbInputGetInt(ENODE,ENODE_ID,pos+j));
@@ -1850,7 +1848,6 @@ int fdb_export_to_ans(FILE *fw, long *opts, long optlen)
 	}
 
 	fprintf(fw,"\n");
-#endif
 
 	/*  ** Gravitation  ------------------------------------  */
 #if 0
@@ -1876,7 +1873,7 @@ int fdb_export_to_ans(FILE *fw, long *opts, long optlen)
 #endif
 
 	/* nodal disp/load data length */
-#if 0
+#if 1
 	len_nd = fdbInputTabLenSel(NDISP) ;
 	len_nl = fdbInputTabLenSel(NLOAD) ;
 	
@@ -1888,14 +1885,13 @@ int fdb_export_to_ans(FILE *fw, long *opts, long optlen)
 
     ndisp_pos = fdbInputGetInt(NDISP, NDISP_NODE, i);
 
-		fprintf(fw,"d,%li,%s,%e,%li\n",
+		fprintf(fw,"d,%li,%s,%e\n",
 				ndisp_pos,
         ciGetVarNameFromGrp(
         fdbFemStrFromInt(
 					fdbInputGetInt(NDISP, NDISP_TYPE, i)
 					),"disp"),
-				fdbInputGetDbl(NDISP, NDISP_VAL, i),
-				fdbInputGetInt(NDISP, NDISP_SET, i)
+				fdbInputGetDbl(NDISP, NDISP_VAL, i)
 				); 
 	}
 
@@ -1910,14 +1906,13 @@ int fdb_export_to_ans(FILE *fw, long *opts, long optlen)
 
     nload_pos = fdbInputGetInt(NLOAD, NLOAD_NODE, i);
 			
-		fprintf(fw,"f,%li,%s,%e,%li\n",
+		fprintf(fw,"f,%li,%s,%e\n",
 				nload_pos,
         ciGetVarNameFromGrp(
         fdbFemStrFromInt(
 					fdbInputGetInt(NLOAD, NLOAD_TYPE, i)
 					),"load"),
-				fdbInputGetDbl(NLOAD, NLOAD_VAL, i),
-				fdbInputGetInt(NLOAD, NLOAD_SET, i)
+				fdbInputGetDbl(NLOAD, NLOAD_VAL, i)
 				); 
 	}
 
