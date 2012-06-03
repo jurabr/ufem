@@ -4,7 +4,7 @@
   3: elastoplastic concrete (Chen-Chen) [non-working]
   4: elastoplastic material (Drucker-Prager/von Mises) [non-working?]
   5: isotropic linear elasticity (with data for assesment) [experimental]
-  6: bi-linear elastic (trabecular bone) [working]
+  6: empty
   7: orthotropic linear elastic [untested]
   8: quasibrittle concrete (2D problems only) [experimental]
   9: mortar (nonlocal-like) [experimental]

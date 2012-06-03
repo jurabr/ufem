@@ -20,9 +20,8 @@
    the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA
    02139, USA.
 
-	FEM Solver - Material 006 (3D inelastic bone)
+	FEM Solver - Material 006 (unused)
 
-  $Id: fem_m006.c,v 1.1 2004/11/11 21:35:02 jirka Exp $
 */
 
 #include "fem_mat.h"

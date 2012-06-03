@@ -1584,7 +1584,7 @@ int fdb_export_to_ans(FILE *fw, long *opts, long optlen)
   }
 #endif
 
-#if 0
+#if 1
 	/* ** Material properties  -----------------------------  */
 
 	/* number of material sets */
@@ -1649,15 +1649,15 @@ int fdb_export_to_ans(FILE *fw, long *opts, long optlen)
 				if (rep_i <= 0) {continue;}
 			}
 
-			if ((varstr=fdb_ufem_mat_to_ans(fdbInputGetDbl(MVAL), MVAL_VAL,pos+j)) != "x")
+			if (strcmp((varstr=fdb_ufem_mat_to_ans(fdbInputGetInt(MVAL, MVAL_TYPE,pos+j))),"x") != 0)
 			{
-
-				fprintf(fw,"mp,%s,%li,%e\n",
+				fprintf(fw,"mp,%s,%li,%s,%e\n",
             ciGetVarNameFromGrp(
             fdbFemStrFromInt(fdbInputGetInt(MVAL,MVAL_TYPE,pos+j)),"material"
 						),
 						fdbInputGetInt(MVAL, MVAL_MAT,pos+j),
-						varstr
+						varstr,
+            fdbInputGetDbl(MVAL, MVAL_VAL,pos+j)
 						);
 			}
 			free(varstr); varstr=NULL;
@@ -1666,7 +1666,6 @@ int fdb_export_to_ans(FILE *fw, long *opts, long optlen)
 	fprintf(fw,"\n");
 #endif
 
-#if 0
 	/* ** KPs  -------------------------------------------  */
 
 	len_all = fdbInputTabLenAll(KPOINT) ;
@@ -1687,6 +1686,7 @@ int fdb_export_to_ans(FILE *fw, long *opts, long optlen)
 	fprintf(fw,"\n");
 
 
+#if 0
 	/* ** Geometric entities  ------------------------------  */
 
 	/* number of elements */

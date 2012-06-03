@@ -127,8 +127,6 @@ int fem_D_3D(long ePos,
   {
     case 7: rv = femD_3D_ortho(ePos, e_rep, Mode, D);
             break ;
-    case 6: rv = fem_bone_D_3D(ePos, e_rep, eT, mT, sigma, epsilon, Mode, D);
-            break ;
     case 4: 
             if (femGetMPValPos(ePos, MAT_F_YC, 0) <= 0.0)
             {

@@ -83,15 +83,6 @@ extern int fem_D_ccr3D(long ePos,
                 long Mode, 
                 tMatrix *D);
 
-extern int fem_bone_D_3D(long ePos,
-                  long e_rep,
-                  long eT,   
-                  long mT,
-                  tVector *sigma,
-                  tVector *epsilon,
-                  long Mode,       
-                  tMatrix *Dep);
-
 extern int od3d_D(long ePos, long iPoint, long Mode, tVector *epsilon, tMatrix *D);
 
 #endif
