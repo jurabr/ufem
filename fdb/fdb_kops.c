@@ -368,6 +368,8 @@ int f_ent_k_gen_1d(long num, long mode, long dir, double dx, double dy, double d
 			}
 
       /* Kpoint order fix: */
+      if (mode == FDB_MIRROR)
+      {
       switch (enttype)
       {
         case 2:
@@ -400,6 +402,7 @@ int f_ent_k_gen_1d(long num, long mode, long dir, double dx, double dy, double d
           for (jk=0; jk<ekpoints; jk++)
             { ekpointlist[jk] = ekpointlist2[jk]; }
           break;
+      }
       }
 			
 			e_id = fdbInputFindMaxInt(ENTITY, ENTITY_ID) ;
