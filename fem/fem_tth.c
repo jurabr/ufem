@@ -113,6 +113,9 @@ int femSolveThermTrans(void)
 #endif
 
   /* TODO solution here */
+  /*
+  r(t) = (K*tau + C/dt) / ( fT + ( C/dt ­ K * (1­ tau)) * r(t-1) 
+  */
 
 memFree:
 	fem_sol_free();
