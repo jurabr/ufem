@@ -464,6 +464,8 @@ int femResetTran(void)
   plotTran.zoom_step = 0.1 ;
 
   plotTran.max_view = 0.0 ;
+  plotTran.max_fix_pal = 0.0 ;
+  plotTran.min_fix_pal = 0.0 ;
   return(AF_OK);
 }
 
@@ -476,6 +478,20 @@ void femSetTramMaxView(double max)
   else
   {
     plotTran.max_view = fabs(max) ;
+  }
+}
+
+void femSetTramColPalMaxMin(double min, double max)
+{
+  if (fabs(max) < FEM_ZERO)
+  {
+    plotTran.max_fix_pal = 0.0 ;
+    plotTran.min_fix_pal = 0.0 ;
+  }
+  else
+  {
+    plotTran.max_fix_pal = fabs(max) ;
+    plotTran.min_fix_pal = min ;
   }
 }
 

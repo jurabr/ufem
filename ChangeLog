@@ -4,6 +4,14 @@ See fem/ChangeLog for solver changes.
 
 
 
+### Tue Jun 19 22:37:17 CEST 2012
+
+features:
+  + fixed maximal deformation (for animations)
+  + fixed color palette (for animations)
+
+
+
 ### Mon Jun 11 22:13:11 CEST 2012
 
 bugfixes:

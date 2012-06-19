@@ -173,6 +173,8 @@ typedef struct
 	double zoom_step ; /* zoom step   */
 
   double max_view ; /* user-changeable fixed deformation limit */
+  double max_fix_pal ; /* user-changeable fixed deformation limit */
+  double min_fix_pal ; /* user-changeable fixed deformation limit */
 }tPlotTran ;
 
 typedef struct
@@ -269,6 +271,7 @@ extern long gfxActToPath   ;
 
 extern int femResetTran(void);
 extern void femSetTramMaxView(double max);
+extern void femSetTramColPalMaxMin(double min, double max);
 extern void femDefaultPlotProp(void) ;
 extern int femPrePlot(long x0, long y0, long x1, long y1, int NoClean);
 extern void femPostPlot(long x0, long y0, int length, int width, int Mode);

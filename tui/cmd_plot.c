@@ -21,8 +21,6 @@
    USA.
 
 	 FEM User Interface - commands related to f.e.m model
-
-	 $Id: cmd_plot.c,v 1.47 2005/02/21 22:06:01 jirka Exp $
 */
 
 #include "fem_tui.h"
@@ -2294,6 +2292,24 @@ int func_gfx_sef_view_def (char *cmd)
 #endif
 	return ( tuiCmdReact(cmd, AF_OK) ) ;
 }
+
+/** force setting color palette: "fixplotcol,min,max"
+ * @param cmd command
+ * @return status
+ */
+int func_gfx_sef_pal_minmax (char *cmd)
+{
+#ifdef _USE_GFX_
+  double max = 0.0 ;
+  double min = 0.0 ;
+
+  if (ciParNum(cmd) > 2) { max = ciGetParDbl(cmd,2) ; }
+  if (ciParNum(cmd) > 1) { min = ciGetParDbl(cmd,1) ; }
+  femSetTramColPalMaxMin(min,max) ;
+#endif
+	return ( tuiCmdReact(cmd, AF_OK) ) ;
+}
+
 
 /** move: "move,dir,dist"
  * @param cmd command

@@ -187,6 +187,7 @@ extern int func_gfx_zoom (char *cmd);
 extern int func_gfx_unzoom (char *cmd);
 extern int func_gfx_reset (char *cmd);
 extern int func_gfx_sef_view_def (char *cmd);
+extern int func_gfx_sef_pal_minmax (char *cmd);
 extern int func_gfx_move (char *cmd);
 extern int func_gfx_rot (char *cmd);
 extern int func_gfx_view (char *cmd);
@@ -704,7 +705,7 @@ int fem_cmd_init (void)
 {
   long count = 0 ;
 
-  ciFuncLen = 274;
+  ciFuncLen = 275;
   ciFunction = (tFunc *) malloc (ciFuncLen * sizeof (tFunc));
   
   /* basic functions */
@@ -1201,6 +1202,10 @@ int fem_cmd_init (void)
 
   ciFunction[count].cmd = "fixplotdef";
   ciFunction[count].func = func_gfx_sef_view_def ;
+  count++;
+
+  ciFunction[count].cmd = "fixplotcol";
+  ciFunction[count].func = func_gfx_sef_pal_minmax ;
   count++;
 
   ciFunction[count].cmd = "move";

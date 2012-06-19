@@ -112,8 +112,17 @@ void femColPalDefs(tColPal *pal)
 void femColPalSet(tColPal *pal, long len, double max, double min)
 {
 	pal->len = len ;
-	pal->max = max ;
-	pal->min = min ;
+
+  if ((plotTran.max_fix_pal != 0.0)&&(plotTran.min_fix_pal != 0.0))
+  {
+	  pal->max = plotTran.max_fix_pal ;
+	  pal->min = plotTran.min_fix_pal ;
+  }
+  else
+  {
+	  pal->max = max ;
+	  pal->min = min ;
+  }
 }
 
 int femGetResColor3f(double val, float *r, float *g, float *b)
