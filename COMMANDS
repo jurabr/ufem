@@ -333,8 +333,8 @@ view
 fixplotdef
 "fixplotdef,size"
 
-fixplotpal
-"fixplotpal,min,max"
+fixplotcol
+"fixplotcol,min,max"
 
 vpmode
 "vpmode,mode[0|1|2|3]""
