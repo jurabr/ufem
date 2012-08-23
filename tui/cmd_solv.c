@@ -944,7 +944,7 @@ int func_fem_import(char *cmd)
 
   if (rv == AF_OK)
   {
-    fprintf(msgout,"[ ]  %s: %s\n",_("Data exported from file"), fname);
+    fprintf(msgout,"[ ]  %s: %s\n",_("Data imported from file"), fname);
   }
 
 memFree:
