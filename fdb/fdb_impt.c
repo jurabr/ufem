@@ -651,7 +651,7 @@ int fdb_import_from_netgen(FILE *fr, long *opts, long optlen)
 	return(rv);
 }
 
-/** Imports data from Medit (produced by TetGen) mesh format  
+/** Imports data from TetGen mesh format  (two files are used: *.node and *.ele)
  *  Note that only nodes and trinagual elems. are imported (no boundary elements)
  * @param fr pointer to input file
  * @param opts field of option (or NULL)
