@@ -37,7 +37,7 @@ int addMat_001(void)
 	int rv = AF_OK;
 	static long  type      = 1 ;
 	static long  num       = 6 ;
-	static long  val[6]    = {MAT_DENS, MAT_EX, MAT_NU, MAT_ALPHA, MAT_KXX, MAT_PRICE};
+	static long  val[6]    = {MAT_DENS, MAT_EX, MAT_NU, MAT_ALPHA, MAT_KXX, MAT_C, MAT_PRICE};
 	static long  num_rp    = 5 ;
 	static long  val_rp[5] = {MAT_DENS, MAT_EX, MAT_NU, MAT_ALPHA, MAT_KXX};
 

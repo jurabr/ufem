@@ -70,6 +70,8 @@ int femSolveThermTrans(void)
 {
 	int    rv = AF_OK ;
   long   i ;
+  long   steps = 10 ;  /* number of time steps */
+  double d_t   = 1.0 ; /* time (step lenght) */
 
  	if ((rv = femElemTypeInit()) != AF_OK) { goto memFree; }
  	if ((rv = femMatTypeInit()) != AF_OK) { goto memFree; }
@@ -112,10 +114,19 @@ int femSolveThermTrans(void)
 	fprintf(msgout,"[i]   %s.\n",_("loads and supports done"));
 #endif
 
+#ifdef RUN_VERBOSE
+	fprintf(msgout,"[I] %s:\n",_("Time integration started"));
+#endif
+
+  for (i=0; i<steps; i++)
+  {
+
   /* TODO solution here */
-  /*
-  r(t) = (K*tau + C/dt) / ( fT + ( C/dt ­ K * (1­ tau)) * r(t-1) 
-  */
+    /*
+      r(t) = (K*tau + C/dt) / ( fT + ( C/dt ­ K * (1­ tau)) * r(t-1) 
+      BTW tau = 0.5 for equdistant discretisation
+    */
+  }
 
 memFree:
 	fem_sol_free();

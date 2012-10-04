@@ -28,7 +28,6 @@
 #ifndef _SMALL_FEM_CODE_
 
 extern double e011_area(long ePos);
-extern int e011_mass(long ePos, tMatrix *M_e);
 extern int e011_volume(long ePos, double *vol);
 extern int e011_res_p_loc(long ePos, long point, double *x, double *y, double *z);
 
@@ -157,6 +156,39 @@ memFree:
 	return(rv);
 }
 
+/** It should work - according to Zienkiewicz ;-) */
+int e018_mass(long ePos, tMatrix *M_e)
+{
+	int    rv = AF_OK ;
+	double t,ro,A,C, mult;
+
+	femMatSetZero(M_e);
+
+	/* Material data: */
+	t  = femGetRSValPos(ePos, RS_HEIGHT, 0) ; 
+	ro = femGetMPValPos(ePos, MAT_DENS, 0) ;
+	C  = femGetMPValPos(ePos, MAT_C, 0) ;
+
+	A=e011_area(ePos);
+
+	/* Multiplier: */
+	mult = (1.0/9.0) * (ro * A * C) ;
+
+	femMatPut(M_e,1,1 , mult );
+	femMatPut(M_e,1,2 , mult );
+	femMatPut(M_e,1,3 , mult );
+
+	femMatPut(M_e,2,1 , mult );
+	femMatPut(M_e,2,2 , mult );
+	femMatPut(M_e,2,3 , mult );
+
+	femMatPut(M_e,3,1 , mult );
+	femMatPut(M_e,3,2 , mult );
+	femMatPut(M_e,3,3 , mult );
+
+	return(rv);
+}
+
 long e018_rvals(long ePos) { return(1); }
 
 int e018_eload(long ePos, long mode, tVector *F_e) { return(AF_OK); }
@@ -193,7 +225,7 @@ int addElem_018(void)
 	Elem[type].nres_rp = nres_rp ;
 
 	Elem[type].stiff = e018_stiff;
-	Elem[type].mass  = e011_mass;
+	Elem[type].mass  = e018_mass;
 	Elem[type].rvals = e018_rvals;
 	Elem[type].eload = e018_eload;
 	Elem[type].res_p_loc = e011_res_p_loc;

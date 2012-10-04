@@ -73,8 +73,9 @@
 #define MAT_CRTYPE  34
 #define MAT_GFC     35
 #define MAT_PRICE   36
-#define MAT_KXX     37
-#define MAT_ALPHA   38
+#define MAT_KXX     37 /* thermal conductivity */
+#define MAT_ALPHA   38 /* thermal expansion coefficient */
+#define MAT_C       39 /* specitic heat */
 
 
 /* structure for finite element */
