@@ -156,7 +156,7 @@ memFree:
 	return(rv);
 }
 
-/** It should work - according to Zienkiewicz ;-) */
+/** Thermal capacity matrix: */
 int e018_mass(long ePos, tMatrix *M_e)
 {
 	int    rv = AF_OK ;
@@ -172,7 +172,7 @@ int e018_mass(long ePos, tMatrix *M_e)
 	A=e011_area(ePos);
 
 	/* Multiplier: */
-	mult = (1.0/9.0) * (ro * A * C) ;
+	mult = (1.0/9.0) * (ro * A * C * t) ;
 
 	femMatPut(M_e,1,1 , mult );
 	femMatPut(M_e,1,2 , mult );
