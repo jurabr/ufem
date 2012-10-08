@@ -62,6 +62,7 @@ extern long  femEigenNum   ;
 extern long  femNewmarkEL  ;
 extern long  femComputePriceOnly;
 extern long  femComputePE  ;
+extern long  femThermTrans ; 
 
 extern int fem_parse_params(int argc, char *argv[]);
 extern char *fem_output_file(void);

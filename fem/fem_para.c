@@ -93,6 +93,7 @@ long  femEigenModal       = AF_NO ; /* modal solution */
 long  femEigenNum         = 0 ;     /* number of computed mode shapess */
 long  femNewmarkEL        = AF_NO ; /* newmark integration solver */
 long  femComputePriceOnly = AF_NO ; /* computer price and exit    */
+long  femThermTrans       = AF_NO ; /* indicates thermal transient solution */
 
 FILE *fem_sol_norm_file   = NULL ;
 

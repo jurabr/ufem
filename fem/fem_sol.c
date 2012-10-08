@@ -211,8 +211,10 @@ void fem_sol_null(void)
     {
       if (femNewmarkEL == AF_YES)
       {
+#if 0
 	      femMatNull(&KK);
 	      femMatNull(&C);
+#endif
 
 	      femVecNull(&pp);
 	      femVecNull(&dr);
@@ -228,6 +230,17 @@ void fem_sol_null(void)
     }
   }
 
+  if (femThermTrans == AF_YES)
+  {
+	  femMatNull(&M);
+	  femMatNull(&KK);
+	  femMatNull(&C);
+
+	  femVecNull(&F_0);
+	  femVecNull(&r0);
+	  femVecNull(&pp);
+  }
+
 	switch(solNoLinS)
 	{
 		case 1: /* nothing to do for linear solution */ 
@@ -237,7 +250,6 @@ void fem_sol_null(void)
 						femVecNull(&u_tot);
 						break;
 	  case 3: /* ALM */ 
-#if 1
 						femVecNull(&u_tot);
 						femVecNull(&du0);
 						femVecNull(&dut);
@@ -245,7 +257,6 @@ void fem_sol_null(void)
 						femVecNull(&du );
 						femVecNull(&F_0);
 						break;
-#endif
 		case 4: /* full ALM */
 						femVecNull(&u_tot);
 						femVecNull(&dFr);
@@ -314,8 +325,10 @@ void fem_sol_free(void)
     {
       if (femNewmarkEL == AF_YES)
       {
+#if 0
 	      femMatFree(&KK);
 	      femMatFree(&C);
+#endif
 
 	      femVecFree(&pp);
 	      femVecFree(&dr);
@@ -329,6 +342,17 @@ void fem_sol_free(void)
 	      femVecFree(&F_0);
       }
     }
+  }
+  
+  if (femThermTrans == AF_YES)
+  {
+	  femMatFree(&M);
+	  femMatFree(&KK);
+	  femMatFree(&C);
+
+	  femVecFree(&F_0);
+	  femVecFree(&r0);
+	  femVecFree(&pp);
   }
 
 	switch(solNoLinS)
@@ -468,6 +492,20 @@ int fem_sol_alloc(void)
 	      if ((rv = femVecFullInit(&F_0, nDOFAct)) != AF_OK) { goto memFree; }
       }
     }
+  }
+
+  if (femThermTrans == AF_YES)
+  {
+	  if ((rv = femSparMatInitDesc(&M, nDOFAct, nDOFAct, K_rows)) != AF_OK)
+	     { goto memFree; }
+	  if ((rv = femSparMatInitDesc(&KK, nDOFAct, nDOFAct, K_rows)) != AF_OK)
+	     { goto memFree; }
+	  if ((rv = femSparMatInitDesc(&C, nDOFAct, nDOFAct, K_rows)) != AF_OK)
+	     { goto memFree; }
+
+	  if ((rv = femVecFullInit(&F_0, nDOFAct)) != AF_OK) { goto memFree; }
+	  if ((rv = femVecFullInit(&r0, nDOFAct)) != AF_OK) { goto memFree; }
+	  if ((rv = femVecFullInit(&pp, nDOFAct)) != AF_OK) { goto memFree; }
   }
 
   

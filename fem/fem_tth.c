@@ -49,6 +49,10 @@ extern tVector u; /* structure displacement vector */
 
 /* dynamics: */
 extern tMatrix C;         /* thermal capacity matrix */
+extern tMatrix KK;        /* conductivity matrix     */
+extern tVector F_0;       /* prev step load          */
+extern tVector r0;        /* prev step temperatures  */
+extern tVector pp;        /* combined load           */
 
 /** Wrapper for linear system solvers
  * @param Ks stiffness matrix
@@ -71,7 +75,8 @@ int femSolveThermTrans(void)
 	int    rv = AF_OK ;
   long   i ;
   long   steps = 10 ;  /* number of time steps */
-  double d_t   = 1.0 ; /* time (step lenght) */
+  double d_t   = 1.0 ; /* time (step lenght)   */
+  double tau   = 0.5 ; /* time step ratio      */
 
  	if ((rv = femElemTypeInit()) != AF_OK) { goto memFree; }
  	if ((rv = femMatTypeInit()) != AF_OK) { goto memFree; }
@@ -120,12 +125,25 @@ int femSolveThermTrans(void)
 
   for (i=0; i<steps; i++)
   {
+    /* TODO: loads and supports should be inside loop */
+    
+    /* TODO right hand side: */
+    femValVecMult((1-tau), &F, &pp) ;
+    femVecAddVec(&F_0, tau, &pp) ;
+    /*TODO:  (M/tau - K*(1-tau))*r0 */
 
-  /* TODO solution here */
-    /*
-      r(t) = (K*tau + C/dt) / ( fT + ( C/dt ­ K * (1­ tau)) * r(t-1) 
-      BTW tau = 0.5 for equdistant discretisation
-    */
+    /* TODO left hand side: */
+    /*TODO:  M/tau + K*(1-tau) */
+
+    /* equation solution: */
+    if (solUseCGSSOR != AF_YES)
+		{
+	  	if ((rv = femEqsCGwJ(&KK, &pp, &u, FEM_ZERO/10000.0, nDOFAct)) != AF_OK) { goto memFree; }
+		}
+		else
+		{
+	  	if ((rv = femEqsCGwSSOR(&KK, &pp, &u, FEM_ZERO/10000.0, nDOFAct)) != AF_OK) { goto memFree; }
+		}
   }
 
 memFree:
