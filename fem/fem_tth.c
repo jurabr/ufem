@@ -52,6 +52,7 @@ extern tMatrix C;         /* thermal capacity matrix */
 extern tMatrix KK;        /* conductivity matrix     */
 extern tVector F_0;       /* prev step load          */
 extern tVector r0;        /* prev step temperatures  */
+extern tVector rr0;       /* prev step temperatures  */
 extern tVector pp;        /* combined load           */
 
 /** Wrapper for linear system solvers
@@ -123,17 +124,23 @@ int femSolveThermTrans(void)
 	fprintf(msgout,"[I] %s:\n",_("Time integration started"));
 #endif
 
+  /* TODO 0th step... */
+	if ((rv = femEqsCGwJ(&K, &F, &u, FEM_ZERO/10000.0, nDOFAct)) != AF_OK) { goto memFree; }
+
   for (i=0; i<steps; i++)
   {
     /* TODO: loads and supports should be inside loop */
     
-    /* TODO right hand side: */
-    femValVecMult((1-tau), &F, &pp) ;
-    femVecAddVec(&F_0, tau, &pp) ;
-    /*TODO:  (M/tau - K*(1-tau))*r0 */
+    /* right hand side vector ((F_0*1-tau) + F*tau) = pp0: */
+    femVecLinComb((1.0-tau), &F_0,  tau, &F, &pp);
 
-    /* TODO left hand side: */
-    /*TODO:  M/tau + K*(1-tau) */
+    /* right hand side:  pp0+(M/tau - K*(1-tau))*r0 */
+    femMatLinComb(1.0/tau, &M, -(1.0-tau), &K, &C);
+    femMatVecMultBig(&C, &r0, &rr0) ;
+    femVecAddVec(&pp, 1.0, &rr0); /* adds rr0 to pp */
+
+    /* TODO left hand side:  M/tau + K*(1-tau) */
+    femMatLinComb(1.0/tau, &M, (1.0-tau), &K, &KK);
 
     /* equation solution: */
     if (solUseCGSSOR != AF_YES)

@@ -238,6 +238,7 @@ void fem_sol_null(void)
 
 	  femVecNull(&F_0);
 	  femVecNull(&r0);
+	  femVecNull(&rr0);
 	  femVecNull(&pp);
   }
 
@@ -352,6 +353,7 @@ void fem_sol_free(void)
 
 	  femVecFree(&F_0);
 	  femVecFree(&r0);
+	  femVecFree(&rr0);
 	  femVecFree(&pp);
   }
 
@@ -505,6 +507,7 @@ int fem_sol_alloc(void)
 
 	  if ((rv = femVecFullInit(&F_0, nDOFAct)) != AF_OK) { goto memFree; }
 	  if ((rv = femVecFullInit(&r0, nDOFAct)) != AF_OK) { goto memFree; }
+	  if ((rv = femVecFullInit(&rr0, nDOFAct)) != AF_OK) { goto memFree; }
 	  if ((rv = femVecFullInit(&pp, nDOFAct)) != AF_OK) { goto memFree; }
   }
 
