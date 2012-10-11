@@ -106,6 +106,7 @@ long     *nlNode = NULL ;   /* node to be used (position) */
 long     *nlType = NULL ;   /* type of load               */
 long     *nlDir  = NULL ;   /* direction of load          */
 double   *nlVal  = NULL ;   /* value of load              */
+long     *nlTrPos= NULL ;   /* position in transient data */
 
 
 /* ELEMENT LOADS */
@@ -114,6 +115,7 @@ long     *elType = NULL ;   /* type and direction of load */
 long     *elFrom = NULL ;   /* starting point in elValL   */
 
 double   *elValL = NULL ;   /* values of load             */
+long     *elTrPos= NULL ;   /* position in transient data */
 
 
 /* GRAVITATION */
@@ -130,6 +132,11 @@ double *dynAccX = NULL ; /* acceleration loads for each time step  */
 double *dynAccY = NULL ; /* acceleration loads for each time step  */
 double *dynAccZ = NULL ; /* acceleration loads for each time step  */
 
+/* REPEATING (TRANSIENT) LOADS */
+long     transNum  = 0 ;    /* number of loads                     */
+long    *transType = NULL ; /* types of loads                      */
+long    *transPos  = NULL ; /* position of loads                   */
+double **transMult = NULL ; /* load multipliers                    */
 
 /* RESULTS  - reaction */
 long     *resRnode = NULL ; /* node with reaction(s)     */

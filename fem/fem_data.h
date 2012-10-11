@@ -59,7 +59,6 @@ extern long   resBackRLen ; /* number of nodes with reactions BACKUP */
 extern long   resBackELen ; /* number of element results BACKUP      */
 
 /* LENGHTS OF FIELDS: */
-
 extern long  nLen  ; /* number of nodes                */
 extern long  eLen  ; /* number of elemnts              */
 extern long  eLenL ; /* lenght of element nodes field  */
@@ -111,6 +110,7 @@ extern long     *nlNode  ;   /* node to be used (position) */
 extern long     *nlType  ;   /* type of load               */
 extern long     *nlDir   ;   /* direction of load          */
 extern double   *nlVal   ;   /* value of load              */
+extern long     *nlTrPos ;   /* position in transient data */
 
 
 /* ELEMENT LOADS */
@@ -119,6 +119,7 @@ extern long     *elType  ;   /* type and directin of load  */
 extern long     *elFrom  ;   /* starting point in elValL   */
 
 extern double   *elValL  ;   /* values of load             */
+extern long     *elTrPos ;   /* position in transient data */
 
 
 /* GRAVITATION */
@@ -134,6 +135,14 @@ extern double  dynBeta ; /* Rayleigh damping coefficient beta      */
 extern double *dynAccX ; /* acceleration loads for each time step  */
 extern double *dynAccY ; /* acceleration loads for each time step  */
 extern double *dynAccZ ; /* acceleration loads for each time step  */
+
+
+/* REPEATING LOADS */
+extern long     transNum  ; /* number of loads                     */
+extern long    *transType ; /* types of loads                      */
+extern long    *transPos  ; /* position of loads                   */
+extern double **transMult ; /* load multipliers                    */
+
 
 
 /* RESULTS  - reaction */

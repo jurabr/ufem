@@ -165,6 +165,89 @@ memFree:
   return(rv);
 }
 
+/** Reads repeating data (dynamics, transient analysis etc.)
+ * @param fname file name
+ * @return state value
+ */
+int femReadRepeatData(FILE *fr)
+{
+	int   rv = AF_OK ;
+	long  i, j ;
+
+  if (fscanf(fr, "%li %li", &transNum, &dynNum) < 2)
+  {
+#ifdef RUN_VERBOSE
+	  fprintf(msgout,"[E] %s!\n", _("Empty transient data"));
+#endif
+    return(AF_ERR_EMP);
+  }
+
+  if ((transNum > 1) && (dynNum > 1))
+  {
+		if ((transType  = femIntAlloc(transNum)) == NULL) {rv=AF_ERR_MEM; goto memFree; }
+		if ((transPos  = femIntAlloc(transNum)) == NULL) {rv=AF_ERR_MEM; goto memFree; }
+
+		if ((transMult  = (double **)malloc(transNum*sizeof(double *))) == NULL) 
+    {
+      rv=AF_ERR_MEM; 
+      goto memFree; 
+    }
+    else
+    {
+      for (i=0; i<transNum; i++)
+      {
+		    if ((transMult[i] = femDblAlloc(dynNum)) == NULL) {rv=AF_ERR_MEM; goto memFree; }
+        for (j=0; j<dynNum; j++) {transMult[i][j] = 0.0 ;}
+      }
+    }
+
+    /* read data types: */
+    for (i=0; i<transNum; i++)
+    {
+      if (fscanf(fr, "%li %li", &transType[i], &transPos[i]) < 2) 
+      {
+        rv = AF_ERR_IO ;
+#ifdef RUN_VERBOSE
+	      fprintf(msgout,"[E] %s!\n", _("Missing transient data description"));
+#endif
+        goto memFree;
+      }
+    }
+
+    /* read actual data */
+    for (i=0; i<transNum; i++)
+    {
+      for (j=0; j<dynNum; j++)
+      {
+        if (fscanf(fr, "%lf", &transMult[i][j]) != 1) 
+        {
+#ifdef RUN_VERBOSE
+	      fprintf(msgout,"[E] %s!\n", _("Missing transient data"));
+#endif
+          rv = AF_ERR_IO;
+          goto memFree;
+        }
+      }
+    }
+    /* TODO: test of data and filling of elTrPos, nlTrPos...  */
+  }
+  else
+  {
+    /* no transient data */
+    return(AF_OK);
+  }
+
+memFree:
+  femIntFree(transType);
+  femIntFree(transPos);
+  if (transMult != NULL)
+  {
+    for (i=0; i<transNum; i++) { femDblFree(transMult[i]) ; }
+    free(transMult); transMult = NULL ;
+  }
+  return(rv);
+}
+
 /** reads dynamics (acceleration) data from file - do NOT use it directly
  * @param fname file name
  * @return state value
