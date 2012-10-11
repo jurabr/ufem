@@ -96,6 +96,7 @@ int femReadInputLoads(FILE *fr)
 		if ((nlType  = femIntAlloc(nlLen)) == NULL) {rv=AF_ERR_MEM; goto memFree; }
 		if ((nlDir   = femIntAlloc(nlLen)) == NULL) {rv=AF_ERR_MEM; goto memFree; }
 		if ((nlVal   = femDblAlloc(nlLen)) == NULL) {rv=AF_ERR_MEM; goto memFree; }
+		if ((nlTrPos = femIntAlloc(nlLen)) == NULL) {rv=AF_ERR_MEM; goto memFree; }
 
 		for (i=0; i<nlLen; i++)
 		{
@@ -117,6 +118,8 @@ int femReadInputLoads(FILE *fr)
 		if ((elElem = femIntAlloc(elLen)) == NULL) {rv=AF_ERR_MEM; goto memFree; }
 		if ((elType = femIntAlloc(elLen)) == NULL) {rv=AF_ERR_MEM; goto memFree; }
 		if ((elFrom  = femIntAlloc(elLen)) == NULL) {rv=AF_ERR_MEM; goto memFree; }
+
+		if ((elTrPos  = femIntAlloc(elLen)) == NULL) {rv=AF_ERR_MEM; goto memFree; }
 
 		sum = 0 ;
 		for (i=0; i<elLen; i++)
@@ -229,7 +232,33 @@ int femReadRepeatData(FILE *fr)
         }
       }
     }
-    /* TODO: test of data and filling of elTrPos, nlTrPos...  */
+    /* test of data and filling of elTrPos, nlTrPos...  */
+    for (i=0; i<transNum; i++)
+    {
+      switch (transType[i])
+      {
+        case 0:  /* TODO time */
+          break;
+        case 1:  /* TODO gravity ux */
+          break;
+        case 2:  /* TODO gravity uy */
+          break;
+        case 3:  /* TODO gravity uz */
+          break;
+        case 4:  /* load/support in node */
+          if ((transPos[i] >= 0) && (transPos[i] < nlLen))
+          {
+            nlTrPos[transPos[i]] = i ;
+          }
+          break;
+        case 5:  /* load on element */
+          if ((transPos[i] >= 0) && (transPos[i] < elLen))
+          {
+            elTrPos[transPos[i]] = i ;
+          }
+          break;
+      }
+    }
   }
   else
   {
