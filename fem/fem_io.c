@@ -182,7 +182,12 @@ int femReadRepeatData(FILE *fr)
 #ifdef RUN_VERBOSE
 	  fprintf(msgout,"[E] %s!\n", _("Empty transient data"));
 #endif
-    return(AF_ERR_EMP);
+    femEigenNum = 0 ;
+    femEigenModal = AF_NO ;
+    femNewmarkEL  = AF_NO ;
+    femDynamics   = AF_NO ;
+    femThermTrans = AF_NO ;
+    return(AF_OK);
   }
 
   if ((transNum > 1) && (dynNum > 1))
@@ -237,13 +242,17 @@ int femReadRepeatData(FILE *fr)
     {
       switch (transType[i])
       {
-        case 0:  /* TODO time */
+        case 0:  /* time step size */
+          transTS = i ;
           break;
-        case 1:  /* TODO gravity ux */
+        case 1:  /* gravity ux */
+          dynAccX = i ;
           break;
-        case 2:  /* TODO gravity uy */
+        case 2:  /* gravity uy */
+          dynAccY = i ;
           break;
-        case 3:  /* TODO gravity uz */
+        case 3:  /* gravity uz */
+          dynAccZ = i ;
           break;
         case 4:  /* load/support in node */
           if ((transPos[i] >= 0) && (transPos[i] < nlLen))
@@ -263,6 +272,11 @@ int femReadRepeatData(FILE *fr)
   else
   {
     /* no transient data */
+    femEigenNum = 0 ;
+    femEigenModal = AF_NO ;
+    femNewmarkEL  = AF_NO ;
+    femDynamics   = AF_NO ;
+    femThermTrans = AF_NO ;
     return(AF_OK);
   }
 
@@ -284,7 +298,6 @@ memFree:
 int femReadInputDynLoads(FILE *fr)
 {
 	int   rv = AF_OK ;
-	long  i ;
 
 	rv = fscanf(fr,"%li", &dynNum); rv = AF_OK ;
 
@@ -335,25 +348,8 @@ int femReadInputDynLoads(FILE *fr)
 		return( AF_ERR_IO) ; 
 	}
 
-	if ((dynAccX = femDblAlloc(dynNum)) == NULL) {rv = AF_ERR_MEM; goto memFree;}
-	if ((dynAccY = femDblAlloc(dynNum)) == NULL) {rv = AF_ERR_MEM; goto memFree;}
-	if ((dynAccZ = femDblAlloc(dynNum)) == NULL) {rv = AF_ERR_MEM; goto memFree;}
-
-	for (i=0; i<dynNum; i++) /* acceleration data */
-	{
-		rv = fscanf(fr, "%lf %lf %lf", &dynAccX[i], &dynAccY[i], &dynAccZ[i]);
-		if (rv < 3) {rv = AF_ERR_IO ; goto memFree ;}
-	}
-
 	grVal = 0.0 ; /* should be zero for dynamics! */
 
-	return(AF_OK);
-memFree:
-	if (dynAccX != NULL) {femDblFree(dynAccX);}
-	if (dynAccY != NULL) {femDblFree(dynAccY);}
-	if (dynAccZ != NULL) {femDblFree(dynAccZ);}
-	dynStp = 0.0 ;
-	dynNum = 0 ;
   return(rv);
 }
 
@@ -366,7 +362,6 @@ int femReadInput(char *fname)
 {
 	int   rv = AF_OK ;
 	FILE *fr = NULL ;
-	FILE *frd = NULL ;
 	long pos, sum;
 	long  i ;
 
@@ -599,31 +594,11 @@ int femReadInput(char *fname)
   /* all load data: */
   if ((rv = femReadInputLoads(fr)) != AF_OK) {goto memFree;}
 
+  /* Array data (thermal/dynamics) - if applicable */
+	if ((rv = femReadRepeatData(fr)) != AF_OK) {goto memFree;}
+
 	/* dynamics (if applicable) */
-  if (fem_dfile == NULL)
-  {
-	  if ((rv = femReadInputDynLoads(fr)) != AF_OK) {goto memFree;}
-  }
-  else
-  {
-    if ((frd = fopen(fem_dfile,"r")) == NULL) 
-    {
-#ifdef RUN_VERBOSE
-		  fprintf(msgout,"[E] %s: %s!\n",_("Error during input data reading - can not open file"), fem_dfile);
-#endif
-      fclose(fr) ;
-		  frd = NULL;
-		  return(AF_ERR_IO);
-    }
-    fscanf(fr,"%li", &dynNum); /* just for compatibility */
-	  if ((rv = femReadInputDynLoads(frd)) != AF_OK) 
-    {
-      fclose(frd);
-      fclose(fr);
-      goto memFree;
-    }
-    fclose(frd); frd = NULL ;
-  }
+	if ((rv = femReadInputDynLoads(fr)) != AF_OK) {goto memFree;}
 
   /* Monte-related data (if any )*/
   if ((rv = fem_monte_read_data(fr)) != AF_OK) {goto memFree;}

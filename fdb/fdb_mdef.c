@@ -21,8 +21,6 @@
    USA.
 
 	 FEM Database - materials
-
-	 $Id: fdb_mdef.c,v 1.7 2004/11/11 21:41:06 jirka Exp $
 */
 
 #include "fdb_mdef.h"
@@ -46,10 +44,10 @@ void fdbMatTypeInit_000(long type)
 void fdbMatTypeInit_001(long type)
 {
 	static long id            = 1 ;
-	static long vals          = 6 ;
-	static long val[6]        = {MAT_DENS, MAT_EX, MAT_NU, MAT_ALPHA, MAT_KXX, MAT_PRICE};
-	static long vals_rp       = 5 ;
-	static long val_rp[5]     = {MAT_DENS, MAT_EX, MAT_NU, MAT_ALPHA, MAT_KXX};
+	static long vals          = 7 ;
+	static long val[7]        = {MAT_DENS, MAT_EX, MAT_NU, MAT_ALPHA, MAT_KXX, MAT_C, MAT_PRICE};
+	static long vals_rp       = 6 ;
+	static long val_rp[6]     = {MAT_DENS, MAT_EX, MAT_NU, MAT_ALPHA, MAT_KXX, MAT_C};
 
 	fdbMatType[type].id         = id ;
 	fdbMatType[type].vals       = vals ;

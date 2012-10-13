@@ -21,8 +21,6 @@
    USA.
 
 	 FEM - text user interface
-
-	 $Id: fem_tui.c,v 1.5 2003/12/27 13:22:40 jirka Exp $
 */
 
 #include "fem_tui.h"

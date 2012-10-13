@@ -1,3 +1,17 @@
+### Sat Oct 13 21:04:15 CEST 2012
+
+version 0.4.0
+
+features:
+  + array data input (non-compatible input data)
+  + dynamics data simplification 
+  + support for general transient data (just I/O, no use)
+  + manual pages updated
+
+bugfixes:
+  - invalid array size in material 001
+
+
 ### Sun Feb 26 21:05:39 CET 2012
 
 version 0.3.9

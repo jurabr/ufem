@@ -132,9 +132,9 @@ extern long    dynNum  ; /* number of time steps                   */
 extern double  dynStp  ; /* time step size                         */
 extern double  dynAlpha; /* Rayleigh damping coefficient alpha     */
 extern double  dynBeta ; /* Rayleigh damping coefficient beta      */
-extern double *dynAccX ; /* acceleration loads for each time step  */
-extern double *dynAccY ; /* acceleration loads for each time step  */
-extern double *dynAccZ ; /* acceleration loads for each time step  */
+extern long    dynAccX ; /* acceleration loads for each time step  */
+extern long    dynAccY ; /* acceleration loads for each time step  */
+extern long    dynAccZ ; /* acceleration loads for each time step  */
 
 
 /* REPEATING LOADS */
@@ -142,7 +142,7 @@ extern long     transNum  ; /* number of loads                     */
 extern long    *transType ; /* types of loads                      */
 extern long    *transPos  ; /* position of loads                   */
 extern double **transMult ; /* load multipliers                    */
-
+extern long     transTS   ; /* time step size position             */
 
 
 /* RESULTS  - reaction */

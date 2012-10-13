@@ -128,15 +128,16 @@ long    dynNum  = 0 ;    /* number of time steps                   */
 double  dynStp  = 0.0 ;  /* time step size                         */
 double  dynAlpha= 0.0 ;  /* Rayleigh damping coefficient alpha     */
 double  dynBeta = 0.0 ;  /* Rayleigh damping coefficient beta      */
-double *dynAccX = NULL ; /* acceleration loads for each time step  */
-double *dynAccY = NULL ; /* acceleration loads for each time step  */
-double *dynAccZ = NULL ; /* acceleration loads for each time step  */
+long    dynAccX = 0 ;    /* acceleration loads for each time step  */
+long    dynAccY = 0 ;    /* acceleration loads for each time step  */
+long    dynAccZ = 0 ;    /* acceleration loads for each time step  */
 
 /* REPEATING (TRANSIENT) LOADS */
 long     transNum  = 0 ;    /* number of loads                     */
 long    *transType = NULL ; /* types of loads                      */
 long    *transPos  = NULL ; /* position of loads                   */
 double **transMult = NULL ; /* load multipliers                    */
+long     transTS   = -1   ; /* time step size position             */
 
 /* RESULTS  - reaction */
 long     *resRnode = NULL ; /* node with reaction(s)     */

@@ -80,6 +80,26 @@ Number of steps in Non-Linear Solution.
 .SS ELEMENT LOADS
 \fB0\fP (zero number must be put here - this feature is currently not used).
 
+.SS TIME-DEPENDENT ARRAY DATA
+.TP
+\fBNumber of data\fP [int] (zero must be here if no such data are
+used) number of values (accelerations, loads) which are
+time-dependent.
+.TP
+\fBNumber of time steps\fP [int] (zero must be here if no such data are
+used) number of time steps = number of data points for every value.
+.TP
+\fB Data type\fP [long] \fBData position\fP [long] (repeated)
+The \fIData position\fP means the position in the order of related
+data values (numbered from 0). For example: it there are 4 loads and
+supports in nodes the last one should have number 3. It there are 3
+element loads then the one in the middle should have number 1.
+This value have to be 0 for accelerations.
+
+The \fIData type\fP is: 0..time step size (currently ignored),
+1..gravity in X direction, 2..gravity in Y, 3..gravity in Z, 4..load
+or support in node multiplier, 5..element load multiplier.
+
 .SS DYNAMICS
 \fBNumber of steps\fP [int] (zero must be here if no dynamics is used - the rest of this section must be present only for dynamics).
 .TP
@@ -89,8 +109,6 @@ Number of steps in Non-Linear Solution.
 .TP
 \fBBeta\fP [double] coefficient for Rayleigh damping (alpha*M + beta*K)
 .TP
-\fBAcceleration X\fP [double] \fBAcceleration Y\fP [double] \fBAcceleration Z\fP [double] (repeated)
-
 
 .SS END OF FILE
 \fB 0 0\fP (two zeros must be put here).

@@ -52,7 +52,6 @@ extern char *fem_ofile ;
 extern char *fem_rfile ;
 extern char *fem_thrfile ;
 extern char *fem_throfile ;
-extern char *fem_dfile ;
 
 extern long  femBreakSolu ;
 

@@ -112,9 +112,9 @@ int femMassDistrNewm(long step)
 	long  pos_ind, pos ;
   double m_x, m_y, m_z ;
 
-  m_x = dynAccX[ step ] ;
-  m_y = dynAccY[ step ] ;
-  m_z = dynAccZ[ step ] ;
+  m_x = transMult[dynAccX][ step ] ;
+  m_y = transMult[dynAccY][ step ] ;
+  m_z = transMult[dynAccZ][ step ] ;
 
   femVecSetZeroBig(&F);
 

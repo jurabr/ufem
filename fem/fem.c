@@ -171,19 +171,26 @@ int main(int argc, char *argv[])
       }
       else
       {
-	      if (solNoLinS > 1)
-	      {
-          switch (solNoLinS)
-          {
-            case 2: if ((rv = femSolveNRM(0)) != AF_OK) {return(rv);} break;
-            case 3: if ((rv = femSolveALM(2)) != AF_OK) {return(rv);} break;
-            case 4: if ((rv = femSolveFullALM()) != AF_OK) {return(rv);} break;
-            case 6: if ((rv = femSolveDirDisps(0)) != AF_OK) {return(rv);} break;
-            default: return(AF_ERR_VAL); break ;
-          }
+        if (femThermTrans == AF_YES)
+        {
+	        if ((rv = femSolve()) != AF_OK) {return(rv);} /* thermal transient */
         }
-	      else
-	        { if ((rv = femSolve()) != AF_OK) {return(rv);} }
+        else
+        {
+	       if (solNoLinS > 1)
+	       {
+           switch (solNoLinS)
+           {
+             case 2: if ((rv = femSolveNRM(0)) != AF_OK) {return(rv);} break;
+             case 3: if ((rv = femSolveALM(2)) != AF_OK) {return(rv);} break;
+             case 4: if ((rv = femSolveFullALM()) != AF_OK) {return(rv);} break;
+             case 6: if ((rv = femSolveDirDisps(0)) != AF_OK) {return(rv);} break;
+             default: return(AF_ERR_VAL); break ;
+           }
+         }
+	       else
+	         { if ((rv = femSolve()) != AF_OK) {return(rv);} }
+        }
       }
     }
   }

@@ -27,7 +27,7 @@
 #ifndef __FEM_H__
 #define __FEM_H__
 
-#define _FEM_VERSION_ "0.3.9"
+#define _FEM_VERSION_ "0.4.0"
 
 /* Included headers: */
 #include <stdio.h>
