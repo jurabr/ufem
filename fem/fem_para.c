@@ -752,7 +752,7 @@ int fem_parse_params(int argc, char *argv[])
       femNewmarkEL  = AF_YES ;
 		}
 
-    if (strcmp(argv[i],"-nwm") == 0) /* THERMAL TRANSIENT */
+    if (strcmp(argv[i],"-tth") == 0) /* THERMAL TRANSIENT */
 		{
       solNoLinS     = 1 ; /* we need data for linear solution */
       femThermTrans = AF_YES ;

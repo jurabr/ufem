@@ -31,7 +31,7 @@ extern void fem_sol_free(void);
 extern int fem_sol_alloc(void);
 extern int fem_sol_res_alloc(void);
 extern int fem_dofs(void);
-extern int fem_add_loads(void);
+extern int fem_add_loads(long step);
 extern int fem_add_disps(long disp_mode);
 extern int fem_fill_K(long mode);
 
@@ -190,7 +190,7 @@ int femSolveFullALM(void)
 
     /* initial step - sample computation: */
 	  if ((rv = fem_fill_K(AF_NO)) != AF_OK) { goto memFree; }
- 	  if ((rv = fem_add_loads()) != AF_OK) { goto memFree; }
+ 	  if ((rv = fem_add_loads(0)) != AF_OK) { goto memFree; }
  	  if ((rv = fem_add_disps(AF_YES)) != AF_OK) { goto memFree; }
     
     femValVecMultSelf(lambda_step, &F);
@@ -595,7 +595,7 @@ int femSolveALM(long incr_type)
 		if (lambda > 0.1) {psi2 = 0.0 ;} /* for convergence in softening */
 
 	  if ((rv = fem_fill_K(AF_NO)) != AF_OK) { goto memFree; }
- 	  if ((rv = fem_add_loads()) != AF_OK) { goto memFree; }
+ 	  if ((rv = fem_add_loads(0)) != AF_OK) { goto memFree; }
  	  if ((rv = fem_add_disps(AF_YES)) != AF_OK) { goto memFree; }
 		femValVecMultSelf(multR, &F) ; /* !!! */
 
@@ -649,7 +649,7 @@ int femSolveALM(long incr_type)
     femMatSetZeroBig(&K) ;
 
 	  if ((rv = fem_fill_K(AF_NO)) != AF_OK) { goto memFree; }
- 	  if ((rv = fem_add_loads()) != AF_OK) { goto memFree; }
+ 	  if ((rv = fem_add_loads(0)) != AF_OK) { goto memFree; }
  	  if ((rv = fem_add_disps(AF_YES)) != AF_OK) { goto memFree; }
 
 		femValVecMultSelf(multR, &F) ; /* !!! */
@@ -693,7 +693,7 @@ int femSolveALM(long incr_type)
       femMatSetZeroBig(&K) ;
 
 	    if ((rv = fem_fill_K(AF_NO)) != AF_OK) { goto memFree; }
- 	    if ((rv = fem_add_loads()) != AF_OK) { goto memFree; }
+ 	    if ((rv = fem_add_loads(0)) != AF_OK) { goto memFree; }
  	    if ((rv = fem_add_disps(AF_YES)) != AF_OK) { goto memFree; }
 		
 			femValVecMultSelf(multR, &F) ; /* !!! */

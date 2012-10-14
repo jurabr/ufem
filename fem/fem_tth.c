@@ -32,7 +32,7 @@ extern void fem_sol_free(void);
 extern int fem_sol_alloc(void);
 extern int fem_sol_res_alloc(void);
 extern int fem_dofs(void);
-extern int fem_add_loads(void);
+extern int fem_add_loads(long step);
 extern int fem_add_disps(long disp_mode);
 extern int fem_fill_K(long mode);
 extern int fem_fill_M(void);
@@ -78,7 +78,15 @@ int femSolveThermTrans(void)
   long   steps = 10 ;  /* number of time steps */
   double d_t   = 1.0 ; /* time (step lenght)   */
   double tau   = 0.5 ; /* time step ratio      */
+  long   pos ; /* for SaPo */
+  double val ; /* for SaPo */
+  double tot_time = 0.0 ; /* total elapsed time */
+  char  *fnm = NULL ; /* file name for step */
 
+	steps = dynNum ;
+  d_t   = dynStp ;
+
+#ifndef USE_MONTE
  	if ((rv = femElemTypeInit()) != AF_OK) { goto memFree; }
  	if ((rv = femMatTypeInit()) != AF_OK) { goto memFree; }
 
@@ -94,53 +102,85 @@ int femSolveThermTrans(void)
 #ifdef RUN_VERBOSE
 	fprintf(msgout,"[i]   %s.\n",_("data checking and allocations done"));
 #endif
+#endif
 
+#ifndef USE_MONTE
 #ifdef RUN_VERBOSE
 	fprintf(msgout,"[i]   %s:\n",_("assembling of stiffness matrix"));
 #endif
+#endif
  	if ((rv = fem_fill_K(AF_NO)) != AF_OK) { goto memFree; }
+#ifndef USE_MONTE
 #ifdef RUN_VERBOSE
 	fprintf(msgout,"[i]   %s.\n",_("assembling of stiffness matrix done"));
 #endif
+#endif
 
+#ifndef USE_MONTE
 #ifdef RUN_VERBOSE
 	fprintf(msgout,"[i]   %s:\n",_("assembling of mass matrix"));
 #endif
+#endif
  	if ((rv = femMatAllocCloneStruct(&K, &M)) != AF_OK) { goto memFree; }
  	if ((rv = fem_fill_M()) != AF_OK) { goto memFree; }
+#ifndef USE_MONTE
 #ifdef RUN_VERBOSE
 	fprintf(msgout,"[i]   %s.\n",_("assembling of math matrix done"));
 #endif
+#endif
 
+#ifndef USE_MONTE
 #ifdef RUN_VERBOSE
 	fprintf(msgout,"[i]   %s:\n",_("loads and supports"));
 #endif
+#endif
  	if ((rv = fem_add_disps(AF_YES)) != AF_OK) { goto memFree; }
+  fem_add_loads(1);
+#ifndef USE_MONTE
 #ifdef RUN_VERBOSE
 	fprintf(msgout,"[i]   %s.\n",_("loads and supports done"));
 #endif
+#endif
 
+#ifndef USE_MONTE
 #ifdef RUN_VERBOSE
 	fprintf(msgout,"[I] %s:\n",_("Time integration started"));
 #endif
+#endif
 
-  /* TODO 0th step... */
+  /* 0th step... */
 	if ((rv = femEqsCGwJ(&K, &F, &u, FEM_ZERO/10000.0, nDOFAct)) != AF_OK) { goto memFree; }
+  femVecClone(&F, &F_0); /* clone load to old load vector */
 
-  for (i=0; i<steps; i++)
+  for (i=1; i<steps; i++)
   {
-    /* TODO: loads and supports should be inside loop */
+#ifndef USE_MONTE
+#ifdef RUN_VERBOSE
+		fprintf(msgout,"[I] %s %li / %li:\n", _("Transient step"), i, steps-1);
+#endif
+#endif
+
+    /* substep size: */
+    if (transTS > -1)
+    {
+      d_t = transMult[transTS][i] - transMult[transTS][i-1] ;
+    }
+
+
+    /* loads should be inside loop */
+    femVecSetZeroBig(&F);
+    fem_add_loads(i+1);
     
     /* right hand side vector ((F_0*1-tau) + F*tau) = pp0: */
     femVecLinComb((1.0-tau), &F_0,  tau, &F, &pp);
 
     /* right hand side:  pp0+(M/tau - K*(1-tau))*r0 */
-    femMatLinComb(1.0/tau, &M, -(1.0-tau), &K, &C);
+    femMatLinComb(1.0/d_t, &M, -(1.0-tau), &K, &C);
     femMatVecMultBig(&C, &r0, &rr0) ;
     femVecAddVec(&pp, 1.0, &rr0); /* adds rr0 to pp */
 
-    /* TODO left hand side:  M/tau + K*(1-tau) */
-    femMatLinComb(1.0/tau, &M, (1.0-tau), &K, &KK);
+    /* left hand side:  M/tau + K*(1-tau) */
+    femMatLinComb(1.0/d_t, &M, (1.0-tau), &K, &KK);
 
     /* equation solution: */
     if (solUseCGSSOR != AF_YES)
@@ -151,6 +191,49 @@ int femSolveThermTrans(void)
 		{
 	  	if ((rv = femEqsCGwSSOR(&KK, &pp, &u, FEM_ZERO/10000.0, nDOFAct)) != AF_OK) { goto memFree; }
 		}
+
+    tot_time += d_t ; /* total elapsed time */
+
+		/* tracking points: */
+#ifndef _SMALL_FEM_CODE_
+		if (femTangentMatrix == AF_YES) 
+		{
+      if ((pos = femKpos(femSaPoNode, U_Z)) > 0) 
+           { val = femVecGet(&u, pos) ; }
+      else { val = 0.0 ; }
+			femSaPoInput(tot_time, 
+				femVecGet(&u,femKpos(femSaPoNode, U_X)),
+				femVecGet(&u,femKpos(femSaPoNode, U_Y)),
+        val, AF_NO, AF_NO
+				) ;
+		}
+#endif
+
+		/* results on elements: */
+ 		if ((rv = fem_fill_K(AF_YES)) != AF_OK) { goto memFree; }
+
+		/* if running as Monte library then data should be checked here: */
+#ifdef USE_MONTE
+		if (ofld !=  NULL) { monte_fill_ofld_data(ofld) ; }
+#endif
+
+    /* writing of results*/
+    if ((fnm = femSubStepFname(i)) != NULL)
+    {
+      solSimNum = tot_time; /* time data */
+		  if ((rv = femWriteRes(fnm)) != AF_OK) 
+         { free(fnm); fnm = NULL ; goto memFree; }
+      free(fnm); fnm = NULL ;
+    }
+
+#ifndef USE_MONTE
+#ifdef RUN_VERBOSE
+		fprintf(msgout,"[i]   %s: %s %f \n", _("Transient step done"), _("cummulative time"), tot_time);
+#endif
+#endif
+
+
+    femVecClone(&F, &F_0); /* clone load to old load vector */
   }
 
 memFree:
@@ -158,9 +241,11 @@ memFree:
 	femDataFree();
 	femResFree();
 
+#ifndef USE_MONTE
 #ifdef RUN_VERBOSE
 	if (rv == AF_OK) { fprintf(msgout,"[I] %s.\n",_("Solution done")); }
 	else { fprintf(msgout,"[E] %s!\n",_("Solution failed")); }
+#endif
 #endif
 
 	return(rv);

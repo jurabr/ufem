@@ -34,7 +34,7 @@ extern int fem_dofs(void);
 extern void fem_sol_null(void);
 extern int fem_sol_free(void);
 extern int fem_fill_K(long mode);
-extern int fem_add_loads(void);
+extern int fem_add_loads(long step);
 extern int fem_add_disps(long disp_mode);
 extern double femMultNRM(long incr_type, int i, int n);
 
@@ -725,7 +725,7 @@ int femSolveMPI(void)
  	if ((rv = femMPIsol_res_alloc()) != AF_OK) { goto memFree; } /* __must__ be done before adding of loads! */
 
  	if ((rv = fem_fill_K(AF_NO)) != AF_OK) { goto memFree; }
- 	if ((rv = fem_add_loads()) != AF_OK) { goto memFree; }
+ 	if ((rv = fem_add_loads(0)) != AF_OK) { goto memFree; }
  	if ((rv = fem_add_disps(AF_YES)) != AF_OK) { goto memFree; }
 
 #if 0
@@ -886,7 +886,7 @@ int femSolveNRM_MPI(long incr_type)
 		else                            { multSum  = multF ; }
 
  		if ((rv = fem_fill_K(AF_NO)) != AF_OK) { goto memFree; }
- 		if ((rv = fem_add_loads()) != AF_OK) { goto memFree; }
+ 		if ((rv = fem_add_loads(0)) != AF_OK) { goto memFree; }
 
 		femValVecMultSelf(multF, &F);
  		if ((rv = fem_add_disps(AF_YES)) != AF_OK) { goto memFree; }
@@ -974,7 +974,7 @@ int femSolveNRM_MPI(long incr_type)
 					femVecSetZero(&Fr);
 					femVecSetZero(&F);
 
- 					if ((rv = fem_add_loads()) != AF_OK) { goto memFree; }
+ 					if ((rv = fem_add_loads(0)) != AF_OK) { goto memFree; }
 					femValVecMultSelf(multF, &F);
  					if ((rv = fem_add_disps(AF_YES)) != AF_OK) { goto memFree; }
 				}

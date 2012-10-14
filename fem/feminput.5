@@ -89,6 +89,9 @@ time-dependent.
 \fBNumber of time steps\fP [int] (zero must be here if no such data are
 used) number of time steps = number of data points for every value.
 .TP
+\fBTime step size\fP [double] size of time step. Will be ignored if
+there is below a field with variable time step data.
+.TP
 \fB Data type\fP [long] \fBData position\fP [long] (repeated)
 The \fIData position\fP means the position in the order of related
 data values (numbered from 0). For example: it there are 4 loads and
@@ -96,7 +99,7 @@ supports in nodes the last one should have number 3. It there are 3
 element loads then the one in the middle should have number 1.
 This value have to be 0 for accelerations.
 
-The \fIData type\fP is: 0..time step size (currently ignored),
+The \fIData type\fP is: 0..absolute time (currently ignored),
 1..gravity in X direction, 2..gravity in Y, 3..gravity in Z, 4..load
 or support in node multiplier, 5..element load multiplier.
 

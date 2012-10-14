@@ -35,7 +35,7 @@ extern void fem_sol_free(void);
 extern int fem_sol_alloc(void);
 extern int fem_sol_res_alloc(void);
 extern int fem_dofs(void);
-extern int fem_add_loads(void);
+extern int fem_add_loads(long step);
 extern int fem_add_disps(long disp_mode);
 extern int fem_fill_K(long mode);
 extern int fem_fill_M(void);

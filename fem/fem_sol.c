@@ -110,6 +110,8 @@ typedef struct /* for threads if fem_fill_K */
   long to ;
 }tThKe ;
 
+extern int femAddThermLoads(void);
+
 /* creates mutexes for "K", "F", "Fr" */
 int thrInit_K_mutex(void)
 {
@@ -1042,12 +1044,13 @@ int fem_fill_M(void)
 /* FILL M END ************************************************** */
 
 /** Adds loads and boundary conditions 
- *
+ * @param transient analysis step (0 for all other!); starts from 1!
  */
-int fem_add_loads(void)
+int fem_add_loads(long step)
 {
 	int rv = AF_OK; 
 	long i;
+  double mult ;
 
 	/* gravitation  */
 	if (fabs(grVal) > 0)
@@ -1067,18 +1070,40 @@ int fem_add_loads(void)
 		}
 	}
 
+  /* Thermal loads from structural analysis */
+  if (femHaveThermLoad == AF_YES)
+  {
+    if ((rv = femAddThermLoads()) != AF_OK)
+		{
+			return(rv);
+		}
+  }
+
 	/* loads on nodes: */
 	for (i=0; i< nlLen; i++)
 	{
-		if ((rv = femApplyNLoad( nlNode[i], nlType[i], nlDir[i], nlVal[i])) != AF_OK)
-		{
+    if (step > 0)
+    {
+      if (nlTrPos[i] > -1) 
+      {
+        mult = transMult[nlTrPos[i]][step-1]*nlVal[i]; 
+		    if ((rv = femApplyNLoad( nlNode[i], nlType[i], nlDir[i], mult)) != AF_OK)
+		    {
 #ifdef RUN_VERBOSE
-			fprintf(msgout,"[W] %s: %s=%li %s=%li\n",_("Load not applied"),_("node"),nID[nlNode[i]],_("direction"),nlDir[i]);
+			    fprintf(msgout,"[W] %s: %s=%li %s=%li\n",_("Transent load not applied"),_("node"),nID[nlNode[i]],_("direction"),nlDir[i]);
 #endif
-#if 0
-			return(rv);
+		    }
+      }
+    }
+    else 
+    {
+		  if ((rv = femApplyNLoad( nlNode[i], nlType[i], nlDir[i], nlVal[i])) != AF_OK)
+		  {
+#ifdef RUN_VERBOSE
+			  fprintf(msgout,"[W] %s: %s=%li %s=%li\n",_("Load not applied"),_("node"),nID[nlNode[i]],_("direction"),nlDir[i]);
 #endif
-		}
+		  }
+    }
 	}
 
 	return(rv);
@@ -1278,7 +1303,7 @@ int femSolveBC(void)
 			}
 
  			if ((rv = fem_fill_K(AF_NO)) != AF_OK) { goto memFree; }
- 			if ((rv = fem_add_loads()) != AF_OK) { goto memFree; }
+ 			if ((rv = fem_add_loads(0)) != AF_OK) { goto memFree; }
  			if ((rv = fem_add_disps(AF_YES)) != AF_OK) { goto memFree; }
 
 #ifdef DEVEL_VERBOSE
@@ -1377,7 +1402,7 @@ int femSolve2ndIter(void)
 	for (i=0; i<substeps; i++)
 	{
  		if ((rv = fem_fill_K(AF_NO)) != AF_OK) { goto memFree; }
- 		if ((rv = fem_add_loads()) != AF_OK) { goto memFree; }
+ 		if ((rv = fem_add_loads(0)) != AF_OK) { goto memFree; }
  		if ((rv = fem_add_disps(AF_YES)) != AF_OK) { goto memFree; }
 
 #ifdef DEVEL_VERBOSE
@@ -1531,7 +1556,7 @@ int femSolve(void)
 #ifdef RUN_VERBOSE
 	fprintf(msgout,"[i]   %s:\n",_("loads and supports"));
 #endif
- 	if ((rv = fem_add_loads()) != AF_OK) { goto memFree; }
+ 	if ((rv = fem_add_loads(0)) != AF_OK) { goto memFree; }
  	if ((rv = fem_add_disps(AF_YES)) != AF_OK) { goto memFree; }
 #ifdef RUN_VERBOSE
 	fprintf(msgout,"[i]   %s.\n",_("loads and supports done"));

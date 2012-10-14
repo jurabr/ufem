@@ -177,7 +177,9 @@ int femReadRepeatData(FILE *fr)
 	int   rv = AF_OK ;
 	long  i, j ;
 
-  if (fscanf(fr, "%li %li", &transNum, &dynNum) < 2)
+  transTS = -1 ;
+
+  if (fscanf(fr, "%li %li %lf", &transNum, &dynNum, &dynStp) < 3)
   {
 #ifdef RUN_VERBOSE
 	  fprintf(msgout,"[E] %s!\n", _("Empty transient data"));
@@ -242,7 +244,7 @@ int femReadRepeatData(FILE *fr)
     {
       switch (transType[i])
       {
-        case 0:  /* time step size */
+        case 0:  /* absolute time */
           transTS = i ;
           break;
         case 1:  /* gravity ux */

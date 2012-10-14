@@ -21,8 +21,6 @@
    02139, USA.
 
 	 FEM Solver - loads
-
-	 $Id: fem_loads.c,v 1.16 2004/11/11 21:39:24 jirka Exp $
 */
 
 #include "fem_sol.h"
@@ -36,8 +34,6 @@ extern tVector uTemp; /* thermal loads field */
 extern long femHaveThermDOFs; /* therm DOFs indicator */
 
 double femRedStiff = 1.0 ;
-
-int femAddThermLoads(void);
 
 
 /** Find if there is need for thermal loads on elements
@@ -177,7 +173,7 @@ int femApplyDisp(long nodePos, long dof, double Val)
 
 
 #if 1
-    if (femDynamics == AF_YES)
+    if ((femDynamics == AF_YES)||(femThermTrans == AF_YES))
     {
 		  femMatSetZeroRow(&M, Pos);
 		  femMatSetZeroCol(&M, Pos);
@@ -252,7 +248,7 @@ int femApplyDisp(long nodePos, long dof, double Val)
     }
 
 #if 1
-    if (femDynamics == AF_YES)
+    if ((femDynamics == AF_YES)||(femThermTrans == AF_YES))
     {
 		  femMatSetZeroRow(&M, Pos);
 		  femMatSetZeroCol(&M, Pos);
@@ -377,8 +373,12 @@ int femApplyNLoad(long nPos, long Type, long Dir, double Val)
 						 return(AF_OK); /* b.c. is added by another function */
 						 break;
     case 8:
+#if 0
              if (femHaveThermLoad == AF_YES)
                 { rv = femAddThermLoads(); }
+#else
+             return(AF_OK); /* b.c. should be added by another function */
+#endif
              break;
 		case 3:  /* force/moment load */
 						 rv = femVecAdd(&F, Pos, Val) ;
