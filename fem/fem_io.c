@@ -192,7 +192,7 @@ int femReadRepeatData(FILE *fr)
     return(AF_OK);
   }
 
-  if ((transNum > 1) && (dynNum > 1))
+  if ((transNum > 0) && (dynNum > 0))
   {
 		if ((transType  = femIntAlloc(transNum)) == NULL) {rv=AF_ERR_MEM; goto memFree; }
 		if ((transPos  = femIntAlloc(transNum)) == NULL) {rv=AF_ERR_MEM; goto memFree; }

@@ -80,7 +80,7 @@ Number of steps in Non-Linear Solution.
 .SS ELEMENT LOADS
 \fB0\fP (zero number must be put here - this feature is currently not used).
 
-.SS TIME-DEPENDENT ARRAY DATA
+.SS "TIME-DEPENDENT ARRAY DATA"
 .TP
 \fBNumber of data\fP [int] (zero must be here if no such data are
 used) number of values (accelerations, loads) which are
@@ -91,6 +91,12 @@ used) number of time steps = number of data points for every value.
 .TP
 \fBTime step size\fP [double] size of time step. Will be ignored if
 there is below a field with variable time step data.
+
+\fINote:\fP if no array data are used then there still have to be
+three zeros ("0 0 0") for the three values mentioned above! The rest
+of transient data (described below) is only expected when \fINumber of
+data\fP and \fINumber of time step\fP are larger than 0.
+
 .TP
 \fB Data type\fP [long] \fBData position\fP [long] (repeated)
 The \fIData position\fP means the position in the order of related
