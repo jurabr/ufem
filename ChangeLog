@@ -4,6 +4,13 @@ See fem/ChangeLog for solver changes.
 
 
 
+### Wed Oct 17 21:05:42 CEST 2012
+
+features:
+  + symbols for heats (just a simple dots)
+
+
+  
 ### Sat Oct 13 20:34:39 CEST 2012
 
 version 0.2.63

@@ -21,8 +21,6 @@
    USA.
 
 	 Graphics output for "fem" (pre|post)processor - load plotting
-
-	 $Id: gfx_load.c,v 1.9 2004/03/28 19:26:07 jirka Exp $
 */
 
 #include "fem_gfx.h"
@@ -70,6 +68,8 @@ void afForceSymbol(
 	  case 4: glRotatef(90,1,0,0); break;
     case 5: glRotatef(90,0,0,-1); break;
     case 6: glRotatef(90,0,-1,0); break;
+    /* heat: */
+    case 7: glRotatef(0,0,0,1); break;
     default: glLoadIdentity(); return; break;
   }
 
@@ -125,6 +125,16 @@ void afForceSymbol(
 		{ 
 			glPointSize(4); 
 		}
+
+    if (Dir == 7) /* heat */
+    {
+	    glBegin(GL_POINTS);
+	      glVertex3f(0,0,0);
+	    glEnd();
+
+    }
+    else
+    {
 	    glBegin(GL_POINTS);
 	      glVertex3f(0,0,0);
 	    glEnd();
@@ -173,12 +183,13 @@ void afForceSymbol(
 		{ 
 			glLineWidth(2); 
 		}
-    glBegin(GL_LINE_STRIP);
-    glVertex3f(0,0,0);
-    glVertex3f(0,0,-F);
-    glVertex3f(0,(F),-F); /*fabs */
-    glVertex3f(0,(F),0); /*fabs */
-    glEnd();
+
+      glBegin(GL_LINE_STRIP);
+      glVertex3f(0,0,0);
+      glVertex3f(0,0,-F);
+      glVertex3f(0,(F),-F); /*fabs */
+      glVertex3f(0,(F),0); /*fabs */
+      glEnd();
     if (plotProp.PlotToFile == AF_YES) 
 		{ 
 #ifdef USE_GL2PS
@@ -199,6 +210,7 @@ void afForceSymbol(
     glVertex3f(S,S+(F),-4*S); /*fabs */
     glEnd();		
   }
+  }
 	
   if (plotProp.Select != AF_YES)
   {
@@ -211,7 +223,14 @@ void afForceSymbol(
 	  /* force size: */
 	  if (plotProp.loadSize == AF_YES)
 	  {
-		  femPlotDouble(fabs(Size),F+0,0,0,NULL);
+      if (Dir == 7) /* heat */
+      {
+		    femPlotDouble((Size),F+0,0,0,NULL);
+      }
+      else /* moment */
+      {
+		    femPlotDouble(fabs(Size),F+0,0,0,NULL);
+      }
 	  }
   }
 }
