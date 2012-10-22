@@ -1745,6 +1745,37 @@ int femMatLinComb(double am, tMatrix *a, double bm, tMatrix *b, tMatrix *c)
 	return(AF_OK);
 }
 
+/** linear combination of matrices am*a[m,n]+ bm*b[m,n] = c[m,n] (c..MAT_SPAR only, must have identical internal structure!)
+ * @param am  "a" matrix multiplier
+ * @param a matrix
+ * @param bm  "b" matrix multiplier
+ * @param b matrix
+ * @param c matrix (result)
+ * @return status
+ */
+int femMatLinCombClones(double am, tMatrix *a, double bm, tMatrix *b, tMatrix *c)
+{
+	long i;
+
+	if ((a->cols != b->cols) || (a->rows != b->rows)||(a->rows!=c->rows)||(a->cols!=c->cols)) 
+     { return(AF_ERR_SIZ); }
+
+	if (c->type != MAT_SPAR) {return(AF_ERR_VAL);}
+	if (b->type != MAT_SPAR) {return(AF_ERR_VAL);}
+	if (a->type != MAT_SPAR) {return(AF_ERR_VAL);}
+
+	if ((a->type == MAT_SPAR) && (b->type == MAT_SPAR) && (c->type == MAT_SPAR) )
+	{
+		for (i=0; i<a->len; i++)
+		{
+			c->data[i] = am * a->data[i] + bm * b->data[i] ;
+		}
+	}
+
+	return(AF_OK);
+}
+
+
 /** matrix transposition - works only on dense matrices (MAT_FULL)
  * @param a matrix (original)
  * @param b matrix (result - must be allocated)

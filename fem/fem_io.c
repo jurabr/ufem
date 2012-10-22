@@ -300,11 +300,12 @@ memFree:
  */
 int femReadInputDynLoads(FILE *fr)
 {
-	int   rv = AF_OK ;
+	int    rv = AF_OK ;
+  long   dynNum0 = 0;
 
-	rv = fscanf(fr,"%li", &dynNum); rv = AF_OK ;
+	rv = fscanf(fr,"%li", &dynNum0); rv = AF_OK ;
 
-	if (dynNum <= 0) 
+	if (dynNum0 <= 0) 
 	{ 
 		if (femNewmarkEL != AF_NO)
 		{
@@ -315,7 +316,22 @@ int femReadInputDynLoads(FILE *fr)
 			dynStp = 0.0 ;
 			return(AF_ERR_EMP);
 		}
-		else { return(AF_OK) ; }
+		else 
+    { 
+      if ((dynNum0 > 0) && (dynNum0 != dynNum))
+      {
+#ifdef RUN_VERBOSE
+			  fprintf(msgout,"[E] %s!\n", _("Dynamics data inconsistent with subtsep data"));
+#endif
+			  dynNum = 0 ;
+			  dynStp = 0.0 ;
+			  return(AF_ERR_EMP);
+      }
+      else
+      {
+        return(AF_OK) ; 
+      }
+    }
 	} 
 
 	if (fscanf(fr,"%lf", &dynStp) < 1) 

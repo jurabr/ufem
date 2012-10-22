@@ -145,6 +145,7 @@ extern int femVecLinComb(double amult, tVector *a, double bmult, tVector *b, tVe
 extern int femVecLinCombBig(double amult, tVector *a, double bmult, tVector *b, tVector *c);
 extern int femMatMatMult(tMatrix *a, tMatrix *b, tMatrix *c);
 extern int femMatLinComb(double am, tMatrix *a, double bm, tMatrix *b, tMatrix *c);
+extern int femMatLinCombClones(double am, tMatrix *a, double bm, tMatrix *b, tMatrix *c);
 extern int femMatTran(tMatrix *a, tMatrix *b);
 
 extern int femMatInv(tMatrix *a);

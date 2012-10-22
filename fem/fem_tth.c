@@ -123,6 +123,7 @@ int femSolveThermTrans(void)
 #endif
  	if ((rv = femMatAllocCloneStruct(&K, &M)) != AF_OK) { goto memFree; }
  	if ((rv = fem_fill_M()) != AF_OK) { goto memFree; }
+ 	if ((rv = femMatAllocCloneStruct(&K, &KK)) != AF_OK) { goto memFree; }
 #ifndef USE_MONTE
 #ifdef RUN_VERBOSE
 	fprintf(msgout,"[i]   %s.\n",_("assembling of math matrix done"));
@@ -166,7 +167,6 @@ int femSolveThermTrans(void)
       d_t = transMult[transTS][i] - transMult[transTS][i-1] ;
     }
 
-
     /* loads should be inside loop */
     femVecSetZeroBig(&F);
     fem_add_loads(i+1);
@@ -175,12 +175,12 @@ int femSolveThermTrans(void)
     femVecLinComb((1.0-tau), &F_0,  tau, &F, &pp);
 
     /* right hand side:  pp0+(M/tau - K*(1-tau))*r0 */
-    femMatLinComb(1.0/d_t, &M, -(1.0-tau), &K, &C);
+    femMatLinCombClones(1.0/d_t, &M, -(1.0-tau), &K, &C);
     femMatVecMultBig(&C, &r0, &rr0) ;
     femVecAddVec(&pp, 1.0, &rr0); /* adds rr0 to pp */
 
     /* left hand side:  M/tau + K*(1-tau) */
-    femMatLinComb(1.0/d_t, &M, (1.0-tau), &K, &KK);
+    femMatLinCombClones(1.0/d_t, &M, (1.0-tau), &K, &KK);
 
     /* equation solution: */
     if (solUseCGSSOR != AF_YES)
@@ -240,6 +240,7 @@ memFree:
 	fem_sol_free();
 	femDataFree();
 	femResFree();
+  femMatFree(&KK);
 
 #ifndef USE_MONTE
 #ifdef RUN_VERBOSE
