@@ -38,6 +38,7 @@ extern long   femTestConstElem ;
 extern long   femTestConstIpn  ;
 extern int    femDryRun(void)  ;
 extern int    femSolveDynNewmark(double *ofld);
+extern int femSolveThermTrans(void);
 #endif
 
 #ifdef USE_MPI
@@ -173,7 +174,7 @@ int main(int argc, char *argv[])
       {
         if (femThermTrans == AF_YES)
         {
-	        if ((rv = femSolve()) != AF_OK) {return(rv);} /* thermal transient */
+	        if ((rv = femSolveThermTrans()) != AF_OK) {return(rv);} /* thermal transient */
         }
         else
         {

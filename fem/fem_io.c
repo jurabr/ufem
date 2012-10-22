@@ -282,6 +282,7 @@ int femReadRepeatData(FILE *fr)
     return(AF_OK);
   }
 
+  return(rv);
 memFree:
   femIntFree(transType);
   femIntFree(transPos);
