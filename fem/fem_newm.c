@@ -361,6 +361,7 @@ int femSolveDynNewmark(double *ofld)
     /* writing of results*/
     if ((fnm = femSubStepFname(i)) != NULL)
     {
+			solID = i ;
       solSimNum = dt*i; /* time data */
 		  if ((rv = femWriteRes(fnm)) != AF_OK) 
          { free(fnm); fnm = NULL ; goto memFree; }

@@ -118,7 +118,7 @@ int femSolveThermTrans(void)
 
 #ifndef USE_MONTE
 #ifdef RUN_VERBOSE
-	fprintf(msgout,"[i]   %s:\n",_("assembling of mass matrix"));
+	fprintf(msgout,"[i]   %s:\n",_("assembling of mass/capacity matrix"));
 #endif
 #endif
  	if ((rv = femMatAllocCloneStruct(&K, &M)) != AF_OK) { goto memFree; }
@@ -126,7 +126,7 @@ int femSolveThermTrans(void)
  	if ((rv = femMatAllocCloneStruct(&K, &KK)) != AF_OK) { goto memFree; }
 #ifndef USE_MONTE
 #ifdef RUN_VERBOSE
-	fprintf(msgout,"[i]   %s.\n",_("assembling of math matrix done"));
+	fprintf(msgout,"[i]   %s.\n",_("assembling of mass/capacity matrix done"));
 #endif
 #endif
 
@@ -170,7 +170,7 @@ int femSolveThermTrans(void)
     /* loads should be inside loop */
     femVecSetZeroBig(&F);
     fem_add_loads(i+1);
-    
+
     /* right hand side vector ((F_0*1-tau) + F*tau) = pp0: */
     femVecLinComb((1.0-tau), &F_0,  tau, &F, &pp);
 
@@ -220,6 +220,7 @@ int femSolveThermTrans(void)
     /* writing of results*/
     if ((fnm = femSubStepFname(i)) != NULL)
     {
+			solID = i ;
       solSimNum = tot_time; /* time data */
 		  if ((rv = femWriteRes(fnm)) != AF_OK) 
          { free(fnm); fnm = NULL ; goto memFree; }
@@ -232,7 +233,6 @@ int femSolveThermTrans(void)
 #endif
 #endif
 
-
     femVecClone(&F, &F_0); /* clone load to old load vector */
   }
 
@@ -240,7 +240,6 @@ memFree:
 	fem_sol_free();
 	femDataFree();
 	femResFree();
-  femMatFree(&KK);
 
 #ifndef USE_MONTE
 #ifdef RUN_VERBOSE

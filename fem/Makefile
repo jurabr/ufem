@@ -104,7 +104,7 @@ CFLAGS=$(FEATFLAGS) -Wall -ansi -pedantic $(DEBUG) -fPIC
 FEATLIBS=
 
 LIBS=$(FEATLIBS) -L/usr/local/lib -lm #-lefence
-LIBS=$(FEATLIBS) -L/usr/local/lib -lm -lpthread #-lefence
+#LIBS=$(FEATLIBS) -L/usr/local/lib -lm -lpthread #-lefence
 
 
 PREFIX=/usr/local
