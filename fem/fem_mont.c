@@ -37,6 +37,9 @@
 #define EXPORT __declspec(dllexport)
 #endif
 
+#ifdef USE_MONTE
+extern int monte_fill_ofld_data(double *ofld);
+#endif
 
 extern void fem_sol_null(void);
 extern int fem_dofs(void);
@@ -47,6 +50,7 @@ extern int fem_fill_K(long mode);
 extern int fem_add_loads(long step);
 extern int fem_add_disps(long disp_mode);
 extern int femSolveDynNewmark(double *ofld);
+extern int femSolveThermTrans(double *ofld);
 
 extern long  nDOFlen  ; /* lenght of nDOFfld                        */
 extern long *nDOFfld  ; /* description of DOFs in nodes             */
@@ -430,6 +434,11 @@ int monte_init_lib_stuff(char *param)
   femNewmarkEL = AF_YES ;
 #endif
 
+  /* Thermal transient analysis (Newmark integration) */
+#if 0
+  femThermTrans = AF_YES ;
+#endif
+
   if (param == NULL) { return(-1); }
   if (strlen(param) < 1) { return(-1); }
 
@@ -793,9 +802,16 @@ int monte_solution(char *param, double *ifld, double *ofld, long if_type)
 #if 0
   if (femNewmarkEL == AF_YES) /* transient dynamics: */
 #endif
-    femNewmarkEL = AF_YES ;
-    if ((rv =  femSolveDynNewmark(ofld)) != AF_OK) { goto memFree ; }
-  }
+		if (femThermTrans == AF_YES)
+		{
+    	if ((rv =  femSolveThermTrans(ofld)) != AF_OK) { goto memFree ; }
+		}
+		else
+		{
+    	femNewmarkEL = AF_YES ;
+    	if ((rv =  femSolveDynNewmark(ofld)) != AF_OK) { goto memFree ; }
+		}
+	}
   else /* falling back to linear solution */
   {
     if (if_type == 1)

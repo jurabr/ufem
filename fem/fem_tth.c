@@ -71,7 +71,7 @@ extern int femLinEqSystemSolve(tMatrix *Ks, tVector *Fs, tVector *us);
  * @param ofld random output data filed (only != NULL for Monte Carlo)
  * @return statis
  */
-int femSolveThermTrans(void)
+int femSolveThermTrans(double *ofld)
 {
 	int    rv = AF_OK ;
   long   i ;
