@@ -37,6 +37,10 @@ int   femOneDirSupp = 0 ;
 long fdbSummNodalLoads = AF_NO ;
 long fdbSummNodalDisps = AF_NO ;
 
+/* custom dialog box data (generally useless here - for gui): */
+int   custom_dlg_len = 0 ;
+char  *custom_dlg_title[30] ;
+char  *custom_dlg_value[30] ;
 
 /** Changes data in integer table (input data only)
  * @param tab_id table identifier (NODE,...)

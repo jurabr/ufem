@@ -30,7 +30,8 @@
 extern int fem_parse_params(int argc, char *argv[]);
 extern int fem_get_ui_config(void);
 
-#ifdef _USE_GUI_
+#ifdef _USE_GUI_ 
+
 /** command execution callback */
 int fem_gui_cmd( GtkWidget *widget, gpointer   data )
 {
@@ -51,6 +52,7 @@ int fem_gui_cmd( GtkWidget *widget, gpointer   data )
 int main(int argc, char *argv[])
 {
   int rv = AF_OK ;
+  int i, j ;
 
   msgout = stdout ; /* required here */
 
@@ -77,6 +79,18 @@ int main(int argc, char *argv[])
   /* startup message: */
   fprintf (msgout,"\n[I] %s %s", FEM_TUI_RELEASE, _("(GUI mode)"));
   fprintf (msgout,"\n[i] (C) Jiri Brozovsky\n\n");
+
+  for (i=0; i<30; i++)
+  {
+    custom_dlg_title[i] = (char *)malloc(sizeof(char)*30) ;
+    custom_dlg_value[i] = (char *)malloc(sizeof(char)*30) ;
+    for (j=0; j<30; j++)
+    {
+      custom_dlg_title[i][j] = '\0' ;
+      custom_dlg_value[i][j] = '\0' ;
+    }
+  }
+  custom_dlg_len = 0 ;
 
   /* main GUI loop*/
   gtk_main() ;

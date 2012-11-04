@@ -376,6 +376,21 @@ Matrix is written to the  standard output.
 \fBvarmatfillres,id,elem,ipoint,res1[,res2,res3,...,res6]\fP
 Matrix is filled with results for given element and element point. The matrix is allocated by program.
 
+.SH "User-defined GUI"
+
+.TP
+\fBuline,line,name[,default_value]\fP
+Sets a line for user-defined dialog (in GUI \fBonly\fP). The
+\fIname\fP will be a name of uFEM variable if the dialog window will
+be successfully processed (see the \fBudialog command\fP). 
+
+.TP
+\fBudialog,title\fP
+Runs for user-defined dialog (in GUI \fBonly\fP). The \fItitle\fP will
+be only shown in the titlebar of GUI window. The dialog content must
+be first defined by the \fBuline\fP command(s). Note that if the used
+cancels the dialog then none of variables will be changed (or
+created).
 
 .SH PREPROCESSING
 

@@ -355,6 +355,11 @@ extern int func_path_node_change(char *cmd);
 extern int func_path_set_active(char *cmd);
 extern int func_gfx_plot_path (char *cmd);
 
+/* user-created dialogs: */
+
+extern int func_gui_user_dialog_line (char *cmd);
+extern int func_gui_run_user_dialog (char *cmd);
+extern int func_gui_user_dialog (char *cmd);
 
 /* random variables (monte): */
 extern int func_fem_rv (char *cmd);
@@ -705,7 +710,7 @@ int fem_cmd_init (void)
 {
   long count = 0 ;
 
-  ciFuncLen = 275;
+  ciFuncLen = 278;
   ciFunction = (tFunc *) malloc (ciFuncLen * sizeof (tFunc));
   
   /* basic functions */
@@ -1847,6 +1852,19 @@ int fem_cmd_init (void)
 
   ciFunction[count].cmd = "plpath";
   ciFunction[count].func = func_gfx_plot_path;
+  count++;
+
+  /* user-defined gui: */
+  ciFunction[count].cmd = "uline";
+  ciFunction[count].func = func_gui_user_dialog_line;
+  count++;
+
+  ciFunction[count].cmd = "udlg";
+  ciFunction[count].func = func_gui_user_dialog;
+  count++;
+
+  ciFunction[count].cmd = "urun";
+  ciFunction[count].func = func_gui_run_user_dialog;
   count++;
 
   /* multiphysics */

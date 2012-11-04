@@ -77,6 +77,12 @@ extern int   femOneDirSupp ;
 extern long      fdb_matrix_len ;
 extern tMatrix  *fdb_matrix ;
 
+/* custom dialog box data are here: */
+extern int  custom_dlg_len   ;
+extern char *custom_dlg_title[30] ;
+extern char *custom_dlg_value[30] ;
+
+
 #define fdbInputTestSelect(tab_id, i)  fdbTestSelect(&InputTab[tab_id], &inputData.intfld, i)
 
 #define fdbInputSelectIntInterval(tab_id, collumn, mode, from, to) fdbSelectIntInterval(&InputTab[tab_id], &inputData.intfld, collumn, mode, from, to)

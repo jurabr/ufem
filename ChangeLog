@@ -4,6 +4,13 @@ See fem/ChangeLog for solver changes.
 
 
 
+### Sun Nov  4 22:07:23 CET 2012
+
+features:
+  + user-defined GUI dialogs
+
+
+
 ### Wed Oct 17 21:05:42 CEST 2012
 
 features:

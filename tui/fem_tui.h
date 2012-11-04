@@ -58,6 +58,12 @@
 		_("This command is available in postprocessor only"),cmd);\
 	return(tuiCmdReact(cmd, AF_ERR_VAL)); }
 
+typedef struct
+{
+  char title[FEM_STR_LEN];
+  char value[FEM_STR_LEN];
+} tFemCustDlgLine ;
+
 extern long femUI_Mode ;
 
 extern char *femDataDir   ;

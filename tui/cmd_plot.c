@@ -1487,6 +1487,200 @@ int func_gui_dialog (char *cmd)
 	return ( tuiCmdReact(cmd, rv) ) ;
 }
 
+/** creates custom dialog line: "uline,line,name[,default_value]"
+ * @param cmd command
+ * @return status
+ */
+int func_gui_user_dialog_line (char *cmd)
+{
+	int    rv = AF_OK ;
+#ifdef _USE_GUI_
+  long  line = 0 ; 
+  long  line0 = 0 ; 
+  char  *name   = NULL ; 
+  char  *defval = NULL ;
+  long   i ;
+
+  if (ciParNum(cmd) > 2)
+  {
+    line = ciGetParInt(cmd,1);
+    if ((line < 1) || (line > 30))
+    {
+    	fprintf(msgout, "[E] %s!\n", _("Invalid line number: must be between 1 and 30"));
+	    return ( tuiCmdReact(cmd, AF_ERR_VAL) ) ;
+    }
+
+    name = ciGetParStrNoExpand(cmd,2);
+		if (name == NULL)
+		{
+    	fprintf(msgout, "[E] %s!\n", _("Empty variable name"));
+	  	return ( tuiCmdReact(cmd, AF_ERR_EMP) ) ;
+		}
+		ciStrCompr(name);
+		if (strlen(name) < 1)
+		{
+			free(name); name = NULL ;
+    	fprintf(msgout, "[E] %s!\n", _("Invalid variable name"));
+	  	return ( tuiCmdReact(cmd, AF_ERR_EMP) ) ;
+		}
+  }
+  if (ciParNum(cmd) > 3)
+  {
+    defval = ciGetParStr(cmd,3);
+		if (defval != NULL)
+		{
+		  ciStrCompr(defval);
+		  if (strlen(defval) < 1)
+		  {
+			  free(defval); defval = NULL ;
+		  }
+		}
+  }
+
+  line--; /* because field is numbered from 0 */
+
+  if (line < (custom_dlg_len-1))
+  {
+    line0 = line ;
+    /* check if there is no empty line */
+    for (i=0; i<line0; i++)
+    {
+      if (custom_dlg_title[i][0] == '\0')
+      {
+        line = i ;
+        break ;
+      }
+    }
+  }
+
+  if (line > (custom_dlg_len)) { line--; }
+
+
+  snprintf(custom_dlg_title[line], 29,"%s", name);
+  if (defval != NULL) { snprintf (custom_dlg_value[line], 29,"%s", defval); }
+  else { sprintf(custom_dlg_value[line]," 0 "); }
+
+	ciAddVar(custom_dlg_title[line], custom_dlg_value[line] ); /* default values */
+  
+  if ((line+1) > custom_dlg_len) { custom_dlg_len = line + 1 ; }
+
+  /*freeing of data: */
+  if (name != NULL) {free(name); name = NULL;}
+  if (defval != NULL) {free(defval); defval = NULL;}
+  line = 0 ;
+#endif
+	return ( tuiCmdReact(cmd, rv) ) ;
+}
+
+
+/** executes custom gui dialog: "urun"
+ * @param cmd command
+ * @return status
+ */
+int func_gui_run_user_dialog (char *cmd)
+{
+	int    rv = AF_OK ;
+#ifdef _USE_GUI_
+  long   i, j ; 
+  char  *tmp = NULL ;
+  
+  for (i=0; i<custom_dlg_len; i++)
+  {
+    if (ciParNum(cmd) > (i+1))
+    {
+      if ((tmp=ciGetParStr(cmd,i+1)) !=NULL)
+      {
+        printf("TMP[%li] = %s\n",i,tmp);
+	      rv = ciAddVar(custom_dlg_title[i], tmp ); free(tmp); tmp = NULL;
+      }
+      else
+      {
+	      rv = ciAddVar(custom_dlg_title[i], custom_dlg_value[i] );
+      }
+    }
+    else
+    {
+	    rv = ciAddVar(custom_dlg_title[i], custom_dlg_value[i] );
+    }
+  }
+
+  for (i=0; i<custom_dlg_len; i++)
+  {
+    fprintf(msgout,"[i]   %s: %s, %s: %s.\n",
+        _("Parameter"), custom_dlg_title[i],
+        _("Value"), ciGetVarVal(custom_dlg_title[i])
+    );
+  }
+
+  for (i=0; i<30; i++)
+  {
+    for (j=0; j<30; j++)
+    {
+      custom_dlg_title[i][j] = '\0' ;
+      custom_dlg_value[i][j] = '\0' ;
+    }
+  }
+  custom_dlg_len = 0 ;
+
+#endif
+	return ( tuiCmdReact(cmd, rv) ) ;
+}
+
+
+/** runs gui dialog: "udialog,title"
+ * @param cmd command
+ * @return status
+ */
+int func_gui_user_dialog (char *cmd)
+{
+	int    rv = AF_OK ;
+#ifdef _USE_GUI_
+  char  *title = NULL ;
+
+  if (ciParNum(cmd) > 1)
+  {
+    title = ciGetParStr(cmd,1);
+		if (title == NULL)
+		{
+    	fprintf(msgout, "[E] %s!\n", _("Empty title"));
+	  	return ( tuiCmdReact(cmd, AF_ERR_EMP) ) ;
+		}
+		ciStrCompr(title);
+		if (strlen(title) < 1)
+		{
+			free(title); title = NULL ;
+    	fprintf(msgout, "[E] %s!\n", _("Empty title"));
+	  	return ( tuiCmdReact(cmd, AF_ERR_EMP) ) ;
+		}
+  }
+  else
+  {
+    	fprintf(msgout, "[E] %s!\n", _("Missing parameters. Must be: lines,title"));
+	  	return ( tuiCmdReact(cmd, AF_ERR_EMP) ) ;
+  }
+
+  if (custom_dlg_len < 1)
+  {
+    	fprintf(msgout, "[E] %s!\n", _("Dialog data not defined"));
+      rv = AF_ERR_EMP ;
+      goto memFree;
+  }
+
+  /* Show dialog: */
+	femDataDialogSmall(
+		title,
+    "urun", 
+		custom_dlg_len, (char **)custom_dlg_title, (char **)custom_dlg_value, AF_NO
+		) ;
+
+memFree:
+  if (title != NULL) {free(title); title = NULL; }
+#endif
+	return ( tuiCmdReact(cmd, rv) ) ;
+}
+
+/* ---------------------------------------------------------- */
+
 /** raw dialog command for RVAL data (do not call it directly!) "r_dlg" */
 int func_gui_rset_data_dlg (char *cmd)
 {

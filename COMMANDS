@@ -371,6 +371,11 @@ replace item with "run" or "stop"
 gsel
 "gsel,what(node|elem|force|disp|stop|run),mode(select,reselect,unselect)" stop with "gsel,(stop|run)"
 
+uline
+"uline,line,name[,default_value]"
+
+udialog
+"udialog,title"
 
 prep
 "prep"
