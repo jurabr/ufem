@@ -58,20 +58,16 @@ int e003_geom_matrix(long ePos, long Mode, double L, tMatrix *K_s)
 	femMatPut(K_s, 6, 3, -(L*1.0)/(30.0) ) ;
 	femMatPut(K_s, 6, 5, -0.1 ) ;
 	femMatPut(K_s, 6, 6, (2.0*L)/(15.0) ) ;
-#else /* According to Cook: */
-	femMatPut(K_s, 1, 1, 30 ) ;
-	femMatPut(K_s, 1, 4, -30 ) ;
-	femMatPut(K_s, 4, 1, -30 ) ;
-	femMatPut(K_s, 4, 4, 30 ) ;
-
+#else /* According to Cook, fixed: */
+  /* bending members part: */
 	femMatPut(K_s, 2, 2, 36 ) ;
-	femMatPut(K_s, 2, 3, 3*L ) ;
+	femMatPut(K_s, 2, 3, 3.0*L ) ;
 	femMatPut(K_s, 2, 5, -36 ) ;
-	femMatPut(K_s, 2, 6, 3*L ) ;
+	femMatPut(K_s, 2, 6, 3.0*L ) ;
 
-	femMatPut(K_s, 3, 2, 3*L ) ;
+	femMatPut(K_s, 3, 2, 3.0*L ) ;
 	femMatPut(K_s, 3, 3, 4*L*L ) ;
-	femMatPut(K_s, 3, 5, -3*L ) ;
+	femMatPut(K_s, 3, 5, -3.0*L ) ;
 	femMatPut(K_s, 3, 6, -L*L ) ;
 
 	femMatPut(K_s, 5, 2, -36 ) ;
@@ -84,7 +80,20 @@ int e003_geom_matrix(long ePos, long Mode, double L, tMatrix *K_s)
 	femMatPut(K_s, 6, 5, -3*L ) ;
 	femMatPut(K_s, 6, 5, 4*L*L ) ;
 
-  femValMatMultSelf((1/(30*L)), K_s);
+
+  femValMatMultSelf((1.0/(30*L)), K_s);
+
+  /* link part: */
+	femMatAdd(K_s, 1, 1, 1.0/L ) ;
+	femMatAdd(K_s, 2, 2, 1.0/L ) ;
+	femMatAdd(K_s, 4, 4, 1.0/L ) ;
+	femMatAdd(K_s, 5, 5, 1.0/L ) ;
+
+	femMatAdd(K_s, 1, 4, -1.0/L ) ;
+	femMatAdd(K_s, 2, 5, -1.0/L ) ;
+
+	femMatAdd(K_s, 4, 1, -1.0/L ) ;
+	femMatAdd(K_s, 5, 2, -1.0/L ) ;
 #endif
 
 	femMatPrn(K_s,"K_s");
