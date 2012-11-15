@@ -184,10 +184,7 @@ int femReadRepeatData(FILE *fr)
 #ifdef RUN_VERBOSE
 	  fprintf(msgout,"[E] %s!\n", _("Empty transient data"));
 #endif
-    femEigenNum = 0 ;
-    femEigenModal = AF_NO ;
     femNewmarkEL  = AF_NO ;
-    femDynamics   = AF_NO ;
     femThermTrans = AF_NO ;
     return(AF_OK);
   }
@@ -274,10 +271,7 @@ int femReadRepeatData(FILE *fr)
   else
   {
     /* no transient data */
-    femEigenNum = 0 ;
-    femEigenModal = AF_NO ;
     femNewmarkEL  = AF_NO ;
-    femDynamics   = AF_NO ;
     femThermTrans = AF_NO ;
     return(AF_OK);
   }
