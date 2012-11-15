@@ -93,7 +93,6 @@ int femSolveEigenInvIter(long max_iter, double eps)
 
  	if ((rv = fem_dofs()) != AF_OK) { goto memFree; }
  	if ((rv = fem_sol_alloc()) != AF_OK) { goto memFree; }
-printf("3 XXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
  	if ((rv = fem_sol_res_alloc()) != AF_OK) { goto memFree; } /* __must__ be done before adding of loads! */
 
  	if ((rv = fem_fill_K(AF_NO)) != AF_OK) { goto memFree; }
