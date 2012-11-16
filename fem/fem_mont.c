@@ -867,7 +867,7 @@ int fem_monte_read_data(FILE *fr)
   long ilen, olen;
   long i ;
 
-  if (fscanf(fr,"%li %li", &ilen, &olen) < 2) {return(AF_OK); /* nothing to do */}
+  if (fscanf(fr,"%li %li", &ilen, &olen) < 2) { return(AF_OK); /* nothing to do */ }
 
   if (ilen <= 0) { return(AF_OK); /* nothing to do */ }
 
