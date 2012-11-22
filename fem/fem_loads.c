@@ -384,10 +384,7 @@ int femApplyNLoad(long nPos, long Type, long Dir, double Val)
 						 rv = femVecAdd(&F, Pos, Val) ;
 						 break;
 		case 9:  /* heat */
-             if (femHaveThermDOFs == AF_YES)
-             {
-						  rv = femVecAdd(&F, Pos, Val) ;
-             }
+						 rv = femVecAdd(&F, Pos, Val) ;
 						 break;
 		default: /* error */
 						 break;
