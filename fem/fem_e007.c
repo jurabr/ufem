@@ -35,9 +35,9 @@ void FillTlink3d(double a, double b, double c, tMatrix *T)
 	femMatPut(T, 1,2, b) ;
 	femMatPut(T, 1,3, c) ;
 
-	femMatPut(T, 2,1, a) ;
-	femMatPut(T, 2,2, b) ;
-	femMatPut(T, 2,3, c) ;
+	femMatPut(T, 2,4, a) ;
+	femMatPut(T, 2,5, b) ;
+	femMatPut(T, 2,6, c) ;
 }
 
 int e007_stiff(long ePos, long Mode, tMatrix *K_e, tVector *F_e, tVector *Fr_e)
