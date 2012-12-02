@@ -78,8 +78,6 @@ int femSolveThermTrans(double *ofld)
   long   steps = 10 ;  /* number of time steps */
   double d_t   = 1.0 ; /* time (step lenght)   */
   double tau   = 0.5 ; /* time step ratio      */
-  long   pos ; /* for SaPo */
-  double val ; /* for SaPo */
   double tot_time = 0.0 ; /* total elapsed time */
   char  *fnm = NULL ; /* file name for step */
 
@@ -122,8 +120,9 @@ int femSolveThermTrans(double *ofld)
 #endif
 #endif
  	if ((rv = femMatAllocCloneStruct(&K, &M)) != AF_OK) { goto memFree; }
- 	if ((rv = fem_fill_M()) != AF_OK) { goto memFree; }
  	if ((rv = femMatAllocCloneStruct(&K, &KK)) != AF_OK) { goto memFree; }
+ 	if ((rv = femMatAllocCloneStruct(&K, &C)) != AF_OK) { goto memFree; }
+ 	if ((rv = fem_fill_M()) != AF_OK) { goto memFree; }
 #ifndef USE_MONTE
 #ifdef RUN_VERBOSE
 	fprintf(msgout,"[i]   %s.\n",_("assembling of mass/capacity matrix done"));
@@ -150,7 +149,7 @@ int femSolveThermTrans(double *ofld)
 #endif
 
   /* 0th step... */
-#if 1
+#if 0
   if (solUseCGSSOR != AF_YES)
 	{
 	 	if ((rv = femEqsCGwJ(&K, &F, &u, FEM_ZERO/10000.0, nDOFAct)) != AF_OK) { goto memFree; }
@@ -161,14 +160,14 @@ int femSolveThermTrans(double *ofld)
 	}
 #endif
 
-  femVecPrn(&u,"U0 TTH");
-  
-#if 1
+#if 0
   femVecClone(&F, &F_0); /* clone load to old load vector */
 #endif
-#if 1
+#if 0
   femVecClone(&u, &r0); /* clone temperatures to old temperature vector */
 #endif
+
+  femVecPrn(&r0,"RR0");
 
   for (i=1; i<steps; i++)
   {
@@ -182,25 +181,27 @@ int femSolveThermTrans(double *ofld)
     if (transTS > -1) { d_t = transMult[transTS][i] - transMult[transTS][i-1] ; }
 
     /* loads should be inside loop */
+#if 1
     femVecSetZeroBig(&F);
-#if 0
+#endif
+#if 1
     femVecSetZeroBig(&u);
 #endif
 
-#if 0
+    femMatSetZeroBig(&C) ;
+    femMatSetZeroBig(&KK) ;
     /* new K and M matrices (slowdown): */
-    femVecSetZeroBig(&KK) ;
-    femVecSetZeroBig(&K) ;
-    femVecSetZeroBig(&C) ;
-    femVecSetZeroBig(&M) ;
+#if 1
+    femMatSetZeroBig(&K) ;
+    femMatSetZeroBig(&M) ;
  	  if ((rv = fem_fill_K(AF_NO)) != AF_OK) { goto memFree; }
  	  if ((rv = fem_fill_M()) != AF_OK) { goto memFree; }
 #endif
 
+    fem_add_loads(i+1);
 #if 1
  	  if ((rv = fem_add_disps(AF_YES,i+1)) != AF_OK) { goto memFree; }
 #endif
-    fem_add_loads(i+1);
 
     /* right hand side vector ((F_0*1-tau) + F*tau) = pp0: */
     femVecLinComb((1.0-tau), &F_0,  tau, &F, &pp);
@@ -225,28 +226,8 @@ int femSolveThermTrans(double *ofld)
 
     tot_time += d_t ; /* total elapsed time */
 
-		/* tracking points: */
-#ifndef _SMALL_FEM_CODE_
-		if (femTangentMatrix == AF_YES) 
-		{
-      if ((pos = femKpos(femSaPoNode, U_Z)) > 0) 
-           { val = femVecGet(&u, pos) ; }
-      else { val = 0.0 ; }
-			femSaPoInput(tot_time, 
-				femVecGet(&u,femKpos(femSaPoNode, U_X)),
-				femVecGet(&u,femKpos(femSaPoNode, U_Y)),
-        val, AF_NO, AF_NO
-				) ;
-		}
-#endif
-
 		/* results on elements: */
  		if ((rv = fem_fill_K(AF_YES)) != AF_OK) { goto memFree; }
-
-		/* if running as Monte library then data should be checked here: */
-#ifdef USE_MONTE
-		if (ofld !=  NULL) { monte_fill_ofld_data(ofld) ; }
-#endif
 
     /* writing of results*/
     if ((fnm = femSubStepFname(i)) != NULL)
@@ -265,7 +246,13 @@ int femSolveThermTrans(double *ofld)
 #endif
 
     femVecClone(&F, &F_0); /* clone load to old load vector */
+    femVecClone(&u, &r0); /* clone load to old load vector */
   }
+
+		/* if running as Monte library then data should be checked here: */
+#ifdef USE_MONTE
+		if (ofld !=  NULL) { monte_fill_ofld_data(ofld) ; }
+#endif
 
 memFree:
 	fem_sol_free();

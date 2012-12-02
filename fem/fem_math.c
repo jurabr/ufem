@@ -2638,11 +2638,17 @@ int femMatAllocCloneStruct(tMatrix *orig, tMatrix *clone)
 {
   long i ;
   if (orig->type != MAT_SPAR) {return(AF_ERR_TYP);}
+  if (clone->type != MAT_SPAR) {return(AF_ERR_TYP);}
+  if (clone->len != orig->len) {return(AF_ERR_SIZ);}
+  if (clone->cols != orig->cols) {return(AF_ERR_SIZ);}
+  if (clone->rows != orig->rows) {return(AF_ERR_SIZ);}
 
+#if 0
   if ((clone->frompos = femIntAlloc(orig->rows)) == NULL) {goto memFree;}
   if ((clone->defpos  = femIntAlloc(orig->rows)) == NULL) {goto memFree;}
   if ((clone->pos     = femIntAlloc(orig->len )) == NULL) {goto memFree;}
   if ((clone->data    = femDblAlloc(orig->len )) == NULL) {goto memFree;}
+#endif
 
   clone->type = orig->type ;
   clone->rows = orig->rows ;
@@ -2661,9 +2667,11 @@ int femMatAllocCloneStruct(tMatrix *orig, tMatrix *clone)
   }
 
   return(AF_OK);
+#if 0
 memFree:
   femMatFree(clone);
   return(AF_ERR_MEM);
+#endif
 }
 
 /* end of fem_math.c */
