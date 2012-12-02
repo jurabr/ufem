@@ -34,7 +34,7 @@ extern int fem_sol_alloc(void);
 extern int fem_sol_res_alloc(void);
 extern int fem_dofs(void);
 extern int fem_add_loads(long step);
-extern int fem_add_disps(long disp_mode);
+extern int fem_add_disps(long disp_mode, long step);
 extern int fem_fill_K(long mode);
 
 #ifndef _SMALL_FEM_CODE_
@@ -257,7 +257,7 @@ int femSolveNRM(long incr_type)
 
  		if ((rv = fem_fill_K(AF_NO)) != AF_OK) { goto memFree; }
  		if ((rv = fem_add_loads(0)) != AF_OK) { goto memFree; }
- 		if ((rv = fem_add_disps(AF_YES)) != AF_OK) { goto memFree; }
+ 		if ((rv = fem_add_disps(AF_YES,0)) != AF_OK) { goto memFree; }
 		femValVecMultSelf(multF, &F);
 
 #if 0
@@ -425,7 +425,7 @@ printf("%i  u=%e normF=%e norm_u=%e\n",i,femVecGet(&u,3),femVecNormBig(&F),femVe
 
 					femVecSetZeroBig(&u);
 
- 					if ((rv = fem_add_disps(AF_NO)) != AF_OK) { goto memFree; } /* is it OK?*/
+ 					if ((rv = fem_add_disps(AF_NO,0)) != AF_OK) { goto memFree; } /* is it OK?*/
 				}
 				else
 				{
@@ -435,7 +435,7 @@ printf("%i  u=%e normF=%e norm_u=%e\n",i,femVecGet(&u,3),femVecNormBig(&F),femVe
           /* Next two lines were interchanged. Is it correct? */
  					if ((rv = fem_add_loads(0)) != AF_OK) { goto memFree; }
 					femValVecMultSelf(multF, &F);
- 					if ((rv = fem_add_disps(AF_NO)) != AF_OK) { goto memFree; }
+ 					if ((rv = fem_add_disps(AF_NO,0)) != AF_OK) { goto memFree; }
 				}
 
 #if 0
@@ -617,7 +617,7 @@ int femSolveDirDisps(long incr_type)
 
  		if ((rv = fem_fill_K(AF_NO)) != AF_OK) { goto memFree; }
  		if ((rv = fem_add_loads(0)) != AF_OK) { goto memFree; }
- 		if ((rv = fem_add_disps(AF_YES)) != AF_OK) { goto memFree; }
+ 		if ((rv = fem_add_disps(AF_YES,0)) != AF_OK) { goto memFree; }
 		femValVecMultSelf(multF, &F);
   
 #ifndef _SMALL_FEM_CODE_
@@ -696,7 +696,7 @@ int femSolveDirDisps(long incr_type)
 				femVecClone(&Fr, &F);
 				femVecSetZeroBig(&Fr);
 
- 			  if ((rv = fem_add_disps(AF_NO)) != AF_OK) { goto memFree; } /* is it OK?*/
+ 			  if ((rv = fem_add_disps(AF_NO,0)) != AF_OK) { goto memFree; } /* is it OK?*/
 
         if (solUseBiCGs != AF_YES)
         {

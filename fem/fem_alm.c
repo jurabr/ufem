@@ -32,7 +32,7 @@ extern int fem_sol_alloc(void);
 extern int fem_sol_res_alloc(void);
 extern int fem_dofs(void);
 extern int fem_add_loads(long step);
-extern int fem_add_disps(long disp_mode);
+extern int fem_add_disps(long disp_mode, long step);
 extern int fem_fill_K(long mode);
 
 #ifndef _SMALL_FEM_CODE_
@@ -191,7 +191,7 @@ int femSolveFullALM(void)
     /* initial step - sample computation: */
 	  if ((rv = fem_fill_K(AF_NO)) != AF_OK) { goto memFree; }
  	  if ((rv = fem_add_loads(0)) != AF_OK) { goto memFree; }
- 	  if ((rv = fem_add_disps(AF_YES)) != AF_OK) { goto memFree; }
+ 	  if ((rv = fem_add_disps(AF_YES,0)) != AF_OK) { goto memFree; }
     
     femValVecMultSelf(lambda_step, &F);
     femVecClone(&F, &FF);
@@ -245,7 +245,7 @@ int femSolveFullALM(void)
 				femMatSetZeroBig(&K);
 
 				if ((rv = fem_fill_K(AF_NO)) != AF_OK) { goto memFree; }
-				if ((rv = fem_add_disps(AF_YES)) != AF_OK) { goto memFree; }
+				if ((rv = fem_add_disps(AF_YES,0)) != AF_OK) { goto memFree; }
 
       if (fabs(a_o) > 0.0)
 			{
@@ -596,7 +596,7 @@ int femSolveALM(long incr_type)
 
 	  if ((rv = fem_fill_K(AF_NO)) != AF_OK) { goto memFree; }
  	  if ((rv = fem_add_loads(0)) != AF_OK) { goto memFree; }
- 	  if ((rv = fem_add_disps(AF_YES)) != AF_OK) { goto memFree; }
+ 	  if ((rv = fem_add_disps(AF_YES,0)) != AF_OK) { goto memFree; }
 		femValVecMultSelf(multR, &F) ; /* !!! */
 
     if (solUseBiCGs != AF_YES)
@@ -650,7 +650,7 @@ int femSolveALM(long incr_type)
 
 	  if ((rv = fem_fill_K(AF_NO)) != AF_OK) { goto memFree; }
  	  if ((rv = fem_add_loads(0)) != AF_OK) { goto memFree; }
- 	  if ((rv = fem_add_disps(AF_YES)) != AF_OK) { goto memFree; }
+ 	  if ((rv = fem_add_disps(AF_YES,0)) != AF_OK) { goto memFree; }
 
 		femValVecMultSelf(multR, &F) ; /* !!! */
     femValVecMultSelf(d_la_0, &F) ;
@@ -694,7 +694,7 @@ int femSolveALM(long incr_type)
 
 	    if ((rv = fem_fill_K(AF_NO)) != AF_OK) { goto memFree; }
  	    if ((rv = fem_add_loads(0)) != AF_OK) { goto memFree; }
- 	    if ((rv = fem_add_disps(AF_YES)) != AF_OK) { goto memFree; }
+ 	    if ((rv = fem_add_disps(AF_YES,0)) != AF_OK) { goto memFree; }
 		
 			femValVecMultSelf(multR, &F) ; /* !!! */
 
@@ -737,7 +737,7 @@ int femSolveALM(long incr_type)
 
 	    if ((rv = fem_fill_K(AF_NO)) != AF_OK) { goto memFree; }
       femVecClone(&F_0, &F);
- 	    if ((rv = fem_add_disps(AF_YES)) != AF_OK) { goto memFree; }
+ 	    if ((rv = fem_add_disps(AF_YES,0)) != AF_OK) { goto memFree; }
 
       if (solUseBiCGs != AF_YES)
       {

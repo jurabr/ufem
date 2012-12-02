@@ -36,7 +36,7 @@ extern int fem_sol_alloc(void);
 extern int fem_sol_res_alloc(void);
 extern int fem_dofs(void);
 extern int fem_add_loads(long step);
-extern int fem_add_disps(long disp_mode);
+extern int fem_add_disps(long disp_mode, long step);
 extern int fem_fill_K(long mode);
 extern int fem_fill_M(void);
 
@@ -260,7 +260,7 @@ int femSolveDynNewmark(double *ofld)
 #endif
   for (i=0; i<nDOFAct; i++) { F_0.data[i] = 1.0 ; }
   femMatVecMult(&M, &F_0, &F) ; /**/
- 	if ((rv = fem_add_disps(AF_YES)) != AF_OK) { goto memFree; }
+ 	if ((rv = fem_add_disps(AF_YES,0)) != AF_OK) { goto memFree; }
   femVecClone(&F, &F_0);
 #ifndef USE_MONTE
 #ifdef RUN_VERBOSE

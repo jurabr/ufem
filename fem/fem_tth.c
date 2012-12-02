@@ -33,7 +33,7 @@ extern int fem_sol_alloc(void);
 extern int fem_sol_res_alloc(void);
 extern int fem_dofs(void);
 extern int fem_add_loads(long step);
-extern int fem_add_disps(long disp_mode);
+extern int fem_add_disps(long disp_mode, long step);
 extern int fem_fill_K(long mode);
 extern int fem_fill_M(void);
 
@@ -135,8 +135,8 @@ int femSolveThermTrans(double *ofld)
 	fprintf(msgout,"[i]   %s:\n",_("loads and supports"));
 #endif
 #endif
- 	if ((rv = fem_add_disps(AF_YES)) != AF_OK) { goto memFree; }
   fem_add_loads(1);
+ 	if ((rv = fem_add_disps(AF_YES,1)) != AF_OK) { goto memFree; }
 #ifndef USE_MONTE
 #ifdef RUN_VERBOSE
 	fprintf(msgout,"[i]   %s.\n",_("loads and supports done"));
@@ -150,8 +150,25 @@ int femSolveThermTrans(double *ofld)
 #endif
 
   /* 0th step... */
-	if ((rv = femEqsCGwJ(&K, &F, &u, FEM_ZERO/10000.0, nDOFAct)) != AF_OK) { goto memFree; }
+#if 1
+  if (solUseCGSSOR != AF_YES)
+	{
+	 	if ((rv = femEqsCGwJ(&K, &F, &u, FEM_ZERO/10000.0, nDOFAct)) != AF_OK) { goto memFree; }
+	}
+	else
+	{
+	 	if ((rv = femEqsCGwSSOR(&K, &F, &u, FEM_ZERO/10000.0, nDOFAct)) != AF_OK) { goto memFree; }
+	}
+#endif
+
+  femVecPrn(&u,"U0 TTH");
+  
+#if 1
   femVecClone(&F, &F_0); /* clone load to old load vector */
+#endif
+#if 1
+  femVecClone(&u, &r0); /* clone temperatures to old temperature vector */
+#endif
 
   for (i=1; i<steps; i++)
   {
@@ -162,13 +179,27 @@ int femSolveThermTrans(double *ofld)
 #endif
 
     /* substep size: */
-    if (transTS > -1)
-    {
-      d_t = transMult[transTS][i] - transMult[transTS][i-1] ;
-    }
+    if (transTS > -1) { d_t = transMult[transTS][i] - transMult[transTS][i-1] ; }
 
     /* loads should be inside loop */
     femVecSetZeroBig(&F);
+#if 0
+    femVecSetZeroBig(&u);
+#endif
+
+#if 0
+    /* new K and M matrices (slowdown): */
+    femVecSetZeroBig(&KK) ;
+    femVecSetZeroBig(&K) ;
+    femVecSetZeroBig(&C) ;
+    femVecSetZeroBig(&M) ;
+ 	  if ((rv = fem_fill_K(AF_NO)) != AF_OK) { goto memFree; }
+ 	  if ((rv = fem_fill_M()) != AF_OK) { goto memFree; }
+#endif
+
+#if 1
+ 	  if ((rv = fem_add_disps(AF_YES,i+1)) != AF_OK) { goto memFree; }
+#endif
     fem_add_loads(i+1);
 
     /* right hand side vector ((F_0*1-tau) + F*tau) = pp0: */
@@ -179,8 +210,8 @@ int femSolveThermTrans(double *ofld)
     femMatVecMultBig(&C, &r0, &rr0) ;
     femVecAddVec(&pp, 1.0, &rr0); /* adds rr0 to pp */
 
-    /* left hand side:  M/tau + K*(1-tau) */
-    femMatLinCombClones(1.0/d_t, &M, (1.0-tau), &K, &KK);
+    /* left hand side:  M/tau + K*(tau) */
+    femMatLinCombClones(1.0/d_t, &M, (tau), &K, &KK);
 
     /* equation solution: */
     if (solUseCGSSOR != AF_YES)

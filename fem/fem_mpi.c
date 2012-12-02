@@ -35,7 +35,7 @@ extern void fem_sol_null(void);
 extern int fem_sol_free(void);
 extern int fem_fill_K(long mode);
 extern int fem_add_loads(long step);
-extern int fem_add_disps(long disp_mode);
+extern int fem_add_disps(long disp_mode, long step);
 extern double femMultNRM(long incr_type, int i, int n);
 
 extern double femVecNormMPI(tVector *a);
@@ -726,7 +726,7 @@ int femSolveMPI(void)
 
  	if ((rv = fem_fill_K(AF_NO)) != AF_OK) { goto memFree; }
  	if ((rv = fem_add_loads(0)) != AF_OK) { goto memFree; }
- 	if ((rv = fem_add_disps(AF_YES)) != AF_OK) { goto memFree; }
+ 	if ((rv = fem_add_disps(AF_YES,0)) != AF_OK) { goto memFree; }
 
 #if 0
 	femMatPrn(&K, "K_div");
@@ -889,7 +889,7 @@ int femSolveNRM_MPI(long incr_type)
  		if ((rv = fem_add_loads(0)) != AF_OK) { goto memFree; }
 
 		femValVecMultSelf(multF, &F);
- 		if ((rv = fem_add_disps(AF_YES)) != AF_OK) { goto memFree; }
+ 		if ((rv = fem_add_disps(AF_YES,0)) != AF_OK) { goto memFree; }
 
 		if ((rv = femMPIeqsPCGwJ_New(&K, &F, &u, &u_big, FEM_ZERO/100.0, nDOFAct)) != AF_OK) { goto memFree; }
 
@@ -967,7 +967,7 @@ int femSolveNRM_MPI(long incr_type)
 					femVecClone(&Fr, &F);
 					femVecSetZero(&Fr);
 
- 					if ((rv = fem_add_disps(AF_YES)) != AF_OK) { goto memFree; }
+ 					if ((rv = fem_add_disps(AF_YES,0)) != AF_OK) { goto memFree; }
 				}
 				else
 				{
@@ -976,7 +976,7 @@ int femSolveNRM_MPI(long incr_type)
 
  					if ((rv = fem_add_loads(0)) != AF_OK) { goto memFree; }
 					femValVecMultSelf(multF, &F);
- 					if ((rv = fem_add_disps(AF_YES)) != AF_OK) { goto memFree; }
+ 					if ((rv = fem_add_disps(AF_YES,0)) != AF_OK) { goto memFree; }
 				}
 
 				if ((rv = femMPIeqsPCGwJ_New(&K, &F, &u, &u_big, FEM_ZERO/100.0, nDOFAct)) != AF_OK) { goto memFree; }

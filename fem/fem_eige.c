@@ -31,7 +31,7 @@ extern void fem_sol_free(void);
 extern int fem_sol_alloc(void);
 extern int fem_sol_res_alloc(void);
 extern int fem_dofs(void);
-extern int fem_add_disps(long disp_mode);
+extern int fem_add_disps(long disp_mode, long step);
 extern int fem_fill_K(long mode);
 extern int fem_fill_M(void);
 
@@ -101,7 +101,7 @@ int femSolveEigenInvIter(long max_iter, double eps)
 
  	if ((rv = fem_fill_M()) != AF_OK) { goto memFree; } /* mass matrix*/
 
- 	if ((rv = fem_add_disps(AF_YES)) != AF_OK) { goto memFree; }
+ 	if ((rv = fem_add_disps(AF_YES,0)) != AF_OK) { goto memFree; }
 
   femMatPrn(&M, "MASS");
 
@@ -116,7 +116,7 @@ int femSolveEigenInvIter(long max_iter, double eps)
 #if 1
     femValVecMultSelf(8.8,&u) ;
 #if 0
-    if ((i > 0)||(j>1)) { if ((rv = fem_add_disps(AF_YES)) != AF_OK) { goto memFree; } }
+    if ((i > 0)||(j>1)) { if ((rv = fem_add_disps(AF_YES,0)) != AF_OK) { goto memFree; } }
 #endif
 #endif
 
@@ -488,7 +488,7 @@ int femSolveEigenLanczos(long max_iter, double eps)
 
   for (i=1; i<=nDOFAct; i++) { femVecPut(&u, i, 1.0) ; /* initial approximation */ }
 
- 	if ((rv = fem_add_disps(AF_YES)) != AF_OK) { goto memFree; }
+ 	if ((rv = fem_add_disps(AF_YES,0)) != AF_OK) { goto memFree; }
 
  	if ((rv = fem_fill_M()) != AF_OK) { goto memFree; } /* mass matrix*/
 

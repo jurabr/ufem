@@ -48,7 +48,7 @@ extern int fem_sol_res_alloc(void);
 extern void fem_sol_free(void);
 extern int fem_fill_K(long mode);
 extern int fem_add_loads(long step);
-extern int fem_add_disps(long disp_mode);
+extern int fem_add_disps(long disp_mode, long step);
 extern int femSolveDynNewmark(double *ofld);
 extern int femSolveThermTrans(double *ofld);
 
@@ -487,7 +487,7 @@ int monte_linear_solver(void)
  	if ((rv = fem_fill_K(AF_NO)) != AF_OK) { goto memFree; }
 
  	if ((rv = fem_add_loads(0)) != AF_OK) { goto memFree; }
- 	if ((rv = fem_add_disps(AF_YES)) != AF_OK) { goto memFree; }
+ 	if ((rv = fem_add_disps(AF_YES,0)) != AF_OK) { goto memFree; }
 
   /* speedup code: */
 #if 0

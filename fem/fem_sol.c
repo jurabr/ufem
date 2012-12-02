@@ -98,6 +98,8 @@ tVector rr1;        /* current velocity                   */
 tVector rrr1;       /* current acceleration               */
 tVector F_0 ;       /* initial load vector                */
 
+extern int femAddThermLoads(void);
+
 #ifdef _USE_THREADS_
 pthread_mutex_t *mutexK   = NULL ; /* mutexes for K  */
 pthread_mutex_t *mutexF   = NULL ; /* mutexes for F  */
@@ -109,8 +111,6 @@ typedef struct /* for threads if fem_fill_K */
   long from ;
   long to ;
 }tThKe ;
-
-extern int femAddThermLoads(void);
 
 /* creates mutexes for "K", "F", "Fr" */
 int thrInit_K_mutex(void)
@@ -1109,11 +1109,15 @@ int fem_add_loads(long step)
 	return(rv);
 }
 
-
-int fem_add_disps(long disp_mode)
+/** Adds displacements to the model
+ * @param disp_mode .. AF_YES..default behaviour, AF_NO..zero diplacements are assumed
+ * @param step .. time step (for Newmark etc.), otherwise use 0
+ */
+int fem_add_disps(long disp_mode, long step)
 {
 	int rv = AF_OK; 
 	long i;
+  double mult ;
 
   /* boundary conditions on nodes - __must__ be added __last__: */
 	for (i=0; i< nlLen; i++)
@@ -1125,10 +1129,24 @@ int fem_add_disps(long disp_mode)
 #endif
     if (disp_mode == AF_YES) /* default behaviour */
     {
-		  if ((rv = femApplyNBC( nlNode[i], nlType[i], nlDir[i], nlVal[i])) != AF_OK)
-		  {
-			  return(rv);
-		  }
+      if (step > 0)
+      {
+        if (nlTrPos[i] > -1) 
+        {
+          mult = transMult[nlTrPos[i]][step-1]*nlVal[i]; 
+		      if ((rv = femApplyNBC( nlNode[i], nlType[i], nlDir[i], mult)) != AF_OK)
+		      {
+			      return(rv);
+		      }
+        }
+      }
+      else
+      {
+		    if ((rv = femApplyNBC( nlNode[i], nlType[i], nlDir[i], nlVal[i])) != AF_OK)
+		    {
+			    return(rv);
+		    }
+      } /**/
     }
     else /* replaces disp value with 0.0 */
     {
@@ -1304,7 +1322,7 @@ int femSolveBC(void)
 
  			if ((rv = fem_fill_K(AF_NO)) != AF_OK) { goto memFree; }
  			if ((rv = fem_add_loads(0)) != AF_OK) { goto memFree; }
- 			if ((rv = fem_add_disps(AF_YES)) != AF_OK) { goto memFree; }
+ 			if ((rv = fem_add_disps(AF_YES,0)) != AF_OK) { goto memFree; }
 
 #ifdef DEVEL_VERBOSE
 		  if (i>0) {fprintf(msgout,"[ ]   %s: %li\n",_("iteration"),i);}
@@ -1403,7 +1421,7 @@ int femSolve2ndIter(void)
 	{
  		if ((rv = fem_fill_K(AF_NO)) != AF_OK) { goto memFree; }
  		if ((rv = fem_add_loads(0)) != AF_OK) { goto memFree; }
- 		if ((rv = fem_add_disps(AF_YES)) != AF_OK) { goto memFree; }
+ 		if ((rv = fem_add_disps(AF_YES,0)) != AF_OK) { goto memFree; }
 
 #ifdef DEVEL_VERBOSE
 		if (i>0) {fprintf(msgout,"[ ]   %s: %li\n",_("iteration"),i+1);}
@@ -1557,7 +1575,7 @@ int femSolve(void)
 	fprintf(msgout,"[i]   %s:\n",_("loads and supports"));
 #endif
  	if ((rv = fem_add_loads(0)) != AF_OK) { goto memFree; }
- 	if ((rv = fem_add_disps(AF_YES)) != AF_OK) { goto memFree; }
+ 	if ((rv = fem_add_disps(AF_YES,0)) != AF_OK) { goto memFree; }
 #ifdef RUN_VERBOSE
 	fprintf(msgout,"[i]   %s.\n",_("loads and supports done"));
 #endif
