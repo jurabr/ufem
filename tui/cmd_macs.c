@@ -1190,4 +1190,55 @@ int func_fill_var_maxmin_dof(char *cmd)
 	return ( tuiCmdReact(cmd, rv) ) ;
 }
 
+/** Puts last plotted element result type to variable: "fillvarerestype,var"
+ * @param cmd command
+ * @return status
+ */
+int func_fill_var_prev_eres(char *cmd)
+{
+	int    rv = AF_OK ;
+  int    i ;
+	char  *var  = NULL ;
+	char   value[CI_STR_LEN] ;
+
+	for (i=0; i<CI_STR_LEN; i++) { value[i] = '\0' ; }
+
+	if (ciParNum(cmd) <= 1)
+	{
+		fprintf(msgout, "[E] %s!\n", _("Variable name should be specified"));
+		return ( tuiCmdReact(cmd, AF_ERR_EMP) ) ;
+	}
+	
+  if (femUI_Mode != FEM_UI_MODE_POST)
+  {
+    fprintf(msgout, "[E] %s!\n", _("Results not available") ) ;
+	  return ( tuiCmdReact(cmd, AF_ERR) ) ;
+  }
+
+  if ((var=ciGetParStrNoExpand(cmd,1))==NULL)
+	{
+		fprintf(msgout,"[E] %s!\n", _("Variable name required"));
+		return ( tuiCmdReact(cmd, AF_ERR_EMP) ) ;
+	}
+
+  ciStrCompr(var);
+
+	if (strlen(var) < 1) 
+	{
+		fprintf(msgout,"[E] %s!\n", _("Invalid name of variable"));
+		free(var); var = NULL ;
+		return ( tuiCmdReact(cmd, AF_ERR_VAL) ) ; 
+  } 
+  
+#ifdef _USE_GFX_
+  sprintf(value,"%e",plotStuff.eresType); 
+	rv = ciAddVar(var,value) ;
+#else
+	rv = ciAddVar(var,"0") ;
+#endif
+
+	free(var) ; var = NULL ;
+	return ( tuiCmdReact(cmd, AF_OK) ) ;
+}
+
 /* end of cmd_macs.c */

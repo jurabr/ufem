@@ -603,6 +603,9 @@ fillvareresselmax,result
 fillvareresselmin
 fillvareresselmin,result
 
+fillvarerestype
+"fillvarerestype,var"
+
 fillvarnres
 "fillvarnres,var,node_id,dof"
 

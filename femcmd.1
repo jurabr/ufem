@@ -52,7 +52,7 @@ writeconf
 Write current program configuration to a file named \fBfilename\fP.
 .TP
 nobreakinput
-\fBnobreakinput[yes,no]\tP
+\fBnobreakinput[yes,no]\fP
 Reading of commands from input file can not ("yes") or can ("no") stop when error (on unsuccesfull command). Affects only the \fBinput\fP command.
 
 
@@ -191,6 +191,10 @@ Fills variable with minimum result value from all seleected elements.
 fillvarnres
 \fBfillvarnres,var,node_id,dof\fP
 Fill variable with d.o.f. result (usually a displacement) from selected node and dof direction.
+.TP
+fillvarerestype
+\fBfillvarerestype,varf\fP
+Fill variable with last used result type (only uses by \fBples\fP comand are taken in account).
 .TP
 fillvarmaxdof
 \fBfillvarmaxdof,var[,type]\fP
