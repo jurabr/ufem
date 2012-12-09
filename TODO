@@ -11,7 +11,6 @@ User Interface:
 The most important:
 
 - (fdb) mesh: check only sides really connected to other geom. ent.
-- (gfx) selections in multiview mode
 - (gfx) incorrect orientation of results on 3D links
 - (fdb) export/reading of multiple load steps
 - (fdb) finish APDL export
@@ -21,6 +20,8 @@ The most important:
 
 To Do:
 
+- (gfx) hidding of right gfx bar in preprocessor
+- (gfx) animate feature (result increasing animation)
 - (fdb) import of multiple forces in one node from *.fem
 - (fdb) command log needs to be fflushed (!?)
 - (fdb) more data testing before solution
@@ -29,6 +30,7 @@ To Do:
 - (fdb) enhance mesh generator and line divisions
 - (gfx) data size indicator should be hidden if not in use
 - (fdb) import of random variables from *.fem
+- (gfx) selections in multiview mode
 
 
 Sci-Fi:

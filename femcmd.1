@@ -192,6 +192,10 @@ fillvarnres
 \fBfillvarnres,var,node_id,dof\fP
 Fill variable with d.o.f. result (usually a displacement) from selected node and dof direction.
 .TP
+fillvarmaxdof
+\fBfillvarmaxdof,var[,type]\fP
+Fill variable with maximum node displacement (in any direction). The \fBtype\fP is "+" for only positive results, "-" for only negative results and "abs" for absolute maximum. 
+.TP
 fillvarfirstsel
 \fBfillvarfirstsel,var,(n|e|d|f)\fP
 Fill variable with selected item (node, element, support, load) with the lowest ID number.
@@ -368,7 +372,7 @@ Variable is filled with the value of given matrix member.
 Matrix is read from file (the matrix must be allocated first and must have valid dimensions).
 .TP
 \fBvarmatwrite,id,fname\fP
-Matrix is writtne to file.
+Matrix is written to file.
 .TP
 \fBvarmatlist,id\fP
 Matrix is written to the  standard output.

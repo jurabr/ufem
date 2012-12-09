@@ -1085,4 +1085,109 @@ int func_mac_set_nobreak_input (char *cmd)
 	return ( tuiCmdReact(cmd, rv) ) ;
 }
 
+/** Puts max. X,Y or Z displacement to variable: "fillvarmaxdof,var[,type]"
+ * @param cmd command
+ * @return status
+ */
+int func_fill_var_maxmin_dof(char *cmd)
+{
+	int    rv = AF_OK ;
+  int    use_abs = AF_NO ;
+	char  *var  = NULL ;
+	char  *type = NULL ;
+	long   i ;
+  double max[3], min[3] ;
+  double mmax, mmin, val ;
+	char   value[CI_STR_LEN];
+
+	for (i=0; i<CI_STR_LEN; i++) { value[i] = '\0' ; }
+	
+	if (ciParNum(cmd) < 2) 
+	{ 
+		fprintf(msgout,"[E] %s!\n", _("Variable and data type (a|+|-) must be specified"));
+		return ( tuiCmdReact(cmd, AF_ERR_VAL) ) ;
+	}
+  else
+  {
+    use_abs = AF_YES ;
+  }
+
+	if ((var=ciGetParStrNoExpand(cmd,1))==NULL)
+	{
+		fprintf(msgout,"[E] %s!\n", _("Variable name required"));
+		return ( tuiCmdReact(cmd, AF_ERR_EMP) ) ;
+	}
+
+  ciStrCompr(var);
+
+	if (strlen(var) < 1) 
+	{
+		fprintf(msgout,"[E] %s!\n", _("Invalid name of variable"));
+		free(var); var = NULL ;
+		return ( tuiCmdReact(cmd, AF_ERR_VAL) ) ; 
+  } 
+
+  if (use_abs != AF_YES)
+  {
+	  if ((type=ciGetParStrNoExpand(cmd,2))==NULL)
+	  {
+		  free(var) ; var = NULL ;
+		  fprintf(msgout,"[E] %s!\n", _("Type of data is required"));
+		  return ( tuiCmdReact(cmd, AF_ERR_EMP) ) ;
+	  }
+  
+    ciStrCompr(type);
+  
+	  if (strlen(type) < 1) 
+	  {
+		  fprintf(msgout,"[E] %s!\n", _("Invalid type of data"));
+		  free(var) ; var = NULL ;
+		  free(type); type = NULL ;
+		  return ( tuiCmdReact(cmd, AF_ERR_VAL) ) ;
+	  }
+  }
+  for (i=0; i<3; i++) { fdbResMaxMinNode(i, &max[i], &min[i]) ; }
+  mmax = max[0] ;
+  mmin = min[0] ;
+  for (i=1; i<3; i++)
+  {
+    if (mmax < max[i]) {mmax = max[i];}
+    if (mmin > min[i]) {mmin = min[i];}
+  }
+
+  val = 0 ;
+
+  if (use_abs != AF_YES)
+  {
+	  switch (type[0])
+	  {
+		  case '+': 
+		  case 'm': 
+		  case 'x': val = mmax ; break ;
+		  case '-': 
+		  case 'i': 
+		  case 'n': 
+		  case 'k': val = mmin ; break ;
+		  case 'a': 
+		  case 'v': 
+		  default: if (fabs(mmin) > fabs(mmax)) { val = fabs(mmin) ; }
+              else                         { val = fabs(mmax) ; }
+              break ;
+	  }
+  }
+  else
+  {
+		if (fabs(mmin) > fabs(mmax)) { val = fabs(mmin) ; }
+    else                         { val = fabs(mmax) ; }
+  }
+
+  sprintf(value,"%e",val); 
+	rv = ciAddVar(var,value) ;
+
+	free(var) ; var = NULL ;
+  if (use_abs != AF_YES) free(type) ;
+  type = NULL ;
+	return ( tuiCmdReact(cmd, rv) ) ;
+}
+
 /* end of cmd_macs.c */

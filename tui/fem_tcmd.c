@@ -340,8 +340,9 @@ extern int func_fill_var_eres_aver(char *cmd);
 extern int func_fill_var_nres(char *cmd);
 extern int func_fill_var_find_first(char *cmd);
 
-int func_fill_var_eres_max_from_all(char *cmd);
-int func_fill_var_eres_min_from_all(char *cmd);
+extern int func_fill_var_eres_max_from_all(char *cmd);
+extern int func_fill_var_eres_min_from_all(char *cmd);
+extern int func_fill_var_maxmin_dof(char *cmd);
 
 extern int func_fill_var_kp(char *cmd);
 
@@ -710,7 +711,7 @@ int fem_cmd_init (void)
 {
   long count = 0 ;
 
-  ciFuncLen = 278;
+  ciFuncLen = 279;
   ciFunction = (tFunc *) malloc (ciFuncLen * sizeof (tFunc));
   
   /* basic functions */
@@ -1721,6 +1722,10 @@ int fem_cmd_init (void)
 
   ciFunction[count].cmd = "fillvareresselmax";
   ciFunction[count].func = func_fill_var_eres_max_from_all ;
+  count++;
+
+  ciFunction[count].cmd = "fillvarmaxdof";
+  ciFunction[count].func = func_fill_var_maxmin_dof ;
   count++;
 
   ciFunction[count].cmd = "fillvarnres";

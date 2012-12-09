@@ -606,6 +606,9 @@ fillvareresselmin,result
 fillvarnres
 "fillvarnres,var,node_id,dof"
 
+fillvarmaxdof
+"fillvarmaxdof,var[,type]"
+
 fillvarfirstsel
 "fillvarfirstsel,var,(n|e|d|f)"
 
