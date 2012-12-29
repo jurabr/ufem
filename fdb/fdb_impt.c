@@ -121,7 +121,7 @@ int fdb_import_from_fem(FILE *fr, long *opts, long optlen)
 	if (vlen != sum)
 	{
 		fprintf(msgout,"[E] %s: %li\n",_("Not all real set data are included in input file."), set_id);
-		fprintf(msgout,"[E] %s: %li\n",_("Please modify the input file and include all real set data."), set_id);
+		fprintf(msgout,"[E] %s: %li\n",_("Please modify the input file and include all real set data"), set_id);
 		return(AF_ERR_VAL);
 	}
 
@@ -205,8 +205,8 @@ int fdb_import_from_fem(FILE *fr, long *opts, long optlen)
 
 	if (vlen != sum)
 	{
-		fprintf(msgout,"[E] %s: %li\n",_("Not all val set data are included in input file."), set_id);
-		fprintf(msgout,"[E] %s: %li\n",_("Please modify the input file and include all val set data."), set_id);
+		fprintf(msgout,"[E] %s: %li\n",_("Not all material set data are included in input file."), set_id);
+		fprintf(msgout,"[E] %s: %li\n",_("Please modify the input file and include all material set data"), set_id);
 		return(AF_ERR_VAL);
 	}
 
