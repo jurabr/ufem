@@ -48,6 +48,7 @@ extern tVector Fr;/* unballanced forces vector     */
 extern tVector u; /* structure displacement vector */
 
 /* dynamics: */
+extern tMatrix M;         /* mass matrix */
 extern tMatrix C;         /* thermal capacity matrix */
 extern tMatrix KK;        /* conductivity matrix     */
 extern tVector F_0;       /* prev step load          */
@@ -62,6 +63,12 @@ extern tVector pp;        /* combined load           */
  * @return status
  */ 
 extern int femLinEqSystemSolve(tMatrix *Ks, tVector *Fs, tVector *us);
+
+/** Filling of results data field (ofld)
+ * @param ofld field to put data in
+ * @return status
+ */
+extern int monte_fill_ofld_data(double *ofld);
 
 
 /** Simple implicit dynamics solver: see Bitnar, Rericha: "Metoda
@@ -255,11 +262,11 @@ int femSolveThermTrans(double *ofld)
 #endif
 
 memFree:
+#ifndef USE_MONTE
 	fem_sol_free();
 	femDataFree();
 	femResFree();
 
-#ifndef USE_MONTE
 #ifdef RUN_VERBOSE
 	if (rv == AF_OK) { fprintf(msgout,"[I] %s.\n",_("Solution done")); }
 	else { fprintf(msgout,"[E] %s!\n",_("Solution failed")); }
