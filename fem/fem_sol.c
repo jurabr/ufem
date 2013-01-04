@@ -24,7 +24,6 @@
 */
 
 #include "fem_sol.h"
-#include "fem_rand.h"
 
 #ifdef USE_MPI
 extern long ppNfrom;
