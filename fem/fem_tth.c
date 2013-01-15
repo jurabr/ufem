@@ -71,9 +71,7 @@ extern int femLinEqSystemSolve(tMatrix *Ks, tVector *Fs, tVector *us);
 extern int monte_fill_ofld_data(double *ofld);
 
 
-/** Simple implicit dynamics solver: see Bitnar, Rericha: "Metoda
- * konecnych prvku v dynamice konstrukci", SNTL, Prague, 1981, p. 122
- * Newmark time integration procedure is used
+/** Simple dynamics solver: Newmark time integration procedure is used
  *
  * @param ofld random output data filed (only != NULL for Monte Carlo)
  * @return statis
@@ -157,17 +155,6 @@ int femSolveThermTrans(double *ofld)
 
   /* 0th step... */
 #if 0
-  if (solUseCGSSOR != AF_YES)
-	{
-	 	if ((rv = femEqsCGwJ(&K, &F, &u, FEM_ZERO/10000.0, nDOFAct)) != AF_OK) { goto memFree; }
-	}
-	else
-	{
-	 	if ((rv = femEqsCGwSSOR(&K, &F, &u, FEM_ZERO/10000.0, nDOFAct)) != AF_OK) { goto memFree; }
-	}
-#endif
-
-#if 0
   femVecClone(&F, &F_0); /* clone load to old load vector */
 #endif
 #if 0
@@ -188,27 +175,19 @@ int femSolveThermTrans(double *ofld)
     if (transTS > -1) { d_t = transMult[transTS][i] - transMult[transTS][i-1] ; }
 
     /* loads should be inside loop */
-#if 1
     femVecSetZeroBig(&F);
-#endif
-#if 1
     femVecSetZeroBig(&u);
-#endif
 
     femMatSetZeroBig(&C) ;
     femMatSetZeroBig(&KK) ;
     /* new K and M matrices (slowdown): */
-#if 1
     femMatSetZeroBig(&K) ;
     femMatSetZeroBig(&M) ;
  	  if ((rv = fem_fill_K(AF_NO)) != AF_OK) { goto memFree; }
  	  if ((rv = fem_fill_M()) != AF_OK) { goto memFree; }
-#endif
 
     fem_add_loads(i+1);
-#if 1
  	  if ((rv = fem_add_disps(AF_YES,i+1)) != AF_OK) { goto memFree; }
-#endif
 
     /* right hand side vector ((F_0*1-tau) + F*tau) = pp0: */
     femVecLinComb((1.0-tau), &F_0,  tau, &F, &pp);
