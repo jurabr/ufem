@@ -136,7 +136,7 @@ int main(int argc, char *argv[])
     /* modal analysis */
 		if (femEigenModal == AF_YES)
 		{
-#if 1
+#if 0
     	rv = femSolveEigenInvIter(1500, 4) ; /* this does not work well */
 #else
     	rv = femSolveEigenLanczos(1500, 4) ; /* this totally fails */

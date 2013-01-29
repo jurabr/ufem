@@ -283,12 +283,12 @@ int femTriEigLU(tVector *alpha, tVector *beta, tVector *gamma)
   n = alpha->rows;
   if (n < 1) { rv = AF_ERR_EMP ; goto memFree ;}
 
-#if 0
+#if 1
   for (i=1; i<=n; i++)
   {
     printf(" %2.4e   %2.4e   %2.4e\n", 
-        femVecGet(alpha, i),
         femVecGet(beta, i),
+        femVecGet(alpha, i),
         femVecGet(gamma, i)
         );
   }
@@ -353,9 +353,7 @@ memFree:
 int femEigLanczos(tMatrix *K, tMatrix *M, long k, tVector *eigval)
 {
   int rv = AF_OK ;
-#if 1
-
-  tVector r, rr, rrr, q, q1, p, pp, s, t, a, b, c;
+  tVector r, rr, rrr, q, q1, p, pp, s,  a, b, c;
   double beta, alpha, betadiv;
   long n  = 0;
   long i, j;
@@ -366,41 +364,36 @@ int femEigLanczos(tMatrix *K, tMatrix *M, long k, tVector *eigval)
   femVecNull(&r);
   femVecNull(&rr);
   femVecNull(&rrr);
-
   femVecNull(&q);
   femVecNull(&q1);
   femVecNull(&p);
   femVecNull(&pp);
   femVecNull(&s);
-  femVecNull(&t);
-  
   femVecNull(&a);
   femVecNull(&b);
   femVecNull(&c);
 
-  femVecFullInit(&r, n);
-  femVecFullInit(&rr, n);
+  femVecFullInit(&r,   n);
+  femVecFullInit(&rr,  n);
   femVecFullInit(&rrr, n);
-  femVecFullInit(&q, n);
-  femVecFullInit(&q1, n);
-  femVecFullInit(&p, n);
-  femVecFullInit(&pp, n);
-  femVecFullInit(&s, n);
-  femVecFullInit(&t, n);
-  
-  femVecFullInit(&a, n);
-  femVecFullInit(&b, n);
-  femVecFullInit(&c, n);
+  femVecFullInit(&q,   n);
+  femVecFullInit(&q1,  n);
+  femVecFullInit(&p,   n);
+  femVecFullInit(&pp,  n);
+  femVecFullInit(&s,   n);
+  femVecFullInit(&a,   n);
+  femVecFullInit(&b,   n);
+  femVecFullInit(&c,   n);
   
 
   /* Preparations: */
-  femVecPut(&r, 1, 1.0*rand());
+  for (i=1; i<=n; i++) { femVecPut(&r, i, 0.001*rand()); }
   femVecSetZeroBig(&q1);
 
   /* TODO: {Kg} = {K} - sigma*{M} */
 
   /* beta = sqrt({r}^T.[M].{r}) */
-  femMatVecMult(M, &r, &s);
+  femMatVecMultBig(M, &r, &s);
   beta = sqrt (femVecVecMult(&r, &s) );
 
   if (beta == 0.0)
@@ -416,8 +409,9 @@ int femEigLanczos(tMatrix *K, tMatrix *M, long k, tVector *eigval)
   femValVecMult(betadiv, &r, &q) ;
 
   /* {p} = {M}*{q} */
-  femMatVecMult(M, &r, &p);
- 
+  femMatVecMultBig(M, &q, &p);
+
+
   /* Main loop for "k" eigenvectors: */
   for (i = 1; i <= k; i++)
   {
@@ -434,22 +428,23 @@ int femEigLanczos(tMatrix *K, tMatrix *M, long k, tVector *eigval)
     femVecLinCombBig(1.0,  &rrr, -1.0 * alpha, &q, &r);
 
     /* {pp} = {M} * {r} */
-    femMatVecMultBig(&M, &r, &pp);
+    femMatVecMultBig(M, &r, &pp);
 
-    /* beta = sqrt({pp}^T * {r})*/
-    beta = sqrt (femVecVecMult(&pp, &r) );
-
-    /* TODO fill tridiagonal matrix: */
-    if (i==1) /* first line */
+    /* Fill tridiagonal matrix: */
+    if (i == 1) /* first line */
     {
       femVecPut(&a, 1, alpha) ;
     }
     else /* normal line */
     {
       femVecPut(&a, i  , alpha) ;
-      femVecPut(&c, i  , beta ) ;
-      femVecPut(&b, i-1, beta ) ;
+      femVecPut(&c, i-1  , beta ) ;
+      femVecPut(&b, i, beta ) ;
     }
+printf("Lanczos [%i]: a=%e b=%e\n", i, alpha, beta);
+
+    /* beta = sqrt({pp}^T * {r})*/
+    beta = sqrt (femVecVecMult(&pp, &r) );
 
     if (i == k) {break;} /* check for the last step */
 
@@ -479,12 +474,10 @@ memFree:
   femVecFree(&p);
   femVecFree(&pp);
   femVecFree(&s);
-  femVecFree(&t);
 
   femVecFree(&a);
   femVecFree(&b);
   femVecFree(&c);
-#endif
   return(rv);
 }
 
@@ -524,7 +517,6 @@ printf("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
   rv = femEigLanczos(&K, &M, femEigenNum, &u) ;
 printf("YYYYYYYYYYYYYYYYYYYYYYYYYYYYY\n");
 
-#if 1
   for (j=1; j<=femEigenNum; j++)
   {
     rv = AF_ERR_VAL ; /* initial return value */
@@ -560,7 +552,6 @@ printf("YYYYYYYYYYYYYYYYYYYYYYYYYYYYY\n");
     femVecClone(&u, &eig_y[j-1]) ;
 
   } /* end "j": multiple eigenvalues */
-#endif
 
 memFree:
 	fem_sol_free();
