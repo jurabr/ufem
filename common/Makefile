@@ -4,7 +4,7 @@ CC=gcc
 #CC=xlc_r -q64
 
 ifeq ($(SYS_TYPE),IRIX)
-CC=/usr/nekoware/gcc-4.3/bin/gcc
+CC=/usr/nekoware/gcc-4.7/bin/gcc
 else
 CC=gcc
 endif

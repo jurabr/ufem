@@ -2,7 +2,7 @@ all: libmeval.a m_test
 
 CC=gcc
 ifeq ($(SYS_TYPE),IRIX)
-CC=/usr/nekoware/gcc-4.3/bin/gcc
+CC=/usr/nekoware/gcc-4.7/bin/gcc
 else
 CC=gcc
 endif
