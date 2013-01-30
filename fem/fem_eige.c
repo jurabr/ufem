@@ -100,15 +100,10 @@ int femSolveEigenInvIter(long max_iter, double eps)
  	if ((rv = fem_dofs()) != AF_OK) { goto memFree; }
  	if ((rv = fem_sol_alloc()) != AF_OK) { goto memFree; }
  	if ((rv = fem_sol_res_alloc()) != AF_OK) { goto memFree; } /* __must__ be done before adding of loads! */
-
  	if ((rv = fem_fill_K(AF_NO)) != AF_OK) { goto memFree; }
-
   for (i=1; i<=nDOFAct; i++) { femVecPut(&u, i, 1.0) ; /* initial approximation */ }
-
  	if ((rv = fem_fill_M()) != AF_OK) { goto memFree; } /* mass matrix*/
-
  	if ((rv = fem_add_disps(AF_YES,0)) != AF_OK) { goto memFree; }
-
 
   /* main loop: */
   for (j=1; j<=femEigenNum; j++)
@@ -116,21 +111,13 @@ int femSolveEigenInvIter(long max_iter, double eps)
     rv = AF_ERR_VAL ; /* initial return value */
     solID = j ;
 
-  for (i=0; i<max_iter; i++)
-  {
-#if 1
-    femValVecMultSelf(8.8,&u) ;
-#if 0
-    if ((i > 0)||(j>1)) { if ((rv = fem_add_disps(AF_YES,0)) != AF_OK) { goto memFree; } }
-#endif
-#endif
-
-    /* Gram-Schmidt: */
     if (j > 1)
     {
+      for (jj=0;jj<u.rows;jj++) { u.data[jj] *= rand()*1000 ; } /* initial approx. */
+
+      /* Gram-Schmidt: */
       femVecSetZeroBig(&Fr);
       femVecSetZeroBig(&F);
-
       for (jj=0; jj<(j-1); jj++)
       {
         femVecSetZeroBig(&eig_xM) ;
@@ -140,23 +127,17 @@ int femSolveEigenInvIter(long max_iter, double eps)
       }
       femVecLinCombBig(1.0, &u, -1.0, &Fr, &F) ;
       femVecClone(&F, &u);
+      /* end of Gram-Schmidt */
     }
-    /* end of Gram-Schmidt */
 
+  for (i=0; i<max_iter; i++)
+  {
     femVecSetZeroBig(&eig_xM) ;
     femMatVecMultBig(&M, &u, &eig_xM);
 
-#if 0
-    if ((rv = femEqsCGwJ(&K, &eig_xM, &u, FEM_ZERO/10000.0, nDOFAct)) != AF_OK)
-#else
     if ((rv = femEqsBiCCSwJ(&K, &eig_xM, &u, FEM_ZERO/1000.0, 3*nDOFAct)) != AF_OK)
-#endif
       { goto memFree; } 
 
-#ifdef DEVEL_VERBOSE
-    fprintf(msgout,"NORM: %e %e\n", femVecNormBig(&u), femVecNormBig(&eig_y[0]));
-#endif
-    
     /* normalize x: */
     femVecSetZeroBig(&eig_xM) ;
     femMatVecMultBig(&M, &u, &eig_xM);
@@ -196,16 +177,12 @@ int femSolveEigenInvIter(long max_iter, double eps)
 
     omega = om_top / om_bot ;
 
-#ifdef DEVEL_VERBOSE
-    fprintf(msgout,"OMEGA[%li/%li] = %f (%f/%f)\n",i,max_iter,sqrt(fabs(omega)),om_top, om_bot);    
-#endif
-
     if (i > 0)
     {
       if ((fabs(omega - omega0)/omega) <= (pow(10,(-2.0*eps))))
       {
 #ifdef RUN_VERBOSE
-        fprintf(msgout,"[i] %s: %f (%s %li)\n",_("  Eigenvalue"),
+        fprintf(msgout,"[i] %s [%li]: %f (%s %li)\n",_("  Eigenvalue"),j,
             sqrt(fabs(omega))/(2.0*FEM_PI),_("in iteration"),i+1);
 #endif
         /* we are converged */
@@ -213,7 +190,6 @@ int femSolveEigenInvIter(long max_iter, double eps)
         break ;
       }
     }
-
     omega0 = omega ;
     
   }
@@ -226,7 +202,7 @@ int femSolveEigenInvIter(long max_iter, double eps)
     }
 
     solSimNum = sqrt(fabs(omega))/(2.0*FEM_PI) ; /* frequency */
-  
+
     if (j == 1) /* first eigenvector */
     {
 	    if ((rv = femWriteRes(fem_output_file())) != AF_OK) 
@@ -245,7 +221,7 @@ int femSolveEigenInvIter(long max_iter, double eps)
     }
     if (j == femEigenNum) {break ;} /* we are finished */
 
-    /* TODO prepare next Gram-Schmidt HERE: */
+    /* prepare next Gram-Schmidt HERE: */
     femVecClone(&u, &eig_y[j-1]) ;
 
   } /* end "j": multiple eigenvalues */
@@ -507,9 +483,7 @@ int femSolveEigenLanczos(long max_iter, double eps)
 
   femMatPrn(&M, "MASS");
 
-printf("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
   rv = femEigLanczos(&K, &M, femEigenNum, &u) ;
-printf("YYYYYYYYYYYYYYYYYYYYYYYYYYYYY\n");
 
   for (j=1; j<=femEigenNum; j++)
   {
