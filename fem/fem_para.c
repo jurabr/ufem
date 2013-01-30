@@ -89,6 +89,7 @@ long  femBreakSolu        = AF_NO ; /* break linear solution after matrices were
 long  femDynamics         = AF_NO ; /* indicates non-static solution */
 long  femEigenModal       = AF_NO ; /* modal solution */
 long  femEigenNum         = 0 ;     /* number of computed mode shapess */
+long  femEigenInvI        = AF_NO ; /* use inverse iterations method for 1st eigenvalue */
 long  femNewmarkEL        = AF_NO ; /* newmark integration solver */
 long  femComputePriceOnly = AF_NO ; /* computer price and exit    */
 long  femThermTrans       = AF_NO ; /* indicates thermal transient solution */
@@ -152,6 +153,7 @@ void fem_help(int argc, char *argv[])
 #if 0
 	fprintf(msgout,"   -mod N    ... %s\n", _("do modal analysis for first N eigenvalues"));
 #endif
+	fprintf(msgout,"   -modii    ... %s\n", _("use inverse iterations method to get just first eigenvalue"));
 
 	fprintf(msgout,"   -nwm      ... %s\n", _("do dynamic analysis by Newmark integration"));
 	fprintf(msgout,"   -tth      ... %s\n", _("do thermal transient analysis "));
@@ -741,6 +743,16 @@ int fem_parse_params(int argc, char *argv[])
           femNewmarkEL  = AF_NO ;
         }
 			}
+		}
+
+    if (strcmp(argv[i],"-modii") == 0) /* DYNAMICS: inverse iterations for modal analysis  */
+		{
+      solNoLinS     = 1 ; /* we need data for linear solution */
+      femEigenModal = AF_YES ;
+      femDynamics   = AF_YES ;
+      femNewmarkEL  = AF_NO ;
+      femEigenInvI  = AF_YES ;
+      femEigenNum   = 1 ; /* just the first eigenvalue is computed! */
 		}
 
     if (strcmp(argv[i],"-nwm") == 0) /* DYNAMICS: Newmark implicit integration */

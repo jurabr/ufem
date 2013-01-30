@@ -40,6 +40,7 @@ extern int    femDryRun(void)  ;
 extern int    femSolveDynNewmark(double *ofld);
 extern int femSolveThermTrans(double *ofld);
 #endif
+extern long femEigenInvI ;
 
 #ifdef USE_MPI
 #include "fem_mpi.h"
@@ -136,11 +137,14 @@ int main(int argc, char *argv[])
     /* modal analysis */
 		if (femEigenModal == AF_YES)
 		{
-#if 0
-    	rv = femSolveEigenInvIter(1500, 4) ; /* this does not work well */
-#else
-    	rv = femSolveEigenLanczos(1500, 4) ; /* this totally fails */
-#endif
+      if (femEigenInvI == AF_YES)
+      {
+    	  rv = femSolveEigenInvIter(1500, 4) ; /* this does not work well */
+      }
+      else
+      {
+    	  rv = femSolveEigenLanczos(1500, 4) ; /* this totally fails */
+      }
 		}
 		else
 		{

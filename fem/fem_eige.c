@@ -85,6 +85,12 @@ int femSolveEigenInvIter(long max_iter, double eps)
   double omega0 = 0.0 ;
   double c ;
 
+  femEigenNum = 1 ; /* TODO: current implementation ha so shift to higher eigenvalues! */
+
+#ifdef RUN_VERBOSE
+	fprintf(msgout,"[I] %s:\n",_("Computation of 1st eigenvalue")); 
+#endif
+
  	if ((rv = femElemTypeInit()) != AF_OK) { goto memFree; }
  	if ((rv = femMatTypeInit()) != AF_OK) { goto memFree; }
 
@@ -103,9 +109,8 @@ int femSolveEigenInvIter(long max_iter, double eps)
 
  	if ((rv = fem_add_disps(AF_YES,0)) != AF_OK) { goto memFree; }
 
-  femMatPrn(&M, "MASS");
 
-
+  /* main loop: */
   for (j=1; j<=femEigenNum; j++)
   {
     rv = AF_ERR_VAL ; /* initial return value */
@@ -121,7 +126,6 @@ int femSolveEigenInvIter(long max_iter, double eps)
 #endif
 
     /* Gram-Schmidt: */
-#if 1
     if (j > 1)
     {
       femVecSetZeroBig(&Fr);
@@ -132,13 +136,11 @@ int femSolveEigenInvIter(long max_iter, double eps)
         femVecSetZeroBig(&eig_xM) ;
         femMatVecMultBig(&M, &u, &eig_xM);
         c = femVecVecMultBig(&eig_y[jj], &eig_xM) ;
-printf("C[%2li/%2li] = %e \n",jj,j-1, c);
         femVecAddVec(&Fr, c, &eig_y[jj]);
       }
       femVecLinCombBig(1.0, &u, -1.0, &Fr, &F) ;
       femVecClone(&F, &u);
     }
-#endif
     /* end of Gram-Schmidt */
 
     femVecSetZeroBig(&eig_xM) ;
@@ -151,7 +153,9 @@ printf("C[%2li/%2li] = %e \n",jj,j-1, c);
 #endif
       { goto memFree; } 
 
-    printf("NORM: %e %e\n", femVecNormBig(&u), femVecNormBig(&eig_y[0]));
+#ifdef DEVEL_VERBOSE
+    fprintf(msgout,"NORM: %e %e\n", femVecNormBig(&u), femVecNormBig(&eig_y[0]));
+#endif
     
     /* normalize x: */
     femVecSetZeroBig(&eig_xM) ;
@@ -192,21 +196,19 @@ printf("C[%2li/%2li] = %e \n",jj,j-1, c);
 
     omega = om_top / om_bot ;
 
-printf("OMEGA[%li/%li] = %f (%f/%f)\n",i,max_iter,sqrt(fabs(omega)),om_top, om_bot);    
+#ifdef DEVEL_VERBOSE
+    fprintf(msgout,"OMEGA[%li/%li] = %f (%f/%f)\n",i,max_iter,sqrt(fabs(omega)),om_top, om_bot);    
+#endif
 
     if (i > 0)
     {
       if ((fabs(omega - omega0)/omega) <= (pow(10,(-2.0*eps))))
       {
 #ifdef RUN_VERBOSE
-        fprintf(msgout,"[i] %s: %e (%s %li)\n",_("Eigenvalue"),
-            sqrt(fabs(omega)),_("in iteration"),i+1);
+        fprintf(msgout,"[i] %s: %f (%s %li)\n",_("  Eigenvalue"),
+            sqrt(fabs(omega))/(2.0*FEM_PI),_("in iteration"),i+1);
 #endif
-
         /* we are converged */
-	      if ((rv = femWriteRes(fem_output_file())) != AF_OK) { goto memFree; }
-
-        femVecPrn(&u, "EIGENVECTOR");
         rv = AF_OK ;
         break ;
       }
@@ -217,14 +219,13 @@ printf("OMEGA[%li/%li] = %f (%f/%f)\n",i,max_iter,sqrt(fabs(omega)),om_top, om_b
   }
     if (rv != AF_OK)
     {
-      /* TODO */
 #ifdef RUN_VERBOSE
       fprintf(msgout, "[E] %s %li %s!\n", _("Computation of eigenvalue no."), j ,_("failed"));
       break ;
 #endif
     }
 
-    solSimNum = sqrt(fabs(omega)) ;
+    solSimNum = sqrt(fabs(omega))/(2.0*FEM_PI) ; /* frequency */
   
     if (j == 1) /* first eigenvector */
     {
@@ -356,7 +357,7 @@ int femEigLanczos(tMatrix *K, tMatrix *M, long k, tVector *eigval)
   tVector r, rr, rrr, q, q1, p, pp, s,  a, b, c;
   double beta, alpha, betadiv;
   long n  = 0;
-  long i, j;
+  long i ;
 
   n = K->rows ;
   if (n < 1) { rv = AF_ERR_EMP ; goto memFree ;}
@@ -441,7 +442,7 @@ int femEigLanczos(tMatrix *K, tMatrix *M, long k, tVector *eigval)
       femVecPut(&c, i-1  , beta ) ;
       femVecPut(&b, i, beta ) ;
     }
-printf("Lanczos [%i]: a=%e b=%e\n", i, alpha, beta);
+printf("Lanczos [%li]: a=%e b=%e\n", i, alpha, beta);
 
     /* beta = sqrt({pp}^T * {r})*/
     beta = sqrt (femVecVecMult(&pp, &r) );
@@ -484,14 +485,7 @@ memFree:
 int femSolveEigenLanczos(long max_iter, double eps)
 {
 	int  rv = AF_ERR_VAL;
-#if 1
-  long i, j, jj ;
-  double xmult ;
-  double om_top ;
-  double om_bot ;
-  double omega = 0.0 ;
-  double omega0 = 0.0 ;
-  double c ;
+  long i, j ;
 
  	if ((rv = femElemTypeInit()) != AF_OK) { goto memFree; }
  	if ((rv = femMatTypeInit()) != AF_OK) { goto memFree; }
@@ -519,11 +513,13 @@ printf("YYYYYYYYYYYYYYYYYYYYYYYYYYYYY\n");
 
   for (j=1; j<=femEigenNum; j++)
   {
+#if 0
     rv = AF_ERR_VAL ; /* initial return value */
+
+      /* TODO: some code here (nothing is done in this place!) */
 
     if (rv != AF_OK)
     {
-      /* TODO */
 #ifdef RUN_VERBOSE
       fprintf(msgout, "[E] %s %li %s!\n", _("Computation of eigenvalue no."), j ,_("failed"));
       break ;
@@ -551,6 +547,7 @@ printf("YYYYYYYYYYYYYYYYYYYYYYYYYYYYY\n");
     /* TODO prepare next Gram-Schmidt HERE: */
     femVecClone(&u, &eig_y[j-1]) ;
 
+#endif
   } /* end "j": multiple eigenvalues */
 
 memFree:
@@ -563,7 +560,6 @@ memFree:
 	else { fprintf(msgout,"[E] %s!\n",_("Solution failed")); }
 #endif
 
-#endif
 	return(rv);
 }
 
