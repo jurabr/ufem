@@ -71,24 +71,22 @@ extern tMatrix eig_oMK;   /* (-omega*M+ K matrix)     */
 extern tVector *eig_y ;   /* FIELD of Gram-Schmidt data */
 
 
-/** Computation of eigenvalues and eigenvectors for dynamics
- * @return state value
+/** Computation of eigenvalues and eigenvectors for dynamics: version 2
+ * according to Bathe and Wilson
+ * @return status value
  */
 int femSolveEigenInvIter(long max_iter, double eps)
 {
 	int  rv = AF_ERR_VAL;
   long i, j, jj ;
-  double xmult ;
   double om_top ;
   double om_bot ;
   double omega = 0.0 ;
   double omega0 = 0.0 ;
   double c ;
 
-  femEigenNum = 1 ; /* TODO: current implementation ha so shift to higher eigenvalues! */
-
 #ifdef RUN_VERBOSE
-	fprintf(msgout,"[I] %s:\n",_("Computation of 1st eigenvalue")); 
+	fprintf(msgout,"[I] %s:\n",_("Eigensolver started (inv. iter.)")); 
 #endif
 
  	if ((rv = femElemTypeInit()) != AF_OK) { goto memFree; }
@@ -97,107 +95,94 @@ int femSolveEigenInvIter(long max_iter, double eps)
   fem_sol_null();
   femResNull();
 
+  /* stuff initializations */
  	if ((rv = fem_dofs()) != AF_OK) { goto memFree; }
  	if ((rv = fem_sol_alloc()) != AF_OK) { goto memFree; }
  	if ((rv = fem_sol_res_alloc()) != AF_OK) { goto memFree; } /* __must__ be done before adding of loads! */
  	if ((rv = fem_fill_K(AF_NO)) != AF_OK) { goto memFree; }
-  for (i=1; i<=nDOFAct; i++) { femVecPut(&u, i, 1.0) ; /* initial approximation */ }
+  
+  /* initial approximation */ 
+  omega0  = 0.0 ;
+  omega   = 0.0 ;
+  for (i=1; i<=nDOFAct; i++) { femVecPut(&u, i, 1.0) ; }
  	if ((rv = fem_fill_M()) != AF_OK) { goto memFree; } /* mass matrix*/
  	if ((rv = fem_add_disps(AF_YES,0)) != AF_OK) { goto memFree; }
+  femMatVecMultBig(&M,&u, &eig_xM); /* initial z1 */
 
   /* main loop: */
   for (j=1; j<=femEigenNum; j++)
   {
     rv = AF_ERR_VAL ; /* initial return value */
     solID = j ;
+    
+    /* initial approx. */
+    if (j > 1) {for(jj=0;jj<u.rows;jj++){u.data[jj] *= rand()*1000;}}
 
-    if (j > 1)
+    for (i=0; i<max_iter; i++)
     {
-      for (jj=0;jj<u.rows;jj++) { u.data[jj] *= rand()*1000 ; } /* initial approx. */
-
-      /* Gram-Schmidt: */
-      femVecSetZeroBig(&Fr);
-      femVecSetZeroBig(&F);
-      for (jj=0; jj<(j-1); jj++)
+      if (j > 1)
       {
+        /* Gram-Schmidt: */
+        femVecSetZeroBig(&Fr);
+        femVecSetZeroBig(&F);
         femVecSetZeroBig(&eig_xM) ;
         femMatVecMultBig(&M, &u, &eig_xM);
-        c = femVecVecMultBig(&eig_y[jj], &eig_xM) ;
-        femVecAddVec(&Fr, c, &eig_y[jj]);
+        for (jj=0; jj<(j-1); jj++)
+        {
+          c = femVecVecMultBig(&eig_y[jj], &eig_xM) ; 
+          femVecAddVec(&Fr, c, &eig_y[jj]);
+        }
+        femVecLinCombBig(1.0, &u, -1.0, &Fr, &F) ;
+        femVecSetZeroBig(&eig_xM) ;
+        femMatVecMultBig(&M, &F, &eig_xM); /* eig_xM = z1 for j>=2 */
       }
-      femVecLinCombBig(1.0, &u, -1.0, &Fr, &F) ;
-      femVecClone(&F, &u);
-      /* end of Gram-Schmidt */
-    }
 
-  for (i=0; i<max_iter; i++)
-  {
-    femVecSetZeroBig(&eig_xM) ;
-    femMatVecMultBig(&M, &u, &eig_xM);
+      if ((rv = femEqsCGwSSOR(&K, &eig_xM, &u, FEM_ZERO/1e6, 3*nDOFAct)) != AF_OK)
+        { goto memFree; } /* u = xx(k+1) */
+  
+      femMatVecMultBig(&M, &u, &eig_x); /* eig_x = zz(k+1) */
 
-    if ((rv = femEqsBiCCSwJ(&K, &eig_xM, &u, FEM_ZERO/1000.0, 3*nDOFAct)) != AF_OK)
-      { goto memFree; } 
-
-    /* normalize x: */
-    femVecSetZeroBig(&eig_xM) ;
-    femMatVecMultBig(&M, &u, &eig_xM);
-    xmult = femVecVecMultBig(&u, &eig_xM) ;
-    if (xmult != 0.0)
-    {
-      xmult = (1.0 / sqrt(xmult)) ;
-    }
-    else
-    {
-      rv = AF_ERR_VAL ;
-#ifdef RUN_VERBOSE
-      fprintf(msgout,"[E] %s!\n", _("Inverse iteration failed - can not normalize"));
-#endif
-      goto memFree;
-    }
-
-    femValVecMultSelf(xmult, &u);
-
-    /* compute omega^2 (Rayleight): */
-    femVecSetZeroBig(&eig_xM) ;
-    femMatVecMultBig(&K, &u, &eig_xM);
-    om_top = femVecVecMultBig(&u, &eig_xM) ;
-
-    femVecSetZeroBig(&eig_xM) ;
-    femMatVecMultBig(&M, &u, &eig_xM);
-    om_bot = femVecVecMultBig(&u, &eig_xM) ;
-
-    if (om_bot == 0.0)
-    {
-      rv = AF_ERR_VAL ;
-#ifdef RUN_VERBOSE
-      fprintf(msgout,"[E] %s!\n", _("Inverse iteration failed - can not compute omega"));
-#endif
-      goto memFree;
-    }
-
-    omega = om_top / om_bot ;
-
-    if (i > 0)
-    {
-      if ((fabs(omega - omega0)/omega) <= (pow(10,(-2.0*eps))))
+      /* omega(k+1) =  (xx(k+1)*z(k))/(zz(k+1)*xx(k+1)): */
+      om_top = femVecVecMultBig(&u, &eig_xM) ;
+      om_bot = femVecVecMultBig(&u, &eig_x) ;
+      if (fabs(om_bot) <(FEM_ZERO*FEM_ZERO))
       {
 #ifdef RUN_VERBOSE
-        fprintf(msgout,"[i] %s [%li]: %f (%s %li)\n",_("  Eigenvalue"),j,
-            sqrt(fabs(omega))/(2.0*FEM_PI),_("in iteration"),i+1);
+        fprintf(msgout,"[E] %s!\n", _("Inverse iteration failed - can not compute omega"));
 #endif
-        /* we are converged */
-        rv = AF_OK ;
-        break ;
+        goto memFree;
       }
-    }
-    omega0 = omega ;
+      omega = om_top / om_bot ; /* eigenvalue */
+  
+      femVecSetZeroBig(&eig_xM);
+      femValVecMult(1.0/sqrt(om_bot), &eig_x, &eig_xM); /* z(k+1) */
+  
+      /* eigenvector: */
+      femVecSetZeroBig(&u);
+      if ((rv = femEqsCGwSSOR(&M, &eig_xM, &u, FEM_ZERO/1000.0, 3*nDOFAct)) != AF_OK)
+        { goto memFree; } /* xx(k+1) */
+  
+      if (i > 0)
+      {
+        if ((fabs(omega - omega0)/omega) <= (pow(10,(-2.0*eps))))
+        {
+#ifdef RUN_VERBOSE
+          fprintf(msgout,"[i] %s [%li]: %f (%s %li)\n",_("  Eigenvalue"),j,
+              sqrt(fabs(omega))/(2.0*FEM_PI),_("in iteration"),i+1);
+#endif
+          /* we are converged */
+          rv = AF_OK ;
+          break ;
+        }
+      }
+      omega0 = omega ;
     
-  }
+    }
     if (rv != AF_OK)
     {
 #ifdef RUN_VERBOSE
       fprintf(msgout, "[E] %s %li %s!\n", _("Computation of eigenvalue no."), j ,_("failed"));
-      break ;
+      goto memFree ;
 #endif
     }
 
