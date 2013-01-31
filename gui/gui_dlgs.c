@@ -895,6 +895,9 @@ GtkWidget *fem_cmd_tree(void)
     gtk_tree_store_append(treeStore,&treeIter,&treeIterPar0);
     gtk_tree_store_set(treeStore,&treeIter,0,_("Non-linear Solution.. "),1,"dialog,solve",-1);
 
+    gtk_tree_store_append(treeStore,&treeIter,&treeIterPar0);
+    gtk_tree_store_set(treeStore,&treeIter,0,_("Modal Analysis.. "),1,"dialog,msolve",-1);
+
 
   /* postprocessor (general)  ------------- */
 	gtk_tree_store_insert(treeStore,&treeIter,NULL,count++);

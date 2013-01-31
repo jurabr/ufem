@@ -1444,6 +1444,23 @@ int func_gui_dialog (char *cmd)
 					) ;
 		}
 
+    /* Solver settings iterface */
+		if (strcmp(command,"msolve") == 0)
+		{
+			title[0]=ciAllocStr(_("Solver"));
+			value[0]=ciAllocStr("Modal");
+			title[1]=ciAllocStr(_("Number of eigenvalues"));
+			value[1]=ciAllocStr("3");
+			title[2]=ciAllocStr(_("Number of iterations"));
+			value[2]=ciAllocStr("50");
+			femDataDialogSmall(
+					_("Run Modal Solver"),
+					_("solve"),
+					3, title, value, AF_NO
+					) ;
+		}
+
+
 
     /* Export settings */
 		if (strcmp(command,"export") == 0)
