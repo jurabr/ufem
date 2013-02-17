@@ -154,10 +154,10 @@ int femSolveThermTrans(double *ofld)
 #endif
 
   /* 0th step... */
-#if 0
+#if 1
   femVecClone(&F, &F_0); /* clone load to old load vector */
 #endif
-#if 0
+#if 1
   femVecClone(&u, &r0); /* clone temperatures to old temperature vector */
 #endif
 

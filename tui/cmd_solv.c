@@ -939,17 +939,17 @@ int func_fem_import(char *cmd)
 
             if (fname1 == NULL)
             {
-	  	        fprintf(msgout,"[E] %s!\n", _("Invalid name of secodn input file"));
+	  	        fprintf(msgout,"[E] %s!\n", _("Invalid name of second input file"));
 	            free(fname1) ;  fname1  = NULL ; goto memFree ;
             }
             if (strlen(fname1) < 1)
             {
-	  	        fprintf(msgout,"[E] %s!\n", _("Invalid name of secodn input file"));
+	  	        fprintf(msgout,"[E] %s!\n", _("Invalid name of second input file"));
 	            free(fname1) ;  fname1  = NULL ; goto memFree ;
             }
             if ((fname1[0] == '\0')||(fname1[0] == ' ')||(fname1[0] == '\t')||(fname1[0] == ','))
             {
-		  	      fprintf(msgout,"[E] %s!\n", _("Invalid name of secodn input file"));
+		  	      fprintf(msgout,"[E] %s!\n", _("Invalid name of second input file"));
 	            free(fname1) ;  fname1  = NULL ; goto memFree ;
             }
 
