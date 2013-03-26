@@ -38,7 +38,7 @@ int e021_eload(long ePos, long mode, tVector *F_e) { return(AF_OK); }
 int addElem_021(void)
 {
 	int rv = AF_OK;
-	static long type    = 1 ;
+	static long type    = 21 ;
 	static long dim     = 1 ;
 	static long nodes   = 2 ;
 	static long dofs    = 2 ;

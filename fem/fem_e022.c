@@ -20,7 +20,7 @@
    the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA
    02239, USA.
 
-	FEM Solver - Element 022 (2D link contact element)
+	FEM Solver - Element 022 (2D link target element)
 */
 
 #include "fem_elem.h"
@@ -69,7 +69,7 @@ int e022_res_p_loc(long ePos, long point, double *x, double *y, double *z)
 int addElem_022(void)
 {
 	int rv = AF_OK;
-	static long type    = 1 ;
+	static long type    = 22 ;
 	static long dim     = 1 ;
 	static long nodes   = 2 ;
 	static long dofs    = 2 ;
