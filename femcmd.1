@@ -649,14 +649,21 @@ export
 Export data to solver format and save them to file.
 .TP
 import
-\fBimport,format(fem|gmsh),filename\fP
-Imports data from solver format and save them to file. Only nodes, elements, gravitation
-and loads/supports on nodes are imported. Alternatively, GMSH mesh files can also be imported.
-In this case element and material types and real sets should be defined
-\fBbeore\fP the import (if not then Hooke material and basic element
+\fBimport,format(fem|gmsh|tetgen|netgen),filename[,filename2]\fP
+Imports data from solver format and save them to file. Only nodes,
+elements, gravitation and loads/supports on nodes are imported.
+Alternatively, GMSH mesh files can also be imported. In this case
+element and material types and real sets should be defined
+\fBbefore\fP the import (if not then Hooke material and basic element
 types will be used). No loads or boundary conditions are obtained from
 GMSH. All 2D elements are imported as 2D elements for plane problems
-(PLANE2 or PLANE11).
+(PLANE2 or PLANE11). 
+The \fIfilename2\fP is mandatory for the \fBtetgen\fP import where
+the \fIfilename\fP must be a nodes file (*.node) and the \fIfilename2\fP must
+be a elements file (*.ele). 
+The \fBNetGen\fP files must be in the legacy (text) format.
+All of these imports ignore 2D (shell) elements. Only the tetrahedra
+elements are imported.
 .TP
 prsumm
 \fBsumm\fP

@@ -4,6 +4,15 @@ See fem/ChangeLog for solver changes.
 
 
 
+### Thu Jan 31 19:11:00 CET 2013
+
+version 0.2.64
+
+features:
+  + modal analysis from GUI
+
+
+
 ### Sun Nov  4 22:07:23 CET 2012
 
 features:

@@ -142,7 +142,7 @@ int femMassDistrNewm(long step)
   return(AF_OK);
 }
 
-/** Simple implicit dynamics solver: see Bitnar, Rericha: "Metoda
+/** Simple dynamics solver: see Bitnar, Rericha: "Metoda
  * konecnych prvku v dynamice konstrukci", SNTL, Prague, 1981, p. 122
  * Newmark time integration procedure is used
  *

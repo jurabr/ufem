@@ -426,7 +426,7 @@ int func_fem_solve(char *cmd)
       case 3:
       case 4:
       case 6:
-        /* TODO: construct the parameters: */
+        /* bnon-linear static: construct the parameters: */
         for (i=0; i< (FEM_STR_LEN*2+1); i++) { params[i] = '\0' ; }
         sprintf(params,"-ssor -p %s -nlnbrk -nls %li -nlstp %li -nlit %li -nlf %s -ose %li -osf %s -ln %li -lf %s -lrf %s -np %i",
             ret_minus_p(itersp),
@@ -454,6 +454,30 @@ int func_fem_solve(char *cmd)
           ) ;
 
         break;
+      case 7:
+        /* modal analysis: construct the parameters: */
+        for (i=0; i< (FEM_STR_LEN*2+1); i++) { params[i] = '\0' ; }
+        sprintf(params,"-p %s -mod %li -nlit %li -ose 1 -osf %s -np %i",
+            ret_minus_p(itersp),
+            steps,
+            iters,
+            ciSetPath(femGetDataDir(), femGetJobname(), "it"),
+            femCmdNumProcSolver
+            );
+        for (i=0; i< (FEM_STR_LEN*2+1); i++) {if(params[i]==','){params[i]='_';}}
+
+#ifdef DEVEL_VERBOSE
+        fprintf(msgout,"[d] Solver command line: \"%s\"\n",params);
+#endif
+
+        rv = femRunSolver(
+          params, 
+          ciSetPath(femGetDataDir(), femGetJobname(), "fem"),
+          ciSetPath(femGetDataDir(), femGetJobname(), "res")
+          ) ;
+
+        break;
+
       default:
         fprintf(msgout,"[E] %s!\n", _("Solver failed - unsupported type of solution"));
 	      return ( tuiCmdReact(cmd, AF_ERR) ) ;
@@ -915,17 +939,17 @@ int func_fem_import(char *cmd)
 
             if (fname1 == NULL)
             {
-	  	        fprintf(msgout,"[E] %s!\n", _("Invalid name of secodn input file"));
+	  	        fprintf(msgout,"[E] %s!\n", _("Invalid name of second input file"));
 	            free(fname1) ;  fname1  = NULL ; goto memFree ;
             }
             if (strlen(fname1) < 1)
             {
-	  	        fprintf(msgout,"[E] %s!\n", _("Invalid name of secodn input file"));
+	  	        fprintf(msgout,"[E] %s!\n", _("Invalid name of second input file"));
 	            free(fname1) ;  fname1  = NULL ; goto memFree ;
             }
             if ((fname1[0] == '\0')||(fname1[0] == ' ')||(fname1[0] == '\t')||(fname1[0] == ','))
             {
-		  	      fprintf(msgout,"[E] %s!\n", _("Invalid name of secodn input file"));
+		  	      fprintf(msgout,"[E] %s!\n", _("Invalid name of second input file"));
 	            free(fname1) ;  fname1  = NULL ; goto memFree ;
             }
 

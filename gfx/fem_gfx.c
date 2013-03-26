@@ -1170,6 +1170,18 @@ void femPostPlot(long x0, long y0,int x1, int y1, int Mode)
     sprintf(str, "%s:%10li", _("Loads"), fdbInputTabLenAll(NLOAD));
 	  glRasterPos2f(0,1-(15.5*item)); femPlotStringHere(str,NULL);
 
+    /* Active data stuff: */
+    sprintf(str, "%s:%10li", _("ActET"), fdbSetInputDefET(0));
+	  glRasterPos2f(0,1-(17.5*item)); femPlotStringHere(str,NULL);
+
+    sprintf(str, "%s:%10li", _("ActRS"), fdbSetInputDefRS(0));
+	  glRasterPos2f(0,1-(18.5*item)); femPlotStringHere(str,NULL);
+
+    sprintf(str, "%s:%10li", _("ActM "), fdbSetInputDefMAT(0));
+	  glRasterPos2f(0,1-(19.5*item)); femPlotStringHere(str,NULL);
+
+    sprintf(str, "%s:%10li", _("Divs "), fdbSetInputDefDiv(0));
+	  glRasterPos2f(0,1-(20.5*item)); femPlotStringHere(str,NULL);
   }
 	
 	glRasterPos2f(0,0.01);

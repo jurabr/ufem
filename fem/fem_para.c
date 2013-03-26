@@ -89,6 +89,7 @@ long  femBreakSolu        = AF_NO ; /* break linear solution after matrices were
 long  femDynamics         = AF_NO ; /* indicates non-static solution */
 long  femEigenModal       = AF_NO ; /* modal solution */
 long  femEigenNum         = 0 ;     /* number of computed mode shapess */
+long  femEigenInvI        = AF_YES ; /* use inverse iterations method for 1st eigenvalue */
 long  femNewmarkEL        = AF_NO ; /* newmark integration solver */
 long  femComputePriceOnly = AF_NO ; /* computer price and exit    */
 long  femThermTrans       = AF_NO ; /* indicates thermal transient solution */
@@ -149,8 +150,9 @@ void fem_help(int argc, char *argv[])
 	fprintf(msgout,"   -nlf FILE ... %s\n", _("save convergence norms (if any) to FILE"));
 	fprintf(msgout,"   -nlnbrk   ... %s\n", _("do not break non-linear solution on unconverged steps"));
 #ifndef USE_MPI
-#if 0
 	fprintf(msgout,"   -mod N    ... %s\n", _("do modal analysis for first N eigenvalues"));
+#if 0
+	fprintf(msgout,"   -modl     ... %s\n", _("force Lanczos solver for rodal analysis"));
 #endif
 
 	fprintf(msgout,"   -nwm      ... %s\n", _("do dynamic analysis by Newmark integration"));
@@ -739,8 +741,19 @@ int fem_parse_params(int argc, char *argv[])
           femEigenModal = AF_YES ;
           femDynamics   = AF_YES ;
           femNewmarkEL  = AF_NO ;
+          femEigenInvI  = AF_YES ;
         }
 			}
+		}
+
+    if (strcmp(argv[i],"-modl") == 0) /* DYNAMICS: Lanczos for modal analysis  */
+		{
+      solNoLinS     = 1 ; /* we need data for linear solution */
+      femEigenModal = AF_YES ;
+      femDynamics   = AF_YES ;
+      femNewmarkEL  = AF_NO ;
+      femEigenInvI  = AF_NO ;
+      femEigenNum   = 1 ; /* just the first eigenvalue is computed! */
 		}
 
     if (strcmp(argv[i],"-nwm") == 0) /* DYNAMICS: Newmark implicit integration */

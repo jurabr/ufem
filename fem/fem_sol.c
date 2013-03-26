@@ -1081,7 +1081,7 @@ int fem_add_loads(long step)
 	/* loads on nodes: */
 	for (i=0; i< nlLen; i++)
 	{
-    if (step > 0)
+    if ((step > 0)&&(transNum > 0))
     {
       if (nlTrPos[i] > -1) 
       {
@@ -1089,10 +1089,19 @@ int fem_add_loads(long step)
 		    if ((rv = femApplyNLoad( nlNode[i], nlType[i], nlDir[i], mult)) != AF_OK)
 		    {
 #ifdef RUN_VERBOSE
-			    fprintf(msgout,"[W] %s: %s=%li %s=%li\n",_("Transent load not applied"),_("node"),nID[nlNode[i]],_("direction"),nlDir[i]);
+			    fprintf(msgout,"[W] %s: %s=%li %s=%li\n",_("Transient load not applied"),_("node"),nID[nlNode[i]],_("direction"),nlDir[i]);
 #endif
 		    }
       }
+			else
+			{
+				if ((rv = femApplyNLoad( nlNode[i], nlType[i], nlDir[i], nlVal[i])) != AF_OK)
+		  	{
+#ifdef RUN_VERBOSE
+			  	fprintf(msgout,"[W] %s: %s=%li %s=%li\n",_("Load not applied"),_("node"),nID[nlNode[i]],_("direction"),nlDir[i]);
+#endif
+		  	}
+			}
     }
     else 
     {
@@ -1128,7 +1137,7 @@ int fem_add_disps(long disp_mode, long step)
 #endif
     if (disp_mode == AF_YES) /* default behaviour */
     {
-      if (step > 0)
+      if ((step > 0)&&(transNum > 0))
       {
         if (nlTrPos[i] > -1) 
         {
@@ -1138,6 +1147,13 @@ int fem_add_disps(long disp_mode, long step)
 			      return(rv);
 		      }
         }
+				else
+				{
+					if ((rv = femApplyNBC( nlNode[i], nlType[i], nlDir[i], nlVal[i])) != AF_OK)
+		    	{
+			    	return(rv);
+		    	}
+				}
       }
       else
       {

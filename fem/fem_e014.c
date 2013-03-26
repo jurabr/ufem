@@ -102,7 +102,7 @@ int e014_local_stiff_matrix(long ePos,
   return(rv);
 }
 
-#if 0
+#if 1
 int e014_T_mat2(
     double xa, 
     double ya, 
@@ -116,47 +116,41 @@ int e014_T_mat2(
   long i, j ;
   double a[4],b[4],c[4]  ;
   double xc, yc, zc ;
-  double xba, xca ;
-  double yba, yca ;
-  double zba, zca ;
-  double A, B, C, D ;
+  double dx, dy, dz ;
   double L ;
+  double A, B, C, D ;
 
-  L = sqrt ( pow(xa-xb,2) + pow(ya-yb,2) + pow(za-zb,2) ) ;
-
-  xba = xb - xa ;
-  yba = yb - ya ;
-  zba = zb - za ;
+  dx = xb - xa;
+  dy = yb - ya ;
+  dz = zb - za ;
+  
+  L = sqrt ( pow(dx,2) + pow(dy,2) + pow(dz,2) ) ;
 
   /* "c" point: */
-  if (fabs(xa-xb) < FEM_ZERO)
+  if (fabs(ya-yb)*(xa-xb) < FEM_ZERO)
   {
     /* collumn in x-y plane */
-    xc = xa - L ;
-    yc = ya ;
-    zc = za ;
+    xc = xb + L ;
+    yc = yb ;
+    zc = zb ;
   }
   else
   {
     /* normal */
-    xc = 0.5*(xa+xb) ;
-    yc = 0.5*(ya+yb)-L ;
-    zc = 0.5*(za+zb) ;
+    xc = xb;
+    yc = yb;
+    zc = zb + L ;
   }
 
-  xca = xc - xa ;
-  yca = yc - ya ;
-  zca = zc - za ;
+  a[1] = ( xb - xa ) / L ;
+  a[2] = ( yb - ya ) / L ;
+  a[3] = ( zb - za ) / L ;
 
-  A = yca * zba - yba * zca ;
-  B = xba * zca - xca * zba ;
-  C = xca * yba - xba * yca ;
+  A = (yc-ya)*(zb-za) - (yb-ya)*(zc-za) ;
+  B = (zc-za)*(xb-xa) - (zb-za)*(xc-xa) ;
+  C = (xc-xa)*(yb-ya) - (xb-xa)*(yc-ya) ;
 
   D = sqrt ( A*A + B*B + C*C ) ;
-
-  a[1] = xba / L ;
-  b[1] = yba / L ;
-  c[1] = zba / L ;
 
   a[2] = A / D ;
   b[2] = B / D ;
@@ -170,9 +164,9 @@ int e014_T_mat2(
   {
     for (j=1; j<=3; j++)
     {
-      femMatPut(T, 1+i*3, j+i*3,  a[j] ) ;
-      femMatPut(T, 2+i*3, j+i*3,  b[j] ) ;
-      femMatPut(T, 3+i*3, j+i*3,  c[j] ) ;
+      femMatPut(T, j+i*3, 1+i*3,  a[j] ) ;
+      femMatPut(T, j+i*3, 2+i*3,  b[j] ) ;
+      femMatPut(T, j+i*3, 3+i*3,  c[j] ) ;
     }
   }
 

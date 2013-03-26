@@ -102,6 +102,7 @@ int femReadInputLoads(FILE *fr)
 		{
 			fscanf(fr,"%li %li %li %lf",
 			&nlNode[i], &nlType[i], &nlDir[i], &nlVal[i]); 
+			nlTrPos[i] = -1 ;
 #ifdef DEVEL_VERBOSE
 			fprintf(msgout,"nl: n=%li typ=%li dir=%li val=%f\n", 
 			nlNode[i], nlType[i], nlDir[i], nlVal[i]); 
@@ -127,6 +128,7 @@ int femReadInputLoads(FILE *fr)
 			fscanf(fr,"%li %li %li",
 					&elElem[i], &elType[i], &elFrom[i]);
 			sum += elFrom[i];
+			elTrPos[i] = -1 ;
 #ifdef DEVEL_VERBOSE
 			fprintf(msgout,"el: e = %li: t=%li nn=%li\n",
 					elElem[i], elType[i], elFrom[i]);
@@ -189,8 +191,10 @@ int femReadRepeatData(FILE *fr)
     return(AF_OK);
   }
 
-  if ((transNum > 0) && (dynNum > 0))
+  if ( (dynNum > 0))
   {
+    if (transNum > 0)
+		{
 		if ((transType  = femIntAlloc(transNum)) == NULL) {rv=AF_ERR_MEM; goto memFree; }
 		if ((transPos  = femIntAlloc(transNum)) == NULL) {rv=AF_ERR_MEM; goto memFree; }
 
@@ -267,6 +271,7 @@ int femReadRepeatData(FILE *fr)
           break;
       }
     }
+		} /* end of transNum > 0 */
   }
   else
   {

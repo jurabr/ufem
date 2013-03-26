@@ -281,6 +281,7 @@ int fem_create_cmd_aliases(void)
   if ((rv=ciAddVarGrp("nrm","2","solver")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("alm","3","solver")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("dds","6","solver")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("modal","7","solver")) != AF_OK) {goto memFree;}
 
   /*if ((rv=ciAddVarGrp("","","")) != AF_OK) {goto memFree;}*/
 

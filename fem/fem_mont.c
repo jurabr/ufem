@@ -78,6 +78,7 @@ long monte_fail_funct_id   = -1   ; /* still ignored */
 
 double monte_max_disp      = 0.0  ; /* maximum allowed displacement */  
 
+
 /* FUNCTIONS */
 
 void monte_io_null(void)
@@ -434,8 +435,8 @@ int monte_init_lib_stuff(char *param)
   femNewmarkEL = AF_YES ;
 #endif
 
-  /* Thermal transient analysis (Newmark integration) */
-#if 0
+  /* TODO Thermal transient analysis (Newmark integration) */
+#if 1
   femThermTrans = AF_YES ;
 #endif
 
@@ -520,7 +521,11 @@ int monte_fill_ofld_data(double *ofld)
     switch (monte_io_var_type[i])
     {
       case MONTE_VTYPE_RES_D:  /* displacements */
-        if ((pos = monte_io_item[i]*KNOWN_DOFS + monte_io_subitem[i]-1) > nDOFlen) {break;}
+        if ((pos = monte_io_item[i]*KNOWN_DOFS + monte_io_subitem[i]-1) > nDOFlen) 
+        {
+          ofld[monte_io_var_pos[i-monte_i_len]] = 0 ;
+          break;
+        }
         pos = nDOFfld[pos] ;
         ofld[monte_io_var_pos[i-monte_i_len]] = femVecGet(&u, pos) ;
         break ;
@@ -799,9 +804,6 @@ int monte_solution(char *param, double *ifld, double *ofld, long if_type)
   /* call solver here */
   if (if_type == 2)
   {
-#if 0
-  if (femNewmarkEL == AF_YES) /* transient dynamics: */
-#endif
 		if (femThermTrans == AF_YES)
 		{
     	if ((rv =  femSolveThermTrans(ofld)) != AF_OK) { goto memFree ; }

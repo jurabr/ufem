@@ -1,3 +1,9 @@
+### Thu Jan 31 19:03:14 CET 2013
+
+features:
+  + inverse iterations method for more than first eigenvalue
+
+
 ### Sat Oct 13 21:04:15 CEST 2012
 
 version 0.4.0
