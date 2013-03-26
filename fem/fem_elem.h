@@ -75,6 +75,8 @@
 #define RS_LNUM         24 /* numbers of sublayers */
 #define RS_EXENTR_Y     25 /* excentricity in Y direction */
 #define RS_EXENTR_Z     26 /* excentricity in Y direction */
+#define RS_FRICT        27 /* friction for contacts */
+#define RS_PAIR_ID      28 /* friction for contacts */
 
 /* structure for finite element */
 typedef struct

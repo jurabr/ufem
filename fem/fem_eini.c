@@ -49,6 +49,8 @@ extern int addElem_017(void);
 extern int addElem_018(void);
 extern int addElem_019(void);
 extern int addElem_020(void);
+extern int addElem_021(void);
+extern int addElem_022(void);
 #endif
 
 int femElemTypeInit(void)
@@ -77,6 +79,8 @@ int femElemTypeInit(void)
 	if ((rv = addElem_018()) != AF_OK){goto memFree;}
 	if ((rv = addElem_019()) != AF_OK){goto memFree;}
 	if ((rv = addElem_020()) != AF_OK){goto memFree;}
+	if ((rv = addElem_021()) != AF_OK){goto memFree;}
+	if ((rv = addElem_022()) != AF_OK){goto memFree;}
 #endif
 
 	if (rv == AF_OK) {return(rv);}
