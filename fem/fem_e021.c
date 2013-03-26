@@ -26,6 +26,7 @@
 #include "fem_elem.h"
 
 extern tVector u;
+extern int e003_res_p_loc(long ePos, long point, double *x, double *y, double *z);
 
 int e021_geom_matrix(long ePos, long Mode, double L, tMatrix *K_s) { return(AF_OK); }
 int e021_stiff(long ePos, long Mode, tMatrix *K_e, tVector *F_e, tVector *Fr_e) { return(AF_OK); }
@@ -33,51 +34,6 @@ int e021_mass(long ePos, tMatrix *M_e) { return(AF_OK); }
 int e021_volume(long ePos, double *val) { return(AF_OK); }
 long e021_rvals(long ePos) { return(4); }
 int e021_eload(long ePos, long mode, tVector *F_e) { return(AF_OK); }
-
-
-int e021_res_p_loc(long ePos, long point, double *x, double *y, double *z)
-{
-	double x1,x2,y1,y2 ;
-  x1 = femGetNCoordPosX(femGetENodePos(ePos,0));
-  y1 = femGetNCoordPosY(femGetENodePos(ePos,0));
-  x2 = femGetNCoordPosX(femGetENodePos(ePos,1));
-  y2 = femGetNCoordPosY(femGetENodePos(ePos,1));
-
-  switch (point)
-  {
-	  case 1:
-	     *x = x1 ;
-	     *y = y1 ;
-			 break ;
-	  case 2:
-	     *x = x2 ;
-	     *y = y2 ;
-			 break ;
-	  default:
-	     *x = 0.5*(x1+x2) ;
-	     *y = 0.5*(y1+y2) ;
-			 break ;
-	}
-
-
-	*z = 0 ;
-
-	return(AF_OK);
-}
-
-int e021_res_node(long ePos, long nPos, long type, double *val)
-{
-	if ((nPos < 1) || (nPos > 2)) { return(AF_ERR); }
-  switch (type)
-  {
-    case RES_FX: *val = femGetEResVal(ePos, RES_FX, nPos) ;
-      return(AF_OK); break ;
-    case RES_FY: *val = femGetEResVal(ePos, RES_FX, nPos) ;
-      return(AF_OK); break ;
-    default: return(AF_ERR); break ;
-  }
-  return(AF_ERR);
-}
 
 int addElem_021(void)
 {
@@ -114,8 +70,8 @@ int addElem_021(void)
 	Elem[type].mass  = e021_mass;
 	Elem[type].rvals = e021_rvals;
 	Elem[type].eload = e021_eload;
-	Elem[type].res_p_loc = e021_res_p_loc;
-	Elem[type].res_node = e021_res_node;
+	Elem[type].res_p_loc = e003_res_p_loc;
+	Elem[type].res_node = e000_res_node;
 	Elem[type].volume = e021_volume;
 	Elem[type].therm = e000_therm;
 	return(rv);

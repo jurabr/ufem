@@ -26,6 +26,7 @@
 #include "fem_elem.h"
 
 extern tVector u;
+extern int e003_res_p_loc(long ePos, long point, double *x, double *y, double *z);
 
 int e022_geom_matrix(long ePos, long Mode, double L, tMatrix *K_s) { return(AF_OK); }
 int e022_stiff(long ePos, long Mode, tMatrix *K_e, tVector *F_e, tVector *Fr_e) { return(AF_OK); }
@@ -65,20 +66,6 @@ int e022_res_p_loc(long ePos, long point, double *x, double *y, double *z)
 	return(AF_OK);
 }
 
-int e022_res_node(long ePos, long nPos, long type, double *val)
-{
-	if ((nPos < 1) || (nPos > 2)) { return(AF_ERR); }
-  switch (type)
-  {
-    case RES_FX: *val = femGetEResVal(ePos, RES_FX, nPos) ;
-      return(AF_OK); break ;
-    case RES_FY: *val = femGetEResVal(ePos, RES_FX, nPos) ;
-      return(AF_OK); break ;
-    default: return(AF_ERR); break ;
-  }
-  return(AF_ERR);
-}
-
 int addElem_022(void)
 {
 	int rv = AF_OK;
@@ -114,8 +101,8 @@ int addElem_022(void)
 	Elem[type].mass  = e022_mass;
 	Elem[type].rvals = e022_rvals;
 	Elem[type].eload = e022_eload;
-	Elem[type].res_p_loc = e022_res_p_loc;
-	Elem[type].res_node = e022_res_node;
+	Elem[type].res_p_loc = e003_res_p_loc;
+	Elem[type].res_node = e000_res_node;
 	Elem[type].volume = e022_volume;
 	Elem[type].therm = e000_therm;
 	return(rv);
