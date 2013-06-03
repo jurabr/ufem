@@ -199,14 +199,17 @@ int resPathDelLastNode(int num, int node)
 int femPathList(FILE *fw, long from, long to)
 {
   int  rv = AF_OK ;
-  long i, j, ifrom, ito ;
+  long i, j, ifrom, ito, pos ;
+  double x = 0 ;
+  double y = 0 ;
+  double z = 0 ;
 
   if ((rv=fdbPrnOpenFile(fw)) != AF_OK)
   {
     return(rv);
   }
 
-  fdbPrnBeginTable(fw, 2, _("Paths")) ;
+  fdbPrnBeginTable(fw, 5, _("Paths")) ;
 
 	ifrom = from ;
 	if (from < 0) {ifrom = 0 ;}
@@ -215,6 +218,8 @@ int femPathList(FILE *fw, long from, long to)
 	if (to < ifrom){ito=ifrom;}
 	if (to >= PATH_NUM) {to=PATH_NUM-1;}
 
+  fdbPrnTableItemStr(fw,0, _("Path"));
+  fdbPrnTableItemStr(fw,1, _("Number of nodes"));
   for (i=ifrom; i<=ito; i++)
   {
     if (femPath[i].len > 0)
@@ -227,11 +232,28 @@ int femPathList(FILE *fw, long from, long to)
 
   for (i=ifrom; i<=ito; i++) 
 	{
-    fdbPrnBeginTable(fw, 1, femPath[i].desc) ;
+    fdbPrnBeginTable(fw, 4, femPath[i].desc) ;
     if (femPath[i].len > 0)
 		{
-			for (j=0; j<femPath[i].len; j++)
-			  { fdbPrnTableItemInt(fw,0, femPath[i].node[j]); }
+      fdbPrnTableItemStr(fw,0, _("Node"));
+      fdbPrnTableItemStr(fw,1, _("X"));
+      fdbPrnTableItemStr(fw,2, _("Y"));
+      fdbPrnTableItemStr(fw,3, _("Z"));
+			for (j=0; j<femPath[i].len; j++) 
+      { 
+        fdbPrnTableItemInt(fw,0, femPath[i].node[j]); 
+
+        x = 0 ; y = 0 ; z = 0 ;
+	      if (fdbInputCountInt(NODE, NODE_ID, femPath[i].node[j], &pos) > 0)
+	      {
+          x = fdbInputGetDbl(NODE, NODE_X, pos) ;
+          y = fdbInputGetDbl(NODE, NODE_Y, pos) ;
+          z = fdbInputGetDbl(NODE, NODE_Z, pos) ;
+	      }
+        fdbPrnTableItemDbl(fw,1, x); 
+        fdbPrnTableItemDbl(fw,2, y); 
+        fdbPrnTableItemDbl(fw,3, z); 
+      }
 		}
 	}
   fdbPrnEndTable(fw) ;
@@ -241,7 +263,7 @@ int femPathList(FILE *fw, long from, long to)
 }
 
 /** Prints results on path 
- * @param fw poiinter to file
+ * @param fw pointer to file
  * @param path_num path number
  * @param res_type list of result types (numbers)
  * @param type_len number of result types (size of res_type)
