@@ -1103,6 +1103,102 @@ void fdbElemTypeInit_020(long type) /* 2D isoparametric thermal */
 	fdbElementType[type].ellist  = ellist ;
 }
 
+/* 2D contact  */
+void fdbElemTypeInit_021(long type)
+{
+	static long id            = 21 ;
+	static long dim           = 1 ;
+	static long nodes         = 2 ;
+	static long ndofs         = 2 ;
+	static long ndof[2]       = {U_X,U_Y} ;
+	static long reals         = 2 ;
+	static long r[2]          = {RS_FRICT,RS_PAIR_ID} ;
+	static long reals_rep     = 0 ;
+	static long *r_rep        = NULL ;
+	static long gtype         = 1 ;
+	static long getype        = 1 ;
+	static long eloads        = 0 ;
+	static long *eload        = NULL ;
+	static long res           = 0 ;
+	static long *nres       = NULL ;
+	static long res_rp        = 2 ;
+	static long nres_rp [2]   = {RES_FX,RES_FY} ;
+  static long ellist_len    = 0 ;
+  static long *ellist       = NULL ;
+
+	fdbElementType[type].id         = id ;
+	fdbElementType[type].dim        = dim ;
+	fdbElementType[type].nodes      = nodes ;
+	fdbElementType[type].ndofs      = ndofs ;
+	fdbElementType[type].ndof       = ndof ;
+	fdbElementType[type].reals      = reals ;
+	fdbElementType[type].r          = r ;
+	fdbElementType[type].reals_rep  = reals_rep ;
+	fdbElementType[type].r_rep      = r_rep ;
+	fdbElementType[type].gtype      = gtype ;
+	fdbElementType[type].getype     = getype ;
+	fdbElementType[type].eloads     = eloads ;
+	fdbElementType[type].eload      = eload ;
+
+	fdbElementType[type].res        = res ;
+	fdbElementType[type].nres       = nres ;
+	fdbElementType[type].res_rp     = res_rp ;
+	fdbElementType[type].nres_rp    = nres_rp ;
+
+	fdbElementType[type].node_res   = node_res_001 ;
+
+	fdbElementType[type].ellist_len = ellist_len ;
+	fdbElementType[type].ellist     = ellist ;
+}
+/* 2D target  */
+void fdbElemTypeInit_022(long type)
+{
+	static long id            = 22 ;
+	static long dim           = 1 ;
+	static long nodes         = 2 ;
+	static long ndofs         = 2 ;
+	static long ndof[2]       = {U_X,U_Y} ;
+	static long reals         = 2 ;
+	static long r[2]          = {RS_FRICT,RS_PAIR_ID} ;
+	static long reals_rep     = 0 ;
+	static long *r_rep        = NULL ;
+	static long gtype         = 1 ;
+	static long getype        = 1 ;
+	static long eloads        = 0 ;
+	static long *eload        = NULL ;
+	static long res           = 0 ;
+	static long *nres       = NULL ;
+	static long res_rp        = 2 ;
+	static long nres_rp [2]   = {RES_FX,RES_FY} ;
+  static long ellist_len    = 0 ;
+  static long *ellist       = NULL ;
+
+	fdbElementType[type].id         = id ;
+	fdbElementType[type].dim        = dim ;
+	fdbElementType[type].nodes      = nodes ;
+	fdbElementType[type].ndofs      = ndofs ;
+	fdbElementType[type].ndof       = ndof ;
+	fdbElementType[type].reals      = reals ;
+	fdbElementType[type].r          = r ;
+	fdbElementType[type].reals_rep  = reals_rep ;
+	fdbElementType[type].r_rep      = r_rep ;
+	fdbElementType[type].gtype      = gtype ;
+	fdbElementType[type].getype     = getype ;
+	fdbElementType[type].eloads     = eloads ;
+	fdbElementType[type].eload      = eload ;
+
+	fdbElementType[type].res        = res ;
+	fdbElementType[type].nres       = nres ;
+	fdbElementType[type].res_rp     = res_rp ;
+	fdbElementType[type].nres_rp    = nres_rp ;
+
+	fdbElementType[type].node_res   = node_res_001 ;
+
+	fdbElementType[type].ellist_len = ellist_len ;
+	fdbElementType[type].ellist     = ellist ;
+}
+
+
 
 /** Empty load */
 void fdbElemLoadTypeInit_000(long type)
@@ -1180,6 +1276,8 @@ void fdbDefElemTypes(void)
 	fdbElemTypeInit_018(18);
 	fdbElemTypeInit_019(19);
 	fdbElemTypeInit_020(20);
+	fdbElemTypeInit_021(21);
+	fdbElemTypeInit_022(22);
 
 	/* Element loads: */
 	fdbElemLoadTypeInit_000(0);
