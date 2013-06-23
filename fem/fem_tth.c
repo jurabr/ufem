@@ -70,6 +70,45 @@ extern int femLinEqSystemSolve(tMatrix *Ks, tVector *Fs, tVector *us);
  */
 extern int monte_fill_ofld_data(double *ofld);
 
+/** Checks default size of time steps */
+int femCheckTTHstepSize(double d_t)
+{
+  long   ePos, eT ;
+  long   kxx_num    = 0 ;
+  double char_size  = 1.0  ;
+  double kxx        = 1.0  ;
+  double d_comp, A ;
+  double kxx1       = 0.0 ;
+  double char_size1 = 0.0 ;
+
+  for (ePos=0; ePos < eLen; ePos++)
+  {
+		eT = femGetETypePos(ePos); /* element type */
+    if (eT == 18)
+    {
+      kxx1 = femGetMPValPos(ePos, MAT_KXX, 0) ;
+	    A=e011_area(ePos);
+      if (fabs(kxx1) > FEM_ZERO) 
+      {
+        char_size1 = sqrt(A);
+        kxx += kxx1 ;
+        kxx_num++ ;
+      }
+    }
+  }
+  char_size = char_size1 / ((double) kxx_num) ;
+  kxx = kxx / ((double) kxx_num) ;
+
+  if (fabs(kxx) < FEM_ZERO) {return(AF_ERR_VAL);}
+
+  d_comp = (char_size*char_size) /  (4.0*kxx) ;
+
+  if (d_comp <(1.5*d_t)) {fprintf(msgout,"[w] %s!\n",_("Step soze too small")); return(AF_ERR_VAL);}
+  if (d_comp >(1.5*d_t)) {fprintf(msgout,"[w] %s!\n",_("Step soze too big")); return(AF_ERR_VAL);}
+
+  fprintf(msgout,"[i] %s: %f, %s: %f\n",_("Recommended step size"),d_comp,_("actual size"),d_t);
+  return(AF_OK) ;
+}
 
 /** Simple dynamics solver: Newmark time integration procedure is used
  *
@@ -88,6 +127,10 @@ int femSolveThermTrans(double *ofld)
 
 	steps = dynNum ;
   d_t   = dynStp ;
+
+#ifdef RUN_VERBOSE
+  femCheckTTHstepSize(d_t) ; /* return not checked so far */
+#endif
 
 #ifndef USE_MONTE
  	if ((rv = femElemTypeInit()) != AF_OK) { goto memFree; }

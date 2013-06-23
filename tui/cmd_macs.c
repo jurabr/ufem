@@ -1199,9 +1199,11 @@ int func_fill_var_prev_eres(char *cmd)
 	int    rv = AF_OK ;
   int    i ;
 	char  *var  = NULL ;
+#ifdef _USE_GFX_
 	char   value[CI_STR_LEN] ;
 
 	for (i=0; i<CI_STR_LEN; i++) { value[i] = '\0' ; }
+#endif
 
 	if (ciParNum(cmd) <= 1)
 	{
@@ -1238,7 +1240,7 @@ int func_fill_var_prev_eres(char *cmd)
 #endif
 
 	free(var) ; var = NULL ;
-	return ( tuiCmdReact(cmd, AF_OK) ) ;
+	return ( tuiCmdReact(cmd, rv) ) ;
 }
 
 /* end of cmd_macs.c */
