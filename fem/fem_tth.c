@@ -103,8 +103,8 @@ int femCheckTTHstepSize(double d_t)
 
   d_comp = (char_size*char_size) /  (4.0*kxx) ;
 
-  if (d_comp <(1.5*d_t)) {fprintf(msgout,"[w] %s!\n",_("Step soze too small")); return(AF_ERR_VAL);}
-  if (d_comp >(1.5*d_t)) {fprintf(msgout,"[w] %s!\n",_("Step soze too big")); return(AF_ERR_VAL);}
+  if (d_comp <(1.5*d_t)) {fprintf(msgout,"[w] %s!\n",_("Step size too small")); return(AF_ERR_VAL);}
+  if (d_comp >(1.5*d_t)) {fprintf(msgout,"[w] %s!\n",_("Step size too big")); return(AF_ERR_VAL);}
 
   fprintf(msgout,"[i] %s: %f, %s: %f\n",_("Recommended step size"),d_comp,_("actual size"),d_t);
   return(AF_OK) ;
