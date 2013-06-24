@@ -37,6 +37,9 @@ extern int fem_add_disps(long disp_mode, long step);
 extern int fem_fill_K(long mode);
 extern int fem_fill_M(void);
 
+/* from fem_e010.c: */
+extern double e011_area(long ePos);
+
 extern long  nDOFAct  ; /* total number of ACTIVE DOFs in structure (== size of "K" matrix) */
 extern long  nDOFlen  ; /* lenght of nDOFfld                        */
 extern long *nDOFfld  ; /* description of DOFs in nodes             */
@@ -75,8 +78,8 @@ int femCheckTTHstepSize(double d_t)
 {
   long   ePos, eT ;
   long   kxx_num    = 0 ;
-  double char_size  = 1.0  ;
-  double kxx        = 1.0  ;
+  double char_size  = 0.0  ;
+  double kxx        = 0.0  ;
   double d_comp, A ;
   double kxx1       = 0.0 ;
   double char_size1 = 0.0 ;
@@ -86,25 +89,35 @@ int femCheckTTHstepSize(double d_t)
 		eT = femGetETypePos(ePos); /* element type */
     if (eT == 18)
     {
-      kxx1 = femGetMPValPos(ePos, MAT_KXX, 0) ;
 	    A=e011_area(ePos);
+      kxx1 = femGetMPValPos(ePos, MAT_KXX, 0) ;
+
       if (fabs(kxx1) > FEM_ZERO) 
       {
         char_size1 = sqrt(A);
+        char_size += char_size1 ;
         kxx += kxx1 ;
         kxx_num++ ;
       }
     }
   }
-  char_size = char_size1 / ((double) kxx_num) ;
+  char_size = char_size / ((double) kxx_num) ;
   kxx = kxx / ((double) kxx_num) ;
 
   if (fabs(kxx) < FEM_ZERO) {return(AF_ERR_VAL);}
 
   d_comp = (char_size*char_size) /  (4.0*kxx) ;
 
-  if (d_comp <(1.5*d_t)) {fprintf(msgout,"[w] %s!\n",_("Step size too small")); return(AF_ERR_VAL);}
-  if (d_comp >(1.5*d_t)) {fprintf(msgout,"[w] %s!\n",_("Step size too big")); return(AF_ERR_VAL);}
+  if (d_comp <(1.5*d_t)) 
+  {
+    fprintf(msgout,"[w] %s (%s: %f, %s: %f)!\n",_("Step size too small"),_("ideal"),d_comp,_("actual"),d_t); 
+    return(AF_ERR_VAL);
+  }
+  if (d_comp >(1.5*d_t)) 
+  {
+    fprintf(msgout,"[w] %s (%s: %f, %s: %f)!\n",_("Step size too big"),_("ideal"),d_comp,_("actual"),d_t); 
+    return(AF_ERR_VAL);
+  }
 
   fprintf(msgout,"[i] %s: %f, %s: %f\n",_("Recommended step size"),d_comp,_("actual size"),d_t);
   return(AF_OK) ;
@@ -128,13 +141,13 @@ int femSolveThermTrans(double *ofld)
 	steps = dynNum ;
   d_t   = dynStp ;
 
-#ifdef RUN_VERBOSE
-  femCheckTTHstepSize(d_t) ; /* return not checked so far */
-#endif
-
 #ifndef USE_MONTE
  	if ((rv = femElemTypeInit()) != AF_OK) { goto memFree; }
  	if ((rv = femMatTypeInit()) != AF_OK) { goto memFree; }
+
+#ifdef RUN_VERBOSE /* Tests time step size */
+  femCheckTTHstepSize(d_t) ; /* return not checked so far */
+#endif
 
   fem_sol_null();
   femResNull();
