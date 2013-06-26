@@ -359,6 +359,11 @@ int fdb_import_from_fem(FILE *fr, long *opts, long optlen)
 				type = 21 + set_dir ;
 				dt = 1 ;
 				break ;
+			case 9: /* thermal loads */
+				type = 0 + set_dir ;
+				dt = 2 ;
+				break ;
+
 
 			default:
 				type = 0 ;
