@@ -219,6 +219,8 @@ int fdbMeshEnt002(long entPos)
   long   enodelist[4] ;
   long   i, j ;
   long   sum ;
+  int    etype_pos ;
+  int    etype = 2 ;
   double x,y,z ;
   double xi[8] ;
   double yi[8] ;
@@ -309,7 +311,18 @@ int fdbMeshEnt002(long entPos)
   mat = fdbInputGetInt(ENTITY, ENTITY_MAT,   entPos) ;
   set = fdbInputGetInt(ENTITY, ENTITY_SET,   entPos) ;
 
+  etype_pos = fdbInputFindNextInt(ETYPE, ETYPE_ID, 0,  et) ;
+  if (etype_pos < 0)
+  { 
+	  fprintf(msgout, "[E] %s!\n", _("Bad element type"));
+	  femIntFree(nodes) ;
+	  return(rv);
+  }
+  etype     = fdbInputGetInt(ETYPE, ETYPE_TYPE, etype_pos) ;
+
   /* elements: FOUR-NODES ELEMENTS ONLY */
+  if ((etype != 11) && (etype != 18))
+  {
   for (i=0; i<(ilen); i++)
   {
     for (j=0; j<(jlen); j++)
@@ -335,6 +348,54 @@ int fdbMeshEnt002(long entPos)
 			  return(rv);
 		  }
     }
+  }
+  } else {
+  /* elements: THREE-NODE ELEMENTS */
+  for (i=0; i<(ilen); i++)
+  {
+    for (j=0; j<(jlen); j++)
+    {
+      if ((rv=f_e_new_change(0, et, rs, mat, set)) != AF_OK)
+		  {
+			  fprintf(msgout, "[E] %s!\n", _("Creating of element failed"));
+			  femIntFree(nodes) ;
+			  return(rv);
+		  }
+  
+		  e_id = fdbInputFindMaxInt(ELEM, ELEM_ID) ;
+  
+      enodelist[0] = nodes[i + j*(ilen+1) + 0] ;
+      enodelist[1] = nodes[i + j*(ilen+1) + 1] ;
+      enodelist[2] = nodes[i + (j+1)*(ilen+1) + 1] ;
+      
+      if ((rv=f_en_change(e_id, enodelist, 3))  != AF_OK)
+		  {
+			  fprintf(msgout, "[E] %s!\n", _("Creating of element failed (bad nodes)"));
+			  femIntFree(nodes) ;
+			  return(rv);
+		  }
+      /* element 2 */
+      if ((rv=f_e_new_change(0, et, rs, mat, set)) != AF_OK)
+		  {
+			  fprintf(msgout, "[E] %s!\n", _("Creating of element failed"));
+			  femIntFree(nodes) ;
+			  return(rv);
+		  }
+  
+		  e_id = fdbInputFindMaxInt(ELEM, ELEM_ID) ;
+  
+      enodelist[0] = nodes[i + j*(ilen+1) + 0] ;
+      enodelist[1] = nodes[i + (j+1)*(ilen+1) + 1] ;
+      enodelist[2] = nodes[i + (j+1)*(ilen+1) + 0] ;
+      
+      if ((rv=f_en_change(e_id, enodelist, 3))  != AF_OK)
+		  {
+			  fprintf(msgout, "[E] %s!\n", _("Creating of element failed (bad nodes)"));
+			  femIntFree(nodes) ;
+			  return(rv);
+		  }
+    }
+  }
   }
 
   femIntFree(nodes) ;

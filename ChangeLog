@@ -4,6 +4,15 @@ See fem/ChangeLog for solver changes.
 
 
 
+### Tue Jul  9 21:53:46 CEST 2013
+
+version 0.2.65
+
+features:
+  + triangle elements (11, 18) can be used for automatic regular meshes
+
+
+
 ### Thu Jan 31 19:11:00 CET 2013
 
 version 0.2.64
