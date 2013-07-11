@@ -916,10 +916,10 @@ int fdbMeshEnt004(long entPos)
 			    return(rv);
 		    }
   
-        enodelist[0] = nodes[i + (k+1)*((ilen+1)*(jlen+1))+(j+1)*(ilen+1) + 0] ; /* 8 */
-        enodelist[1] = nodes[i + (k+1)*((ilen+1)*(jlen+1))+j*(ilen+1) + 0] ;     /* 5 */
-        enodelist[2] = nodes[i + (k+1)*((ilen+1)*(jlen+1))+j*(ilen+1) + 1] ;     /* 6 */
-        enodelist[3] = nodes[i + k*((ilen+1)*(jlen+1))+j*(ilen+1) + 0] ;         /* 1 */
+        enodelist[0] = nodes[i + (k+1)*((ilen+1)*(jlen+1))+j*(ilen+1) + 1] ;     /* 6 */
+        enodelist[1] = nodes[i + k*((ilen+1)*(jlen+1))+j*(ilen+1) + 0] ;         /* 1 */
+        enodelist[2] = nodes[i + (k+1)*((ilen+1)*(jlen+1))+j*(ilen+1) + 0] ;     /* 5 */
+        enodelist[3] = nodes[i + (k+1)*((ilen+1)*(jlen+1))+(j+1)*(ilen+1) + 0] ; /* 8 */
       
         if ((rv=f_en_change(e_id, enodelist, 4))  != AF_OK)
 		    {
@@ -937,8 +937,8 @@ int fdbMeshEnt004(long entPos)
 		    }
   
         enodelist[0] = nodes[i + (k+1)*((ilen+1)*(jlen+1))+(j+1)*(ilen+1) + 0] ; /* 8 */
-        enodelist[1] = nodes[i + k*((ilen+1)*(jlen+1))+j*(ilen+1) + 0] ;         /* 1 */
-        enodelist[2] = nodes[i + k*((ilen+1)*(jlen+1))+(j+1)*(ilen+1) + 1] ;     /* 3 */
+        enodelist[1] = nodes[i + k*((ilen+1)*(jlen+1))+(j+1)*(ilen+1) + 1] ;     /* 3 */
+        enodelist[2] = nodes[i + k*((ilen+1)*(jlen+1))+j*(ilen+1) + 0] ;         /* 1 */
         enodelist[3] = nodes[i + k*((ilen+1)*(jlen+1))+(j+1)*(ilen+1) + 0] ;     /* 4 */
       
         if ((rv=f_en_change(e_id, enodelist, 4))  != AF_OK)
@@ -958,8 +958,8 @@ int fdbMeshEnt004(long entPos)
   
         enodelist[0] = nodes[i + (k+1)*((ilen+1)*(jlen+1))+(j+1)*(ilen+1) + 0] ; /* 8 */
         enodelist[1] = nodes[i + (k+1)*((ilen+1)*(jlen+1))+j*(ilen+1) + 1] ;     /* 6 */
-        enodelist[2] = nodes[i + (k+1)*((ilen+1)*(jlen+1))+(j+1)*(ilen+1) + 1] ; /* 7 */
-        enodelist[3] = nodes[i + k*((ilen+1)*(jlen+1))+(j+1)*(ilen+1) + 1] ;     /* 3 */
+        enodelist[2] = nodes[i + k*((ilen+1)*(jlen+1))+(j+1)*(ilen+1) + 1] ;     /* 3 */
+        enodelist[3] = nodes[i + (k+1)*((ilen+1)*(jlen+1))+(j+1)*(ilen+1) + 1] ; /* 7 */
       
         if ((rv=f_en_change(e_id, enodelist, 4))  != AF_OK)
 		    {
@@ -976,10 +976,10 @@ int fdbMeshEnt004(long entPos)
 			    return(rv);
 		    }
   
-        enodelist[0] = nodes[i + (k+1)*((ilen+1)*(jlen+1))+(j+1)*(ilen+1) + 0] ; /* 8 */
-        enodelist[1] = nodes[i + (k+1)*((ilen+1)*(jlen+1))+j*(ilen+1) + 1] ;     /* 6 */
-        enodelist[2] = nodes[i + k*((ilen+1)*(jlen+1))+(j+1)*(ilen+1) + 1] ;     /* 3 */
-        enodelist[3] = nodes[i + k*((ilen+1)*(jlen+1))+j*(ilen+1) + 0] ;         /* 1 */
+        enodelist[0] = nodes[i + k*((ilen+1)*(jlen+1))+j*(ilen+1) + 0] ;         /* 1 */
+        enodelist[1] = nodes[i + (k+1)*((ilen+1)*(jlen+1))+(j+1)*(ilen+1) + 0] ; /* 8 */
+        enodelist[2] = nodes[i + (k+1)*((ilen+1)*(jlen+1))+j*(ilen+1) + 1] ;     /* 6 */
+        enodelist[3] = nodes[i + k*((ilen+1)*(jlen+1))+(j+1)*(ilen+1) + 1] ;     /* 3 */
       
         if ((rv=f_en_change(e_id, enodelist, 4))  != AF_OK)
 		    {
