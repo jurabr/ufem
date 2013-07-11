@@ -159,8 +159,8 @@ int fdbGeomEntInit004(long num)
   static long  divtp[12] = {1,2,1,2, 1,2,1,2, 3, 3, 3, 3} ;
   static long  divk1[12] = {0,2,4,6, 8,10,12,14,0, 2, 4, 6} ;
   static long  divk2[12] = {2,4,6,0,10,12,14, 8,8,10,12,14} ;
-	static long  etypes   = 2 ;
-	static long  etype[2] = {9,10} ;
+	static long  etypes   = 4 ;
+	static long  etype[4] = {4,9,10,19} ;
 
 	if (num != type) {fprintf(msgout,"[E] %s %li!\n",
 			_("Fatal error at the geometry type"),num);

@@ -771,6 +771,8 @@ int fdbMeshEnt004(long entPos)
   long   enodelist[8] ;
   long   i, j, k ;
   long   sum ;
+  int    etype_pos ;
+  int    etype = 9 ;
   double x,y,z ;
   double xi[20] ;
   double yi[20] ;
@@ -865,7 +867,130 @@ int fdbMeshEnt004(long entPos)
   mat = fdbInputGetInt(ENTITY, ENTITY_MAT,   entPos) ;
   set = fdbInputGetInt(ENTITY, ENTITY_SET,   entPos) ;
 
+  etype_pos = fdbInputFindNextInt(ETYPE, ETYPE_ID, 0,  et) ;
+  if (etype_pos < 0)
+  { 
+	  fprintf(msgout, "[E] %s!\n", _("Bad element type"));
+	  femIntFree(nodes) ;
+	  return(rv);
+  }
+  etype     = fdbInputGetInt(ETYPE, ETYPE_TYPE, etype_pos) ;
+
   /* elements: EIGHT-NODES ELEMENTS ONLY */
+  if ((etype == 4) || (etype == 19))
+  {
+  for (i=0; i<(ilen); i++)
+  {
+    for (j=0; j<(jlen); j++)
+    {
+      for (k=0; k<(klen); k++)
+      {
+		    e_id = fdbInputFindMaxInt(ELEM, ELEM_ID) ;
+        e_id++;
+
+        /* element 1: */
+        if ((rv=f_e_new_change(e_id, et, rs, mat, set)) != AF_OK)
+		    {
+			    fprintf(msgout, "[E] %s!\n", _("Creating of element failed"));
+			    femIntFree(nodes) ;
+			    return(rv);
+		    }
+  
+        enodelist[0] = nodes[i + k*((ilen+1)*(jlen+1))+j*(ilen+1) + 0] ;         /* 1 */
+        enodelist[1] = nodes[i + (k+1)*((ilen+1)*(jlen+1))+j*(ilen+1) + 1] ;     /* 6 */
+        enodelist[2] = nodes[i + k*((ilen+1)*(jlen+1))+j*(ilen+1) + 1] ;         /* 2 */
+        enodelist[3] = nodes[i + k*((ilen+1)*(jlen+1))+(j+1)*(ilen+1) + 1] ;     /* 3 */
+      
+        if ((rv=f_en_change(e_id, enodelist, 4))  != AF_OK)
+		    {
+			    fprintf(msgout, "[E] %s!\n", _("Creating of element failed (bad nodes)"));
+			    femIntFree(nodes) ;
+			    return(rv);
+		    }
+        /* element 2: */
+        e_id++;
+        if ((rv=f_e_new_change(e_id, et, rs, mat, set)) != AF_OK)
+		    {
+			    fprintf(msgout, "[E] %s!\n", _("Creating of element failed"));
+			    femIntFree(nodes) ;
+			    return(rv);
+		    }
+  
+        enodelist[0] = nodes[i + (k+1)*((ilen+1)*(jlen+1))+(j+1)*(ilen+1) + 0] ; /* 8 */
+        enodelist[1] = nodes[i + (k+1)*((ilen+1)*(jlen+1))+j*(ilen+1) + 0] ;     /* 5 */
+        enodelist[2] = nodes[i + (k+1)*((ilen+1)*(jlen+1))+j*(ilen+1) + 1] ;     /* 6 */
+        enodelist[3] = nodes[i + k*((ilen+1)*(jlen+1))+j*(ilen+1) + 0] ;         /* 1 */
+      
+        if ((rv=f_en_change(e_id, enodelist, 4))  != AF_OK)
+		    {
+			    fprintf(msgout, "[E] %s!\n", _("Creating of element failed (bad nodes)"));
+			    femIntFree(nodes) ;
+			    return(rv);
+		    }
+        /* element 3: */
+        e_id++;
+        if ((rv=f_e_new_change(e_id, et, rs, mat, set)) != AF_OK)
+		    {
+			    fprintf(msgout, "[E] %s!\n", _("Creating of element failed"));
+			    femIntFree(nodes) ;
+			    return(rv);
+		    }
+  
+        enodelist[0] = nodes[i + (k+1)*((ilen+1)*(jlen+1))+(j+1)*(ilen+1) + 0] ; /* 8 */
+        enodelist[1] = nodes[i + k*((ilen+1)*(jlen+1))+j*(ilen+1) + 0] ;         /* 1 */
+        enodelist[2] = nodes[i + k*((ilen+1)*(jlen+1))+(j+1)*(ilen+1) + 1] ;     /* 3 */
+        enodelist[3] = nodes[i + k*((ilen+1)*(jlen+1))+(j+1)*(ilen+1) + 0] ;     /* 4 */
+      
+        if ((rv=f_en_change(e_id, enodelist, 4))  != AF_OK)
+		    {
+			    fprintf(msgout, "[E] %s!\n", _("Creating of element failed (bad nodes)"));
+			    femIntFree(nodes) ;
+			    return(rv);
+		    }
+        /* element 4: */
+        e_id++;
+        if ((rv=f_e_new_change(e_id, et, rs, mat, set)) != AF_OK)
+		    {
+			    fprintf(msgout, "[E] %s!\n", _("Creating of element failed"));
+			    femIntFree(nodes) ;
+			    return(rv);
+		    }
+  
+        enodelist[0] = nodes[i + (k+1)*((ilen+1)*(jlen+1))+(j+1)*(ilen+1) + 0] ; /* 8 */
+        enodelist[1] = nodes[i + (k+1)*((ilen+1)*(jlen+1))+j*(ilen+1) + 1] ;     /* 6 */
+        enodelist[2] = nodes[i + (k+1)*((ilen+1)*(jlen+1))+(j+1)*(ilen+1) + 1] ; /* 7 */
+        enodelist[3] = nodes[i + k*((ilen+1)*(jlen+1))+(j+1)*(ilen+1) + 1] ;     /* 3 */
+      
+        if ((rv=f_en_change(e_id, enodelist, 4))  != AF_OK)
+		    {
+			    fprintf(msgout, "[E] %s!\n", _("Creating of element failed (bad nodes)"));
+			    femIntFree(nodes) ;
+			    return(rv);
+		    }
+        /* internal: */
+        e_id++;
+        if ((rv=f_e_new_change(e_id, et, rs, mat, set)) != AF_OK)
+		    {
+			    fprintf(msgout, "[E] %s!\n", _("Creating of element failed"));
+			    femIntFree(nodes) ;
+			    return(rv);
+		    }
+  
+        enodelist[0] = nodes[i + (k+1)*((ilen+1)*(jlen+1))+(j+1)*(ilen+1) + 0] ; /* 8 */
+        enodelist[1] = nodes[i + (k+1)*((ilen+1)*(jlen+1))+j*(ilen+1) + 1] ;     /* 6 */
+        enodelist[2] = nodes[i + k*((ilen+1)*(jlen+1))+(j+1)*(ilen+1) + 1] ;     /* 3 */
+        enodelist[3] = nodes[i + k*((ilen+1)*(jlen+1))+j*(ilen+1) + 0] ;         /* 1 */
+      
+        if ((rv=f_en_change(e_id, enodelist, 4))  != AF_OK)
+		    {
+			    fprintf(msgout, "[E] %s!\n", _("Creating of element failed (bad nodes)"));
+			    femIntFree(nodes) ;
+			    return(rv);
+		    }
+      }
+    }
+  }
+  } else {
   for (i=0; i<(ilen); i++)
   {
     for (j=0; j<(jlen); j++)
@@ -899,6 +1024,7 @@ int fdbMeshEnt004(long entPos)
 		    }
       }
     }
+  }
   }
 
   femIntFree(nodes) ;
