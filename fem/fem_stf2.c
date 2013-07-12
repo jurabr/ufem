@@ -45,6 +45,9 @@ int D_HookIso_planeRaw(double E, double nu, long Problem, tMatrix *D)
 
 	if ((nu <= 0.0)||(nu >= 1))
 	{
+#ifdef RUN_VERBOSE
+		fprintf(msgout,"[E] %s: %e!\n",_("Invalid Poisson ration"),nu);
+#endif
 		return(AF_ERR_VAL);
 	}
 
