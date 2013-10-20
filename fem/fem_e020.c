@@ -32,13 +32,6 @@ extern int e005_volume(long ePos, double *vol);
 extern int e005_res_p_loc(long ePos, long point, double *x, double *y, double *z);
 extern int e000_res_node(long ePos, long nPos, long type, double *val);
 
-extern int e005_init_gauss(long ipoints, tMatrix *gauss);
-extern void e005_fill_coords(tMatrix *coord);
-extern int e005_jac_det(tMatrix *jac, double *detj);
-
-/* nodes of slab */
-long p_20_nodes[4]={1,2,3,4};
-
 /* note: deriv = 0 => no derivation (value of function)!
  *       deriv = 1 => d/dx
  *       deriv = 2 => d/dy
@@ -63,69 +56,11 @@ double e020_p_a(tMatrix *coord, int deriv, long point, double x, double y)
   }
 }
 
-/** Computes coordinates od d(p)/d(something) 
- * @param coord matrix of -1,0,1 brick coordinates
- * @param deriv derivation type (0=none,1=d/dx,2=d/dy,3=d/dz)
- * @param dir coordinate type (1=x,2=y)
- * @param x x of [-1,1]
- * @param y y of [-1,1]
- * @param xyz matrix of real brick coordinates (NULL if  you want only the derivatives)
- * @return coordinate/derivative value
- * */
-double e020_deriv_p(tMatrix *coord, long deriv, long dir, 
-    double x, double y, tMatrix *xyz)
-{
-  double val = 0.0 ;
-  double val_i ;
-  long   i ;
-
-  val = 0.0 ;
-
-  for (i=0; i<4; i++)
-  {
-    val_i = e020_p_a(coord, deriv, p_20_nodes[i], x, y) ;
-    if (xyz != NULL) { val_i *= femMatGet(xyz,p_20_nodes[i], dir) ; }
-    val += val_i ;
-  }
-  return(val);
-}
-
-/** Computes coordinates of d(p)/d(something) of ONE P_x
- * @param coord matrix of -1,0,1 brick coordinates
- * @param deriv derivation type (0=none,1=d/dx,2=d/dy,3=d/dz)
- * @param number number of node (1..20)
- * @return coordinate/derivative value
- * */
-double e020_deriv_p_one(tMatrix *coord,  long deriv, long number, double x, double y)
-{
-	return(e020_p_a(coord, deriv, number, x, y) );
-}
-
-
-
-int e020_fill_J(tMatrix *jac, tMatrix *coord,
-    double x, double y, tMatrix *xyz)
-{
-  long i,j ;
-
-	femMatSetZero(jac);
-
-  for (i=1; i<=2; i++)
-  {
-    for (j=1; j<=2; j++)
-    {
-      femMatAdd(jac, i, j,
-          e020_deriv_p(coord, i, j, x, y, xyz) );
-    }
-  }
-  return(AF_OK);
-}
-
 
 int e020_stiff(long ePos, long Mode, tMatrix *K_e, tVector *Fe, tVector *Fre)
 {
 	int     rv = AF_OK;
-  int     i, j ;
+  int     i, j, ii, jj ;
 	double  thick, kxx ;
   long    ipoints = 2 ;
 	long    nnode = 4 ;
@@ -133,12 +68,22 @@ int e020_stiff(long ePos, long Mode, tMatrix *K_e, tVector *Fe, tVector *Fre)
 	long    mT    =  1 ;
   long    ipos ;
   double  x, y, weight_x, weight_y, detj, mult ;
+  double  sign[4][2] ;
 	tVector u_e;
   tMatrix D ;
-  tMatrix gauss ;
-  tMatrix coord ;
+  tMatrix B ;
+  tMatrix Bt ;
+  tMatrix BtD ;
+  tMatrix BtDB ;
+  tMatrix N ;
+  tMatrix G ;
   tMatrix xyz ;
-  tMatrix jac ;
+  double gauss =  0.577350269189626 ;
+
+  sign[0][0] = -1 ; sign[1][1] = -1 ;
+  sign[1][0] = -1 ; sign[1][1] = +1 ;
+  sign[2][0] = +1 ; sign[1][1] = -1 ;
+  sign[3][0] = +1 ; sign[1][1] = +1 ;
 
 	eT = femGetETypePos(ePos); 
 	mT = femGetEMPPos(ePos); 
@@ -146,21 +91,23 @@ int e020_stiff(long ePos, long Mode, tMatrix *K_e, tVector *Fe, tVector *Fre)
   /* vectors and matrices: */
   femVecNull(&u_e);
 	femMatNull(&D);
-	femMatNull(&gauss);
-	femMatNull(&coord);
+	femMatNull(&B);
+	femMatNull(&Bt);
+	femMatNull(&BtD);
+	femMatNull(&BtDB);
+	femMatNull(&N);
+	femMatNull(&G);
 	femMatNull(&xyz);
-	femMatNull(&jac);
 
 	if ((rv = femVecFullInit(&u_e, 3)) != AF_OK) {goto memFree;}
 
 	if ((rv = femFullMatInit(&D, 2,2)) != AF_OK) {goto memFree;}
-	if ((rv=femFullMatInit(&coord,4,3)) != AF_OK) { goto memFree; }
-	if ((rv=femFullMatInit(&xyz,4,3)) != AF_OK) { goto memFree; }
-	if ((rv=femFullMatInit(&gauss,ipoints,2)) != AF_OK) { goto memFree; }
-	if ((rv=femFullMatInit(&jac,2,2)) != AF_OK) { goto memFree; }
-
-  /* gauss data */
-  if ((rv=e005_init_gauss(ipoints, &gauss)) != AF_OK) { goto memFree; }
+	if ((rv=femFullMatInit(&B,2,4)) != AF_OK) { goto memFree; }
+	if ((rv=femFullMatInit(&Bt,4,2)) != AF_OK) { goto memFree; }
+	if ((rv=femFullMatInit(&BtD,4,2)) != AF_OK) { goto memFree; }
+	if ((rv=femFullMatInit(&BtDB,4,4)) != AF_OK) { goto memFree; }
+	if ((rv=femFullMatInit(&N,2,4)) != AF_OK) { goto memFree; }
+	if ((rv=femFullMatInit(&G,2,2)) != AF_OK) { goto memFree; }
 
 	thick = femGetRSValPos(ePos, RS_HEIGHT, 0) ;
 
@@ -169,8 +116,6 @@ int e020_stiff(long ePos, long Mode, tMatrix *K_e, tVector *Fe, tVector *Fre)
   femMatPut(&D, 1,1, kxx );
   femMatPut(&D, 2,2, kxx );
 
-  /* TODO code here! --------------------------------------- */
-  e005_fill_coords(&coord);
 
   /* real coordinates: */
   for (i=1; i<=4; i++)
@@ -179,12 +124,9 @@ int e020_stiff(long ePos, long Mode, tMatrix *K_e, tVector *Fe, tVector *Fre)
     femMatPut(&xyz,i,2, femGetNCoordPosY(femGetENodePos(ePos,i-1)) );
   }
 
-
   /* numerical integration: */
 
   ipos = -1 ;
-
-	/* ----------------------- */
 
   for (i=1; i<=ipoints; i++)
   {
@@ -193,48 +135,82 @@ int e020_stiff(long ePos, long Mode, tMatrix *K_e, tVector *Fe, tVector *Fre)
         ipos++ ;
         
         /* int. point coordinates: */
-        x = femMatGet(&gauss,i, 1) ;
-        y = femMatGet(&gauss,j, 1) ;
+        
+        x = gauss * sign[ipos][0] ;
+        y = gauss * sign[ipos][1] ;
 
-        weight_x = femMatGet(&gauss,i, 2) ;
-        weight_y = femMatGet(&gauss,j, 2) ;
+        weight_x = 1.0 ;
+        weight_y = 1.0 ;
 
-  			/* jacobi matrix: */
-  			e020_fill_J(&jac, &coord, x, y, &xyz);
+        /* N matrix (derivatives) */
+        femMatSetZero(&N);
+        femMatPut(&N, 1,1,  y - 1.0);
+        femMatPut(&N, 1,2, -y + 1.0);
+        femMatPut(&N, 1,3,  y + 1.0);
+        femMatPut(&N, 1,3, -y - 1.0);
 
-  			/* determinant  */
-  			if ((rv=e005_jac_det(&jac, &detj))!= AF_OK) { goto memFree; }
+        femMatPut(&N, 1,1,  x - 1.0);
+        femMatPut(&N, 1,2, -x - 1.0);
+        femMatPut(&N, 1,3,  x + 1.0);
+        femMatPut(&N, 1,3, -x + 1.0);
+
+        femValMatMultSelf(0.25, &N);
+
+        /* G matrix (Jac inversion): */
+        femMatSetZero(&G);
+
+        for (ii=1; ii<=4; ii++)
+        {
+          femMatAdd(&G,2,2, femMatGet(&N,ii,1) * femMatGet(&xyz,ii,1));
+          femMatAdd(&G,1,1, femMatGet(&N,ii,2) * femMatGet(&xyz,ii,2));
+          femMatAdd(&G,1,2, -1.0*femMatGet(&N,ii,1) * femMatGet(&xyz,ii,2));
+          femMatAdd(&G,2,1, -1.0*femMatGet(&N,ii,2) * femMatGet(&xyz,ii,1));
+        }
+        detj = femMatGet(&G,1,1)*femMatGet(&G,2,2)-(femMatGet(&D,1,2)*femMatGet(&D,2,1));
+
+        if (detj <= FEM_ZERO)
+        {
+#ifdef RUN_VERBOSE
+          fprintf(msgout,"[E] %s: %li!\n",_("Invalid Jacobi matrix in element"),eID[ePos]);
+#endif
+          rv = AF_ERR_VAL; goto memFree;
+        }
+        femValMatMultSelf(1.0/detj, &G);
 
         /* integration multiplier */
-				mult = detj * weight_x * weight_y ;
+				mult = detj * weight_x * weight_y * thick ;
 
-  			if (femLUinverse(&jac) != AF_OK)
-  			{
-#ifdef RUN_VERBOSE
-    			fprintf(msgout, "[E] %s!\n", _("Inversion of Jascobi matric failed"));
-#endif
-    			goto memFree;
-  			}
+        femMatMatMult(&G,&N, &B);
+        femMatTran(&B, &Bt);
 
-#if 0
-        if ((rv=e005_fill_H(&H, &jac, &coord, x,y)) != AF_OK) {goto memFree;}
-        femMatTran(&H, &HT);
-#endif
+        femMatMatMult(&Bt,&D, &BtD);
+        femMatMatMult(&BtD, &B, &BtDB);
+        femValMatMultSelf(mult, &BtDB);
 
-
+        for (ii=1; ii<=4; ii++)
+        {
+          for (jj=1; jj<=4; jj++)
+          {
+            femMatAdd(K_e,ii,jj, mult*femMatGet(&BtDB,ii,jj));
+          }
+        }
 
         /* TODO */
     }
   }
 	
-  /* TODO some code here ----------------------------------- */
 memFree:
 	femVecFree(&u_e);
 
 	femMatFree(&D);
-	femMatFree(&coord);
+	femMatFree(&B);
+	femMatFree(&Bt);
+	femMatFree(&BtD);
+	femMatFree(&BtDB);
+	femMatFree(&N);
+	femMatFree(&G);
 	femMatFree(&xyz);
-	femMatFree(&jac);
+
 	return(rv);
 }
 
