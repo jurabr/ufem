@@ -32,40 +32,11 @@ extern int e005_volume(long ePos, double *vol);
 extern int e005_res_p_loc(long ePos, long point, double *x, double *y, double *z);
 extern int e000_res_node(long ePos, long nPos, long type, double *val);
 
-/* note: deriv = 0 => no derivation (value of function)!
- *       deriv = 1 => d/dx
- *       deriv = 2 => d/dy
- */
-double e020_p_a(tMatrix *coord, int deriv, long point, double x, double y)
-{
-  double xv, yv ;
-
-  xv = femMatGet(coord, point, 1) ;
-  yv = femMatGet(coord, point, 2) ;
-
-  switch (deriv)
-  {
-    case 0:
-        return( 0.25 *(1.0+xv*x) *(1.0+yv*y));
-        break ;
-    case 1: /* d/dx) */ return(0.25 *xv *(1.0 + yv*y));
-        break;
-    case 2: /* d/dy) */ return(0.25 *yv *(1.0 + xv*x));
-        break;
-    default: return(0.0);
-  }
-}
-
-
 int e020_stiff(long ePos, long Mode, tMatrix *K_e, tVector *Fe, tVector *Fre)
 {
 	int     rv = AF_OK;
   int     i, j, ii, jj ;
 	double  thick, kxx ;
-  long    ipoints = 2 ;
-	long    nnode = 4 ;
-	long    eT    = 20 ;
-	long    mT    =  1 ;
   long    ipos ;
   double  x, y, weight_x, weight_y, detj, mult ;
   double  sign[4][2] ;
@@ -85,9 +56,6 @@ int e020_stiff(long ePos, long Mode, tMatrix *K_e, tVector *Fe, tVector *Fre)
   sign[2][0] = +1 ; sign[1][1] = -1 ;
   sign[3][0] = +1 ; sign[1][1] = +1 ;
 
-	eT = femGetETypePos(ePos); 
-	mT = femGetEMPPos(ePos); 
-	
   /* vectors and matrices: */
   femVecNull(&u_e);
 	femMatNull(&D);
@@ -99,7 +67,11 @@ int e020_stiff(long ePos, long Mode, tMatrix *K_e, tVector *Fe, tVector *Fre)
 	femMatNull(&G);
 	femMatNull(&xyz);
 
-	if ((rv = femVecFullInit(&u_e, 3)) != AF_OK) {goto memFree;}
+	if (Mode == AF_YES)
+	{
+	  if ((rv = femVecFullInit(&u_e, 3)) != AF_OK) {goto memFree;}
+  	femLocUtoU_e(&u, ePos, &u_e);
+  }
 
 	if ((rv = femFullMatInit(&D, 2,2)) != AF_OK) {goto memFree;}
 	if ((rv=femFullMatInit(&B,2,4)) != AF_OK) { goto memFree; }
@@ -125,12 +97,11 @@ int e020_stiff(long ePos, long Mode, tMatrix *K_e, tVector *Fe, tVector *Fre)
   }
 
   /* numerical integration: */
-
   ipos = -1 ;
 
-  for (i=1; i<=ipoints; i++)
+  for (i=1; i<=2; i++)
   {
-    for (j=1; j<=ipoints; j++)
+    for (j=1; j<=2; j++)
     {
         ipos++ ;
         
@@ -194,13 +165,24 @@ int e020_stiff(long ePos, long Mode, tMatrix *K_e, tVector *Fe, tVector *Fre)
             femMatAdd(K_e,ii,jj, mult*femMatGet(&BtDB,ii,jj));
           }
         }
-
-        /* TODO */
     }
   }
+
+	if (Mode == AF_YES)
+	{
+    for (i=1; i<=4; i++);
+
+		if (femTangentMatrix == AF_YES)
+	     { femAddEResVal(ePos, RES_TEMP,  i, femVecGet(&u_e,i) ); }
+	  else
+	     { femPutEResVal(ePos, RES_TEMP,  i, femVecGet(&u_e,i) ); }
+	}
+		
+	femMatVecMult(K_e, &u_e, Fe) ;
+	femVecSetZero(Fre);
 	
 memFree:
-	femVecFree(&u_e);
+  if (Mode == AF_YES) { femVecFree(&u_e); }
 
 	femMatFree(&D);
 	femMatFree(&B);
