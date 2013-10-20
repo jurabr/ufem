@@ -69,7 +69,7 @@ int e020_stiff(long ePos, long Mode, tMatrix *K_e, tVector *Fe, tVector *Fre)
 
 	if (Mode == AF_YES)
 	{
-	  if ((rv = femVecFullInit(&u_e, 3)) != AF_OK) {goto memFree;}
+	  if ((rv = femVecFullInit(&u_e, 4)) != AF_OK) {goto memFree;}
   	femLocUtoU_e(&u, ePos, &u_e);
   }
 
@@ -80,6 +80,7 @@ int e020_stiff(long ePos, long Mode, tMatrix *K_e, tVector *Fe, tVector *Fre)
 	if ((rv=femFullMatInit(&BtDB,4,4)) != AF_OK) { goto memFree; }
 	if ((rv=femFullMatInit(&N,2,4)) != AF_OK) { goto memFree; }
 	if ((rv=femFullMatInit(&G,2,2)) != AF_OK) { goto memFree; }
+	if ((rv=femFullMatInit(&xyz,4,2)) != AF_OK) { goto memFree; }
 
 	thick = femGetRSValPos(ePos, RS_HEIGHT, 0) ;
 
@@ -118,27 +119,33 @@ int e020_stiff(long ePos, long Mode, tMatrix *K_e, tVector *Fe, tVector *Fre)
         femMatPut(&N, 1,1,  y - 1.0);
         femMatPut(&N, 1,2, -y + 1.0);
         femMatPut(&N, 1,3,  y + 1.0);
-        femMatPut(&N, 1,3, -y - 1.0);
+        femMatPut(&N, 1,4, -y - 1.0);
 
-        femMatPut(&N, 1,1,  x - 1.0);
-        femMatPut(&N, 1,2, -x - 1.0);
-        femMatPut(&N, 1,3,  x + 1.0);
-        femMatPut(&N, 1,3, -x + 1.0);
+        femMatPut(&N, 2,1,  x - 1.0);
+        femMatPut(&N, 2,2, -x - 1.0);
+        femMatPut(&N, 2,3,  x + 1.0);
+        femMatPut(&N, 2,4, -x + 1.0);
+
+        femMatPrn(&N,"N matrix");
+        femMatPrn(&xyz,"xyz matrix");
 
         femValMatMultSelf(0.25, &N);
+
 
         /* G matrix (Jac inversion): */
         femMatSetZero(&G);
 
         for (ii=1; ii<=4; ii++)
         {
-          femMatAdd(&G,2,2, femMatGet(&N,ii,1) * femMatGet(&xyz,ii,1));
-          femMatAdd(&G,1,1, femMatGet(&N,ii,2) * femMatGet(&xyz,ii,2));
-          femMatAdd(&G,1,2, -1.0*femMatGet(&N,ii,1) * femMatGet(&xyz,ii,2));
-          femMatAdd(&G,2,1, -1.0*femMatGet(&N,ii,2) * femMatGet(&xyz,ii,1));
+          femMatAdd(&G,2,2, femMatGet(&N,1,ii) * femMatGet(&xyz,ii,1));
+          femMatAdd(&G,1,1, femMatGet(&N,2,ii) * femMatGet(&xyz,ii,2));
+          femMatAdd(&G,1,2, -1.0*femMatGet(&N,1,ii) * femMatGet(&xyz,ii,2));
+          femMatAdd(&G,2,1, -1.0*femMatGet(&N,2,ii) * femMatGet(&xyz,ii,1));
         }
-        detj = femMatGet(&G,1,1)*femMatGet(&G,2,2)-(femMatGet(&D,1,2)*femMatGet(&D,2,1));
 
+        femMatPrn(&G,"G");
+
+        detj = femMatGet(&G,1,1)*femMatGet(&G,2,2)-(femMatGet(&D,1,2)*femMatGet(&D,2,1));
         if (detj <= FEM_ZERO)
         {
 #ifdef RUN_VERBOSE
@@ -170,12 +177,14 @@ int e020_stiff(long ePos, long Mode, tMatrix *K_e, tVector *Fe, tVector *Fre)
 
 	if (Mode == AF_YES)
 	{
-    for (i=1; i<=4; i++);
-
-		if (femTangentMatrix == AF_YES)
-	     { femAddEResVal(ePos, RES_TEMP,  i, femVecGet(&u_e,i) ); }
-	  else
-	     { femPutEResVal(ePos, RES_TEMP,  i, femVecGet(&u_e,i) ); }
+    for (jj=1; jj<=4; jj++);
+    {
+		  if (femTangentMatrix == AF_YES)
+	     { femAddEResVal(ePos, RES_TEMP,  jj-1, femVecGet(&u_e,jj) ); }
+	    else
+	     { femPutEResVal(ePos, RES_TEMP,  jj-1, femVecGet(&u_e,jj) ); }
+    }
+    femVecPrn(&u_e,"U_E"); 
 	}
 		
 	femMatVecMult(K_e, &u_e, Fe) ;
