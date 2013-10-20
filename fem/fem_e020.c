@@ -50,11 +50,12 @@ int e020_stiff(long ePos, long Mode, tMatrix *K_e, tVector *Fe, tVector *Fre)
   tMatrix G ;
   tMatrix xyz ;
   double gauss =  0.577350269189626 ;
+  long   order[4] = {1,4,2,3};
 
-  sign[0][0] = -1 ; sign[1][1] = -1 ;
+  sign[0][0] = -1 ; sign[0][1] = -1 ;
   sign[1][0] = -1 ; sign[1][1] = +1 ;
-  sign[2][0] = +1 ; sign[1][1] = -1 ;
-  sign[3][0] = +1 ; sign[1][1] = +1 ;
+  sign[2][0] = +1 ; sign[2][1] = -1 ;
+  sign[3][0] = +1 ; sign[3][1] = +1 ;
 
   /* vectors and matrices: */
   femVecNull(&u_e);
@@ -177,12 +178,13 @@ int e020_stiff(long ePos, long Mode, tMatrix *K_e, tVector *Fe, tVector *Fre)
 
 	if (Mode == AF_YES)
 	{
-    for (jj=1; jj<=4; jj++);
+    for (jj=1; jj<=4; jj++)
     {
+      printf("JJ is %i\n", jj);
 		  if (femTangentMatrix == AF_YES)
-	     { femAddEResVal(ePos, RES_TEMP,  jj-1, femVecGet(&u_e,jj) ); }
+	     { femAddEResVal(ePos, RES_TEMP,  jj, femVecGet(&u_e,order[jj-1]) ); }
 	    else
-	     { femPutEResVal(ePos, RES_TEMP,  jj-1, femVecGet(&u_e,jj) ); }
+	     { femPutEResVal(ePos, RES_TEMP,  jj, femVecGet(&u_e,order[jj-1]) ); }
     }
     femVecPrn(&u_e,"U_E"); 
 	}
