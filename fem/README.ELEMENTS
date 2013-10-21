@@ -18,3 +18,4 @@
 17: 2D [XY] grille beam, 2 nodes [uz,rotx,roty], materials: 1
 18: 2D [XY] plane thermal element, 3 nodes [temp], materials: 1
 19: 3D plane tetrahedron, 4 nodes [temp], materials: 1
+20: 2D [XY] isoparametric thermal plane, 4 nodes [temp], materials: 1

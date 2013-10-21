@@ -180,7 +180,6 @@ int e020_stiff(long ePos, long Mode, tMatrix *K_e, tVector *Fe, tVector *Fre)
 	{
     for (jj=1; jj<=4; jj++)
     {
-      printf("JJ is %i\n", jj);
 		  if (femTangentMatrix == AF_YES)
 	     { femAddEResVal(ePos, RES_TEMP,  jj, femVecGet(&u_e,order[jj-1]) ); }
 	    else
