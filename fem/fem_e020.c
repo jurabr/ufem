@@ -90,7 +90,6 @@ int e020_stiff(long ePos, long Mode, tMatrix *K_e, tVector *Fe, tVector *Fre)
   femMatPut(&D, 1,1, kxx );
   femMatPut(&D, 2,2, kxx );
 
-
   /* real coordinates: */
   for (i=1; i<=4; i++)
   {
@@ -108,7 +107,6 @@ int e020_stiff(long ePos, long Mode, tMatrix *K_e, tVector *Fe, tVector *Fre)
         ipos++ ;
         
         /* int. point coordinates: */
-        
         x = gauss * sign[ipos][0] ;
         y = gauss * sign[ipos][1] ;
 
@@ -127,11 +125,7 @@ int e020_stiff(long ePos, long Mode, tMatrix *K_e, tVector *Fe, tVector *Fre)
         femMatPut(&N, 2,3,  x + 1.0);
         femMatPut(&N, 2,4, -x + 1.0);
 
-        femMatPrn(&N,"N matrix");
-        femMatPrn(&xyz,"xyz matrix");
-
         femValMatMultSelf(0.25, &N);
-
 
         /* G matrix (Jac inversion): */
         femMatSetZero(&G);
@@ -144,9 +138,7 @@ int e020_stiff(long ePos, long Mode, tMatrix *K_e, tVector *Fe, tVector *Fre)
           femMatAdd(&G,2,1, -1.0*femMatGet(&N,2,ii) * femMatGet(&xyz,ii,1));
         }
 
-        femMatPrn(&G,"G");
-
-        detj = femMatGet(&G,1,1)*femMatGet(&G,2,2)-(femMatGet(&D,1,2)*femMatGet(&D,2,1));
+        detj = femMatGet(&G,1,1)*femMatGet(&G,2,2)-(femMatGet(&G,1,2)*femMatGet(&G,2,1));
         if (detj <= FEM_ZERO)
         {
 #ifdef RUN_VERBOSE
@@ -170,7 +162,7 @@ int e020_stiff(long ePos, long Mode, tMatrix *K_e, tVector *Fe, tVector *Fre)
         {
           for (jj=1; jj<=4; jj++)
           {
-            femMatAdd(K_e,ii,jj, mult*femMatGet(&BtDB,ii,jj));
+            femMatAdd(K_e,ii,jj, femMatGet(&BtDB,ii,jj));
           }
         }
     }
@@ -185,11 +177,10 @@ int e020_stiff(long ePos, long Mode, tMatrix *K_e, tVector *Fe, tVector *Fre)
 	    else
 	     { femPutEResVal(ePos, RES_TEMP,  jj, femVecGet(&u_e,order[jj-1]) ); }
     }
-    femVecPrn(&u_e,"U_E"); 
-	}
 		
-	femMatVecMult(K_e, &u_e, Fe) ;
-	femVecSetZero(Fre);
+	  femMatVecMult(K_e, &u_e, Fe) ;
+	  femVecSetZero(Fre);
+	}
 	
 memFree:
   if (Mode == AF_YES) { femVecFree(&u_e); }
@@ -206,7 +197,126 @@ memFree:
 	return(rv);
 }
 
-int e020_mass(long ePos, tMatrix *M_e) { return(AF_OK); }
+int e020_mass(long ePos, tMatrix *M_e) 
+{
+	int     rv = AF_OK;
+  int     i, j, ii, jj ;
+	double  thick ;
+  long    ipos ;
+  double  x, y, weight_x, weight_y, detj, mult ;
+  double  sign[4][2] ;
+  tMatrix BtDB ;
+  tMatrix N ;
+  tMatrix Nt ;
+  tMatrix G ;
+  tMatrix xyz ;
+  double gauss =  0.577350269189626 ;
+
+  sign[0][0] = -1 ; sign[0][1] = -1 ;
+  sign[1][0] = -1 ; sign[1][1] = +1 ;
+  sign[2][0] = +1 ; sign[2][1] = -1 ;
+  sign[3][0] = +1 ; sign[3][1] = +1 ;
+
+  /* vectors and matrices: */
+	femMatNull(&BtDB);
+	femMatNull(&N);
+	femMatNull(&Nt);
+	femMatNull(&G);
+	femMatNull(&xyz);
+
+	if ((rv=femFullMatInit(&BtDB,4,4)) != AF_OK) { goto memFree; }
+	if ((rv=femFullMatInit(&N,2,4)) != AF_OK) { goto memFree; }
+	if ((rv=femFullMatInit(&Nt,4,2)) != AF_OK) { goto memFree; }
+	if ((rv=femFullMatInit(&G,2,2)) != AF_OK) { goto memFree; }
+	if ((rv=femFullMatInit(&xyz,4,2)) != AF_OK) { goto memFree; }
+
+	thick = femGetRSValPos(ePos, RS_HEIGHT, 0) ;
+
+  /* real coordinates: */
+  for (i=1; i<=4; i++)
+  {
+    femMatPut(&xyz,i,1, femGetNCoordPosX(femGetENodePos(ePos,i-1)) );
+    femMatPut(&xyz,i,2, femGetNCoordPosY(femGetENodePos(ePos,i-1)) );
+  }
+
+  /* numerical integration: */
+  ipos = -1 ;
+
+  for (i=1; i<=2; i++)
+  {
+    for (j=1; j<=2; j++)
+    {
+        ipos++ ;
+        
+        /* int. point coordinates: */
+        x = gauss * sign[ipos][0] ;
+        y = gauss * sign[ipos][1] ;
+
+        weight_x = 1.0 ;
+        weight_y = 1.0 ;
+
+        /* N matrix (derivatives) */
+        femMatSetZero(&N);
+        femMatPut(&N, 1,1,  y - 1.0);
+        femMatPut(&N, 1,2, -y + 1.0);
+        femMatPut(&N, 1,3,  y + 1.0);
+        femMatPut(&N, 1,4, -y - 1.0);
+
+        femMatPut(&N, 2,1,  x - 1.0);
+        femMatPut(&N, 2,2, -x - 1.0);
+        femMatPut(&N, 2,3,  x + 1.0);
+        femMatPut(&N, 2,4, -x + 1.0);
+
+        femValMatMultSelf(0.25, &N);
+
+        /* G matrix (Jac inversion): */
+        femMatSetZero(&G);
+
+        for (ii=1; ii<=4; ii++)
+        {
+          femMatAdd(&G,2,2, femMatGet(&N,1,ii) * femMatGet(&xyz,ii,1));
+          femMatAdd(&G,1,1, femMatGet(&N,2,ii) * femMatGet(&xyz,ii,2));
+          femMatAdd(&G,1,2, -1.0*femMatGet(&N,1,ii) * femMatGet(&xyz,ii,2));
+          femMatAdd(&G,2,1, -1.0*femMatGet(&N,2,ii) * femMatGet(&xyz,ii,1));
+        }
+
+        detj = femMatGet(&G,1,1)*femMatGet(&G,2,2)-(femMatGet(&G,1,2)*femMatGet(&G,2,1));
+        if (detj <= FEM_ZERO)
+        {
+#ifdef RUN_VERBOSE
+          fprintf(msgout,"[E] %s: %li!\n",_("Invalid Jacobi matrix in element"),eID[ePos]);
+#endif
+          rv = AF_ERR_VAL; goto memFree;
+        }
+        femValMatMultSelf(1.0/detj, &G);
+
+        /* integration multiplier */
+				mult = detj * weight_x * weight_y * thick ;
+
+        femMatTran(&N, &Nt);
+
+        femMatMatMult(&Nt, &N, &BtDB);
+        femValMatMultSelf(mult, &BtDB);
+
+        for (ii=1; ii<=4; ii++)
+        {
+          for (jj=1; jj<=4; jj++)
+          {
+            femMatAdd(M_e,ii,jj, mult*femMatGet(&BtDB,ii,jj));
+          }
+        }
+    }
+  }
+	
+memFree:
+	femMatFree(&BtDB);
+	femMatFree(&N);
+	femMatFree(&Nt);
+	femMatFree(&G);
+	femMatFree(&xyz);
+
+  return(rv); 
+}
 
 long e020_rvals(long ePos) { return(4); }
 
