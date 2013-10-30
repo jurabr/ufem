@@ -67,7 +67,6 @@ extern tVector eig_omega; /* vector of eigenvalues    */
 extern tVector eig_x;     /* i-th iteration vector of eigenvalues    */
 extern tVector eig_xM;     /* i-th iteration vector of eigenvalues    */
 extern tMatrix eig_shap;  /* matrix of eigenvectors   */
-extern tMatrix eig_oMK;   /* (-omega*M+ K matrix)     */
 extern tVector *eig_y ;   /* FIELD of Gram-Schmidt data */
 
 

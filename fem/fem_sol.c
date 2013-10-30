@@ -80,7 +80,6 @@ tVector eig_omega; /* vector of eigenvalues                */
 tVector eig_x;     /* i-th iteration vector of eigenvalues */
 tVector eig_xM;    /* i-th iteration vector of eigenvalues */
 tMatrix eig_shap;  /* matrix of eigenvectors               */
-tMatrix eig_oMK;   /* (-omega*M+ K matrix)                 */
 tVector *eig_y ;   /* FIELD of Gram-Schmidt data           */
 
 /* dynamics - newmark: */
@@ -201,7 +200,6 @@ void fem_sol_null(void)
 
 	    femVecNull(&eig_omega);
 	    femMatNull(&eig_shap);
-	    femMatNull(&eig_oMK);
 
 	    femVecNull(&eig_x);
 	    femVecNull(&eig_xM);
@@ -309,7 +307,6 @@ void fem_sol_free(void)
     {
 	    femVecFree(&eig_omega);
 	    femMatFree(&eig_shap);
-	    femMatFree(&eig_oMK);
 
 	    femVecFree(&eig_x);
 	    femVecFree(&eig_xM);
@@ -448,9 +445,6 @@ int fem_sol_alloc(void)
     {
 	    if ((rv = femSparMatInitDesc(&M, nDOFAct, nDOFAct, K_rows)) != AF_OK)
 	       { goto memFree; }
-
-	    if ((rv=femSparMatInitDesc(&eig_oMK,nDOFAct,nDOFAct, K_rows)) != AF_OK)
-         { goto memFree; }
 
 	    if ((rv=femFullMatInit(&eig_shap,nDOFAct,femEigenNum)) != AF_OK) { goto memFree; }
 
