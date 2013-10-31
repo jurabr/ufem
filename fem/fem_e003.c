@@ -61,6 +61,11 @@ int e003_geom_matrix(long ePos, long Mode, double L, tMatrix *K_s)
 	femMatPut(K_s, 6, 5, -L/10 ) ;
 	femMatPut(K_s, 6, 5, 2*L*L/15 ) ;
 
+	femMatPut(K_s, 1, 1, 1.0 ) ;
+	femMatPut(K_s, 1, 4, -1.0 ) ;
+	femMatPut(K_s, 4, 1, -1.0 ) ;
+	femMatPut(K_s, 4, 4, 1.0 ) ;
+
   femValMatMultSelf((1.0/L), K_s);
 
 	femMatPrn(K_s,"K_s");
