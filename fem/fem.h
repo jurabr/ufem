@@ -56,7 +56,7 @@
 
 /* Mathematics: */
 #define FEM_PI    3.141592653589793238462643383279502884
-#define FEM_ZERO  1e-7
+#define FEM_ZERO  1e-17
 
 /* Thread variables: */
 

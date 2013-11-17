@@ -269,6 +269,7 @@ int e020_mass(long ePos, tMatrix *M_e)
 
         femValMatMultSelf(0.25, &N);
 
+        femMatPrn(&N,"N");
         /* G matrix (Jac inversion): */
         femMatSetZero(&G);
 
@@ -288,7 +289,6 @@ int e020_mass(long ePos, tMatrix *M_e)
 #endif
           rv = AF_ERR_VAL; goto memFree;
         }
-        femValMatMultSelf(1.0/detj, &G);
 
         /* integration multiplier */
 				mult = detj * weight_x * weight_y * thick ;
@@ -302,11 +302,16 @@ int e020_mass(long ePos, tMatrix *M_e)
         {
           for (jj=1; jj<=4; jj++)
           {
-            femMatAdd(M_e,ii,jj, mult*femMatGet(&BtDB,ii,jj));
+            femMatAdd(M_e,ii,jj, femMatGet(&BtDB,ii,jj));
           }
         }
     }
   }
+
+#ifdef DEVEL_VERBOSE
+fprintf(msgout,"M_E (detj=%e)\n",detj); 
+for (i=1; i<=4; i++) { for (j=1; j<=4; j++) { fprintf(msgout,"%e ",femMatGet(M_e,i,j)); } fprintf(msgout,"\n"); }
+#endif
 	
 memFree:
 	femMatFree(&BtDB);
