@@ -79,6 +79,7 @@ int femSetJobname(char *dir)
   int i;
 
   if (dir == NULL) {return(AF_ERR_EMP); }
+  if (strlen(dir) < 1) {return(AF_ERR_EMP); }
 
   ciStrCompr(dir);
   if (strlen(dir) < 1) {return(AF_ERR_EMP); }

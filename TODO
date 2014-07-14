@@ -10,6 +10,7 @@ User Interface:
 
 The most important:
 
+- (tui) segfaults in longer scripts/macros
 - (fdb) mesh: check only sides really connected to other geom. ent.
 - (gfx) incorrect orientation of results on 3D links
 - (fdb) export/reading of multiple load steps
