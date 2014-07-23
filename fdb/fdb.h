@@ -65,6 +65,7 @@
 #define FDB_FORMAT_TEXT 1
 #define FDB_FORMAT_LTX  2
 #define FDB_FORMAT_HTML 3
+#define FDB_FORMAT_CSV  4
 
 #define FDB_CSYS_CART   1
 #define FDB_CSYS_CYL_XY 2

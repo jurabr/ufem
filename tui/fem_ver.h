@@ -1,1 +1,1 @@
-#define FEM_TUI_RELEASE "uFEM 0.2.65c"
+#define FEM_TUI_RELEASE "uFEM 0.2.66"

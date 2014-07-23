@@ -83,6 +83,7 @@ void fdbPrnBeginTable(FILE *fw, long rows, char *title)
 			{
 				case FDB_FORMAT_HTML: fprintf(fdbPrnFile, "<h3>%s</h3>\n",title ) ; break ;
 				case FDB_FORMAT_LTX:  fprintf(fdbPrnFile, "\\section*{%s}\n",title ) ; break ;
+				case FDB_FORMAT_CSV:  fprintf(fdbPrnFile, "%s;\n",title ) ; break ;
 				case FDB_FORMAT_TEXT: 
 				default:              fprintf(fdbPrnFile, "%s\n",title ) ; break ;
 			}
@@ -96,6 +97,7 @@ void fdbPrnBeginTable(FILE *fw, long rows, char *title)
 													 for (i=0; i<rows; i++){fprintf(fdbPrnFile,"l|");}
 													 fprintf(fdbPrnFile,"}\n");
 													 break ;
+		 case FDB_FORMAT_CSV: 
 		 case FDB_FORMAT_TEXT: 
 		 default:              fprintf(fdbPrnFile, "\n" ) ; 
 													 break ;
@@ -127,6 +129,10 @@ void fdbPrnTableHeaderItem(FILE *fw, long pos, char *text)
 														 fprintf(fdbPrnFile,"\\\\\n \\hline \n \\hline \n"); 
 													 }
  													 break ;
+		 case FDB_FORMAT_CSV: 
+		                       fprintf(fdbPrnFile, " %12s;", fdbPrnSafeStr(text," ") ) ; 
+													 if (pos >= (fdbActPrnTabLen-1)) { fprintf(fdbPrnFile,"\n"); }
+													 break ;
 		 case FDB_FORMAT_TEXT: 
 		 default:              fprintf(fdbPrnFile, " %12s", fdbPrnSafeStr(text," ") ) ; 
 													 if (pos >= (fdbActPrnTabLen-1)) { fprintf(fdbPrnFile,"\n"); }
@@ -159,6 +165,10 @@ void fdbPrnTableItemStr(FILE *fw, long pos, char *text)
 														 fprintf(fdbPrnFile,"\\\\\n \\hline \n"); 
 													 }
 													 break ;
+		 case FDB_FORMAT_CSV: 
+		                       fprintf(fdbPrnFile, " %12s;", fdbPrnSafeStr(text," ") ) ; 
+													 if (pos >= (fdbActPrnTabLen-1)) { fprintf(fdbPrnFile,"\n"); }
+													 break ;
 		 case FDB_FORMAT_TEXT: 
 		 default:              fprintf(fdbPrnFile, " %12s", fdbPrnSafeStr(text," ") ) ; 
 													 if (pos >= (fdbActPrnTabLen-1)) { fprintf(fdbPrnFile,"\n"); }
@@ -190,6 +200,10 @@ void fdbPrnTableItemInt(FILE *fw, long pos, long text)
 													 {
 														 fprintf(fdbPrnFile,"\\\\\n \\hline \n"); 
 													 }
+													 break ;
+		 case FDB_FORMAT_CSV: 
+		                       fprintf(fdbPrnFile, " %12li;", text) ; 
+													 if (pos >= (fdbActPrnTabLen-1)) { fprintf(fdbPrnFile,"\n"); }
 													 break ;
 		 case FDB_FORMAT_TEXT: 
 		 default:              fprintf(fdbPrnFile, " %12li", text) ; 
@@ -224,6 +238,10 @@ void fdbPrnTableItemDbl(FILE *fw, long pos, double text)
 														 fprintf(fdbPrnFile,"\\\\\n \\hline \n"); 
 													 }
 													 break ;
+		 case FDB_FORMAT_CSV: 
+		                       fprintf(fdbPrnFile, " %12e;", text) ; 
+													 if (pos >= (fdbActPrnTabLen-1)) { fprintf(fdbPrnFile,"\n"); }
+													 break ;
 		 case FDB_FORMAT_TEXT: 
 		 default:              fprintf(fdbPrnFile, " %12e", text) ; 
 													 if (pos >= (fdbActPrnTabLen-1)) { fprintf(fdbPrnFile,"\n"); }
@@ -240,6 +258,7 @@ void fdbPrnEndTable(FILE *fw)
 	{  
 		 case FDB_FORMAT_HTML: fprintf(fdbPrnFile, "</table>\n") ; break ;
 		 case FDB_FORMAT_LTX:  fprintf(fdbPrnFile, "\\end{tabular}\n") ; break ;
+		 case FDB_FORMAT_CSV: 
 		 case FDB_FORMAT_TEXT: 
 		 default:              fprintf(fdbPrnFile, "\n" ) ; break ;
 	}
@@ -260,8 +279,9 @@ void fdbPrnBeginFile(FILE *fw)
 			 fprintf(fdbPrnFile," <title>%s</title>\n</head>\n<body>\n",_("FEM Output"));
 			 break;
 		 case FDB_FORMAT_LTX:  fprintf(fdbPrnFile, "\\documentclass{report}\n \\begin{document}") ; break ;
+		 case FDB_FORMAT_CSV: 
 		 case FDB_FORMAT_TEXT: 
-		 default:              fprintf(fdbPrnFile, "\n" ) ; break ;
+     default: break ;
 	}
 	
 	fdbActPrnTabLen = 0 ;
@@ -276,8 +296,9 @@ void fdbPrnEndFile(FILE *fw)
 	{  
 		 case FDB_FORMAT_HTML: fprintf(fdbPrnFile,"</body\n</html>\n"); break;
 		 case FDB_FORMAT_LTX:  fprintf(fdbPrnFile, "\\end{document}\n") ; break ;
+		 case FDB_FORMAT_CSV: 
 		 case FDB_FORMAT_TEXT: 
-		 default:              fprintf(fdbPrnFile,"\n");break ;
+     default: break ;
 	}
 	
 	fdbActPrnTabLen = 0 ;
@@ -307,7 +328,6 @@ int fdbPrnOpenFile(FILE *fw)
     style[0] = 'w' ;
   }
   
-
   if (fdbPrnFile != NULL)
   {
     /* file opened - no action */
@@ -342,6 +362,7 @@ int fdbPrnOpenFile(FILE *fw)
 	    {  
 		    case FDB_FORMAT_HTML: sprintf(ext,"html"); break;
 		    case FDB_FORMAT_LTX:  sprintf(ext,"tex"); break ;
+		    case FDB_FORMAT_CSV:  sprintf(ext,"csv"); break ;
 		    case FDB_FORMAT_TEXT: 
 		    default:              sprintf(ext,"txt"); break ;
 	    }
@@ -396,6 +417,7 @@ int fdbPrnCloseFile(FILE *fw)
 	    {  
 		    case FDB_FORMAT_HTML: sprintf(ext,"html"); break;
 		    case FDB_FORMAT_LTX:  sprintf(ext,"tex"); break ;
+		    case FDB_FORMAT_CSV:  sprintf(ext,"csv"); break ;
 		    case FDB_FORMAT_TEXT: 
 		    default:              sprintf(ext,"txt"); break ;
 	    }

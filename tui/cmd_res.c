@@ -146,7 +146,7 @@ int func_fem_prns(char *cmd)
 	return ( tuiCmdReact(cmd, rv) ) ;
 }
 
-/** Sets sets output format: "outform,(plain|tex|html)"
+/** Sets sets output format: "outform,(plain|csv|tex|html)"
  * @param cmd command
  * @return status
  */
@@ -170,6 +170,8 @@ int func_fem_set_output(char *cmd)
           case 'T': fdbOutputFormat = FDB_FORMAT_LTX; break;
           case 'h':
           case 'H': fdbOutputFormat = FDB_FORMAT_HTML; break;
+          case 'c':
+          case 'C': fdbOutputFormat = FDB_FORMAT_CSV; break;
           default:  fdbOutputFormat = FDB_FORMAT_TEXT; break;
         }
       }
@@ -248,7 +250,7 @@ int func_fem_set_outfile(char *cmd)
       fdbPrnFileName = ciGetParStr(cmd, 1) ;
       fdbPrnAutoName = AF_NO ;
       fdbPrnFile = NULL ;
-      fdbPrnAppendFile = AF_NO ;
+      fdbPrnAppendFile = AF_YES ;
     }
     else
     {

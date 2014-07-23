@@ -4,6 +4,15 @@ See fem/ChangeLog for solver changes.
 
 
 
+### Wed Jul 23 20:43:19 CEST 2014
+
+version 0.2.66
+
+features:
+  + CSV output for *list commands
+  
+
+
 ### Tue Jul  9 21:53:46 CEST 2013
 
 version 0.2.65
