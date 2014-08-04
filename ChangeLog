@@ -4,6 +4,13 @@ See fem/ChangeLog for solver changes.
 
 
 
+### Mon Aug  4 21:07:09 CEST 2014
+
+features:
+  + *extrude may use MAT properties from the original area
+
+
+
 ### Wed Jul 23 20:43:19 CEST 2014
 
 version 0.2.66

@@ -593,7 +593,7 @@ memFree:
 	return ( tuiCmdReact(cmd, rv) ) ;
 }
 
-/** Creates volume by extrusion from area: "aextrude,area,et,rs,mat,k1,k2[,k3]
+/** Creates volume by extrusion from area: "aextrude,area,et,rs,mat,k1,k2[,k3]mat0=mat;
  * @param cmd command
  * @return status
  */
@@ -601,7 +601,7 @@ int func_fem_entity_aextrude (char *cmd)
 {
 	int    rv  = AF_OK ;
   long   area ;
-  long   et, rs,mat ;
+  long   et, rs,mat,mat0 ;
   long   k[10];
   long   klen = 0 ;
   long   i, type ;
@@ -617,8 +617,14 @@ int func_fem_entity_aextrude (char *cmd)
 
 	area = ciGetParInt(cmd, 1) ; 
 	et   = ciGetParInt(cmd, 2) ; 
+  if (et <= 0)
+  {
+		fprintf(msgout,"[E] %s!\n", _("Element type must be set") );
+    rv = AF_ERR_EMP;
+    goto memFree;
+  }
 	rs   = ciGetParInt(cmd, 3) ; 
-	mat  = ciGetParInt(cmd, 4) ; 
+	mat  = ciGetParInt(cmd, 4) ; mat0 = mat;
 
   klen = 0 ;
 	if (ciParNum(cmd) > 5) { k[0] = ciGetParInt(cmd, 5) ; klen++; }
@@ -640,12 +646,20 @@ int func_fem_entity_aextrude (char *cmd)
       if ((type == 2)||(type == 5))
       {
         area = fdbInputGetInt(ENTITY, ENTITY_ID, i) ;
+        if (mat0 <= 0) { mat = fdbInputGetInt(ENTITY,ENTITY_MAT, i); }
         rv =  f_ent_extrude_area(area, klen, k, et, rs, mat, fdbSetInputDefDiv(0)); 
       }
     }
   }
   else
   {
+    if (fdbInputCountInt(ENTITY,ENTITY_ID,area,&i) < 1)
+    {
+		  fprintf(msgout,"[E] %s: %li!\n", _("Area not found"), area);
+      rv = AF_ERR_EMP;
+      goto memFree;
+    }
+    if (mat0 <= 0) { mat = fdbInputGetInt(ENTITY,ENTITY_MAT, i); }
     rv =  f_ent_extrude_area(area, klen, k, et, rs, mat, fdbSetInputDefDiv(0)); 
   }
 
@@ -654,7 +668,7 @@ memFree:
 }
 
 
-/** Creates volume by extrusion from area: "lextrude,line,et,rs,mat,k1,k2[,k3]
+/** Creates area by extrusion from line: "lextrude,line,et,rs,mat,k1,k2[,k3]
  * @param cmd command
  * @return status
  */
@@ -662,7 +676,7 @@ int func_fem_entity_lextrude (char *cmd)
 {
 	int    rv  = AF_OK ;
   long   area ; /* it's line, actually */
-  long   et, rs,mat ;
+  long   et, rs,mat,mat0 ;
   long   k[10];
   long   klen = 0 ;
   long   i, type ;
@@ -679,7 +693,7 @@ int func_fem_entity_lextrude (char *cmd)
 	area = ciGetParInt(cmd, 1) ; 
 	et   = ciGetParInt(cmd, 2) ; 
 	rs   = ciGetParInt(cmd, 3) ; 
-	mat  = ciGetParInt(cmd, 4) ; 
+	mat  = ciGetParInt(cmd, 4) ; mat0=mat;
 
   klen = 0 ;
 	if (ciParNum(cmd) > 5) { k[0] = ciGetParInt(cmd, 5) ; klen++; }
@@ -701,12 +715,20 @@ int func_fem_entity_lextrude (char *cmd)
       if ((type == 2)||(type == 5))
       {
         area = fdbInputGetInt(ENTITY, ENTITY_ID, i) ;
+        if (mat0 <= 0) { mat = fdbInputGetInt(ENTITY,ENTITY_MAT, i); }
         rv =  f_ent_extrude_area(area, klen, k, et, rs, mat, fdbSetInputDefDiv(0)); 
       }
     }
   }
   else
   {
+    if (fdbInputCountInt(ENTITY,ENTITY_ID,area,&i) < 1)
+    {
+		  fprintf(msgout,"[E] %s: %li!\n", _("Line not found"), area);
+      rv = AF_ERR_EMP;
+      goto memFree;
+    }
+    if (mat0 <= 0) { mat = fdbInputGetInt(ENTITY,ENTITY_MAT, i); }
     rv =  f_ent_extrude_line(area, klen, k, et, rs, mat, fdbSetInputDefDiv(0)); 
   }
 
