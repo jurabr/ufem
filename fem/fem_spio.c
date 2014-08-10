@@ -29,7 +29,7 @@
 #include "fem_math.h"
 #include "fem_para.h"
 
-#define SPIO_RES_NUM 6
+#define SPIO_RES_NUM 12
 
 /** Find is given element type provides given kind of element result
  * @param eT type of element
@@ -213,7 +213,7 @@ long femToTypeVTK(long e_type)
   return(1);
 }
 
-/** TODO Writes VTK file (now the FE mesh only)
+/** Writes VTK file 
  */
 int femWriteNodeResVTK(char *fname)
 {
@@ -222,6 +222,13 @@ int femWriteNodeResVTK(char *fname)
 	long     i, j, num, et ;
 	double  *resfld[SPIO_RES_NUM] ;
 	long    *intfld = NULL ;
+  tVector  sigma, sigma1;
+
+  /* vectors for principal stresses: */
+	femVecNull(&sigma);
+	femVecNull(&sigma1);
+  if ((rv=femVecFullInit(&sigma, 6)) != AF_OK) { goto memFree; }
+  if ((rv=femVecFullInit(&sigma1, 6)) != AF_OK) { goto memFree; }
 
   if (nLen < 4)
   {
@@ -264,6 +271,17 @@ int femWriteNodeResVTK(char *fname)
 	femGetAvNodeRes(RES_SX,  resfld[3], intfld, nLen);
 	femGetAvNodeRes(RES_SY,  resfld[4], intfld, nLen);
 	femGetAvNodeRes(RES_SZ,  resfld[5], intfld, nLen);
+	femGetAvNodeRes(RES_SYZ,  resfld[6], intfld, nLen);
+	femGetAvNodeRes(RES_SZX,  resfld[7], intfld, nLen);
+	femGetAvNodeRes(RES_SXY,  resfld[8], intfld, nLen);
+
+  /* Computing of principal stresses (in 3D): */
+	for (i=0; i<nLen; i++) 
+  { 
+    for (j=3; j<6; j++) {  femVecPut(&sigma,j+1,resfld[j][i]); }
+    femPrinc3D(&sigma, &sigma1);
+    for (j=0; j<3; j++) {  resfld[9+j][i] = femVecGet(&sigma1,j+1); }
+  }
 	
 
 	/* open file: ************************************** */
@@ -336,7 +354,7 @@ int femWriteNodeResVTK(char *fname)
 	for (i=0; i<nLen; i++) 
     { fprintf(fr,"%e \n", femVecGet(&u, femKpos(i, U_Z))); }
 
-	/* TODO: strains and stresses: */
+	/* Strains and stresses: */
 
 	fprintf(fr,"SCALARS e_x float 1 \n");
 	fprintf(fr,"LOOKUP_TABLE default \n");
@@ -362,10 +380,43 @@ int femWriteNodeResVTK(char *fname)
 	fprintf(fr,"LOOKUP_TABLE default \n");
 	for (i=0; i<nLen; i++) { fprintf(fr,"%e \n", resfld[5][i]); }
 
+	fprintf(fr,"SCALARS s_yz float 1 \n");
+	fprintf(fr,"LOOKUP_TABLE default \n");
+	for (i=0; i<nLen; i++) { fprintf(fr,"%e \n", resfld[6][i]); }
+
+	fprintf(fr,"SCALARS s_zx float 1 \n");
+	fprintf(fr,"LOOKUP_TABLE default \n");
+	for (i=0; i<nLen; i++) { fprintf(fr,"%e \n", resfld[7][i]); }
+
+	fprintf(fr,"SCALARS s_xy float 1 \n");
+	fprintf(fr,"LOOKUP_TABLE default \n");
+	for (i=0; i<nLen; i++) { fprintf(fr,"%e \n", resfld[8][i]); }
+
+
+
+	/* TODO Principal stresses: */
+
+	fprintf(fr,"SCALARS s_1 float 1 \n");
+	fprintf(fr,"LOOKUP_TABLE default \n");
+	for (i=0; i<nLen; i++) { fprintf(fr,"%e \n", resfld[9][i]); }
+
+	fprintf(fr,"SCALARS s_2 float 1 \n");
+	fprintf(fr,"LOOKUP_TABLE default \n");
+	for (i=0; i<nLen; i++) { fprintf(fr,"%e \n", resfld[10][i]); }
+
+	fprintf(fr,"SCALARS s_3 float 1 \n");
+	fprintf(fr,"LOOKUP_TABLE default \n");
+	for (i=0; i<nLen; i++) { fprintf(fr,"%e \n", resfld[11][i]); }
+
+
 
 	/* freeing of data files */
 	for (j=0;j<SPIO_RES_NUM; j++) { femDblFree(resfld[j]) ; }
 	femIntFree(intfld) ;
+
+memFree:
+		femVecFree(&sigma);
+		femVecFree(&sigma1);
 
 	/* close file: ************************************* */
 	if (fr != stdout)
