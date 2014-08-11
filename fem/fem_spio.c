@@ -280,7 +280,7 @@ int femWriteNodeResVTK(char *fname)
   /* Computing of principal stresses (in 3D): */
 	for (i=0; i<nLen; i++) 
   { 
-    for (j=3; j<9; j++) {  femVecPut(&sigma,j+1,resfld[j][i]); }
+    for (j=3; j<9; j++) {  femVecPut(&sigma,j-2,resfld[j][i]); }
     femPrinc3D(&sigma, &sigma1);
     for (j=0; j<3; j++) {  resfld[9+j][i] = femVecGet(&sigma1,j+1); }
   }
