@@ -275,6 +275,7 @@ void gui_main_menu_file(GtkWidget *menubar)
 	GtkWidget *open_item ;
 	GtkWidget *save_item ;
 	GtkWidget *input_item ;
+	GtkWidget *result_item ;
 	GtkWidget *import_item ;
 	GtkWidget *export_item ;
 	GtkWidget *nproc_item ;
@@ -362,7 +363,7 @@ void gui_main_menu_file(GtkWidget *menubar)
   gtk_widget_set_sensitive (separ_item, FALSE);
 
 	/* items */
-	input_item = gtk_menu_item_new_with_label (_("Read commands.."));
+	input_item = gtk_menu_item_new_with_label (_("Read Commands.."));
 	gtk_menu_append (GTK_MENU (menu_file), input_item);
 
 	gtk_signal_connect(GTK_OBJECT (input_item), "activate",
@@ -375,6 +376,23 @@ void gui_main_menu_file(GtkWidget *menubar)
   gtk_menu_append (GTK_MENU (menu_file), separ_item);
   gtk_widget_show (separ_item);
   gtk_widget_set_sensitive (separ_item, FALSE);
+
+	/* items */
+	result_item = gtk_menu_item_new_with_label (_("Read Result Set.."));
+	gtk_menu_append (GTK_MENU (menu_file), result_item);
+
+	gtk_signal_connect(GTK_OBJECT (result_item), "activate",
+			                       GTK_SIGNAL_FUNC (gui_select_file),
+		                         (gpointer) "rrread");
+	gtk_widget_show (result_item);
+
+
+
+  separ_item = gtk_menu_item_new() ;
+  gtk_menu_append (GTK_MENU (menu_file), separ_item);
+  gtk_widget_show (separ_item);
+  gtk_widget_set_sensitive (separ_item, FALSE);
+
 
 
   /* nproc*/

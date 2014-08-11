@@ -210,6 +210,7 @@ extern int func_fem_prep(char *cmd);
 extern int func_fem_post_simple(char *cmd);
 extern int func_fem_post_set_set(char *cmd);
 extern int func_fem_post_read_set(char *cmd);
+extern int func_fem_post_read_simple(char *cmd);
 
 extern int func_fem_res_compute_mc(char *cmd);
 
@@ -712,7 +713,7 @@ int fem_cmd_init (void)
 {
   long count = 0 ;
 
-  ciFuncLen = 280;
+  ciFuncLen = 281;
   ciFunction = (tFunc *) malloc (ciFuncLen * sizeof (tFunc));
   
   /* basic functions */
@@ -1403,6 +1404,12 @@ int fem_cmd_init (void)
   ciFunction[count].cmd = "rread";
   ciFunction[count].func = func_fem_post_read_set ;
   count++;
+
+  ciFunction[count].cmd = "rrread";
+  ciFunction[count].func = func_fem_post_read_simple ;
+  count++;
+
+
 
   ciFunction[count].cmd = "mcres";
   ciFunction[count].func = func_fem_res_compute_mc ;

@@ -411,6 +411,9 @@ set
 rread
 "rread,step_num,filename"
 
+rrread
+"rrread,filename"
+
 gpres
 "gpres,from,to,step"
 

@@ -1,4 +1,4 @@
-.TH FEMCMD 1 "21 October 2010" "uFEM Command Manual"
+.TH FEMCMD 1 "11 August 2014" "uFEM Command Manual"
 
 .SH NAME
 \fBuFEM\fP COMMAND MANUAL
@@ -950,9 +950,13 @@ rread
 \fBrread,step_num,filename\fP
 Read result set from disk. "Step_num" is number from 0 to (number_of_result_sets-1).
 .TP
+rrread
+\fBrrread,filename\fP
+Read result set from disk. No previous \fBgpost\fP command is needed but only one result file can be used. 
+.TP
 gpread
-\fBgpres,from,to,step\fP
-Starts postprocessor and reads results for steps in \fIfrom...to\fP interval.
+\fBgpread,from,to,step\fP
+Starts postprocessor and reads results for steps in \fIfrom...to\fP interval. The filenames must be named \fBjobname-itNUM.res\fP, where \fBNUM\fP is a step numer (starts from 1).
 .TP
 slist
 \fBslist\fP

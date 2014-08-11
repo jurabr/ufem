@@ -177,7 +177,7 @@ int func_fem_post_set_set(char *cmd)
 	return ( tuiCmdReact(cmd, rv) ) ;
 }
 
-/** Sets active result set: "rread,step_num,filename" (yes|no means data are from MPI
+/** Sets active result set: "rread,step_num,filename" (yes|no means data are from MPI)
  * @param cmd command
  * @return status
  */
@@ -274,6 +274,39 @@ int func_fem_post_read_set(char *cmd)
 	free(fname); fname = NULL ;
 	return ( tuiCmdReact(cmd, rv) ) ;
 }
+
+/** Fast read od resulst - one set only: "rrread,filename" 
+ * @param cmd command
+ * @return status
+ */
+int func_fem_post_read_simple(char *cmd)
+{
+	int     rv  = AF_OK ;
+	char   *fname = NULL ;
+
+	if (ciParNum(cmd) <= 1)
+	{
+		fprintf(msgout,"[E] %s!\n", _("Filename required"));
+		return ( tuiCmdReact(cmd, AF_ERR_EMP) ) ;
+	}
+
+  if ((rv=ciRunCmd("gpost,1")) != AF_OK) {goto memFree;}
+
+	if (ciParNum(cmd) > 1) { fname = ciGetParStr(cmd, 1); }
+
+	if (strlen(fname) < 1)
+	{
+		fprintf(msgout,"[E] %s!\n", _("Invalid or empty filename"));
+		return ( tuiCmdReact(cmd, AF_ERR_EMP) ) ;
+	}
+	
+  rv = ciRunCmd(ciStrCat2CmdPers("rread,",fname));
+
+memFree:
+	free(fname); fname = NULL ;
+	return ( tuiCmdReact(cmd, rv) ) ;
+}
+
 
 char *ret_minus_p(int t)
 {
