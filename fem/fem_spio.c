@@ -31,6 +31,8 @@
 
 #define SPIO_RES_NUM 12
 
+extern int femPrinc3D(tVector *sx, tVector *s1);
+
 /** Find is given element type provides given kind of element result
  * @param eT type of element
  * @param type results type
@@ -278,7 +280,7 @@ int femWriteNodeResVTK(char *fname)
   /* Computing of principal stresses (in 3D): */
 	for (i=0; i<nLen; i++) 
   { 
-    for (j=3; j<6; j++) {  femVecPut(&sigma,j+1,resfld[j][i]); }
+    for (j=3; j<9; j++) {  femVecPut(&sigma,j+1,resfld[j][i]); }
     femPrinc3D(&sigma, &sigma1);
     for (j=0; j<3; j++) {  resfld[9+j][i] = femVecGet(&sigma1,j+1); }
   }
@@ -300,7 +302,6 @@ int femWriteNodeResVTK(char *fname)
 			return(AF_ERR_IO);
 		}
 	}
-
 
 	fprintf(fr,"# vtk DataFile Version 2.0\n");
 	fprintf(fr,"uFEM_model\n");
@@ -392,9 +393,7 @@ int femWriteNodeResVTK(char *fname)
 	fprintf(fr,"LOOKUP_TABLE default \n");
 	for (i=0; i<nLen; i++) { fprintf(fr,"%e \n", resfld[8][i]); }
 
-
-
-	/* TODO Principal stresses: */
+	/* Principal stresses: */
 
 	fprintf(fr,"SCALARS s_1 float 1 \n");
 	fprintf(fr,"LOOKUP_TABLE default \n");
