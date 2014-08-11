@@ -90,10 +90,13 @@ DEBUG=-O3 -DRUN_VERBOSE -D_MATRIX_SAVING_ -D_USE_SIGNALS_ -DUSE_FAST_SAPO
 FEATFLAGS=
 
 #CFLAGS=$(FEATFLAGS) -Wall -ansi -pedantic -DUSE_NLMC $(DEBUG) -fPIC
-CFLAGS=$(FEATFLAGS) -Wall -ansi -pedantic $(DEBUG) -fPIC
-CFLAGS=$(FEATFLAGS) -Wall -ansi -pedantic $(DEBUG) -D_USE_THREADS_ -DUSE_NLMC
+ifeq ($(SYS_TYPE),IRIX)
+CFLAGS=$(FEATFLAGS) $(DEBUG) -Wall -ansi -pedantic $(DEBUG) -fPIC
+else
+CFLAGS=$(FEATFLAGS) $(DEBUG) -Wall -ansi -pedantic -D_USE_THREADS_ -fPIC
+endif
+#CFLAGS=$(FEATFLAGS) -Wall -ansi -pedantic $(DEBUG) -D_USE_THREADS_ -DUSE_NLMC
 #CFLAGS=$(FEATFLAGS) $(DEBUG) -D_USE_THREADS_ -DUSE_NLMC
-#CFLAGS=$(FEATFLAGS) $(DEBUG) -Wall -ansi -pedantic -D_USE_THREADS_ -fPIC
 #CFLAGS=$(FEATFLAGS) $(DEBUG) 
 
 # traditional unix:
@@ -102,8 +105,11 @@ CFLAGS=$(FEATFLAGS) -Wall -ansi -pedantic $(DEBUG) -D_USE_THREADS_ -DUSE_NLMC
 
 FEATLIBS=
 
+ifeq ($(SYS_TYPE),IRIX)
 LIBS=$(FEATLIBS) -L/usr/local/lib -lm #-lefence
+else
 LIBS=$(FEATLIBS) -L/usr/local/lib -lm -lpthread #-lefence
+endif
 
 
 PREFIX=/usr/local
