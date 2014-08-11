@@ -91,7 +91,7 @@ FEATFLAGS=
 
 #CFLAGS=$(FEATFLAGS) -Wall -ansi -pedantic -DUSE_NLMC $(DEBUG) -fPIC
 CFLAGS=$(FEATFLAGS) -Wall -ansi -pedantic $(DEBUG) -fPIC
-#CFLAGS=$(FEATFLAGS) -Wall -ansi -pedantic $(DEBUG) -D_USE_THREADS_ -DUSE_NLMC
+CFLAGS=$(FEATFLAGS) -Wall -ansi -pedantic $(DEBUG) -D_USE_THREADS_ -DUSE_NLMC
 #CFLAGS=$(FEATFLAGS) $(DEBUG) -D_USE_THREADS_ -DUSE_NLMC
 #CFLAGS=$(FEATFLAGS) $(DEBUG) -Wall -ansi -pedantic -D_USE_THREADS_ -fPIC
 #CFLAGS=$(FEATFLAGS) $(DEBUG) 
@@ -103,7 +103,7 @@ CFLAGS=$(FEATFLAGS) -Wall -ansi -pedantic $(DEBUG) -fPIC
 FEATLIBS=
 
 LIBS=$(FEATLIBS) -L/usr/local/lib -lm #-lefence
-#LIBS=$(FEATLIBS) -L/usr/local/lib -lm -lpthread #-lefence
+LIBS=$(FEATLIBS) -L/usr/local/lib -lm -lpthread #-lefence
 
 
 PREFIX=/usr/local

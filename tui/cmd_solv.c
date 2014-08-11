@@ -415,7 +415,7 @@ int func_fem_solve(char *cmd)
       case 0:
       case 1:
         for (i=0; i< (FEM_STR_LEN*2+1); i++) { params[i] = '\0' ; }
-        sprintf(params,"-ssor -p %s -np %i ", ret_minus_p(itersp), femCmdNumProcSolver);
+        sprintf(params,"-ssor -p %s -t %i ", ret_minus_p(itersp), femCmdNumProcSolver);
         rv = femRunSolver(
           params, 
           ciSetPath(femGetDataDir(), femGetJobname(), "fem"),
@@ -428,7 +428,7 @@ int func_fem_solve(char *cmd)
       case 6:
         /* bnon-linear static: construct the parameters: */
         for (i=0; i< (FEM_STR_LEN*2+1); i++) { params[i] = '\0' ; }
-        sprintf(params,"-ssor -p %s -nlnbrk -nls %li -nlstp %li -nlit %li -nlf %s -ose %li -osf %s -ln %li -lf %s -lrf %s -np %i",
+        sprintf(params,"-ssor -p %s -nlnbrk -nls %li -nlstp %li -nlit %li -nlf %s -ose %li -osf %s -ln %li -lf %s -lrf %s -t %i",
             ret_minus_p(itersp),
             solver,
             steps,
@@ -457,7 +457,7 @@ int func_fem_solve(char *cmd)
       case 7:
         /* modal analysis: construct the parameters: */
         for (i=0; i< (FEM_STR_LEN*2+1); i++) { params[i] = '\0' ; }
-        sprintf(params,"-p %s -mod %li -nlit %li -ose 1 -osf %s -np %i",
+        sprintf(params,"-p %s -mod %li -nlit %li -ose 1 -osf %s -t %i",
             ret_minus_p(itersp),
             steps,
             iters,
