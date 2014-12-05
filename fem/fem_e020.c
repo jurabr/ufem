@@ -208,6 +208,8 @@ int e020_mass(long ePos, tMatrix *M_e)
   tMatrix BtDB ;
   tMatrix N ;
   tMatrix Nt ;
+  tMatrix NN ;
+  tMatrix NNt ;
   tMatrix G ;
   tMatrix xyz ;
   double gauss =  0.577350269189626 ;
@@ -221,12 +223,16 @@ int e020_mass(long ePos, tMatrix *M_e)
 	femMatNull(&BtDB);
 	femMatNull(&N);
 	femMatNull(&Nt);
+	femMatNull(&NN);
+	femMatNull(&NNt);
 	femMatNull(&G);
 	femMatNull(&xyz);
 
 	if ((rv=femFullMatInit(&BtDB,4,4)) != AF_OK) { goto memFree; }
-	if ((rv=femFullMatInit(&N,2,4)) != AF_OK) { goto memFree; }
-	if ((rv=femFullMatInit(&Nt,4,2)) != AF_OK) { goto memFree; }
+	if ((rv=femFullMatInit(&N,1,4)) != AF_OK) { goto memFree; }
+	if ((rv=femFullMatInit(&Nt,4,1)) != AF_OK) { goto memFree; }
+	if ((rv=femFullMatInit(&NN,2,4)) != AF_OK) { goto memFree; }
+	if ((rv=femFullMatInit(&NNt,4,2)) != AF_OK) { goto memFree; }
 	if ((rv=femFullMatInit(&G,2,2)) != AF_OK) { goto memFree; }
 	if ((rv=femFullMatInit(&xyz,4,2)) != AF_OK) { goto memFree; }
 
@@ -249,8 +255,8 @@ int e020_mass(long ePos, tMatrix *M_e)
         ipos++ ;
         
         /* int. point coordinates: */
-        x = gauss * sign[ipos][0] ;
-        y = gauss * sign[ipos][1] ;
+        x = gauss * sign[ipos][0] ; /* zeta */
+        y = gauss * sign[ipos][1] ; /* eta  */
 
         weight_x = 1.0 ;
         weight_y = 1.0 ;
@@ -268,8 +274,17 @@ int e020_mass(long ePos, tMatrix *M_e)
         femMatPut(&N, 2,4, -x + 1.0);
 
         femValMatMultSelf(0.25, &N);
-
         femMatPrn(&N,"N");
+
+        
+        femMatPut(&NN, 1,1,  (1.0-x)*(2.0-y));
+        femMatPut(&NN, 1,2,  (1.0+x)*(1.0-y));
+        femMatPut(&NN, 1,3,  (1.0+x)*(1.0+y));
+        femMatPut(&NN, 1,4,  (1.0-x)*(1.0+y));
+
+        femValMatMultSelf(0.25, &NN);
+        femMatPrn(&NN,"NN");
+
         /* G matrix (Jac inversion): */
         femMatSetZero(&G);
 
@@ -293,9 +308,10 @@ int e020_mass(long ePos, tMatrix *M_e)
         /* integration multiplier */
 				mult = detj * weight_x * weight_y * thick ;
 
-        femMatTran(&N, &Nt);
+        /*femMatTran(&N, &Nt);
+        femMatTran(&NN, &NNt);*/
 
-        femMatMatMult(&Nt, &N, &BtDB);
+        femMatMatMult(&NNt, &NN, &BtDB);
         femValMatMultSelf(mult, &BtDB);
 
         for (ii=1; ii<=4; ii++)
@@ -317,6 +333,8 @@ memFree:
 	femMatFree(&BtDB);
 	femMatFree(&N);
 	femMatFree(&Nt);
+	femMatFree(&NN);
+	femMatFree(&NNt);
 	femMatFree(&G);
 	femMatFree(&xyz);
 
