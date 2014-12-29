@@ -1251,7 +1251,7 @@ int femEqsMatInverse(tMatrix *a, tMatrix *b, double eps, long maxIt)
     femVecPut(&M,i, 1.0);                  /* set current vector  */
 
     if ((rv = femEqsCGwJ(a, &M, &x, eps, maxIt)) != AF_OK) goto memFree;
-    for (j=1; j<=n; j++) femMatPut(&b, j,i, femVecGet(&x,j)) ;
+    for (j=1; j<=n; j++) femMatPut(b, j,i, femVecGet(&x,j)) ;
   }
 	
 	/* freeing memory: */
