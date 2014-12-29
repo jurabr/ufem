@@ -1216,4 +1216,49 @@ memFree:
 	return(rv);
 }
 
+/** (Large) matrix inversion with use of GCwJ; MIGHT BE SLOW
+ *  (for symetric matrices only!) 
+ *  @param a      original matrix (must be MAT_SPAR)
+ *  @param b      inverted matrix (must be MAT_FULL)
+ *  @param eps    error (min.)
+ *  @param maxIt  max. number of iterations
+ *  @return state value
+ */
+int femEqsMatInverse(tMatrix *a, tMatrix *b, double eps, long maxIt)
+{
+	tVector  M; /* unit matrix  */
+	tVector  x; /* column of result vector */
+	long     i, j, n;
+	int      rv = AF_OK;
+
+	if (a->cols != a->rows) {return(AF_ERR_SIZ);}
+	if ((a->cols != b->rows) || (a->rows != b->cols)) {return(AF_ERR_SIZ);}
+	if ((a->type != MAT_SPAR) || (b->type != MAT_FULL)) {return(AF_ERR_TYP);}
+	
+	n = a->rows;
+
+  femMatSetZeroBig(b);
+
+	/* memory allocation */
+  femVecNull(&M);
+  femVecNull(&x);
+  if ((rv=femVecFullInit(&M,   n))!=AF_OK) { goto memFree; }
+  if ((rv=femVecFullInit(&x,   n))!=AF_OK) { goto memFree; }
+
+	for (i=1; i<=n; i++)
+  {
+    if (i>1) { femVecPut(&M, i-1, 0.0); }  /* clean previous data */
+    femVecPut(&M,i, 1.0);                  /* set current vector  */
+
+    if ((rv = femEqsCGwJ(a, &M, &x, eps, maxIt)) != AF_OK) goto memFree;
+    for (j=1; j<=n; j++) femMatPut(&b, j,i, femVecGet(&x,j)) ;
+  }
+	
+	/* freeing memory: */
+memFree:
+	femVecFree(&M);
+	femVecFree(&x);
+	return(rv);
+}
+
 /* end of fem_eqs.c */
