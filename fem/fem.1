@@ -86,8 +86,14 @@ preconditioner) for solution of linear systems.
 .TP
 \fB-ssor\fR 
 Uses the Conjugate Gradient Method with SSOR preconditioner
-for solution of linear systems (it also turns of the \fB-nes\fP
+for solution of linear systems (it also turns off the \fB-nes\fP
 functionality).
+.TP
+\fB-fbc\fR 
+Eliminates DOFs with fixed supports (u=0, v=0, w=0). Works only in
+statics. Also turnes off computation of reactions in these supports.
+Can speed-up solutions with large numbers of suppurts (3D foundation
+models).
 .TP
 \fB-to FILE\fP
 Writes temperatures from thermal solution to \fBFILE\fP.

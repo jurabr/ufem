@@ -1,3 +1,11 @@
+### Tue Dec 30 23:00:16 CET 2014
+
+version 0.5.0
+
+features:
+  + speedup for models with large number of fixed supports
+
+
 ### Sun Oct 20 22:24:54 CEST 2013
 
 features:
