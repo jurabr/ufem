@@ -208,7 +208,10 @@ int femLocKM_e(tMatrix *K_e, tMatrix *K, long ePos)
 #endif
 		}
 #ifdef _USE_THREADS_
-    if (mutexK != NULL) { pthread_mutex_unlock(&mutexK[lFld[i-1]-1]) ; }
+    if (lFld[i-1] != 0.0) /* <- femFastBC workaround */
+    {
+      if (mutexK != NULL) { pthread_mutex_unlock(&mutexK[lFld[i-1]-1]) ; }
+    }
 #endif
 	}
 
@@ -247,10 +250,13 @@ int femLocF_e(tVector *F_e, long ePos, tVector *F, long isF)
 	{
 #ifndef USE_MPI
 #ifdef _USE_THREADS_
+    if (lFld[i-1] != 0.0) /* <- femFastBC workaround */
+    {
     if (isF == AF_YES)
       { if (mutexF != NULL) { pthread_mutex_lock(&mutexF[lFld[i-1]-1]) ; } }
     else
       { if (mutexFr != NULL) { pthread_mutex_lock(&mutexFr[lFld[i-1]-1]) ; } }
+    }
 #endif
 
     if (lFld[i-1] != 0.0) /* <- femFastBC workaround */
@@ -258,10 +264,13 @@ int femLocF_e(tVector *F_e, long ePos, tVector *F, long isF)
 		  rv = femVecAdd(F, lFld[i-1], femVecGet(F_e,i));
 
 #ifdef _USE_THREADS_
+    if (lFld[i-1] != 0.0) /* <- femFastBC workaround */
+    {
     if (isF == AF_YES)
       { if (mutexF != NULL) { pthread_mutex_unlock(&mutexF[lFld[i-1]-1]) ; } }
     else
       { if (mutexFr != NULL) { pthread_mutex_unlock(&mutexFr[lFld[i-1]-1]) ; } }
+    }
 #endif
 #else
     if (lFld[i-1] != 0.0) /* <- femFastBC workaround */
