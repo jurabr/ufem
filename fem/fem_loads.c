@@ -32,6 +32,7 @@
 extern tVector u_i;
 extern tVector uTemp; /* thermal loads field */
 extern long femHaveThermDOFs; /* therm DOFs indicator */
+extern int femFastBC ;
 
 double femRedStiff = 1.0 ;
 
@@ -128,6 +129,7 @@ int femApplyDisp(long nodePos, long dof, double Val)
 
 	if ((Pos = femKpos(nodePos, dof)) <= 0)
 	{
+    if (femFastBC == AF_YES) { return(AF_OK); }
 #ifdef RUN_VERBOSE
 		fprintf(msgout,"[E] %s (%s: %li, %s: %li)\n",
 				_("Cannot add boundary condition"), _("node"),femGetNIDPos(nodePos) , _("DOF"), dof
@@ -348,6 +350,7 @@ int femApplyNLoad(long nPos, long Type, long Dir, double Val)
 
 	if (((Pos = femKpos(nPos, Dir)) <= 0) && (Type != 8))
 	{
+    if (femFastBC == AF_YES) { return(AF_OK); }
 #ifdef RUN_VERBOSE
 		fprintf(msgout,"[E] %s (%s: %li, %s: %li,  %s: %li)\n",
 				_("Cannot add nodal load"), _("node"),femGetNIDPos(nPos),_("type"), Type, _("direction"), Dir
@@ -409,6 +412,7 @@ int femApplyNBC(long nPos, long Type, long Dir, double Val)
 	{
     if (Type != 8) 
     {
+      if (femFastBC == AF_YES) { return(AF_OK); }
 		  fprintf(msgout,"[E] %s (%s: %li, %s: %li)\n",
 				_("Cannot add nodal b.c."), _("node"),femGetNIDPos(nPos) , _("direction"), Dir
 				);
@@ -678,6 +682,5 @@ int femAddThermLoads(void)
 	
 	return(rv);
 }
-
 
 /* end of fem_loads.c */

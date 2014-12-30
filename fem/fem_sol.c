@@ -30,6 +30,8 @@ extern long ppNfrom;
 extern long ppNnum;
 #endif
 
+long femFastBC        = AF_NO ; /* "fast" work with boundary conditions */
+
 int  femTangentMatrix = AF_YES;
 int  fem2ndOrder      = AF_NO ;
 int  fem2ndOrderIter  = AF_NO ;
@@ -44,6 +46,7 @@ long femHaveThermLoad = AF_NO ;
 long  nDOFAct  = 0 ;    /* total number of ACTIVE DOFs in structure (== size of "K" matrix) */
 long  nDOFlen  = 0 ;    /* lenght of nDOFfld                        */
 long *nDOFfld  = NULL ; /* description of DOFs in nodes             */
+long *nDOFnon  = NULL ; /* description of ommited DOFs in nodes     */
 long *K_rows   = NULL ; /* numbers of items in "K" rows K_rows[nDOFAct] */
 long *K_rowsAL = NULL ; /* K_rows for full ALM */
 
@@ -188,6 +191,7 @@ void fem_sol_null(void)
 
 
 	nDOFfld = NULL ;
+  if (femFastBC == AF_YES) { nDOFnon = NULL ; }
 	K_rows = NULL ;
 	K_rowsAL = NULL ;
 
@@ -286,6 +290,7 @@ void fem_sol_free(void)
 	femVecFree(&u);
 
 	femIntFree(nDOFfld);
+  if (femFastBC == AF_YES) { femIntFree(nDOFnon); }
 	femIntFree(K_rows);
 	nDOFAct = 0 ;
 	nDOFlen = 0 ;
@@ -782,9 +787,15 @@ int fem_fill_K_React(long mode, long r_from, long r_to)
 		{
 #ifdef USE_MPI
 			if ((resRnode[i]<ppNfrom)||(resRnode[i]>=(ppNfrom+ppNnum))) { resRval[i]=0.0; continue; }
-			if ((pos = femKpos(resRnode[i]-ppNfrom, resRdof[i])) <= 0) { return(AF_ERR_VAL); }
+			if ((pos = femKpos(resRnode[i]-ppNfrom, resRdof[i])) <= 0) 
+      {  if (femFastBC == AF_YES) {continue;} /* femFastBC workaround */
+        return(AF_ERR_VAL); 
+      }
 #else
-			if ((pos = femKpos(resRnode[i], resRdof[i])) <= 0) { return(AF_ERR_VAL); }
+			if ((pos = femKpos(resRnode[i], resRdof[i])) <= 0) 
+      { if (femFastBC == AF_YES) {continue;} /* femFastBC workaround */
+        return(AF_ERR_VAL); 
+      }
 #endif
 			resRval[i] += femVecGet(&F, pos);
 		}
@@ -1186,6 +1197,24 @@ int fem_dofs(void) /* original code */
 	   { rv = AF_ERR_MEM; goto memFree; }
 	nDOFlen = sum ;
 
+  /* computes DOFs exclusion field*/
+  if (femFastBC == AF_YES) 
+  {
+	  if ((nDOFnon = femIntAlloc(sum)) == NULL)
+	     { rv = AF_ERR_MEM; goto memFree; }
+    for (i=0; i<sum; i++) {nDOFnon[i] = 0 ;} /* slow but necessary */
+    for (i=0; i<nlLen; i++)
+    {
+      if (nlType[i] == 1) /* displacements */
+      {
+        if (fabs(nlVal[i]) <= FEM_ZERO)
+        {
+	        nDOFnon[ nlNode[i]*KNOWN_DOFS + nlDir[i]-1] = 1 ;
+        }
+      }
+    }
+  }
+
 	/* computes number of active DOFs in nodes (nDOFfld) */
 	act_sum = 0;
 	for (i=0; i<eLen; i++)
@@ -1209,6 +1238,7 @@ int fem_dofs(void) /* original code */
 #ifdef DEVEL_VERBOSE
 				fprintf(msgout,"line %li (n=%li, dof=%li)\n", dpos, npos, Elem[etype].ndof[k]);
 #endif
+        if (femFastBC == AF_YES) {if (nDOFnon[dpos] == 1) continue;} /* omit BCs. */
 				if (nDOFfld[dpos] == 0)
 				{
 					nDOFfld[dpos] = 1;
@@ -1265,7 +1295,6 @@ int fem_dofs(void) /* original code */
 	for (i=0; i<nDOFAct; i++)
 	{ fprintf(msgout,"K[%li] = %li\n",i+1, K_rows[i]); }
 #endif
-
 
 	if (solNoLinS == 4) /* full ALM only */
 	{

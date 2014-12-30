@@ -98,7 +98,11 @@ int femKhit(void)
 			for (k=0; k<Elem[eType[i]].dofs; k++)
 			{
 				if ((pos=femKpos(node_pos, Elem[eType[i]].ndof[k])) < 1)
+#if 0
 				   { return(AF_ERR_VAL); }
+#else
+        continue ; /* workaround for femFastBC */
+#endif
 #ifdef DEVEL_VERBOSE
 #if 0
 				fprintf(msgout,"pos %li (id=%li, %li) \n",pos,nID[node_pos], Elem[eType[i]].ndof[k]);				
@@ -132,7 +136,13 @@ int femFillLocVec(long ePos, long *Vec, long vLen)
 		for (j=0; j<Elem[eT].dofs; j++)
 		{
 			if ((Vec[pos] = femKpos(node_pos, Elem[eT].ndof[j])) < 1)
-				 { return(AF_ERR_VAL); }
+		  { 
+#if 0
+        return(AF_ERR_VAL); 
+#else
+        Vec[pos] = 0.0 ;
+#endif
+      }
 		  pos++;
 		}
 	}
@@ -172,13 +182,18 @@ int femLocKM_e(tMatrix *K_e, tMatrix *K, long ePos)
 	for (i=1; i<=lFldLen; i++)
 	{
 #ifdef _USE_THREADS_
-    if (mutexK != NULL) { pthread_mutex_lock(&mutexK[lFld[i-1]-1]) ; }
+    if (lFld[i-1] != 0.0) /* <- femFastBC workaround */
+    {
+      if (mutexK != NULL) { pthread_mutex_lock(&mutexK[lFld[i-1]-1]) ; }
+    }
 #endif
 		for (j=1; j<=lFldLen; j++)
 		{
+      if ((lFld[i-1]*lFld[j-1]) != 0.0) /* <- femFastBC workaround */
+      {
 #ifndef USE_MPI
 			/* standard way: */
-			rv = femMatAdd(K, lFld[i-1], lFld[j-1], femMatGet(K_e,i,j));
+			  rv = femMatAdd(K, lFld[i-1], lFld[j-1], femMatGet(K_e,i,j));
 #else
 			/* MPI modification: */
 			row = lFld[i-1] - (ppDOFfrom-1) ;
@@ -186,6 +201,7 @@ int femLocKM_e(tMatrix *K_e, tMatrix *K, long ePos)
 
 			rv = femMatAdd(K, row, lFld[j-1], femMatGet(K_e,i,j));
 #endif
+      }
 
 #ifdef DEVEL
 			if (rv != AF_OK) {goto memFree;}
@@ -237,7 +253,9 @@ int femLocF_e(tVector *F_e, long ePos, tVector *F, long isF)
       { if (mutexFr != NULL) { pthread_mutex_lock(&mutexFr[lFld[i-1]-1]) ; } }
 #endif
 
-		rv = femVecAdd(F, lFld[i-1], femVecGet(F_e,i));
+    if (lFld[i-1] != 0.0) /* <- femFastBC workaround */
+    {
+		  rv = femVecAdd(F, lFld[i-1], femVecGet(F_e,i));
 
 #ifdef _USE_THREADS_
     if (isF == AF_YES)
@@ -246,11 +264,15 @@ int femLocF_e(tVector *F_e, long ePos, tVector *F, long isF)
       { if (mutexFr != NULL) { pthread_mutex_unlock(&mutexFr[lFld[i-1]-1]) ; } }
 #endif
 #else
+    if (lFld[i-1] != 0.0) /* <- femFastBC workaround */
+    {
 		row = lFld[i-1] - (ppDOFfrom-1) ;
 		if ((row < 1) || (row > ppDOFlen)) {continue;}
 
 		rv = femVecAdd(F, lFld[i-1] - (ppDOFfrom-1), femVecGet(F_e,i));
+    }
 #endif
+    }
 #ifdef DEVEL
 		if (rv != AF_OK) {goto memFree;}
 #endif
@@ -288,6 +310,8 @@ int femLocUtoU_e(tVector *U, long ePos, tVector *U_e)
 
 	for (i=1; i<=lFldLen; i++)
 	{
+    if (lFld[i-1] != 0.0) /* <- femFastBC workaround */
+    {
 #ifndef USE_MPI
 		rv = femVecAdd(U_e,i, femVecGet(U, lFld[i-1]));
 #else
@@ -299,6 +323,8 @@ int femLocUtoU_e(tVector *U, long ePos, tVector *U_e)
 		*/
 		rv = femVecAdd(U_e,i, femVecGet(&u_big, lFld[i-1]));
 #endif
+    }
+    else { femVecAdd(U_e,i, 0.0); }
 
 #ifdef DEVEL
 		if (rv != AF_OK) {goto memFree;}

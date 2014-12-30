@@ -154,6 +154,8 @@ extern int femEqsCGwJ(tMatrix *a, tVector *b, tVector *x, double eps, long maxIt
 extern int femEqsCGwSSOR(tMatrix *a, tVector *b, tVector *x, double eps, long maxIt);
 extern int femEqsBiCCSwJ(tMatrix *a, tVector *b, tVector *x, double eps, long maxIt);
 
+extern int femEqsMatInverse(tMatrix *a, tMatrix *b, double eps, long maxIt);
+
 extern int femEqsChol(tMatrix *a, tVector *b, tVector *x);
 extern int femMatCholFact(tMatrix *a, tVector *a_diag);
 

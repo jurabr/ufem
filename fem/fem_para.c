@@ -37,6 +37,8 @@ extern double femTestConstEYZ  ;
 extern double femTestConstEZX  ;
 extern double femTestConstA    ;
 
+extern long  femFastBC ; /* "fast" work with boundary conditions */
+
 long femPreparsedData  = AF_NO ; /* if input data are preparsed             */
 long femReadStdInput   = AF_NO ; /* if input data comes through stdin       */
 long femWriteStdOutput = AF_NO ; /* if output data are send to stdout       */
@@ -172,6 +174,8 @@ void fem_help(int argc, char *argv[])
 #endif
 	fprintf(msgout,"   -nes      ... %s\n", _("use equation solver for non-symetric systems"));
 	fprintf(msgout,"   -ssor     ... %s\n", _("use SSOR instead of Jacobi preconditioning in CG solver"));
+
+	fprintf(msgout,"   -fbc      ... %s\n", _("faster handling of fixed supports in statics (no reactions computed)"));
 
 	fprintf(msgout,"   -ao FILE  ... %s\n", _("write alternative results of linear solution to FILE"));
 	fprintf(msgout,"   -at TYPE  ... %s\n", _("type of alternative results (0 .. text, 1 .. VTK legacy)"));
@@ -1034,6 +1038,12 @@ int fem_parse_params(int argc, char *argv[])
 		{
       femWriteStdThrOut = AF_YES ;
 			fem_throfile = NULL ;
+		}
+
+    /* excules zero displacements from solution */
+		if (strcmp(argv[i],"-fbc") == 0)
+		{
+      femFastBC = AF_YES ;
 		}
 
 #endif /* end of _SMALL_FEM_CODE_ */
