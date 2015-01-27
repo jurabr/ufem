@@ -21,8 +21,6 @@
    USA.
 
 	 Database for FEM - export to various formats 
-
-	 $Id: fdb_expt.c,v 1.6 2004/02/24 19:24:21 jirka Exp $
 */
 
 #include "fdb_fem.h"
@@ -328,30 +326,47 @@ int fdb_export_to_fem(FILE *fw, long *opts, long optlen)
   long preparsed = AF_NO ;
   long *node_index = NULL ;
   long n_sum = 0 ;
+  long lim_mode = 9 ; /* limits export to one selected entity */
+  long speedup = AF_NO ; /* bypasses some tests (possible speedup)*/
 
-#if 1
+printf("XXX X\n");
   if (optlen > 0)
   {
     if (opts[0] == AF_YES) {preparsed = AF_YES ;}
   }
-#endif
+  if (optlen > 1)
+  {
+printf("XXX\n");
+    if (lim_mode > 0)
+    {
+      lim_mode = opts[1] ; /* 1=gen, 2=rs, 3=mp, 4=n, 5=e, 6=grav, 7=d, 8=f, 9=ef */
+    }
+  }
+  if (optlen > 2)
+  {
+    if (opts[2] == AF_YES) {speedup = AF_YES ;}
+  }
 
   /* Setting up indexes: */
+  if (speedup != AF_YES) {
   fdbInputSyncStats();
 
   fdbInputRenumFromFlds(ELEM, ELEM_FROM, ELEM_ID, ENODE, ENODE_ELEM);  
   fdbInputRenumFromFlds(ELOAD, ELOAD_FROM, ELOAD_ID, ELVAL, ELVAL_ELID);
+  } /* speedup */
 
-
-	/* ** General information */
+	/* ** General information ------------------------------- */
 
 	/* step/time number, depends on number (-1 means on nothing) */
+  if (lim_mode > 0) {
 	fprintf(fw,"%li %li\n", (long)1, (long)-1) ;
 
 	/* linear solver, non-linear solver, number of steps for non-lin */
 	fprintf(fw,"%li %li %li\n", (long)1, (long)0, (long)0);
+  } /* lim_mode >0 */
 
 	/* ** Real sets  ---------------------------------------  */
+  if (lim_mode > 1){
 
 	/* number of real sets */
 	len = fdbInputTabLenSel(RSET) ;
@@ -399,8 +414,10 @@ int fdb_export_to_fem(FILE *fw, long *opts, long optlen)
 			fprintf(fw,"\n");
 		}
   }
+  } /* lim_mode >1 */
 
 	/* ** Material properties  -----------------------------  */
+  if (lim_mode > 2) {
 
 	/* number of material sets */
 	len = fdbInputTabLenSel(MAT) ;
@@ -445,9 +462,11 @@ int fdb_export_to_fem(FILE *fw, long *opts, long optlen)
 		}
 		fprintf(fw,"\n");
 	}
+  } /*lim_mode >2 */
 
 
 	/* ** Nodes  -------------------------------------------  */
+  if (lim_mode > 3) {
 
 	/* Number of nodes */
 	len = fdbInputTabLenSel(NODE) ;
@@ -481,9 +500,11 @@ int fdb_export_to_fem(FILE *fw, long *opts, long optlen)
 			);
     }
 	}
+  } /*lim_mode >3 */
 
 
 	/* ** Elements  ----------------------------------------  */
+  if (lim_mode > 4) {
 
 	/* number of elements */
 	len = fdbInputTabLenSel(ELEM) ;
@@ -567,8 +588,10 @@ int fdb_export_to_fem(FILE *fw, long *opts, long optlen)
 		}
 		fprintf(fw,"\n");
 	}
+  } /*lim_mode >4 */
 
 	/*  ** Gravitation  ------------------------------------  */
+  if (lim_mode > 5) {
 
 	if (fdbInputTabLenSel(GRAV) >= 1)
 	{
@@ -590,6 +613,11 @@ int fdb_export_to_fem(FILE *fw, long *opts, long optlen)
 	{
 		fprintf(fw,"0 0\n");
 	}
+  } /*lim_mode >5 */
+
+
+	/*  ** Displacements   ------------------------------------  */
+  if (lim_mode > 6) {
 
 	/* nodal disp/load data length */
 	len_nd = fdbInputTabLenSel(NDISP) ;
@@ -622,6 +650,11 @@ int fdb_export_to_fem(FILE *fw, long *opts, long optlen)
 				fdbInputGetDbl(NDISP, NDISP_VAL, i)
 				); 
 	}
+  } /*lim_mode >6 */
+
+
+	/*  ** Forces   ------------------------------------  */
+  if (lim_mode > 7) {
 
 	for (i=0; i<len_nl; i++)
 	{
@@ -646,8 +679,11 @@ int fdb_export_to_fem(FILE *fw, long *opts, long optlen)
 				fdbInputGetDbl(NLOAD, NLOAD_VAL, i)
 				);
 	}
+  } /*lim_mode >7 */
 
 
+  /* ** Rest of stuff (element loads + random stuff) */
+  if (lim_mode > 8) {
   /* quick and dirty simulation of element loads: */
   for (i=0; i<len_el; i++)
 	{
@@ -662,6 +698,7 @@ int fdb_export_to_fem(FILE *fw, long *opts, long optlen)
 
   /* random data ("monte") */
   rv = fdb_to_fem_rand(fw) ;
+  } /*lim_mode >8 */
 
   return(rv);
 }
@@ -690,12 +727,21 @@ int fdb_export_to_mac(FILE *fw, long *opts, long optlen)
 	long type, dir;
 	long rset_rep = 0 ;
 	long rset_num = 0 ;
+  long speedup = AF_NO ; /* bypasses some tests (possible speedup)*/
+
+  if (optlen > 2)
+  {
+    if (opts[2] == AF_YES) {speedup = AF_YES ;}
+  }
+
 
   /* Setting up indexes: */
+  if (speedup != AF_YES) {
   fdbInputSyncStats();
 
   fdbInputRenumFromFlds(ELEM, ELEM_FROM, ELEM_ID, ENODE, ENODE_ELEM);  
   fdbInputRenumFromFlds(ELOAD, ELOAD_FROM, ELOAD_ID, ELVAL, ELVAL_ELID);
+  } /* speedup */
 
 	/* ** Element types  ---------------------------------------  */
 

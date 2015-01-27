@@ -69,7 +69,7 @@ plotprop,smallnode,yes
 eplot
 
 !* suports on sides:
-nsel,s,loc,y,0
+nsel,s,loc,y,-0.01,0.01
 d,all,ux
 !* compression-only supports:
 d,all,uy-

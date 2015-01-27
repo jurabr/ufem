@@ -175,7 +175,7 @@ void fem_help(int argc, char *argv[])
 	fprintf(msgout,"   -nes      ... %s\n", _("use equation solver for non-symetric systems"));
 	fprintf(msgout,"   -ssor     ... %s\n", _("use SSOR instead of Jacobi preconditioning in CG solver"));
 
-	fprintf(msgout,"   -fbc      ... %s\n", _("faster handling of fixed supports in statics (no reactions computed)"));
+	fprintf(msgout,"   -fbc      ... %s\n", _("faster handling of fixed supports in statics (no reactions)"));
 
 	fprintf(msgout,"   -ao FILE  ... %s\n", _("write alternative results of linear solution to FILE"));
 	fprintf(msgout,"   -at TYPE  ... %s\n", _("type of alternative results (0 .. text, 1 .. VTK legacy)"));

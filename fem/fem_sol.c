@@ -105,6 +105,7 @@ extern int femAddThermLoads(void);
 pthread_mutex_t *mutexK   = NULL ; /* mutexes for K  */
 pthread_mutex_t *mutexF   = NULL ; /* mutexes for F  */
 pthread_mutex_t *mutexFr  = NULL ; /* mutexes for Fr */
+pthread_mutex_t *mutexDOF = NULL ; /* mutexes for nDOFfld */
 
 typedef struct /* for threads if fem_fill_K */
 {
@@ -134,11 +135,24 @@ int thrInit_K_mutex(void)
     return(AF_ERR_MEM) ; 
   }
 
+  if ((mutexDOF=(pthread_mutex_t *)malloc((nLen*KNOWN_DOFS)*sizeof(pthread_mutex_t)))==NULL) 
+  {
+    free (mutexK) ; mutexK = NULL ;
+    free (mutexF) ; mutexF = NULL ;
+    free (mutexFr) ; mutexFr = NULL ;
+    return(AF_ERR_MEM) ; 
+  }
+
   for (i=0; i<K.rows; i++) 
   { 
     pthread_mutex_init (&mutexK[i], NULL);
     pthread_mutex_init (&mutexF[i], NULL);
     pthread_mutex_init (&mutexFr[i], NULL);
+  }
+
+  for (i=0; i<(nLen*KNOWN_DOFS); i++)
+  {
+    pthread_mutex_init (&mutexDOF[i], NULL);
   }
   return (AF_OK);
 }
@@ -149,6 +163,7 @@ void thrFree_K_mutex(void)
   free(mutexK) ; mutexK = NULL ;
   free(mutexF) ; mutexF = NULL ;
   free(mutexFr) ; mutexFr = NULL ;
+  free(mutexDOF) ; mutexDOF = NULL ;
 }
 #endif
 
@@ -1180,6 +1195,19 @@ int fem_add_disps(long disp_mode, long step)
 	return(rv);
 }
 
+#ifdef _USE_THREADS_
+void *thfem_dofs(void *param)
+{
+  tThKe *p = (tThKe*) param ;
+  if (p->to <= 0) {return(NULL);}
+
+  /* TODO some code here */
+  return(NULL);
+}
+#endif
+
+
+
 /** computes number of DOFs, creates some field for DOF describing */
 int fem_dofs(void) /* original code */
 {
@@ -1666,6 +1694,9 @@ int femSolve(void)
 	fprintf(msgout,"[i]   %s.\n",_("element results done"));
 #endif
 
+#ifdef RUN_VERBOSE
+	fprintf(msgout,"[i]   %s:\n",_("saving of results"));
+#endif
   if (femReadPrevStep == AF_YES) { femVecAddVec(&u, 1.0, &u_tot); }
 	if ((rv = femWriteRes(fem_output_file())) != AF_OK) { goto memFree; }
 
@@ -1676,6 +1707,9 @@ int femSolve(void)
       rv = femWriteThermDOFS(fem_throfile, &u); 
     }
   }
+#ifdef RUN_VERBOSE
+	fprintf(msgout,"[i]   %s.\n",_("saving of results done"));
+#endif
     
 #ifndef _SMALL_FEM_CODE_
 	if (fem_spec_out_file != NULL)

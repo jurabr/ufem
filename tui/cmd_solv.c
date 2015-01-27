@@ -760,7 +760,8 @@ int func_fem_set_num_proc(char *cmd)
 
 
 
-/** Exports data to solver's format: "export,format(fem),fname[,opts]"
+/** Exports data to solver's format:
+ * "export,format(fem),fname[,opts:what_export(1-9),speedup(yes|no)]"
  * Note: no path or extension addition/substitution is done
  * @param cmd command
  * @return status
@@ -770,9 +771,12 @@ int func_fem_export (char *cmd)
 	int    rv = AF_OK ;
 	char   *format  = NULL;
 	char   *fname   = NULL;
-	long    opts[1] ;
+	long    opts[3] ;
+  char   *mode  = NULL ;
 
 	FEM_TEST_PREPROCESSOR
+
+  opts[2] = AF_NO ;
 
 	if (ciParNum(cmd) < 2) 
 	{ 
@@ -828,12 +832,36 @@ int func_fem_export (char *cmd)
     fname = ciSetPath(femGetDataDir(),femGetJobname(),format) ;
   }
 
+  if (ciParNum(cmd) > 4) /*what to export, now only for "fem" */
+	{ 
+		opts[1] = ciGetParInt(cmd, 4);
+	}
+ 
+  if (ciParNum(cmd) > 3) /* speedup - default is AF_NO*/
+	{ 
+
+    mode  = ciGetParStr(cmd, 3) ; 
+    if (mode != NULL)
+    {
+      ciStrCompr(mode);
+      if ((mode[0] == 'y') || (mode[0] == '1'))
+      {
+        opts[2] = AF_YES ;
+      }
+      else
+      {
+        opts[2] = AF_NO ;
+      }
+    }
+	}
+  
+
   fprintf(msgout,"[ ]  %s...\n",_("Export started - please wait"));
 
 	if (strcmp(format,"fem") == 0)
 	{
 		opts[0] = AF_YES ;
-		rv = fdbExport(fname, 1, opts, 1) ;
+		rv = fdbExport(fname, 1, opts, 3) ;
 	}
 	else
 	{
@@ -853,7 +881,7 @@ int func_fem_export (char *cmd)
 			{
 				if (strcmp(format,"mac") == 0)
 	  		{
-		  		rv = fdbExport(fname, 4, NULL, 0) ;
+		  		rv = fdbExport(fname, 4, NULL, 3) ;
 	  		}
 				else
 				{
