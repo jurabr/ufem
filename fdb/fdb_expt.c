@@ -329,17 +329,22 @@ int fdb_export_to_fem(FILE *fw, long *opts, long optlen)
   long lim_mode = 9 ; /* limits export to one selected entity */
   long speedup = AF_NO ; /* bypasses some tests (possible speedup)*/
 
-printf("XXX X\n");
   if (optlen > 0)
   {
     if (opts[0] == AF_YES) {preparsed = AF_YES ;}
   }
   if (optlen > 1)
   {
-printf("XXX\n");
-    if (lim_mode > 0)
+    if (opts[1] == 99)
     {
-      lim_mode = opts[1] ; /* 1=gen, 2=rs, 3=mp, 4=n, 5=e, 6=grav, 7=d, 8=f, 9=ef */
+      lim_mode = 0 ;
+    }
+    else
+    {
+      if (opts[1] > 0)
+      {
+        lim_mode = opts[1] ; /* 1=gen, 2=rs, 3=mp, 4=n, 5=e, 6=grav, 7=d, 8=f, 9=ef */
+      }
     }
   }
   if (optlen > 2)
@@ -466,11 +471,12 @@ printf("XXX\n");
 
 
 	/* ** Nodes  -------------------------------------------  */
-  if (lim_mode > 3) {
 
 	/* Number of nodes */
 	len = fdbInputTabLenSel(NODE) ;
+  if (lim_mode > 3) {
 	fprintf(fw,"%li\n", len);
+  } /*lim_mode >3 FIRST OCCURENCE */
 
 	len_all = fdbInputTabLenAll(NODE) ;
 
@@ -492,15 +498,16 @@ printf("XXX\n");
         node_index[i] = n_sum;
         n_sum++;
       }
+  if (lim_mode > 3) {
 	  	fprintf(fw, "%li %e %e %e\n", 
 				fdbInputGetInt(NODE,NODE_ID, i),
 				fdbInputGetDbl(NODE,NODE_X, i),
 				fdbInputGetDbl(NODE,NODE_Y, i),
 				fdbInputGetDbl(NODE,NODE_Z, i)
 			);
+  } /*lim_mode >3 SECOND OCCURENCE */
     }
 	}
-  } /*lim_mode >3 */
 
 
 	/* ** Elements  ----------------------------------------  */
@@ -617,7 +624,7 @@ printf("XXX\n");
 
 
 	/*  ** Displacements   ------------------------------------  */
-  if (lim_mode > 6) {
+  if ((lim_mode > 6)||(lim_mode == 0)) {
 
 	/* nodal disp/load data length */
 	len_nd = fdbInputTabLenSel(NDISP) ;
