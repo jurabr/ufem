@@ -183,6 +183,12 @@ int fem_create_cmd_aliases(void)
   if ((rv=ciAddVarGrp("cohes", "18","material")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("frict", "19","material")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("hard", "20","material")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("nuxy", "21","material")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("nuyz", "22","material")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("nuzx", "23","material")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("gxy", "24","material")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("gyz", "25","material")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("gzx", "26","material")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("model", "29","material")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("rambk", "30","material")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("rambn", "31","material")) != AF_OK) {goto memFree;}
