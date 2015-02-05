@@ -201,15 +201,14 @@ void fdbMatTypeInit_010(long type)
 	fdbMatType[type].val_rp     = val_rp ;
 }
 
-/* plastic concrete + quassibrittle */
+/* transverse isotropic material */
 void fdbMatTypeInit_011(long type)
 {
 	static long id            = 11 ;
-	static long vals          = 11 ;
-	static long val[11]        = {MAT_DENS, MAT_EX, MAT_NU,
-  MAT_F_YC,MAT_F_YBC,MAT_F_YT,MAT_F_UC,MAT_F_UBC,MAT_F_UT,MAT_E1, MAT_GF} ;
-	static long vals_rp       = 2 ;
-	static long val_rp[2]     = {MAT_RAMB_K, MAT_RAMB_N} ;
+	static long vals          = 6 ;
+	static long val[6]        = { MAT_DENS,MAT_EX,MAT_EZ,MAT_NUXY,MAT_NUYZ,MAT_G } ;
+	static long vals_rp       = 0 ;
+	static long val_rp        = NULL ;
 
 	fdbMatType[type].id         = id ;
 	fdbMatType[type].vals       = vals ;
@@ -218,37 +217,6 @@ void fdbMatTypeInit_011(long type)
 	fdbMatType[type].val_rp     = val_rp ;
 }
 
-/* Lourenco's masonry */
-void fdbMatTypeInit_012(long type)
-{
-	static long id            = 12 ;
-	static long vals          = 1 ;
-	static long val[1]        = {MAT_DENS};
-	static long vals_rp       = 6 ;
-	static long val_rp[6]     = {MAT_EX,MAT_NU, MAT_F_UC,MAT_F_UT,MAT_F_UBC, MAT_GF};
-
-	fdbMatType[type].id         = id ;
-	fdbMatType[type].vals       = vals ;
-	fdbMatType[type].val        = val ;
-	fdbMatType[type].vals_rp    = vals_rp ;
-	fdbMatType[type].val_rp     = val_rp ;
-}
-
-/* Simplified Lourenco's masonry (equivalen for 2D) */
-void fdbMatTypeInit_013(long type)
-{
-	static long id            = 13 ;
-	static long vals          = 1 ;
-	static long val[1]        = {MAT_DENS};
-	static long vals_rp       = 7 ;
-	static long val_rp[7]     = {MAT_EX,MAT_NU, MAT_F_UC,MAT_F_UT,MAT_F_UBC, MAT_GF, MAT_GFC};
-
-	fdbMatType[type].id         = id ;
-	fdbMatType[type].vals       = vals ;
-	fdbMatType[type].val        = val ;
-	fdbMatType[type].vals_rp    = vals_rp ;
-	fdbMatType[type].val_rp     = val_rp ;
-}
 
 
 
@@ -269,8 +237,6 @@ void fdbDefMatTypes(void)
 	fdbMatTypeInit_009(9);
 	fdbMatTypeInit_010(10);
 	fdbMatTypeInit_011(11);
-	fdbMatTypeInit_012(12);
-	fdbMatTypeInit_013(13);
 }
 
 

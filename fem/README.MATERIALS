@@ -9,4 +9,3 @@
   8: quasibrittle concrete (2D problems only) [experimental]
   9: mortar (nonlocal-like) [experimental]
  10: simple compression-only concrete (for 3D) [experimental]
- 11: transverse isotropic (for 3D) [experimental]

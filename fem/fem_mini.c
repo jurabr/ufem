@@ -38,6 +38,7 @@ extern int addMat_007(void);
 extern int addMat_008(void);
 extern int addMat_009(void);
 extern int addMat_010(void);
+extern int addMat_011(void);
 
 int femMatTypeInit(void)
 {
@@ -54,6 +55,7 @@ int femMatTypeInit(void)
 	if ((rv = addMat_008()) != AF_OK){goto memFree;}
 	if ((rv = addMat_009()) != AF_OK){goto memFree;}
 	if ((rv = addMat_010()) != AF_OK){goto memFree;}
+	if ((rv = addMat_011()) != AF_OK){goto memFree;}
 
 	if (rv == AF_OK) {return(rv);}
 memFree:

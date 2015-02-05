@@ -82,9 +82,9 @@ int femD_3D_ortho(long ePos, long e_rep, long Mode,  tMatrix *D)
 	femMatPut(D, 2,2, (1.0 - nuxz*nuzx )/(Ex*Ez*mult) ) ;
 	femMatPut(D, 3,3, (1.0 - nuxy*nuyx )/(Ey*Ex*mult) ) ;
 
-	femMatPut(D, 4,4, 1.0*Gyz) ;
-	femMatPut(D, 5,5, 1.0*Gzx) ;
-	femMatPut(D, 6,6, 1.0*Gxy) ;
+	femMatPut(D, 4,4, 2.0*Gyz) ;
+	femMatPut(D, 5,5, 2.0*Gzx) ;
+	femMatPut(D, 6,6, 2.0*Gxy) ;
 
 	femMatPut(D, 1,2, (nuxy +nuzx*nuyz)/(Ey*Ez*mult)) ;
 	femMatPut(D, 2,1, (nuxy +nuzx*nuyz)/(Ey*Ez*mult)) ;
@@ -97,6 +97,42 @@ int femD_3D_ortho(long ePos, long e_rep, long Mode,  tMatrix *D)
 
 	return( AF_OK ) ;
 }
+
+int femD_3D_transv(long ePos, long e_rep, long Mode,  tMatrix *D)
+{
+	double Ep,Ez,G,nup,nupz, nuzp, mult ;
+
+  Ep   = femGetMPValPos(ePos, MAT_EX,   0) ; 
+  Ez   = femGetMPValPos(ePos, MAT_EZ,   0) ; 
+  nup  = femGetMPValPos(ePos, MAT_NUXY, 0) ;
+  nupz = femGetMPValPos(ePos, MAT_NUYZ, 0) ;
+  G    = femGetMPValPos(ePos, MAT_G,    0) ;
+
+  nuzp = nupz*(Ez/Ep);
+
+	mult = ((1.0+nup)*(1.0-nup-2.0*nupz*nuzp)) / (Ep*Ep*Ez) ;
+
+	femMatPut(D, 1,1, (1.0 - nupz*nuzp )/(Ep*Ez*mult) ) ;
+	femMatPut(D, 2,2, (1.0 - nupz*nuzp )/(Ep*Ez*mult) ) ;
+	femMatPut(D, 3,3, (1.0 - nup*nup )/(Ep*Ep*mult) ) ;
+
+	femMatPut(D, 4,4, 2.0*G) ;
+	femMatPut(D, 5,5, 2.0*G) ;
+	femMatPut(D, 6,6, Ep/(1.0+nup)) ;
+
+	femMatPut(D, 1,2, (nup+nuzp*nupz)/(Ep*Ez*mult)) ;
+	femMatPut(D, 2,1, femMatGet(D,1,2)) ;
+
+	femMatPut(D, 1,3, (nuzp +nup*nuzp)/(Ep*Ez*mult)) ;
+	femMatPut(D, 3,1, femMatGet(D,1,3)) ;
+
+	femMatPut(D, 2,3, (1.0 - nuzp*nupz)/(Ep*Ez*mult)) ;
+	femMatPut(D, 3,2, femMatGet(D,2,3)) ;
+
+	return( AF_OK ) ;
+}
+
+
 
 
 /** Creates material stiffness matrix
@@ -125,6 +161,8 @@ int fem_D_3D(long ePos,
 
   switch (type)
   {
+    case 11: rv = femD_3D_transv(ePos, e_rep, Mode, D);
+            break ;
     case 7: rv = femD_3D_ortho(ePos, e_rep, Mode, D);
             break ;
     case 4: 
