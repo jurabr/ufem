@@ -832,15 +832,15 @@ int func_fem_export (char *cmd)
     fname = ciSetPath(femGetDataDir(),femGetJobname(),format) ;
   }
 
-  if (ciParNum(cmd) > 4) /*what to export, now only for "fem" */
+  if (ciParNum(cmd) > 3) /* what to export, now only for "fem" */
 	{ 
-		opts[1] = ciGetParInt(cmd, 4);
+		opts[1] = ciGetParInt(cmd, 3);
 	}
  
-  if (ciParNum(cmd) > 3) /* speedup - default is AF_NO*/
+  if (ciParNum(cmd) > 4) /* speedup - default is AF_NO*/
 	{ 
 
-    mode  = ciGetParStr(cmd, 3) ; 
+    mode  = ciGetParStr(cmd, 4) ; 
     if (mode != NULL)
     {
       ciStrCompr(mode);

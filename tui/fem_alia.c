@@ -169,7 +169,7 @@ int fem_create_cmd_aliases(void)
   if ((rv=ciAddVarGrp("ey","3","material")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("ez","4","material")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("prxy","5","material")) != AF_OK) {goto memFree;}
-  if ((rv=ciAddVarGrp("gxy","6","material")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("g","6","material")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("ftens", "7","material")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("fcompr", "8","material")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("crcken", "9","material")) != AF_OK) {goto memFree;}

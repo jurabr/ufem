@@ -106,7 +106,7 @@ int femD_3D_transv(long ePos, long e_rep, long Mode,  tMatrix *D)
   Ez   = femGetMPValPos(ePos, MAT_EZ,   0) ; 
   nup  = femGetMPValPos(ePos, MAT_NUXY, 0) ;
   nupz = femGetMPValPos(ePos, MAT_NUYZ, 0) ;
-  G    = femGetMPValPos(ePos, MAT_G,    0) ;
+  G    = femGetMPValPos(ePos, MAT_GXY,  0) ;
 
   nuzp = nupz*(Ez/Ep);
 
@@ -126,9 +126,8 @@ int femD_3D_transv(long ePos, long e_rep, long Mode,  tMatrix *D)
 	femMatPut(D, 1,3, (nuzp +nup*nuzp)/(Ep*Ez*mult)) ;
 	femMatPut(D, 3,1, femMatGet(D,1,3)) ;
 
-	femMatPut(D, 2,3, (1.0 - nuzp*nupz)/(Ep*Ez*mult)) ;
+	femMatPut(D, 2,3, (nuzp + nuzp*nup)/(Ep*Ez*mult)) ;
 	femMatPut(D, 3,2, femMatGet(D,2,3)) ;
-
 	return( AF_OK ) ;
 }
 

@@ -341,7 +341,7 @@ int fdb_export_to_fem(FILE *fw, long *opts, long optlen)
     }
     else
     {
-      if (opts[1] > 0)
+      if (opts[1] > 1)
       {
         lim_mode = opts[1] ; /* 1=gen, 2=rs, 3=mp, 4=n, 5=e, 6=grav, 7=d, 8=f, 9=ef */
       }

@@ -206,9 +206,9 @@ void fdbMatTypeInit_011(long type)
 {
 	static long id            = 11 ;
 	static long vals          = 6 ;
-	static long val[6]        = { MAT_DENS,MAT_EX,MAT_EZ,MAT_NUXY,MAT_NUYZ,MAT_G } ;
+	static long val[6]        = { MAT_DENS,MAT_EX,MAT_EZ,MAT_NUXY,MAT_NUYZ,MAT_GXY } ;
 	static long vals_rp       = 0 ;
-	static long val_rp        = NULL ;
+	static long *val_rp       = NULL ;
 
 	fdbMatType[type].id         = id ;
 	fdbMatType[type].vals       = vals ;
