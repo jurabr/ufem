@@ -76,15 +76,15 @@ int femD_3D_ortho(long ePos, long e_rep, long Mode,  tMatrix *D)
 	nuzy = (Ez/Ey) * nuyz ;
 	nuxz = (Ex/Ez) * nuzx ;
 
-	mult =( 1.0 - (nuxy*nuyx) - (nuyz*nuzy) - (nuzx*nuxz) - (2.0*nuxy*nuyz*nuzx)) / (Ex*Ey*Ez) ;
+	mult =(1.0-(nuxy*nuyx)-(nuyz*nuzy)-(nuzx*nuxz)-(nuxy*nuyz*nuzx)) / (Ex*Ey*Ez) ;
 
 	femMatPut(D, 1,1, (1.0 - nuyz*nuzx )/(Ey*Ez*mult) ) ;
 	femMatPut(D, 2,2, (1.0 - nuxz*nuzx )/(Ex*Ez*mult) ) ;
 	femMatPut(D, 3,3, (1.0 - nuxy*nuyx )/(Ey*Ex*mult) ) ;
 
-	femMatPut(D, 4,4, 2.0*Gyz) ;
-	femMatPut(D, 5,5, 2.0*Gzx) ;
-	femMatPut(D, 6,6, 2.0*Gxy) ;
+	femMatPut(D, 4,4, 1.0*Gyz) ;
+	femMatPut(D, 5,5, 1.0*Gzx) ;
+	femMatPut(D, 6,6, 1.0*Gxy) ;
 
 	femMatPut(D, 1,2, (nuxy +nuzx*nuyz)/(Ey*Ez*mult)) ;
 	femMatPut(D, 2,1, (nuxy +nuzx*nuyz)/(Ey*Ez*mult)) ;
@@ -95,6 +95,9 @@ int femD_3D_ortho(long ePos, long e_rep, long Mode,  tMatrix *D)
 	femMatPut(D, 2,3, (nuzy +nuzx*nuxy)/(Ez*Ex*mult)) ;
 	femMatPut(D, 3,2, (nuzy +nuzx*nuxy)/(Ez*Ex*mult)) ;
 
+#ifdef DEVEL_VERBOSE
+  femMatPrn(D, "Dortho");
+#endif
 	return( AF_OK ) ;
 }
 
@@ -108,17 +111,17 @@ int femD_3D_transv(long ePos, long e_rep, long Mode,  tMatrix *D)
   nupz = femGetMPValPos(ePos, MAT_NUYZ, 0) ;
   G    = femGetMPValPos(ePos, MAT_GXY,  0) ;
 
-  nuzp = nupz*(Ez/Ep);
+  nuzp = nupz*(Ep/Ez);
 
-	mult = ((1.0+nup)*(1.0-nup-2.0*nupz*nuzp)) / (Ep*Ep*Ez) ;
+	mult = (1.0-nup*nup - 2.0*nupz*nuzp - nup*nupz*nuzp) / (Ep*Ep*Ez) ;
 
 	femMatPut(D, 1,1, (1.0 - nupz*nuzp )/(Ep*Ez*mult) ) ;
 	femMatPut(D, 2,2, (1.0 - nupz*nuzp )/(Ep*Ez*mult) ) ;
 	femMatPut(D, 3,3, (1.0 - nup*nup )/(Ep*Ep*mult) ) ;
 
-	femMatPut(D, 4,4, 2.0*G) ;
-	femMatPut(D, 5,5, 2.0*G) ;
-	femMatPut(D, 6,6, Ep/(1.0+nup)) ;
+	femMatPut(D, 4,4, 1.0*G) ;
+	femMatPut(D, 5,5, 1.0*G) ;
+	femMatPut(D, 6,6, 0.5*Ep/(1.0+nup)) ;
 
 	femMatPut(D, 1,2, (nup+nuzp*nupz)/(Ep*Ez*mult)) ;
 	femMatPut(D, 2,1, femMatGet(D,1,2)) ;
@@ -128,6 +131,10 @@ int femD_3D_transv(long ePos, long e_rep, long Mode,  tMatrix *D)
 
 	femMatPut(D, 2,3, (nuzp + nuzp*nup)/(Ep*Ez*mult)) ;
 	femMatPut(D, 3,2, femMatGet(D,2,3)) ;
+
+#ifdef DEVEL_VERBOSE
+  femMatPrn(D, "Dtrans");
+#endif
 	return( AF_OK ) ;
 }
 
