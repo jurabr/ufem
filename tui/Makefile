@@ -29,7 +29,6 @@ endif
 GUIFLAGS=$(CFLAGS) $(GFCFLAGS) -I../gui `pkg-config --cflags gtk+-2.0 gtkglext-1.0` -DFEM_NEW_FILE_DLG
 GUIFLAGS=$(CFLAGS) $(GFCFLAGS) -I../gui `pkg-config --cflags gtk+-2.0 gtkglext-1.0` # old file dialogs here
 ####GUIFLAGS=$(CFLAGS) $(GFCFLAGS) -I../gui `pkg-config --cflags gtk+-2.0` 
-##GUIFLAGS=$(CFLAGS) $(GFCFLAGS) -I../gui -D_USE_GLUT_UI_
 #LIBS=-L/usr/local/lib -L../fdb -L../cint -L../common -lfdb -lcint -lfem_comm -lm #-lefence
 LIBS=-L/usr/local/lib -L../fdb -L../cint -L../common -L../meval -lfdb -lcint -lmeval -lfem_comm -lpthread -lm #-lefence
 #GUILIBS=-lGL -lGLU -lglut -lXmu -lX11 $(LIBS)
@@ -39,9 +38,14 @@ LIBS=-L/usr/local/lib -L../fdb -L../cint -L../common -L../meval -lfdb -lcint -lm
 ifeq ($(SYS_TYPE),IRIX)
 GUILIBS=-L../../gl2ps -lgl2ps `pkg-config --libs gtkglext-1.0 gtk+-2.0` -lGL -lGLU  $(LIBS) #-ltiff
 else
-GUILIBS=`pkg-config --libs gtkglext-1.0 gtk+-2.0` -lGL -lGLU  $(LIBS) # no gl2ps
+GUILIBS=`pkg-config --libs gtkglext-1.0 gtk+-2.0` -L/opt/femhub/local/lib -lGL -lGLU  $(LIBS) # no gl2ps
 endif
 ####GUILIBS=`pkg-config --libs gtk+-2.0` $(LIBS)
+
+# GLUT only:
+# GFCFLAGS=-I../gfx -I/usr/X11R6/include -D_USE_GFX_ # -DUSE_GL2PS -I../../gl2ps/ #-D_USE_LIB_TIFF_ -I/sw/include #-DUSE_FOG # no gl2ps
+# GUIFLAGS=$(CFLAGS) $(GFCFLAGS) -I../gui -D_USE_GLUT_UI_
+# GUILIBS=-L../../gl2ps -lgl2ps -L/usr/X11R6/lib -L/opt/femhub/local/lib -lGL -lGLU -lglut -lXi -lXext -lXmu -lX11 $(LIBS)
 
 
 # Win32 crosscompiler:

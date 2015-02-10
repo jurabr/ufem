@@ -3647,7 +3647,7 @@ int func_fem_res_compute_mc(char *cmd)
   ciRunCmd("esel,all");
   ciRunCmd("fsel,all");
   ciRunCmd("dsel,all");
-  ciRunCmd("gsel,all");
+  ciRunCmd("gesel,all");
 	
 	if (ciParNum(cmd) <= 1)
 	{

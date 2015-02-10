@@ -111,7 +111,7 @@ int femD_3D_transv(long ePos, long e_rep, long Mode,  tMatrix *D)
   nupz = femGetMPValPos(ePos, MAT_NUYZ, 0) ;
   G    = femGetMPValPos(ePos, MAT_GXY,  0) ;
 
-  nuzp = nupz*(Ep/Ez);
+  nuzp = nupz*(Ez/Ep);
 
 	mult = (1.0-nup*nup - 2.0*nupz*nuzp - nup*nupz*nuzp) / (Ep*Ep*Ez) ;
 
