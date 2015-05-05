@@ -76,6 +76,7 @@
 #define MAT_KXX     37 /* thermal conductivity */
 #define MAT_ALPHA   38 /* thermal expansion coefficient */
 #define MAT_C       39 /* specitic heat */
+#define MAT_ANG     40 /* angle 1 */
 
 
 /* structure for finite element */

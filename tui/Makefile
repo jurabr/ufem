@@ -38,7 +38,7 @@ LIBS=-L/usr/local/lib -L../fdb -L../cint -L../common -L../meval -lfdb -lcint -lm
 ifeq ($(SYS_TYPE),IRIX)
 GUILIBS=-L../../gl2ps -lgl2ps `pkg-config --libs gtkglext-1.0 gtk+-2.0` -lGL -lGLU  $(LIBS) #-ltiff
 else
-GUILIBS=`pkg-config --libs gtkglext-1.0 gtk+-2.0` -L/opt/femhub/local/lib -lGL -lGLU  $(LIBS) # no gl2ps
+GUILIBS=`pkg-config --libs gtkglext-1.0 gtk+-2.0` -lGL -lGLU  $(LIBS) # no gl2ps
 endif
 ####GUILIBS=`pkg-config --libs gtk+-2.0` $(LIBS)
 

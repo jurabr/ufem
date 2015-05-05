@@ -40,8 +40,8 @@ int addMat_007(void)
 	static long  type      = 7 ;
 	static long  num       = 10 ;
 	static long  val[10]   = {MAT_DENS, MAT_EX,MAT_EY,MAT_EZ, MAT_NUXY,MAT_NUYZ,MAT_NUZX, MAT_GXY,MAT_GYZ,MAT_GZX};
-	static long  num_rp    = 0 ;
-	static long *val_rp    = NULL ;
+	static long  num_rp    = 1 ;
+	static long  val_rp[1] = {MAT_ANG} ;
 
 	if (type != femAddMat(type)) {return(AF_ERR_VAL);}
 	Mat[type].num = num ;

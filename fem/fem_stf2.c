@@ -35,6 +35,7 @@ extern int sbet_get_D( long ePos, long iPoint, double A, tVector *epsilon, tVect
 extern int fem_m09_D_2d( long ePos, long iPoint, double A, tVector *epsilon, long Mode, long Problem, tMatrix *D); 
 extern int chen2d_D(long ePos, long e_rep, long Problem, tVector *epsilon, long Mode, tMatrix *Dep);
 extern int fem_vmis_D_2D(long ePos, long e_rep, long Problem, tVector *epsilon, long Mode, tMatrix *Dep);
+extern int D_Fill_Te(tMatrix *Te, tMatrix *TeT, double fi0);
 
 int D_Plane_Ortho(double R1, double R2, double nu, double beta, double fi_1, tMatrix *Dcr);
 
@@ -85,8 +86,6 @@ int D_HookIso_planeRaw(double E, double nu, long Problem, tMatrix *D)
 }
 
 /** Creates material stifness matrix for 2D plane stress/strain
- *  @param E    Young modulus
- *  @param nu   Poisson ratio
  *  @param Type   type of "D": 0..plane stress, 1..plane strain
  *  @param D   matrix (must be [4,4] and only indexes 1,2,3 are filled!)
  */
@@ -99,6 +98,69 @@ int D_PlaneHookIso( long ePos, long iPoint, double A, tVector *epsilon, long new
 	
 	return(D_HookIso_planeRaw(E, nu, Problem, D));
 }
+
+/** Creates orthotropic material stifness matrix for 2D plane stress/strain
+ *  @param Problem   type of "D": 0..plane stress, 1..plane strain
+ *  @param angle  matrix orientation
+ *  @param D  matrix (must be [4,4] and only indexes 1,2,3 are filled!)
+ */
+int D_PlaneOrthoPlain(long ePos, long iPoint, long Problem, tMatrix *D)
+{
+  int rv = AF_OK ;
+	double Ex, Ey, nuxy, nuyx, G, mult;
+  double angle = 0.0 ;
+  tMatrix  Dc0 ;
+	tMatrix  Dt  ;
+	tMatrix  TeT ;
+	tMatrix  Te  ;
+
+  /* Allocating of matrix in local coordinates and transformation matrices: */
+	if ((rv = femFullMatInit(&Dc0,3,3)) != AF_OK) { goto memFree; }
+	if ((rv = femFullMatInit(&Dt,3,3))  != AF_OK) { goto memFree; }
+	if ((rv = femFullMatInit(&TeT,3,3)) != AF_OK) { goto memFree; }
+	if ((rv = femFullMatInit(&Te,3,3))  != AF_OK) { goto memFree; }
+
+	femMatSetZero(&Dc0);
+
+
+	Ex   = femGetMPValPos(ePos, MAT_EX,   0) ;
+	Ey   = femGetMPValPos(ePos, MAT_EY,   0) ;
+	nuxy = femGetMPValPos(ePos, MAT_NUXY, 0) ;
+	G    = femGetMPValPos(ePos, MAT_GXY,  0) ;
+	angle= femGetMPValPos(ePos, MAT_ANG,  1) ;
+
+	nuyx = (Ey/Ex) * nuxy ;
+  mult = 1.0 / (1.0 - nuxy*nuyx) ;
+
+  femMatSetZero(D) ;
+	femMatPut(&Dc0, 1,1, mult*Ex      ) ;
+	femMatPut(&Dc0, 1,2, mult*Ex*nuxy ) ;
+	femMatPut(&Dc0, 2,1, mult*Ey*nuyx ) ;
+	femMatPut(&Dc0, 2,2, mult*Ey      ) ;
+	femMatPut(&Dc0, 2,2, G            ) ;
+
+  femMatPrn(&Dc0, "D_ort");
+
+	/* Transformation of Dc0 to global coordinates (Dcr): */
+	D_Fill_Te(&Te, &TeT, angle);
+
+	femMatPrn(&Te,"TE");
+	femMatPrn(&TeT,"TET");
+
+	femMatPrn(&Dc0, "D_00");
+
+	femMatMatMult(&TeT, &Dc0, &Dt);
+	femMatMatMult(&Dt,  &Te,   D);
+
+memFree:
+	femMatFree(&Dc0);
+	femMatFree(&Dt);
+	femMatFree(&TeT);
+	femMatFree(&Te);
+	return(rv);
+
+}
+
 
 /** Computes principal stresses in 2D
  * @param sigma_x xy stresses
@@ -197,6 +259,9 @@ int fem_D_2D(long ePos, long iPoint, double A, tVector *epsilon, tVector *sigma,
 				break;
     case 4:
         rv = fem_vmis_D_2D(ePos, iPoint+1, Problem, epsilon, newM, D);
+        break ;
+    case 7:
+        rv = D_PlaneOrthoPlain(ePos, iPoint+1, Problem, D);
         break ;
 		case 8:
 				rv = sbet_get_D( ePos, iPoint, A, epsilon, sigma, sigma_r, newM, Problem, D);

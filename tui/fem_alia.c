@@ -200,6 +200,7 @@ int fem_create_cmd_aliases(void)
   if ((rv=ciAddVarGrp("kxx", "37","material")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("alpha", "38","material")) != AF_OK) {goto memFree;}
   if ((rv=ciAddVarGrp("c", "39","material")) != AF_OK) {goto memFree;}
+  if ((rv=ciAddVarGrp("angle", "40","material")) != AF_OK) {goto memFree;}
 
   /* names of results */
   if ((rv=ciAddVarGrp("f_x","1","result")) != AF_OK) {goto memFree;}
