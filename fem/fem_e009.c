@@ -389,6 +389,14 @@ int e009_stiff(long ePos, long Mode, tMatrix *K_e, tVector *F_e, tVector *Fr_e)
   			/* determinant  */
   			if ((rv=e009_jac_det(&jac, &detj))!= AF_OK) { goto memFree; }
 
+#ifdef RUN_VERBOSE
+				if (detj <= 0.0)
+				{
+    			fprintf(msgout, "[E] %s!\n", _("Jacobi matric determinan is negative"));
+    			goto memFree;
+				}
+#endif
+
         /* integrational multiplier */
 				mult = detj * weight_x * weight_y * weight_z ;
 
@@ -396,7 +404,7 @@ int e009_stiff(long ePos, long Mode, tMatrix *K_e, tVector *F_e, tVector *Fr_e)
   			if (femLUinverse(&jac) != AF_OK)
   			{
 #ifdef RUN_VERBOSE
-    			fprintf(msgout, "[E] %s!\n", _("Inversion of Jascobi matric failed"));
+    			fprintf(msgout, "[E] %s!\n", _("Inversion of Jacobi matric failed"));
 #endif
     			goto memFree;
   			}
