@@ -22,8 +22,6 @@
 
 	 Graphics output for "fem" (pre|post)processor - element plotting
 	  (brick - 8 nodes)
-
-	 $Id: gfx_e005.c,v 1.1 2004/04/18 20:14:10 jirka Exp $
 */
 
 #include "fem_gele.h"
@@ -32,23 +30,26 @@
 
 extern int gfx_e004_geom(long pos);
 extern int gfx_e004_eres(long res_pos, long etype, long res);
-extern int gfx_e004_nres(long pos, long etype, long res);
 
 
-/** plotsresults on node - not very nice, should be improved 
+/** plots results on node - not very nice, should be improved 
  * (two triangles per side loog ugly) */
 int gfx_e005_nres(long pos, long etype, long res)
 {
   long nodes = 0 ;
   long node_pos = 0 ;
-	long nlist[24] = {0,1,2,0,2,3,4,5,6,4,6,7,0,4,7,0,7,3,1,5,6,1,6,2};
+	long nlist[36] = {0,1,2,0,2,3,4,5,6,4,6,7,0,4,7,0,7,3,1,5,6,1,6,2, 0,5,1,4,5,0,3,6,2,7,6,3};
 	long nside[8] = {0,4,7,3,2,6,5,1} ;
   float r,g,b ;
   float x,y,z;
   int  i, j;
   double val ;
 
+#if 0
   nodes = fdbInputGetInt(ELEM, ELEM_NODES, pos) ;
+#else
+  nodes = 12 ; /* not a real number of nodes - it's numbe of triangles */
+#endif
 
   if ((plotProp.wireOnly != AF_YES)||(plotProp.Select == AF_YES) )
   {
