@@ -114,7 +114,7 @@ double node_res_008(long res_pos, long etype, long npos, long type)
     case 19: pos = 5 ; break ;
 		default: return(0.0); break;
   }
-	return( fdbResElemGetVal(res_pos, etype, type, pos) ) ;
+	return( fdbResElemGetVal(res_pos, etype, type, pos+1) ) ;
 }
 
 /* results on brick with 8 nodes : */
@@ -134,7 +134,7 @@ double node_res_009(long res_pos, long etype, long npos, long type)
     case 7: pos = 8 ; break ;
 		default: return(0.0); break;
   }
-	return( fdbResElemGetVal(res_pos, etype, type, pos) ) ;
+	return( fdbResElemGetVal(res_pos, etype, type, pos+1) ) ;
 }
 
 
