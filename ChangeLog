@@ -4,6 +4,13 @@ See fem/ChangeLog for solver changes.
 
 
 
+### Tue Aug 11 20:31:36 CEST 2015
+
+fixes:
+  + fixed node results on 8-node brick
+
+
+
 ### Mon Aug 11 17:36:56 CEST 2014
 
 features:
