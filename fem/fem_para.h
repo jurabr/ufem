@@ -52,6 +52,7 @@ extern char *fem_ofile ;
 extern char *fem_rfile ;
 extern char *fem_thrfile ;
 extern char *fem_throfile ;
+extern char *fem_tsfile ;
 
 extern long  femBreakSolu ;
 
@@ -62,6 +63,7 @@ extern long  femNewmarkEL  ;
 extern long  femComputePriceOnly;
 extern long  femComputePE  ;
 extern long  femThermTrans ; 
+extern long  femTensorScale ;
 
 extern int fem_parse_params(int argc, char *argv[]);
 extern char *fem_output_file(void);
@@ -76,6 +78,8 @@ extern long  femSaveMatFStat ;
 extern long  femSaveSparMatFStat ;
 extern long  femSaveSparMarketMatFStat ;
 extern long  femSaveVecFStat ;
+
+extern long  femTensorScaleDiv ;
 
 extern char *femSaveMatFName ;
 extern char *femSaveSparMatFName ;

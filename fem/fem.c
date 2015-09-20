@@ -131,6 +131,10 @@ int main(int argc, char *argv[])
 	femSaPoLen  = solNoLinStepMax ;
 #endif
 
+  if (femTensorScale == AF_YES)
+  {
+    rv = femWriteTensorScaleRaster(fem_tsfile, femTensorScaleDiv) ;
+  }
 
   if (femDynamics == AF_YES) /* dynamics */
   {

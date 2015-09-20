@@ -22,7 +22,6 @@
 
 	 FEM Solver - command line parameters handling
 
-	 $Id: fem_para.c,v 1.25 2005/01/01 21:01:26 jirka Exp $
 */
 
 #include "fem_para.h"
@@ -51,6 +50,9 @@ long femPrevThrStdIn   = AF_NO ; /* if prev. step's therm res. from stdin   */
 long femExtraResOut    = AF_NO ; /* if extra LINEAR results will be written */
 long femExtraResType   = 0     ; /* type of extra result data               */
 long femComputePE      = AF_NO ; /* compute potential energy                */
+long femTensorScale    = AF_NO ; /* prepare tensor scale data               */
+
+long femTensorScaleDiv = 10 ;    /* prepare tensor scale division size      */
 
 #ifdef _USE_THREADS_
 long femUseThreads     = AF_NO ; /* if threads are used                 */
@@ -66,6 +68,8 @@ char *fem_thrfile = NULL ; /* previous thermal results */
 char *fem_throfile = NULL ; /* thermal results saving */
 
 char *fem_ssfile = NULL; /* substep result file */
+
+char *fem_tsfile = NULL; /* tensor scale file */
 
 #ifndef _SMALL_FEM_CODE_
 char *fem_spec_out_file   = NULL ;
@@ -188,6 +192,8 @@ void fem_help(int argc, char *argv[])
 #endif /* end of _SMALL_FEM_CODE_*/
 	fprintf(msgout,"   -po       ... %s\n", _("compute structure price and write it to stdout"));
 	fprintf(msgout,"   -e        ... %s\n", _("compute potential energy and write it to stdout"));
+	fprintf(msgout,"   -ts DIV   ... %s\n", _("prepare tensor scale data with X division DIV"));
+	fprintf(msgout,"   -tso FILE ... %s\n", _("save tensor scale data to FILE"));
 	fprintf(msgout,"   -h        ... %s\n", _("print this help"));
 #endif
 }
@@ -1044,6 +1050,48 @@ int fem_parse_params(int argc, char *argv[])
 		if (strcmp(argv[i],"-fbc") == 0)
 		{
       femFastBC = AF_YES ;
+		}
+
+    /* tensor scale file  */
+		if (strcmp(argv[i],"-tso") == 0)
+		{
+      femTensorScale = AF_NO ;
+			if (argc < (i+2)) 
+			{
+				return(AF_ERR_SIZ);
+			}
+			else
+			{
+				if (argv[i+1][0] == '-')
+				{
+					return(AF_ERR_VAL);
+				}
+				if ((fem_tsfile = fem_set_iofile(argv[i+1])) == NULL)
+				{
+					return(AF_ERR_VAL);
+				}
+        femTensorScale = AF_YES ;
+			}
+		}
+    
+    if (strcmp(argv[i],"-ts") == 0) /* set tensor scale division */
+		{
+			if (argc < (i+2)) 
+			{
+				return(AF_ERR_SIZ);
+			}
+			else
+			{
+				if (argv[i+1][0] == '-')
+				{
+					return(AF_ERR_VAL);
+				}
+				if ((femTensorScaleDiv = atoi(argv[i+1])) < 1) 
+        {
+          femTensorScaleDiv =  1 ;
+					return(AF_ERR_SIZ);
+        }
+			}
 		}
 
 #endif /* end of _SMALL_FEM_CODE_ */

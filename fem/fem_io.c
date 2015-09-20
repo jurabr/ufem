@@ -37,7 +37,8 @@ extern long  nDOFlen  ;    /* lenght of nDOFfld                        */
 extern long *nDOFfld  ; /* description of DOFs in nodes             */
 extern tVector u; /* structure displacement vector */
 
-extern int fem_monte_read_data(FILE *fr); /* "monte" data reading */
+extern int fem_monte_read_data(FILE *fr); /* "monte" data reading (fem_mont.c) */
+extern int fem_ts_run(FILE *fw, long div); /* tensor scale data export (fem_ts.c) */
 
 /** replaces name (long number!) values in "ind" with their positions by "by_imd" field
  * @param ind field to be modified
@@ -1184,6 +1185,54 @@ int femReadThermRes(char *fname, tVector *u)
 		}
 	}
 	return(rv);
+}
+
+/* **********************************************************
+ * **********************************************************
+ * **********************************************************
+ */ 
+
+/** Writes tensor scale data to file
+ * @param fname name of results file
+ * @param dnumber number of divisions in x direction
+ * @return status
+ */
+int femWriteTensorScaleRaster(char *fname, long dnumber)
+{
+  FILE *fw = NULL ;
+
+	if (fname == NULL) 
+	{
+		fw =stdout ;
+	}
+	else
+	{
+		if ((fw = fopen(fname, "w")) == NULL)
+		{
+#ifdef RUN_VERBOSE
+			fprintf(msgout,"[E] %s!\n", _("Error during trensor scale writing"));
+#endif
+			return(AF_ERR_IO);
+		}
+	}
+
+  /* write data: */
+  fem_ts_run(fw, dnumber) ;
+
+	/* close file: */
+	if (fw != stdout)
+	{
+  	if ((fclose(fw)) != 0)
+		{
+#ifdef RUN_VERBOSE
+			fprintf(msgout,"[E] %s!\n",_("Error during closing of tensor scale file"));
+#endif
+			fw = NULL;
+			return(AF_ERR_IO);
+		}
+	}
+
+  return(AF_OK);
 }
 
 /* end of fem_io.c */
