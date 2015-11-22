@@ -4,6 +4,13 @@ See fem/ChangeLog for solver changes.
 
 
 
+### Sun Nov 22 19:37:18 CET 2015
+
+fixes:
+  + tollerance test in *select (precision slightly lowered)
+
+
+
 ### Tue Aug 11 20:31:36 CEST 2015
 
 fixes:

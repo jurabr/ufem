@@ -157,7 +157,7 @@ int ts_tri_test(double px, double py, double *x, double *y)
   s = 1.0/(2.0*Area)*(y[0]*x[2] - x[0]*y[2] + (y[2] - y[0])*px + (x[0] - x[2])*py);
   t = 1.0/(2.0*Area)*(x[0]*y[1] - y[0]*x[1] + (y[0] - y[1])*px + (x[1] - x[0])*py);
 
-/* printf("Area:%e s=%e t=%e\n",Area,s,t); */
+printf("Area:%e s=%e t=%e\n",Area,s,t);
 
   if ((s>0.0) && (t>0.0) && ((1.0-s-t)>0.0)) {return(AF_YES);}
 
@@ -217,7 +217,7 @@ int ts_raster(void)
   iy1 = (int)((ymax-ts_area_y0) / ts_dy ) ; 
   iy0 = (int)((ymin-ts_area_y0) / ts_dy ) ; 
 
-printf("ZZ %i %i %i %i\n",ix0, ix1,  iy0, iy1);
+/* printf("ZZ %i %i %i %i\n",ix0, ix1,  iy0, iy1); */
 
   for (j=0; j<((ix1-ix0)); j++)
   {
@@ -229,7 +229,7 @@ printf("ZZ %i %i %i %i\n",ix0, ix1,  iy0, iy1);
 
       if ((ts_tri_test(px,py,x,y)==AF_YES)||(ts_tri_test(px,py,x2,y2)==AF_YES))
       {
-printf("X [%i,%i]\n",iy1-k,ix0+j);
+/* printf("X [%i,%i]\n",iy1-k,ix0+j); */
         ts_data[iy1-k][ix0+j] = mType ;
       }
     }

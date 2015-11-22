@@ -245,7 +245,7 @@ int fdbSelectDblInterval(tTab *tab, tInt *intfld, tDbl *dblfld, long collumn, lo
       continue ;
     }
 
-    if ( ((from-FEM_ZERO) <= val) && ((val-FEM_ZERO) <= to) )
+    if ( ((from-100.0*FEM_ZERO) <= val) && ((val-100.0*FEM_ZERO) <= to) )
     {
       switch (mode)
       {
