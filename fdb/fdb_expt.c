@@ -738,7 +738,8 @@ int fdb_export_to_mac(FILE *fw, long *opts, long optlen)
 
   if (optlen > 2)
   {
-    if (opts[2] == AF_YES) {speedup = AF_YES ;}
+    if (opts != NULL)
+      { if (opts[2] == AF_YES) {speedup = AF_YES ;} }
   }
 
 

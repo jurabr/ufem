@@ -881,7 +881,7 @@ int func_fem_export (char *cmd)
 			{
 				if (strcmp(format,"mac") == 0)
 	  		{
-		  		rv = fdbExport(fname, 4, NULL, 3) ;
+		  		rv = fdbExport(fname, 4, opts, 3) ;
 	  		}
 				else
 				{
