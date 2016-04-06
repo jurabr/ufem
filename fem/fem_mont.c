@@ -436,7 +436,7 @@ int monte_init_lib_stuff(char *param)
 #endif
 
   /* TODO Thermal transient analysis (Newmark integration) */
-#if 1
+#if 0
   femThermTrans = AF_YES ;
 #endif
 
