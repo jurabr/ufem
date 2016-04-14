@@ -89,7 +89,7 @@ int func_fem_nsel(char *cmd)
 
 	if (ciParNum(cmd) > 1) 
 	{
-		if (strlen(mode = ciGetParStr(cmd, 1)) < 1) 
+		if ((mode = ciGetParStr(cmd, 1)) == NULL) 
 		{
 			fprintf(msgout,"[E] %s!\n", 
 					_("Mode specification required"));
@@ -207,7 +207,7 @@ int func_fem_nsel(char *cmd)
 		case 'l': ibywhat = NODE_X  ;
 							if (ciParNum(cmd) > 3) 
 							{
-								if (strlen(dir = ciGetParStr(cmd, 3)) < 1) 
+								if ((dir = ciGetParStr(cmd, 3)) == NULL) 
 								{
 									fprintf(msgout,"[E] %s!\n", ("Direction required"));
 									free(bywhat) ; free(dir);
@@ -320,7 +320,7 @@ int func_fem_esel(char *cmd)
 
 	if (ciParNum(cmd) > 1) 
 	{
-		if (strlen(mode = ciGetParStr(cmd, 1)) < 1) 
+		if ((mode = ciGetParStr(cmd, 1)) == NULL) 
 		{
 			fprintf(msgout,"[E] %s!\n", 
 					_("Mode specification required"));
@@ -443,7 +443,7 @@ int func_fem_esel(char *cmd)
 		case 'l': /* by element centroid - bit complicated */
               if (ciParNum(cmd) > 3) 
 							{
-								if (strlen(dir = ciGetParStr(cmd, 3)) < 1) 
+								if ((dir = ciGetParStr(cmd, 3)) == NULL) 
 								{
 									fprintf(msgout,"[E] %s!\n", ("Direction required"));
 									free(bywhat) ; free(dir);
@@ -548,7 +548,7 @@ int func_fem_dsel(char *cmd)
 
 	if (ciParNum(cmd) > 1) 
 	{
-		if (strlen(mode = ciGetParStr(cmd, 1)) < 1) 
+		if ((mode = ciGetParStr(cmd, 1)) == NULL) 
 		{
 			fprintf(msgout,"[E] %s!\n", 
 					_("Mode specification required"));
@@ -714,7 +714,7 @@ int func_fem_fsel(char *cmd)
 
 	if (ciParNum(cmd) > 1) 
 	{
-		if (strlen(mode = ciGetParStr(cmd, 1)) < 1) 
+		if ((mode = ciGetParStr(cmd, 1)) == NULL) 
 		{
 			fprintf(msgout,"[E] %s!\n", 
 					_("Mode specification required"));
@@ -877,7 +877,7 @@ int func_fem_eload_sel(char *cmd)
 
 	if (ciParNum(cmd) > 1) 
 	{
-		if (strlen(mode = ciGetParStr(cmd, 1)) < 1) 
+		if ((mode = ciGetParStr(cmd, 1)) == NULL) 
 		{
 			fprintf(msgout,"[E] %s!\n", 
 					_("Mode specification required"));
@@ -1026,7 +1026,7 @@ int func_fem_acel_sel(char *cmd)
 
 	if (ciParNum(cmd) > 1) 
 	{
-		if (strlen(mode = ciGetParStr(cmd, 1)) < 1) 
+		if ((mode = ciGetParStr(cmd, 1)) == NULL) 
 		{
 			fprintf(msgout,"[E] %s!\n", 
 					_("Mode specification required"));
@@ -1178,7 +1178,7 @@ int func_fem_ksel(char *cmd)
 
 	if (ciParNum(cmd) > 1) 
 	{
-		if (strlen(mode = ciGetParStr(cmd, 1)) < 1) 
+		if ((mode = ciGetParStr(cmd, 1)) == NULL) 
 		{
 			fprintf(msgout,"[E] %s!\n", 
 					_("Mode specification required"));
@@ -1296,7 +1296,7 @@ int func_fem_ksel(char *cmd)
 		case 'l': ibywhat = KPOINT_X  ;
 							if (ciParNum(cmd) > 3) 
 							{
-								if (strlen(dir = ciGetParStr(cmd, 3)) < 1) 
+								if ((dir = ciGetParStr(cmd, 3)) == NULL) 
 								{
 									fprintf(msgout,"[E] %s!\n", ("Direction required"));
 									free(bywhat) ; free(dir);
@@ -1377,7 +1377,7 @@ int func_fem_gesel(char *cmd)
 
 	if (ciParNum(cmd) > 1) 
 	{
-		if (strlen(mode = ciGetParStr(cmd, 1)) < 1) 
+		if ((mode = ciGetParStr(cmd, 1)) == NULL) 
 		{
 			fprintf(msgout,"[E] %s!\n", 
 					_("Mode specification required"));
@@ -1500,7 +1500,7 @@ int func_fem_gesel(char *cmd)
 		case 'l': /* by entity centroid - bit complicated */
               if (ciParNum(cmd) > 3) 
 							{
-								if (strlen(dir = ciGetParStr(cmd, 3)) < 1) 
+								if ((dir = ciGetParStr(cmd, 3)) == NULL) 
 								{
 									fprintf(msgout,"[E] %s!\n", ("Direction required"));
 									free(bywhat) ; free(dir);
@@ -1682,7 +1682,7 @@ int func_fem_sel_by_step(char *cmd)
 
 	if ((nvals=ciParNum(cmd)) > 1) 
 	{
-		if (strlen(mode = ciGetParStr(cmd, 1)) < 1) 
+		if ((mode = ciGetParStr(cmd, 1)) == NULL) 
 		{
 			fprintf(msgout,"[E] %s!\n", 
 					_("Mode specification required"));

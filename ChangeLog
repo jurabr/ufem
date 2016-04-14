@@ -5,6 +5,12 @@ See fem/ChangeLog for solver changes.
 
 
 
+### Thu Apr 14 19:06:08 CEST 2016
+
+bugfixes:
+  - segfault in "?sel,," functions with empty arguments
+
+ 
 ### Mon Jan  4 19:10:25 CET 2016
 
 fixes:
