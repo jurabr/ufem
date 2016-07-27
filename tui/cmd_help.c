@@ -119,6 +119,8 @@ int tui_help_elem(long type)
   fdbPrnEndTable(fdbPrnFile);
 
   fdbPrnBeginTable(fdbPrnFile, 2, _("Values")) ;
+  fdbPrnTableItemStr(fdbPrnFile,0, _("Nodes"));
+  fdbPrnTableItemInt(fdbPrnFile,1,fdbElementType[type].nodes );
   fdbPrnTableItemStr(fdbPrnFile,0, _("DOFs"));
   fdbPrnTableItemInt(fdbPrnFile,1,fdbElementType[type].ndofs );
   fdbPrnTableItemStr(fdbPrnFile,0, _("Static"));
