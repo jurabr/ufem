@@ -776,6 +776,7 @@ int func_fem_export (char *cmd)
 
 	FEM_TEST_PREPROCESSOR
 
+  opts[1] = 0 ;
   opts[2] = AF_NO ;
 
 	if (ciParNum(cmd) < 2) 
