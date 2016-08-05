@@ -623,6 +623,11 @@ int fdb_export_to_fem(FILE *fw, long *opts, long optlen)
   } /*lim_mode >5 */
 
 
+  /* just to be sure that everything is OK: */
+  len_nd = 0 ;
+  len_nl = 0 ;
+  len_el = 0 ;
+
 	/*  ** Displacements   ------------------------------------  */
   if ((lim_mode > 6)||(lim_mode == 0)) {
 
