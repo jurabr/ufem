@@ -5,16 +5,30 @@ See fem/ChangeLog for solver changes.
 
 
 
+### Sun Aug  7 20:50:15 CEST 2016
+
+version 0.2.68
+
+features:
+  + "plns,u_sum" and "prns,u_sum" implemented
+
+bugfixes:
+  - FEM export fixed (uninitialized parameter)
+
+
+
 ### Thu Apr 14 19:06:08 CEST 2016
 
 bugfixes:
   - segfault in "?sel,," functions with empty arguments
+
 
  
 ### Mon Jan  4 19:10:25 CET 2016
 
 fixes:
   + segfault in fdbExport for export_to_mac (invalid params)
+
 
 
 ### Sun Nov 22 19:37:18 CET 2015

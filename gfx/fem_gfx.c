@@ -1464,7 +1464,7 @@ int femPlotStuff(int length0, int width0, int Mode)
     {
       if ( femGfxNodeResults (plotStuff.eresType) != AF_OK)
       {
-        fprintf(msgout, "[E] %s!\n", _("Plotting of results on elements failed"));
+        fprintf(msgout, "[E] %s!\n", _("Plotting of results on nodes failed"));
 		  }
     }
 

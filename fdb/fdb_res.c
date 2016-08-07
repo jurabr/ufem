@@ -1163,6 +1163,61 @@ int fdbResMaxMinNode(long dir_index, double *max, double *min)
 }
 
 
+/** Found max and min for U_SUM result on nodes
+ * @param dir_index index of direction (0..ux, 1..uy etc. )
+ * @param max pointer to maximum value
+ * @param min pointer to minimum value
+ * @return status
+ */
+int fdbResMaxMinNodeUsum(double *max, double *min)
+{
+  long i, j ;
+  long count ;
+  double val = 0.0 ;
+  double ux = 0.0 ;
+  double uy = 0.0 ;
+  double uz = 0.0 ;
+
+  if (ResNode[ResActStep].i_len <= 0) {return(AF_ERR_EMP);}
+
+  count = 0 ;
+
+  for (i=0; i<ResNode[ResActStep].i_len; i++)
+  {
+    if (fdbInputTestSelect(NODE, ResNode[ResActStep].i_pos[i]) != AF_YES) 
+       {continue;}
+
+    for (j=ResNode[ResActStep].from[i];j<(ResNode[ResActStep].from[i]+ResNode[ResActStep].len[i]); j++ )
+    {
+      if ((j-ResNode[ResActStep].from[i]) == 0)
+      {
+        count++;
+        ux = ResNode[ResActStep].data[j] ;
+      }
+      if ((j-ResNode[ResActStep].from[i]) == 1)
+      {
+        count++;
+        uy = ResNode[ResActStep].data[j] ;
+      }
+      if ((j-ResNode[ResActStep].from[i]) == 2)
+      {
+        count++;
+        uz = ResNode[ResActStep].data[j] ;
+      }
+      if (count == 3)
+      {
+        val = sqrt(ux*ux + uy*uy + uz*uz) ;
+        count = 0 ;
+        if (*max < val) {*max = val;}
+        if (*min > val) {*min = val;}
+      }
+    }
+  }
+  if (count > 0) { return(AF_OK);      }
+  else           { return(AF_ERR_EMP); }
+}
+
+
 double fdbResElemGetVal0(long res_pos, long etype, long type, long set)
 {
 	long   i ;
@@ -1697,11 +1752,26 @@ double fdbAvResGetVal(long type, long n_pos)
   {
     if (type < 0)
     {
+      if (type == (-99)) /* U_SUM: */
+      {
+        i = n_pos ;
+        val = sqrt(
+          pow(ResNode[ResActStep].data[ResNode[ResActStep].from[i]+0],2)
+          +
+          pow(ResNode[ResActStep].data[ResNode[ResActStep].from[i]+1],2)
+          +
+          pow(ResNode[ResActStep].data[ResNode[ResActStep].from[i]+2],2)
+          );
+        return(val);
+      }
+      else
+      {
       if (labs(type) <= KNOWN_DOFS)
       {
         i = n_pos ;
         val = ResNode[ResActStep].data[ResNode[ResActStep].from[i]+(labs(type)-1)];
         return(val);
+      }
       }
     }
   }

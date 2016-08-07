@@ -437,7 +437,6 @@ double fdbResComp_vonMisesStress(long er_pos, long i_rep, long etype, long stres
   return(sqrt(0.5*(pow(s_1-s_2,2)+pow(s_2-s_3,2)+pow(s_3-s_1,2))));
 }
 
-
 /** Computes the result:
  * @param er_pos result position
  * @param i_rep repeating number (0=non-repeating, 1,2,..=repeating)

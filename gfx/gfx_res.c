@@ -215,8 +215,16 @@ int femGfxNodeResults(long res_type)
 
   if (res_type < 0) /* displacements */
   {
-    if (labs(res_type) > KNOWN_DOFS ) {return(AF_ERR_VAL);}
-    fdbResMaxMinNode(labs(res_type)-1, &max, &min);
+    if ( (labs(res_type) > KNOWN_DOFS ) && (res_type != (-99)) ) {return(AF_ERR_VAL);}
+    if (res_type == (-99))
+    {
+      /* TODO */
+      fdbResMaxMinNodeUsum(&max, &min);
+    }
+    else
+    {
+      fdbResMaxMinNode(labs(res_type)-1, &max, &min);
+    }
   }
   else /* Really averaged results */
   {
