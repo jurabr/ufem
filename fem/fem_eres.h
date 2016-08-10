@@ -101,6 +101,7 @@
 #define RES_USYZ   69
 #define RES_USZX   70
 #define RES_TEMP   71
+#define RES_USUM   72
 
 
 #endif

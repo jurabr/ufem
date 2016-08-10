@@ -109,6 +109,7 @@ extern int fdbResCopyStep(long orig_pos, long step_pos, double set_time);
 
 extern int fdbResMaxMinAny(tRes *Res, double *max, double *min);
 extern int fdbResMaxMinNode(long dir_index, double *max, double *min);
+extern int fdbResMaxMinNodeUsum(double *max, double *min) ;
 extern int fdbResMaxMinElem(long type, double *max, double *min);
 
 extern long fdbResElemNumRepSets(long res_pos, long etype);
