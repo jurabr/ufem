@@ -79,18 +79,18 @@ v deformovaném tvaru pomocí
 {\em Stromu pøíkazù}:\\
 {\tt Postprocessor $\rightarrow$ Plot Results $\rightarrow$ Deformed Shape}.
 V tomto pøípadì se aktuální zobrazení upraví do deformovaného tvaru,
-nedojde v¹ak k ¾ádným dal¹ím zmìnám (program neumo¾òuje barevné zobrazení
-deformací.)
+nedojde v¹ak k ¾ádným dal¹ím zmìnám.
+%(program neumo¾òuje barevné zobrazení deformací.)
 
 Podobnì je mo¾né vykreslit reakce pomocí
 {\em Stromu pøíkazù}:\\
 {\tt Postprocessor $\rightarrow$ Plot Results $\rightarrow$ Reactions}.
 Reakce jsou zobrazovány v podobì rùznì velkých ¹ipek. 
 
-Výsledky je mo¾né graficky zobrazit barevným odli¹ením i integraèních bodech
+Výsledky je mo¾né graficky zobrazit barevným odli¹ením v integraèních bodech
 a to pomocí 
 {\em Stromu pøíkazù}:\\
-{\tt Postprocessor $\rightarrow$ Plot Results $\rightarrow$ Element Solution..}.
+{\tt Postprocessor $\rightarrow$ Plot Results $\rightarrow$ On Element..}.
 V následném dialogu je tøeba vybrat typ zobrazovaných dat.
 
 Zkratky typù výsledkù jsou uvedeny v tabulce~\ref{tabrestype}.
@@ -124,6 +124,42 @@ s\_vmis & von Misesovo napìtí & $Pa$ \\
 \caption{Dal¹í typy výsledkù v programu uFEM}
 \end{center}
 \end{table}
+
+
+\section{Barevné vykreslení deformací}
+
+Program umo¾òuje barevnì vykreslit deformace konstrukce. To je mo¾né
+pomocí 
+{\em Stromu pøíkazù}:\\
+{\tt Postprocessor $\rightarrow$ Plot Results $\rightarrow$ On Nodes..}.
+V následném dialogu je tøeba zapsat typ vykresovaných dat (v dialogu
+nejsou nabízena). Konkrétní velièiny jsou uvedeny v
+tabulce~\ref{tabresrnode}.
+
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{|c||l|c|}
+\hline
+{\bf Zkratka} & {\bf Velièina} & {\bf Jednotka}\footnote{Tato informace
+je jen pomocná a má jen demonstrovat vztahy mezi velièinami,
+proto¾e volba systému jednotek je plnì na u¾ivateli.} \\
+\hline
+\hline
+u\_x & posunutí ve smìru osy x & $Pa$ \\
+u\_y & posunutí ve smìru osy y  & $Pa$ \\
+u\_z & posunutí ve smìru osy z  & $Pa$ \\
+u\_z & absolutní hodnota celkového posunutí & $Pa$ \\
+\hline
+s\_vmis & von Misesovo napìtí & $Pa$ \\
+\hline
+\end{tabular}
+\label{tabresrnode}
+\caption{Vykreslované deformace v programu uFEM}
+\end{center}
+\end{table}
+
+
+
 
 
 

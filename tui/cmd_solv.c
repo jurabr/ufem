@@ -459,7 +459,7 @@ int func_fem_solve(char *cmd)
       case 3:
       case 4:
       case 6:
-        /* bnon-linear static: construct the parameters: */
+        /* non-linear static: construct the parameters: */
         for (i=0; i< (FEM_STR_LEN*2+1); i++) { params[i] = '\0' ; }
         sprintf(params,"-ssor -p %s -nlnbrk -nls %li -nlstp %li -nlit %li -nlf %s -ose %li -osf %s -ln %li -lf %s -lrf %s -t %i",
             ret_minus_p(itersp),
