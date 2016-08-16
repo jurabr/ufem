@@ -1359,6 +1359,8 @@ int femSolveBC(void)
 
   femTangentMatrix = AF_NO ; /* !!! */
 
+  if (solNoLinSteps_cmd > 0) {substeps = solNoLinSteps_cmd ;}
+
  	if ((rv = femElemTypeInit()) != AF_OK) { goto memFree; }
  	if ((rv = femMatTypeInit()) != AF_OK) { goto memFree; }
 
