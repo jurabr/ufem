@@ -1,0 +1,26 @@
+!* Input file for uFEM 0.2.68 and above
+!*
+!* Simple 2D wall of arc shape and with compression-only supports
+!*
+!* File: l.mac
+!* Date: Tue Aug 16 11:42:32 CEST 2016
+
+!* user defined script (function):
+script,obloucek
+csys,cylxy
+
+csys,cart
+endscript
+
+
+!* normal input file:
+
+cleardata
+jobname,test-script
+
+et,1,2
+
+!* running derined script (function):
+runscript,obloucek
+
+save
