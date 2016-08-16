@@ -184,11 +184,17 @@ char *ciGetParStrVars(char *str, int parNum, long expandVars)
 			}
 		}
 	}
-
+  
   if (tmp != NULL)
   {
+    if (strlen(tmp) < 1) {free(tmp); return(NULL);}
     ciStrClearBegEnd(tmp) ;
+    if (strlen(tmp) < 1) {free(tmp); return(NULL);}
   }
+  else
+  {
+    return(NULL); 
+  } 
 
   if (expandVars == AF_NO)
   {
@@ -196,7 +202,7 @@ char *ciGetParStrVars(char *str, int parNum, long expandVars)
   }
   else
   {
-	  if (tmp != NULL)
+	  if ((tmp != NULL)&&(tmp0 != NULL))
 	  {
   	  strcpy(tmp0,tmp);
   	  ciStrCompr(tmp0);
