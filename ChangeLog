@@ -5,6 +5,16 @@ See fem/ChangeLog for solver changes.
 
 
 
+### Tue Aug 16 19:43:28 CEST 2016
+
+version 0.2.69
+
+bugfixes:
+  - failing interpreter on ARM devices (memory leak)
+  - string handling bug (fail on empty parameters)
+
+
+
 ### Sun Aug  7 20:50:15 CEST 2016
 
 version 0.2.68
