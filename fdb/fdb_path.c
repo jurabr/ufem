@@ -50,6 +50,7 @@ void resPathFree(int num)
 {
   int i ;
   if (num >= PATH_NUM) {return;}
+	if (femPath[num].len <= 0) {return;}
   if (femPath[num].node != NULL) { free(femPath[num].node) ; }
   if (femPath[num].desc != NULL )
      { for (i=0; i<265; i++) {femPath[num].desc[i] = '\0' ;} }
