@@ -627,6 +627,7 @@ int func_new_script(char *cmd)
 /** stops reading of script: "endscript" */
 int func_end_script(char *cmd)
 {
+exit(0);
 	return(AF_OK);
 }
 

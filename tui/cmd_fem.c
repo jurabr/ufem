@@ -120,6 +120,9 @@ int func_fem_clean_data (char *cmd)
 {
 	int    rv = AF_OK ;
 
+
+  if (femUI_Mode == FEM_UI_MODE_POST) { resPathFreeAll();}
+
 	femUI_Mode = FEM_UI_MODE_PREP ;
 
 	if (ResLen > 0) { fdbFreeResSpacePtrs(); }
@@ -128,8 +131,6 @@ int func_fem_clean_data (char *cmd)
   aResLen = 0 ;
 
 	rv = fdbInputCleanData();
-
-  resPathFreeAll();
 
 	return ( tuiCmdReact(cmd, rv) ) ;
 }

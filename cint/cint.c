@@ -432,6 +432,7 @@ int ciRunCmd(char *cmd)
 		}
 	  free(name);
 	  name = NULL ;
+
 		return(rv);
 	}
 	/* end of scripting support */
