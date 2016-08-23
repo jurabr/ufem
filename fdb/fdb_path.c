@@ -124,7 +124,7 @@ int resPathSetName(char *name, int num)
   return(AF_OK);
 }
 
-/** Adda new node to path
+/** Adds new node to path
  * @param num path number
  * @param node id number of node
  * @return status
@@ -408,11 +408,93 @@ char *femInputStringFromPathList(long nummm)
     strcat(tmp,num);
   }
 
-  printf("TMP _%s_\n", tmp);
+  /* printf("TMP _%s_\n", tmp); */ /* should be removed */
 
 	return(tmp);
 }
 
+/** Creates path between 2 nodes 
+ * @param num path number
+ * @param node1 id number of node 1
+ * @param node1 id number of node 2
+ * @param div number of divisions between nodes
+ * @return status
+ */
+int resPathTwoPoint(int num, long node1, long node2, long div)
+{
+  long    i, j ;
+	long    pos1, pos2 ;
+  double  dx, dy, dz , ds;
+  double  px, py, pz  ;
+  double  sx, sy, sz ;
+  double  dist ;
+  long    sum = 0 ;
 
+  if (num >= PATH_NUM) {return(AF_ERR_SIZ);}
+	if (femPath[num].len < 0) /* must be allocated first */
+	   { if ( resPathAlloc(num) != AF_OK) { return(AF_ERR_MEM) ; } }
+
+	femPath[num].len = 0  ;
+
+	/* check if node exists: */
+	if (fdbInputCountInt(NODE, NODE_ID, node1, &pos1) < 1) { return(AF_ERR_VAL); }
+	if (fdbInputCountInt(NODE, NODE_ID, node2, &pos2) < 1) { return(AF_ERR_VAL); }
+
+  /* check if number of nodes is OK */
+	if ((div < 1)||(div > (PATH_LEN-1))) {return(AF_ERR_SIZ);} /* path is already full */
+
+  /* get dx, dy, dz: */
+  sx = fdbInputGetDbl(NODE,NODE_X,pos1);
+  sy = fdbInputGetDbl(NODE,NODE_Y,pos1);
+  sz = fdbInputGetDbl(NODE,NODE_Z,pos1);
+
+  dx = fdbInputGetDbl(NODE,NODE_X,pos2) - sx  ;
+  dy = fdbInputGetDbl(NODE,NODE_Y,pos2) - sy ;
+  dz = fdbInputGetDbl(NODE,NODE_Z,pos2) - sz ;
+
+  dx = dx / (double)div ;
+  dy = dy / (double)div ;
+  dz = dz / (double)div ;
+  ds = sqrt (dx*dx + dy*dy + dz*dz);
+
+  /* first node is node1: */
+  sum = 0 ;
+	femPath[num].node[sum] = node1 ;
+	femPath[num].len++ ;
+  sum++ ;
+
+  /* simplest possible approach */
+  for (i=1; i<div; i++)
+  {
+    px = sx + (double)i*dx ;
+    py = sy + (double)i*dy ;
+    pz = sz + (double)i*dz ;
+
+    for (j=0; j< fdbInputTabLenAll(NODE); j++)
+    {
+      if (fdbInputTestSelect(NODE, j) != AF_YES) {continue;}
+
+      dist = sqrt(
+          pow(fdbInputGetDbl(NODE,NODE_X,j)-px, 2) +
+          pow(fdbInputGetDbl(NODE,NODE_Y,j)-py, 2) +
+          pow(fdbInputGetDbl(NODE,NODE_Z,j)-pz, 2)
+        );
+ 
+      if ( dist < (ds/4.0) ) /* get the first node lying in allowed distance */
+      {
+	      femPath[num].node[sum] = fdbInputGetInt(NODE, NODE_ID,j) ;
+	      femPath[num].len++ ;
+        sum++ ;
+        break ;
+      }
+    }
+  }
+
+  /* last node is node2: */
+	femPath[num].node[sum] = node2 ;
+	femPath[num].len++ ;
+
+  return(AF_OK);
+}
 
 /* end of fdb_path.c */

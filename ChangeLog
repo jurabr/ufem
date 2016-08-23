@@ -5,6 +5,15 @@ See fem/ChangeLog for solver changes.
 
 
 
+### Tue Aug 23 20:17:54 CEST 2016
+
+version 0.2.71
+
+features:
+  + possibility do define a path by 2 nodes
+
+
+
 ### Tue Aug 16 19:43:28 CEST 2016
 
 version 0.2.69

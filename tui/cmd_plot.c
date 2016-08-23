@@ -728,7 +728,20 @@ int func_gui_dialog (char *cmd)
 					1, title, value, AF_YES
 					) ;
 		}
-
+    if (strcmp(command,"ptwo") == 0)
+		{
+			title[0]=ciAllocStr(_("First Node"));
+			value[0]=ciAllocStr(" ");
+			title[1]=ciAllocStr(_("Last Node"));
+			value[1]=ciAllocStr(" ");
+			title[1]=ciAllocStr(_("Division"));
+			value[1]=ciAllocStr("10");
+			femDataDialogSmall(
+					_("Selext two tpath nodes"),
+					_("two"),
+					3, title, value, AF_YES
+					) ;
+		}
     if (strcmp(command,"plpath") == 0)
 		{
 			title[0]=ciAllocStr(_("Type"));

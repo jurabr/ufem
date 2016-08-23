@@ -1340,4 +1340,57 @@ int func_path_set_active(char *cmd)
   return ( tuiCmdReact(cmd, AF_OK));
 }
 
+/** Adds node to path: "ptwo,node1,node2,number_of_spaces"
+ * @param cmd command
+ * @return status
+ */
+int func_path_node_two(char *cmd)
+{
+  int num1  = -1 ;
+  int num2  = -1 ;
+  int div   = 0 ;
+
+	FEM_TEST_POSTPROCESSOR
+
+  if (femActivePath < 0)
+  {
+		fprintf(msgout,"[E] %s!\n", _("Path must be defined first"));
+	  return ( tuiCmdReact(cmd, AF_ERR_VAL) ) ;
+  }
+
+  if (ciParNum(cmd) < 3)
+  {
+		fprintf(msgout,"[E] %s!\n", _("Nodes and division number have to be specified: ptwo,n1,n2,div"));
+	  return ( tuiCmdReact(cmd, AF_ERR_VAL) ) ;
+  }
+
+  num1 = ciGetParInt(cmd,1) ;
+  if ((num1 <1) || (num1 > fdbInputFindMaxInt(NODE, NODE_ID)))
+  {
+		fprintf(msgout,"[E] %s!\n", _("Invalid node 1"));
+	  return ( tuiCmdReact(cmd, AF_ERR_VAL) ) ;
+  }
+  num2 = ciGetParInt(cmd,2) ;
+  if ((num2 <1) || (num2 > fdbInputFindMaxInt(NODE, NODE_ID)))
+  {
+		fprintf(msgout,"[E] %s!\n", _("Invalid node 2"));
+	  return ( tuiCmdReact(cmd, AF_ERR_VAL) ) ;
+  }
+
+  if (num1 == num2)
+  {
+		fprintf(msgout,"[E] %s!\n", _("Nodes cannot be identical"));
+	  return ( tuiCmdReact(cmd, AF_ERR_VAL) ) ;
+  }
+  div = ciGetParInt(cmd,3) ;
+  if (div <1) 
+  {
+		fprintf(msgout,"[E] %s!\n", _("Invalid path division"));
+	  return ( tuiCmdReact(cmd, AF_ERR_VAL) ) ;
+  }
+
+  return(tuiCmdReact(cmd,resPathTwoPoint(femActivePath, num1,num2,div)));
+}
+
+
 /* end of cmd_res.c */

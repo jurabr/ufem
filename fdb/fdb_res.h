@@ -171,6 +171,7 @@ extern int resPathChangeNode(int num, long node_old, long node_new);
 extern int resPathDelLastNode(int num, int node);
 extern int femPathList(FILE *fw, long from, long to);
 extern int femPathResPrn(FILE *fw, long path_num, long *res_type, long type_len);
+extern int resPathTwoPoint(int num, long node1, long node2, long div);
 
 #endif
 

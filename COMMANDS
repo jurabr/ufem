@@ -704,6 +704,9 @@ pathdel
 pn
 "pn,node"
 
+ptwo
+"ptwo,node1,node2,number_of_spaces"
+
 pathlist
 "pathlist,from,to"
 
