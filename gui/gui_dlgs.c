@@ -984,7 +984,10 @@ GtkWidget *fem_cmd_tree(void)
       gtk_tree_store_set(treeStore,&treeIter,0,_("Add Node By Mouse.."),1,"gcreate,p",-1);
 
       gtk_tree_store_append(treeStore,&treeIter,&treeIterPar);
-      gtk_tree_store_set(treeStore,&treeIter,0,_("First and Last Path Node.."),1,"dialog,ptwo",-1);
+      gtk_tree_store_set(treeStore,&treeIter,0,_("First and Last Node.."),1,"dialog,ptwo",-1);
+
+      gtk_tree_store_append(treeStore,&treeIter,&treeIterPar);
+      gtk_tree_store_set(treeStore,&treeIter,0,_("First and Last Node By Mouse.."),1,"gcreate,ptwo",-1);
 
       gtk_tree_store_append(treeStore,&treeIter,&treeIterPar);
       gtk_tree_store_set(treeStore,&treeIter,0,_("Plot Results on Path.."),1,"dialog,plpath",-1);

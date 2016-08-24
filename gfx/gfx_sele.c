@@ -659,6 +659,64 @@ int femGfxCreateItemFunc(long pos)
       rv = (ciRunCmd( ciStrCat2CmdPers("pn", tmp))) ;
       return(rv);
       break ;
+
+ case GFX_SELE_CRT_P_BE: 
+      sprintf(tmp,"%li", fdbInputGetInt(NODE, NODE_ID, pos));
+
+			if (femGfxCrtFldLen <= 0)
+      {
+        if ((femGfxCrtFld = (long *)malloc(2*sizeof(long))) == NULL)
+        {
+          return(AF_ERR_MEM);
+        }
+        else
+        {
+          femGfxCrtCount = 0;
+          femGfxCrtFldLen = 2 ;
+        }
+      }
+			else
+			{
+				femGfxCrtFldLen = 2 ;
+			}
+      
+			if (femGfxCrtCount >= (femGfxCrtFldLen-1))
+      {
+        /* last node */
+        if ((rv=femGfxCreateTestSingle(pos)) != AF_OK){return(rv);}
+        femGfxCrtFld[femGfxCrtCount] = pos ;
+        femGfxCrtCount++;
+
+        /* finish the work */
+        strcpy(tmp,"ptwo");
+        for (i=0; i<femGfxCrtFldLen; i++)
+        {
+          strncat(tmp,",",FEM_STR_LEN);
+          for (j=0; j<=FEM_STR_LEN; j++) { tmp2[j] = '\0'; }
+          sprintf(tmp2,"%li", fdbInputGetInt(NODE, NODE_ID, femGfxCrtFld[i]));
+          strncat(tmp,tmp2,FEM_STR_LEN);
+        }
+
+        for (j=0; j<=FEM_STR_LEN; j++) { tmp2[j] = '\0'; }
+        sprintf(tmp2,",%i", 100);
+        strncat(tmp,tmp2,FEM_STR_LEN);
+
+        rv = ciRunCmd(tmp) ;
+
+        /* cleanup: */
+        femGfxCrtCount = 0;
+        femGfxCrtFldLen = 0 ;
+        free (femGfxCrtFld);
+        femGfxCrtFld = NULL ;
+      }
+      else
+      {
+        if ((rv=femGfxCreateTestSingle(pos)) != AF_OK){return(rv);}
+        femGfxCrtFld[femGfxCrtCount] = pos ;
+        femGfxCrtCount++;
+      }
+      break ;
+    
       
     default: return(AF_ERR_VAL); break;
   }
@@ -870,6 +928,8 @@ int femGfxPickStuff(double x, double y, double pick_x, double pick_y,  long mode
                   (plotProp.SelAct == GFX_SELE_CRT_NLOAD)
                 ||
                   (plotProp.SelAct == GFX_SELE_CRT_ELEM)
+                ||
+                  (plotProp.SelAct == GFX_SELE_CRT_P_BE)
                 ||
                   (plotProp.SelAct == GFX_SELE_CRT_ENTS)
                 ||

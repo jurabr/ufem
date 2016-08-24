@@ -4,13 +4,24 @@ See fem/ChangeLog for solver changes.
 
 
 
+### Wed Aug 24 09:12:33 CEST 2016
+
+version 0.2.71
+
+features:
+  + gui selection to define a path by 2 nodes
+
+bugfixes:
+  - invalid dialog for the "ptwo" command
+
+
 
 ### Tue Aug 23 20:17:54 CEST 2016
 
 version 0.2.71
 
 features:
-  + possibility do define a path by 2 nodes
+  + possibility to define a path by 2 nodes
 
 
 

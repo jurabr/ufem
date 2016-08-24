@@ -734,8 +734,8 @@ int func_gui_dialog (char *cmd)
 			value[0]=ciAllocStr(" ");
 			title[1]=ciAllocStr(_("Last Node"));
 			value[1]=ciAllocStr(" ");
-			title[1]=ciAllocStr(_("Division"));
-			value[1]=ciAllocStr("10");
+			title[2]=ciAllocStr(_("Division"));
+			value[2]=ciAllocStr("10");
 			femDataDialogSmall(
 					_("Selext two tpath nodes"),
 					_("two"),
@@ -3265,6 +3265,10 @@ int func_gfx_gcreate (char *cmd)
               break;
     case 'P':
     case 'p': plotProp.SelAct   = GFX_SELE_CRT_PATH ;
+							if (strlen(dir) > 1)
+							{
+								if ((dir[1] =='t')||(dir[2] == 'T')) plotProp.SelAct   = GFX_SELE_CRT_P_BE ;
+							}
               plotProp.SelStuff = GFX_SELE_NODES ;
               if (fdbInputTabLenSel(NODE)< 2)
               {

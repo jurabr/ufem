@@ -74,6 +74,7 @@
 #define GFX_SELE_ACT_SELE   8
 #define GFX_SELE_PICK_BOX   9
 #define GFX_SELE_CRT_PATH  10
+#define GFX_SELE_CRT_P_BE  11
 
 #define GFX_PPM  0
 #define GFX_TIFF 1
