@@ -1197,9 +1197,9 @@ int func_fill_var_maxmin_dof(char *cmd)
 int func_fill_var_prev_eres(char *cmd)
 {
 	int    rv = AF_OK ;
-  int    i ;
 	char  *var  = NULL ;
 #ifdef _USE_GFX_
+  int    i ;
 	char   value[CI_STR_LEN] ;
 
 	for (i=0; i<CI_STR_LEN; i++) { value[i] = '\0' ; }
