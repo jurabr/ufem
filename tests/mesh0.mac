@@ -1,0 +1,39 @@
+!* Testing file for mesher
+!
+! Makes two bricks with one shared side
+! "bcick version" (have to be FAST)
+cleandata
+jobname,test-mesh
+
+et,1,10
+rs,1,10
+mat,1,1
+mp,ex,1,20e9
+mp,prxy,1,0.2
+mp,dens,1,2500
+
+gesize,brick,1,0,0,0,1,1,1
+gesize,brick,2,1,0,0,1,1,1
+
+gediv,1,12,12,12
+gediv,2,12,12,12
+
+mesh
+
+nsel,s,loc,x,0
+d,all,ux
+d,all,uy
+d,all,uz
+
+accel,uy,10
+
+eplot
+
+solve
+
+noplot
+plotprop,wireonly,0
+reset
+view,iso
+zoom,2
+plns,u_sum
