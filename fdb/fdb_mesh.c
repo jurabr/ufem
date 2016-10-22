@@ -27,7 +27,7 @@
 
 /* from fdb_nps.c */
 extern double fdbDistTol ;
-extern long found_suitable_node(double x, double y, double z, double tol, int *test);
+extern long found_suitable_node(double x, double y, double z, double tol, long max, int *test);
 
 long fdbMeshCheckAllNodes = AF_NO ;
 
@@ -87,7 +87,7 @@ int fdbMeshEnt001(long entPos)
 
 		if ((i==0)||(i==(len-1))||(fdbMeshCheckAllNodes==AF_YES))
 		{
-			npos = found_suitable_node(x, y, z, fdbDistTol, &test);
+			npos = found_suitable_node(x, y, z, fdbDistTol, -1, &test);
 		}
 		else
 		{
@@ -277,7 +277,7 @@ int fdbMeshEnt002(long entPos)
 
 		  if ((i==0)||(i==ilen)||(j==0)||(j==jlen)||(fdbMeshCheckAllNodes==AF_YES))
 		  {
-			  npos = found_suitable_node(x, y, z, fdbDistTol, &test);
+			  npos = found_suitable_node(x, y, z, fdbDistTol, -1, &test);
 		  }
 		  else
 		  {
@@ -567,7 +567,7 @@ int fdbMeshEnt003(long entPos)
 
 				if ((i==0)||(j==0)||(k==0)||(i==ilen)||(j==jlen)||(k==klen)||(fdbMeshCheckAllNodes==AF_YES))
 				{
-					npos = found_suitable_node(x, y, z, fdbDistTol, &test);
+					npos = found_suitable_node(x, y, z, fdbDistTol, startnpos+1, &test);
 				}
 				else
 				{
@@ -764,7 +764,7 @@ int fdbMeshEnt004(long entPos)
 {
   int    rv = AF_OK ;
   long  *nodes = NULL ;
-  long   entnum ;
+  long   entnum, startnpos ;
   long   ilen,jlen,klen, nlen, npos, posn, n_id, e_id ;
 	int    test ;
   long   et, rs, mat, set ;
@@ -814,6 +814,10 @@ int fdbMeshEnt004(long entPos)
 	  zi[i] = fdbInputGetDbl(KPOINT, KPOINT_Z, npos) ;
   }
 
+	startnpos = fdbInputTabLenAll(NODE)  ;
+	if (startnpos < 0) { startnpos = 0 ; }
+
+
   sum = 0 ;
 
   for (k=0; k<=klen; k++)
@@ -832,7 +836,7 @@ int fdbMeshEnt004(long entPos)
 
 				if ((i==0)||(i==ilen)||(j==0)||(j==jlen)||(k==0)||(k==klen)||(fdbMeshCheckAllNodes==AF_YES))
 				{
-					npos = found_suitable_node(x, y, z, fdbDistTol, &test);
+					npos = found_suitable_node(x, y, z, fdbDistTol, startnpos+1, &test);
 				}
 				else
 				{
@@ -1101,7 +1105,7 @@ int fdbMeshEnt005(long entPos)
 
 			if ((i==0)||(i==ilen)||(j==0)||(j==jlen)||(fdbMeshCheckAllNodes==AF_YES))
 			{
-				npos = found_suitable_node(x, y, z, fdbDistTol, &test);
+				npos = found_suitable_node(x, y, z, fdbDistTol, -1, &test);
 			}
 			else
 			{

@@ -173,19 +173,23 @@ int f_n_gen_1d(long num, long mode, long dir, double dx, double dy, double dz,
  * @param x wanted x coordinate
  * @param y wanted y coordinate
  * @param z wanted z coordinate
+ * @param tol allowed tolerance of coordiantes
+ * @param max position of maximum tested node (-1 to ignore)
  * @param test returns AF_YES if found, AF_NO if not
  * @return node position
  */
-long found_suitable_node(double x, double y, double z, double tol, int *test)
+long found_suitable_node(double x, double y, double z, double tol, long max, int *test)
 {
 	long node            = -1 ;
 	long node_not_so_far = -1 ;
-	long i ;
+	long i, stop ;
 	double nx, ny,nz, ndist ;
 
 	*test = AF_YES ;
+  stop = fdbInputTabLenAll(NODE);
+  if ((max >= 0) && (max < stop)) {stop = max;}
 
-	for (i=0; i< fdbInputTabLenAll(NODE); i++)
+	for (i=0; i< stop; i++)
 	{
 		/* unselected nodes are ignored */
 		if (fdbInputTestSelect(NODE,i) != AF_YES) {continue;}
@@ -292,7 +296,7 @@ int f_e_n_gen_1d(long num, long mode, long dir, double dx, double dy, double dz,
                      dx1, dy1, dz1,
                      &ox, &oy, &oz) ;
 
-				npos =  found_suitable_node(ox, oy, oz, tol, &test) ;
+				npos =  found_suitable_node(ox, oy, oz, tol, -1, &test) ;
 
 				if (test == AF_YES)
 				{
@@ -427,7 +431,7 @@ int f_nd_gen_1d(long num, long mode, long dir, double dx, double dy, double dz,
                      &ox, &oy, &oz) ;
 
 			/* have new node? */
-			nodepos = found_suitable_node(ox, oy, oz, tol, &test) ;
+			nodepos = found_suitable_node(ox, oy, oz, tol, -1, &test) ;
 
 			if (test != AF_YES)
 			{
@@ -513,7 +517,7 @@ int f_nl_gen_1d(long num, long mode, long dir, double dx, double dy, double dz,
                      &ox, &oy, &oz) ;
 
 			/* have new node? */
-			nodepos = found_suitable_node(ox, oy, oz, tol, &test) ;
+			nodepos = found_suitable_node(ox, oy, oz, tol, -1, &test) ;
 
 			if (test != AF_YES)
 			{

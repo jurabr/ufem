@@ -4,6 +4,18 @@ See fem/ChangeLog for solver changes.
 
 
 
+### Sat Oct 22 21:25:27 CEST 2016
+
+version 0.2.73
+
+features:
+  + brick meshing speedup (a little one)
+
+bugfixes:
+  - material 010 fixed (full sigma is used now)
+
+
+
 ### Wed Aug 24 09:12:33 CEST 2016
 
 version 0.2.71
