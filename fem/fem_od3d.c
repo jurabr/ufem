@@ -46,8 +46,11 @@ int od3d_D(long ePos, long iPoint, long Mode, tVector *epsilon, tMatrix *D)
   double max = FEM_ZERO ; /* tension is not allowed right now */
   double res = FEM_ZERO ; /* residual stiffness */
   long   stat ;
+  long   i ;
   tVector sigma_x ;
   tVector sigma_1 ;
+  tVector old_sigma ;
+
 
   E  = femGetMPValPos(ePos, MAT_EX, 0) ;
   nu = femGetMPValPos(ePos, MAT_NU, 0) ;
@@ -80,10 +83,20 @@ int od3d_D(long ePos, long iPoint, long Mode, tVector *epsilon, tMatrix *D)
 
 	  	femVecNull(&sigma_x);
 	  	femVecNull(&sigma_1);
+      femVecNull(&old_sigma) ;
 			if ((rv=femVecFullInit(&sigma_x, 6)) != AF_OK) { goto memFree; }
 			if ((rv=femVecFullInit(&sigma_1, 6)) != AF_OK) { goto memFree; }
+      if ((rv=femVecFullInit(&old_sigma, 6)) != AF_OK){goto memFree;}
+
+      femVecPut(&old_sigma,1, femGetEResVal(ePos,RES_SX,iPoint));
+      femVecPut(&old_sigma,2, femGetEResVal(ePos,RES_SY,iPoint));
+      femVecPut(&old_sigma,3, femGetEResVal(ePos,RES_SZ,iPoint));
+      femVecPut(&old_sigma,4, femGetEResVal(ePos,RES_SYZ,iPoint));
+      femVecPut(&old_sigma,5, femGetEResVal(ePos,RES_SZX,iPoint));
+      femVecPut(&old_sigma,6, femGetEResVal(ePos,RES_SXY,iPoint));
 
     	femMatVecMult(D, epsilon, &sigma_x);
+      for (i=1; i<=6; i++) { femVecAdd(&sigma_x,i, femVecGet(&old_sigma, i)) ; }
     	femPrinc3D(&sigma_x, &sigma_1);
 
         /* damage test */
@@ -120,6 +133,7 @@ int od3d_D(long ePos, long iPoint, long Mode, tVector *epsilon, tMatrix *D)
 memFree:
     		femVecFree(&sigma_x);
     		femVecFree(&sigma_1);
+        femVecFree(&old_sigma) ;
 
     femPutEResVal(ePos, RES_CR1, iPoint, E1) ;
     femPutEResVal(ePos, RES_PSI, iPoint, (double)stat) ;
