@@ -4,6 +4,15 @@ See fem/ChangeLog for solver changes.
 
 
 
+### Sun Oct 30 15:31:23 CET 2016
+
+version 0.2.74
+
+bugfixes:
+  - meshing of cvbrick (g.e. type 004) fixed - it's much 100+ faster now
+
+
+
 ### Sat Oct 22 21:25:27 CEST 2016
 
 version 0.2.73
@@ -13,7 +22,6 @@ features:
 
 bugfixes:
   - material 010 fixed (full sigma is used now)
-
 
 
 ### Wed Aug 24 09:12:33 CEST 2016

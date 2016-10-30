@@ -422,7 +422,7 @@ void fdbMeshGeomFuncBrick(double *xr, double *yr, double *zr, double xi, double 
 }
 
 /** New version of brick mesher: */
-/** Meshes BRICK entity (must be eight-node or twelve-node) 
+/** Meshes BRICK entity (must be eight-node) 
  * @param entPos entity index
  * @return status
  */
@@ -760,7 +760,8 @@ void fdbMeshGeomFuncBrick20(double *xr, double *yr, double *zr, double xi, doubl
   }
 }
 
-int fdbMeshEnt004(long entPos)
+/** Original meshing procedure - very slow but possibly more general *UNUSED* */
+int fdbMeshEnt004old(long entPos)
 {
   int    rv = AF_OK ;
   long  *nodes = NULL ;
@@ -1035,6 +1036,301 @@ int fdbMeshEnt004(long entPos)
 
   return(rv);
 }
+
+/** New version of brick mesher: */
+/** Meshes BRICK entity (must be twelve-node) 
+ * @param entPos entity index
+ * @return status
+ */
+int fdbMeshEnt004(long entPos)
+{
+  int    rv = AF_OK ;
+  long  *nodes = NULL ;
+  long   entnum ;
+  long   ilen,jlen,klen, nlen, npos, posn ;
+	int    test ;
+  long   et, rs, mat, set ;
+  long   i, j, k, kk ;
+  long   sum ;
+  double x,y,z ;
+  double xi[20] ;
+  double yi[20] ;
+  double zi[20] ;
+  long  *enode_elem = NULL ;
+  long  *enode_pos  = NULL ;
+  long  *enode_npos = NULL ;
+  long  *enode_id   = NULL ;
+  long  *e_sel = NULL ;
+  long  *e_type = NULL ;
+  long  *e_rset = NULL ;
+  long  *e_mat  = NULL ;
+  long  *e_dset = NULL ;
+  long  *e_nnum = NULL ;
+  long  *e_nid  = NULL ;
+  long  *e_from = NULL ;
+  long   *n_nid = NULL ;
+  long   *n_sel = NULL ;
+  double *n_x   = NULL ;
+  double *n_y   = NULL ;
+  double *n_z   = NULL ;
+  long    elen = 0 ;
+  long    enlen = 0 ;
+	long    n_tot = 0 ;
+	long    e_tot = 0 ;
+	long    en_tot = 0 ;
+	long    startnpos = 0 ;
+	long    actnpos = 0 ;
+	long    maxnid ;
+  long    startepos = 0 ;
+  long    startenpos = 0 ;
+	long    actepos = 0 ;
+	long    actenpos = 0 ;
+	long    maxeid ;
+
+
+  entnum = fdbInputGetInt(ENTITY, ENTITY_ID, entPos) ;
+
+  if (fdbInputCountInt(ENTDIV, ENTDIV_ENT, entnum, &posn) >= 3)
+  {
+    ilen = fdbInputGetInt(ENTDIV, ENTDIV_DIV, posn  ) ;
+    jlen = fdbInputGetInt(ENTDIV, ENTDIV_DIV, posn+1) ; 
+    klen = fdbInputGetInt(ENTDIV, ENTDIV_DIV, posn+2) ; 
+  }
+  else
+  {
+    return(AF_ERR_EMP);
+  }
+
+  if ((ilen < 1) || (jlen < 1) || (klen < 1))
+  { 
+    return(AF_ERR_VAL) ;
+  }
+  else
+  { 
+    nlen = (ilen+1)*(jlen+1)*(klen+1) ;
+  }
+
+  if ((nodes=femIntAlloc(nlen+1)) == NULL)
+  {
+    return(AF_ERR_MEM) ;
+  }
+
+  elen = ilen*jlen*klen ; /* number of new elements */
+  enlen = nlen*20 ;        /* number of new element nodes */
+
+  /* allocations: */
+  if ((enode_elem = femIntAlloc(enlen)) == NULL) {rv=AF_ERR_MEM; goto memFree;}
+  if ((enode_pos = femIntAlloc(enlen)) == NULL) {rv=AF_ERR_MEM; goto memFree;}
+  if ((enode_npos = femIntAlloc(enlen)) == NULL) {rv=AF_ERR_MEM; goto memFree;}
+  if ((enode_id = femIntAlloc(enlen)) == NULL) {rv=AF_ERR_MEM; goto memFree;}
+
+  if ((e_type = femIntAlloc(elen)) == NULL) {rv=AF_ERR_MEM; goto memFree;}
+  if ((e_rset = femIntAlloc(elen)) == NULL) {rv=AF_ERR_MEM; goto memFree;}
+  if ((e_mat = femIntAlloc(elen))  == NULL) {rv=AF_ERR_MEM; goto memFree;}
+  if ((e_dset = femIntAlloc(elen)) == NULL) {rv=AF_ERR_MEM; goto memFree;}
+  if ((e_nnum = femIntAlloc(elen)) == NULL) {rv=AF_ERR_MEM; goto memFree;}
+  if ((e_nid = femIntAlloc(elen))  == NULL) {rv=AF_ERR_MEM; goto memFree;}
+  if ((e_from = femIntAlloc(elen)) == NULL) {rv=AF_ERR_MEM; goto memFree;}
+  if ((e_sel = femIntAlloc(elen)) == NULL) {rv=AF_ERR_MEM; goto memFree;}
+
+  if ((n_nid = femIntAlloc(nlen))  == NULL) {rv=AF_ERR_MEM; goto memFree;}
+  if ((n_sel = femIntAlloc(nlen))  == NULL) {rv=AF_ERR_MEM; goto memFree;}
+
+  if ((n_x = femDblAlloc(nlen))    == NULL) {rv=AF_ERR_MEM; goto memFree;}
+  if ((n_y = femDblAlloc(nlen))    == NULL) {rv=AF_ERR_MEM; goto memFree;}
+  if ((n_z = femDblAlloc(nlen))    == NULL) {rv=AF_ERR_MEM; goto memFree;}
+
+
+	/* parameters of geometric entity: */
+  for (i=0; i<20; i++)
+  {
+  	npos = fdbEntKpPos(entPos, i) ;
+	  xi[i] = fdbInputGetDbl(KPOINT, KPOINT_X, npos) ;
+	  yi[i] = fdbInputGetDbl(KPOINT, KPOINT_Y, npos) ;
+	  zi[i] = fdbInputGetDbl(KPOINT, KPOINT_Z, npos) ;
+  }
+
+  sum = 0 ;
+
+	startnpos = fdbInputTabLenAll(NODE)  ;
+	if (startnpos < 0)
+	{
+		startnpos = 0 ;
+		maxnid    = 0 ;
+	}
+	else
+	{
+		maxnid = fdbInputFindMaxInt (NODE, NODE_ID) ;
+	}
+	/*actnpos = startnpos ;*/
+	actnpos = 0 ;
+
+  /* this makes things extremelly slow (too much searches and
+   * verifications) */
+  for (k=0; k<=klen; k++)
+  {
+    for (j=0; j<=jlen; j++)
+    {
+      for (i=0; i<=ilen; i++)
+      {
+        /* nodes: */
+        fdbMeshGeomFuncBrick20(
+          xi, yi, zi, 
+          (2.0*((((double)i+0.0)/(double)ilen))) - 1.0, 
+          (2.0*((((double)j+0.0)/(double)jlen))) - 1.0, 
+          (2.0*((((double)k+0.0)/(double)klen))) - 1.0, 
+          &x, &y, &z) ;
+
+				if ((i==0)||(j==0)||(k==0)||(i==ilen)||(j==jlen)||(k==klen)||(fdbMeshCheckAllNodes==AF_YES))
+				{
+					npos = found_suitable_node(x, y, z, fdbDistTol, startnpos+1, &test);
+				}
+				else
+				{
+					test = AF_NO ;
+				}
+
+        if (test != AF_YES)
+		    {
+					maxnid++ ;
+					n_nid[actnpos] = maxnid ;
+					n_sel[actnpos] = AF_YES ;
+					n_x[actnpos] = x ;
+					n_y[actnpos] = y ;
+					n_z[actnpos] = z ;
+          npos = actnpos+startnpos ;
+
+					actnpos++ ;
+					n_tot++ ;
+		    }
+
+		    nodes[sum] = npos ;
+        sum++ ;
+      }
+    }    
+  }
+
+	if (n_tot > 0)
+	{
+    fdbInputAppendTableRow(NODE, n_tot, &startnpos) ;
+		fdbInputIntChangeValsFast( NODE, NODE_ID, startnpos, n_tot, n_nid, AF_NO);
+		fdbInputIntChangeValsFast( NODE, NODE_SEL, startnpos, n_tot, n_sel, AF_NO);
+		fdbInputDblChangeValsFast( NODE, NODE_X , startnpos, n_tot, n_x, AF_NO);
+		fdbInputDblChangeValsFast( NODE, NODE_Y , startnpos, n_tot, n_y, AF_NO);
+		fdbInputDblChangeValsFast( NODE, NODE_Z , startnpos, n_tot, n_z, AF_NO);
+	}
+
+  et  = fdbInputGetInt(ENTITY, ENTITY_ETYPE, entPos) ;
+  rs  = fdbInputGetInt(ENTITY, ENTITY_RS,    entPos) ;
+  mat = fdbInputGetInt(ENTITY, ENTITY_MAT,   entPos) ;
+  set = fdbInputGetInt(ENTITY, ENTITY_SET,   entPos) ;
+
+  /* computing elements: */
+  startepos = fdbInputTabLenAll(ELEM)  ;
+	if (startepos < 0)
+	{
+		startepos = 0 ;
+		maxeid    = 0 ;
+	}
+	else
+	{
+	  maxeid = fdbInputFindMaxInt (ELEM, ELEM_ID) ;
+	}
+	actepos = 0 ;
+
+  startenpos = fdbInputTabLenAll(ENODE)  ;
+	if (startenpos < 0)
+	{
+		startenpos = 0 ;
+	}
+	actenpos = 0 ;
+
+  for (k=0; k<(klen); k++)
+  {
+    for (j=0; j<(jlen); j++)
+    {
+  		for (i=0; i<(ilen); i++)
+      {
+				maxeid++ ;
+				e_nid[actepos] = maxeid ;
+				e_type[actepos] = et ;
+				e_rset[actepos] = rs ;
+				e_mat[actepos] = mat ;
+				e_dset[actepos] = set ;
+				e_nnum[actepos] = 8 ;
+				e_from[actepos] = actenpos+startenpos ;
+        e_sel[actepos] = AF_YES ;
+
+        enode_npos[actenpos+0] = nodes[i + k*((ilen+1)*(jlen+1))+j*(ilen+1) + 0] ;
+        enode_npos[actenpos+1] = nodes[i + k*((ilen+1)*(jlen+1))+j*(ilen+1) + 1] ;
+        enode_npos[actenpos+2] = nodes[i + k*((ilen+1)*(jlen+1))+(j+1)*(ilen+1) + 1] ;
+        enode_npos[actenpos+3] = nodes[i + k*((ilen+1)*(jlen+1))+(j+1)*(ilen+1) + 0] ;
+
+        enode_npos[actenpos+4] = nodes[i + (k+1)*((ilen+1)*(jlen+1))+j*(ilen+1) + 0] ;
+        enode_npos[actenpos+5] = nodes[i + (k+1)*((ilen+1)*(jlen+1))+j*(ilen+1) + 1] ;
+        enode_npos[actenpos+6] = nodes[i + (k+1)*((ilen+1)*(jlen+1))+(j+1)*(ilen+1) + 1] ;
+        enode_npos[actenpos+7] = nodes[i + (k+1)*((ilen+1)*(jlen+1))+(j+1)*(ilen+1) + 0] ;
+
+        for (kk=0; kk<8; kk++)
+        {
+          enode_pos[actenpos+kk] = e_tot+startepos ;
+          enode_elem[actenpos+kk] = maxeid ;
+          enode_id[actenpos+kk] = fdbInputGetInt(NODE, NODE_ID, enode_npos[actenpos+kk]) ; 
+        }
+
+
+        actepos++ ;
+        actenpos += 8;
+				e_tot++ ;
+				en_tot+=8 ;
+      }
+    }
+  }
+
+  if (e_tot > 0)
+	{
+    fdbInputAppendTableRow(ELEM, e_tot, &startepos) ;
+		fdbInputIntChangeValsFast( ELEM, ELEM_SEL, startepos, e_tot, e_sel, AF_NO);
+		fdbInputIntChangeValsFast( ELEM, ELEM_ID, startepos, e_tot, e_nid, AF_NO);
+		fdbInputIntChangeValsFast( ELEM, ELEM_SET, startepos, e_tot, e_dset, AF_NO);
+		fdbInputIntChangeValsFast( ELEM, ELEM_TYPE, startepos, e_tot, e_type, AF_NO);
+		fdbInputIntChangeValsFast( ELEM, ELEM_RS, startepos, e_tot, e_rset, AF_NO);
+		fdbInputIntChangeValsFast( ELEM, ELEM_MAT, startepos, e_tot, e_mat, AF_NO);
+		fdbInputIntChangeValsFast( ELEM, ELEM_NODES, startepos, e_tot, e_nnum, AF_NO);
+		fdbInputIntChangeValsFast( ELEM, ELEM_FROM, startepos, e_tot, e_from, AF_NO);
+
+    fdbInputAppendTableRow(ENODE, en_tot, &startenpos) ;
+		fdbInputIntChangeValsFast( ENODE, ENODE_ID, startenpos, en_tot, enode_id, AF_NO);
+		fdbInputIntChangeValsFast( ENODE, ENODE_POS, startenpos, en_tot, enode_pos, AF_NO);
+		fdbInputIntChangeValsFast( ENODE, ENODE_NPOS, startenpos, en_tot, enode_npos, AF_NO);
+		fdbInputIntChangeValsFast( ENODE, ENODE_ELEM, startenpos, en_tot, enode_elem, AF_NO);
+	}
+
+memFree:
+  femIntFree(nodes) ;
+
+  femIntFree(enode_elem );
+  femIntFree(enode_pos  );
+  femIntFree(enode_npos );
+  femIntFree(enode_id   );
+  femIntFree(e_type );
+  femIntFree(e_rset );
+  femIntFree(e_mat  );
+  femIntFree(e_dset );
+  femIntFree(e_nnum );
+  femIntFree(e_nid   );
+  femIntFree(e_from );
+  femIntFree(e_sel );
+  femIntFree(n_nid  );
+  femIntFree(n_sel  );
+  femDblFree(n_x   );
+  femDblFree(n_y   );
+  femDblFree(n_z   );
+
+  return(rv);
+}
+
+
 
 int fdbMeshEnt005(long entPos)
 {
