@@ -251,11 +251,13 @@ int fem_parse_params(int argc, char *argv[])
 	int rv = AF_OK;
 	int i;
 
+#ifndef USE_MPW
 	if (argc == 1)
 	{
 		fem_help(argc, argv);
 		exit(AF_ERR_VAL);
 	}
+#endif
 
 	if ((argc == 2) && (argv[1][0] != '-'))
 	{
@@ -1116,6 +1118,18 @@ int fem_parse_params(int argc, char *argv[])
 		}
 	}
 
+#ifdef USE_MPW 
+  /* for Mac OS 8.x-9.x CLI apps (compiled by MPW): 
+   * presets -p -is -so */
+	femPreparsedData = AF_YES ;  /* -p  */
+	femReadStdInput = AF_YES ;   /* -si */
+	fem_ifile = NULL ;
+	femWriteStdOutput = AF_YES ; /* -so */
+	fem_ofile = NULL ;
+#ifdef RUN_VERBOSE
+	msgout = stderr ;
+#endif
+#endif /* end of USE_MPW */
 	return(rv);
 }
 

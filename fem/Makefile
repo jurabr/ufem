@@ -81,6 +81,9 @@ DEBUG=-O3 -DRUN_VERBOSE -D_MATRIX_SAVING_ -D_USE_SIGNALS_ -DUSE_FAST_SAPO
 ###DEBUG=-g -O0 -DDEVEL -DDEVEL_VERBOSE -DUSE_FAST_SAPO -D_MATRIX_SAVING_ 
 #DEBUG=-DRUN_VERBOSE -D_USE_SIGNALS_ -DUSE_FAST_SAPO 
 
+# MPW testing only (!):
+#DEBUG=-O3 -DRUN_VERBOSE -D_MATRIX_SAVING_ -DUSE_MPW
+
 # newer gcc only:
 #DEBUG=-O2 -DRUN_VERBOSE -fprofile-generate
 #DEBUG=-O2 -DRUN_VERBOSE -fprofile-use
@@ -90,7 +93,7 @@ FEATFLAGS=
 
 #CFLAGS=$(FEATFLAGS) -Wall -ansi -pedantic -DUSE_NLMC $(DEBUG) -fPIC
 ifeq ($(SYS_TYPE),IRIX)
-CFLAGS=$(FEATFLAGS) $(DEBUG) -Wall -ansi -pedantic $(DEBUG) -fPIC
+CFLAGS=$(FEATFLAGS) $(DEBUG) -Wall -ansi -pedantic -fPIC
 else
 CFLAGS=$(FEATFLAGS) $(DEBUG) -Wall -ansi -pedantic -D_USE_THREADS_ -fPIC
 endif
