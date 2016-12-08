@@ -2975,6 +2975,7 @@ int func_gfx_plot_prop (char *cmd)
   if (strcmp(what,"wireres") == 0) { plotProp.wireRes = nmode ; rv = AF_OK;}
   if (strcmp(what,"antialias") == 0) { plotProp.antiAlias = nmode ; rv = AF_OK;}
   if (strcmp(what,"jobname") == 0) { plotProp.showJobname = nmode ; rv = AF_OK;}
+  if (strcmp(what,"date") == 0) { plotProp.showDate = nmode ; rv = AF_OK;}
 
   if (strcmp(what,"frame") == 0) { plotStuff.frame = nmode ; rv = AF_OK;}
   if (strcmp(what,"autoreplot") == 0) { plotStuff.autoreplot = nmode ; rv = AF_OK;}

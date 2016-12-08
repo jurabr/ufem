@@ -155,6 +155,7 @@ typedef struct
   int   bitmapType;    /* bitmap type (if any) */
 
   int   showJobname ; /* if jobname is shown in plot window */
+  int   showDate ;    /* if date is shown in plot window */
 
   char   *PlotTitle;     /* Title of plot                 */
 }tPlotProp;

@@ -4,6 +4,13 @@ See fem/ChangeLog for solver changes.
 
 
 
+### Thu Dec  8 20:11:01 CET 2016
+
+version 0.2.75
+
+features:
+  + date can be hidden from plot (plotprop,date,no)
+
 ### Sun Oct 30 15:31:23 CET 2016
 
 version 0.2.74

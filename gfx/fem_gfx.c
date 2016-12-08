@@ -640,6 +640,7 @@ void femDefaultPlotProp(void)
 	plotProp.bitmapType = GFX_PPM ;
 
   plotProp.showJobname = AF_NO ;
+  plotProp.showDate = AF_YES ;
 
   plotProp.PlotTitle = NULL ;
   femSetPlotTitle(fdbCSysTypeStr()) ;
@@ -1185,7 +1186,7 @@ void femPostPlot(long x0, long y0,int x1, int y1, int Mode)
   }
 	
 	glRasterPos2f(0,0.01);
-	femPlotStringHere(femActDate(),NULL);
+  if (plotProp.showDate == AF_YES) femPlotStringHere(femActDate(),NULL);
 	
   femPlotPal(
           0.05, (5 + 1.5 * fontWidth +  GFX_DESC_LEN/2)/ (float)width + item, 
