@@ -1,4 +1,5 @@
 Correct syntax for "rval" function:
+===================================
 
 REAL SETS:
 rval,variable,0,rs_id,var_type
@@ -32,3 +33,8 @@ rval,variable,10,element_id,res_type,ipoint
 
 FAILURE FUNCTION (relevant material must be defined: 3,4!)
 rval,variable,19,0,0,0
+
+NOTE:
+- "variable" is an ID number of variable (1..n)
+- numbering of materials, nodes and so is according to the tfem/gfem
+  (consistend with things that are shown in graphics)
