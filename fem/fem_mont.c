@@ -453,10 +453,10 @@ int monte_init_lib_stuff(char *param)
 
 	femPreparsedData = AF_YES ;
 
-	if ((femReadInput(param)) != AF_OK) {return(-1);}
-
  	if ((femElemTypeInit()) != AF_OK) { return(-1); }
  	if ((femMatTypeInit()) != AF_OK) { return(-1); }
+
+	if ((femReadInput(param)) != AF_OK) {return(-1);}
 
   fem_sol_null();
   femResNull();

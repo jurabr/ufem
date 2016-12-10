@@ -42,6 +42,8 @@ extern int femSolveThermTrans(double *ofld);
 #endif
 extern long femEigenInvI ;
 
+extern int femWriteTensorScaleRaster(char *fname, long dnumber) ;
+
 #ifdef USE_MPI
 #include "fem_mpi.h"
 #endif

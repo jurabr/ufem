@@ -708,6 +708,8 @@ int fdb_export_to_fem(FILE *fw, long *opts, long optlen)
   /* dynamics loads should be here... or in an extra file */
 	fprintf(fw," 0\n");
 
+	fprintf(fw," 0 0 0\n"); /* no dynamics - so more zeros are required! */
+
   /* random data ("monte") */
   rv = fdb_to_fem_rand(fw) ;
   } /*lim_mode >8 */
