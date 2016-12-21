@@ -121,23 +121,43 @@ int D_PlaneOrthoPlain(long ePos, long iPoint, long Problem, tMatrix *D)
 	if ((rv = femFullMatInit(&Te,3,3))  != AF_OK) { goto memFree; }
 
 	femMatSetZero(&Dc0);
-
+  femMatSetZero(D) ;
 
 	Ex   = femGetMPValPos(ePos, MAT_EX,   0) ;
 	Ey   = femGetMPValPos(ePos, MAT_EY,   0) ;
+  if (Ey<FEM_ZERO) {Ey = femGetMPValPos(ePos, MAT_EZ,   0) ;}
 	nuxy = femGetMPValPos(ePos, MAT_NUXY, 0) ;
 	G    = femGetMPValPos(ePos, MAT_GXY,  0) ;
 	angle= femGetMPValPos(ePos, MAT_ANG,  1) ;
 
 	nuyx = (Ey/Ex) * nuxy ;
+#if 1
   mult = 1.0 / (1.0 - nuxy*nuyx) ;
 
-  femMatSetZero(D) ;
+
 	femMatPut(&Dc0, 1,1, mult*Ex      ) ;
 	femMatPut(&Dc0, 1,2, mult*Ex*nuxy ) ;
 	femMatPut(&Dc0, 2,1, mult*Ey*nuyx ) ;
 	femMatPut(&Dc0, 2,2, mult*Ey      ) ;
-	femMatPut(&Dc0, 2,2, G            ) ;
+	femMatPut(&Dc0, 3,3, G            ) ;
+#else
+  mult = sqrt(nuyx+nuxy) ;
+	femMatPut(&Dc0, 3,3, 1.0 ) ;
+  if (Probleolv == 0)
+  {
+	  femMatPut(&Dc0, 1,1, G*(2.0/(1.0-mult))      ) ;
+	  femMatPut(&Dc0, 1,2, G*(2.0*mult/(1.0-mult))      ) ;
+	  femMatPut(&Dc0, 2,1, G*(2.0*mult/(1.0-mult))      ) ;
+	  femMatPut(&Dc0, 2,2, G*(2.0/(1.0-mult))      ) ;
+  }
+  else
+  {
+	  femMatPut(&Dc0, 1,1, G*(2.0*(1.0-mult)/(1.0-2.0*mult))      ) ;
+	  femMatPut(&Dc0, 2,2, G*(2.0*(1.0-mult)/(1.0-2.0*mult))      ) ;
+	  femMatPut(&Dc0, 1,2, G*(2.0*mult/(1.0-2.0*mult))      ) ;
+	  femMatPut(&Dc0, 2,1, G*(2.0*mult/(1.0-2.0*mult))      ) ;
+  }
+#endif
 
   femMatPrn(&Dc0, "D_ort");
 
@@ -151,6 +171,8 @@ int D_PlaneOrthoPlain(long ePos, long iPoint, long Problem, tMatrix *D)
 
 	femMatMatMult(&TeT, &Dc0, &Dt);
 	femMatMatMult(&Dt,  &Te,   D);
+
+	femMatPrn(D, "D");
 
 memFree:
 	femMatFree(&Dc0);
@@ -261,6 +283,7 @@ int fem_D_2D(long ePos, long iPoint, double A, tVector *epsilon, tVector *sigma,
         rv = fem_vmis_D_2D(ePos, iPoint+1, Problem, epsilon, newM, D);
         break ;
     case 7:
+    case 11:
         rv = D_PlaneOrthoPlain(ePos, iPoint+1, Problem, D);
         break ;
 		case 8:
