@@ -1,9 +1,23 @@
 \documentclass{article}
 \usepackage{graphics}
 
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+
+
+\voffset = -20 mm
+\textheight = 240 mm
+\hoffset = -8 mm
+\textwidth = 152 mm
+\footskip = 18 mm
+
+
+
 \begin{document}
 
-\section{uFEM User's Guide}
+\section*{uFEM User's Guide}
+
+\tableofcontents
 
 \section{Introduction}
 
@@ -73,7 +87,7 @@
 
  There is an integrated preprocessing and postprocessing 
  environment. However, it its possibilities are relatively limited.
- It is bassicaly command-driven and there is a terminal-only
+ It is basicaly command-driven and there is a terminal-only
  version and a graphical (GUI) application. The GUI one
  offers menus and dialogs for many commands.
  The preprocessor has some limited capabilities of structured
@@ -432,7 +446,7 @@
  be appplied to a geometric model.
 
  It includes key points and geometric entities (lines,
- areas, volumes). Key points are used for dfinition of
+ areas, volumes). Key points are used for definition of
  geometric entities and geometric entities serve for
  creation of finite element mesh.
 
@@ -891,7 +905,7 @@
 \item  GtkGlExt http://gtkglext.sf.net
 \item  OpenGL http://www.opengl.org
 \item  libTiff (optional - necessary only for outputs)
-\item  libGl2Ps (optional - necessary only for outputs)
+\item  libGl2PS (optional - necessary only for outputs)
 \end{itemize}
 
  There is an option to build a limited version of program.
@@ -902,11 +916,18 @@
 
 \subsection{MS Windows issues}
 
+\begin{enumerate}
+ \item
  Only a fully functional version (but without libtiff and
  libgl2ps) has been tested. No noticeable issues so far, except
  unavailability of saving of graphics ouputs (no PPM nor EPS
  output can be used).
  The program has a strange (non-native) look here.
+ \item Windows 7-10 issues: The Gtk+ version behaves strangely
+ (doubleclick on a command tree crashes the program). There are
+ several compilers which may or may not produce working code with
+ different speed.
+\end{enumerate}
 
 
 
@@ -928,8 +949,9 @@
 
 
 
-\section{Revisions and changes of this text:}
+\section{Revisions and changes of this text}
 \begin{itemize}
+\item  Thu Apr 13 21:19:55 CEST 2017: fixes of tzping mistakes, port issues.
 \item  Mon Jun 30 21:38:27 CEST 2008: fixes, one-dir loads, ssolve etc.
 \item  Thu May 29 11:24:10 CEST 2008: elements, forces, disps., geom. ents.
 \item  Wed May 28 22:54:53 CEST 2008: postprocessing, material types

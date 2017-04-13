@@ -12,6 +12,7 @@ ufem.pdf: ufem.dvi
 
 ufem.dvi: ufem.tex
 	latex ufem.tex
+	latex ufem.tex
 
 ufem.tex: ufem-doc.otl
 	otl2a -t=latex <ufem-doc.otl | sed "s/_/\\\_/g" |tee $(@)
