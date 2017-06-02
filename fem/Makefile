@@ -43,8 +43,8 @@ AR= ar r
 RANLIB=-ranlib
 LD=ld -shared
 
-FEATFLAGS= -I/usr/local/include -DFEM_USE_SILO -L/usr/local/lib
-FEATLIBS= -lsilo
+FEATFLAGS= -I/usr/local/include -DFEM_USE_SILO
+FEATLIBS=  -L/usr/local/lib -lsilo
 
 # Win32 crosscompiler:
 #CC=i386-mingw32-gcc
@@ -187,7 +187,7 @@ OBJECTS=fem_sol.o fem_nrm.o fem_alm.o fem_eige.o fem_loads.o fem_mloc.o fem_io.o
 all: fem
 
 # main()
-fem: fem.o $(OBJECTS) fem_mont_no.o fem_newm.o fem_tth.o $(FEATLIBS)
+fem: fem.o $(OBJECTS) fem_mont_no.o fem_newm.o fem_tth.o #$(FEATLIBS)
 	$(CC) -o $(@) $(CFLAGS) fem.o $(OBJECTS) fem_mont_no.o fem_newm.o fem_tth.o $(LIBS)  
 
 # library for monte():
