@@ -93,6 +93,11 @@ extern int femComputePrice(void);
 extern double femCompPE(tMatrix *K, tVector *u, int Print);
 
 extern int femTestThermStructElems(void);
+
+#ifdef FEM_USE_SILO
+extern int femWriteNodeResSILO(char *fname) ;
+#endif
+
 #endif
 
 /* end of fem_elem.h */

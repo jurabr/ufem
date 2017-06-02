@@ -182,7 +182,7 @@ void fem_help(int argc, char *argv[])
 	fprintf(msgout,"   -fbc      ... %s\n", _("faster handling of fixed supports in statics (no reactions)"));
 
 	fprintf(msgout,"   -ao FILE  ... %s\n", _("write alternative results of linear solution to FILE"));
-	fprintf(msgout,"   -at TYPE  ... %s\n", _("type of alternative results (0 .. text, 1 .. VTK legacy)"));
+	fprintf(msgout,"   -at TYPE  ... %s\n", _("type of alternative results (0 .. text, 1 .. VTK, 2 .. SILO )"));
 
 
 	fprintf(msgout,"   -to FILE  ... %s\n", _("write thermal results to FILE"));

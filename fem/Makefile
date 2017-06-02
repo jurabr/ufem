@@ -36,15 +36,15 @@ CC=gcc #-pg
 ifeq ($(SYS_TYPE),IRIX)
 CC=/usr/nekoware/gcc-4.7/bin/gcc
 else
-CC=gcc
+CC=gcc -rdynamic
 endif
-
-
 
 AR= ar r
 RANLIB=-ranlib
 LD=ld -shared
 
+FEATFLAGS= -I/usr/local/include -DFEM_USE_SILO -L/usr/local/lib
+FEATLIBS= -lsilo
 
 # Win32 crosscompiler:
 #CC=i386-mingw32-gcc
@@ -89,13 +89,11 @@ DEBUG=-O3 -DRUN_VERBOSE -D_MATRIX_SAVING_ -D_USE_SIGNALS_ -DUSE_FAST_SAPO
 #DEBUG=-O2 -DRUN_VERBOSE -fprofile-use
 #DEBUG=-O2 -DRUN_VERBOSE
 
-FEATFLAGS=
-
 #CFLAGS=$(FEATFLAGS) -Wall -ansi -pedantic -DUSE_NLMC $(DEBUG) -fPIC
 ifeq ($(SYS_TYPE),IRIX)
 CFLAGS=$(FEATFLAGS) $(DEBUG) -Wall -ansi -pedantic -fPIC
 else
-CFLAGS=$(FEATFLAGS) $(DEBUG) -Wall -ansi -pedantic -D_USE_THREADS_ -fPIC
+CFLAGS=$(FEATFLAGS) $(DEBUG) -Wall -ansi -pedantic -D_USE_THREADS_ -fPIC -DUSE_SHARED
 endif
 #CFLAGS=$(FEATFLAGS) -Wall -ansi -pedantic $(DEBUG) -D_USE_THREADS_ -DUSE_NLMC
 #CFLAGS=$(FEATFLAGS) $(DEBUG) -D_USE_THREADS_ -DUSE_NLMC
@@ -104,8 +102,6 @@ endif
 # traditional unix:
 #CFLAGS=$(DEBUG)  -DUSE_NLMC 
 #DEBUG=-O -DRUN_VERBOSE -DDEVEL
-
-FEATLIBS=
 
 ifeq ($(SYS_TYPE),IRIX)
 LIBS=$(FEATLIBS) -L/usr/local/lib -lm #-lefence
