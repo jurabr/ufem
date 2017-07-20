@@ -1727,12 +1727,14 @@ int femSolve(void)
 				else
 					{ fprintf(msgout,"[i]    %s!\n", _("writing of data failed")); }
 				break ;
+#ifdef FEM_USE_SILO
   		case 2: 
 				if ( femWriteNodeResSILO(fem_spec_out_file)  == AF_OK)
 					{ fprintf(msgout,"[i]    %s.\n", _("succesfully saved as SILO database")); }
 				else
 					{ fprintf(msgout,"[i]    %s!\n", _("writing of data failed")); }
 				break ;
+#endif
 
 			case 0:
 			default:
