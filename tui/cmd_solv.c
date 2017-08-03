@@ -448,7 +448,10 @@ int func_fem_solve(char *cmd)
       case 0:
       case 1:
         for (i=0; i< (FEM_STR_LEN*2+1); i++) { params[i] = '\0' ; }
-        sprintf(params,"-ssor -p %s -t %i ", ret_minus_p(itersp), femCmdNumProcSolver);
+				if (femCmdNumProcSolver > 1)
+	        sprintf(params,"-ssor -p %s -t %i ", ret_minus_p(itersp), femCmdNumProcSolver);
+				else
+	        sprintf(params,"-ssor -p %s", ret_minus_p(itersp));
         rv = femRunSolver(
           params, 
           ciSetPath(femGetDataDir(), femGetJobname(), "fem"),
@@ -461,7 +464,9 @@ int func_fem_solve(char *cmd)
       case 6:
         /* non-linear static: construct the parameters: */
         for (i=0; i< (FEM_STR_LEN*2+1); i++) { params[i] = '\0' ; }
-        sprintf(params,"-ssor -p %s -nlnbrk -nls %li -nlstp %li -nlit %li -nlf %s -ose %li -osf %s -ln %li -lf %s -lrf %s -t %i",
+
+				if (femCmdNumProcSolver > 1)
+        	sprintf(params,"-ssor -p %s -nlnbrk -nls %li -nlstp %li -nlit %li -nlf %s -ose %li -osf %s -ln %li -lf %s -lrf %s -t %i",
             ret_minus_p(itersp),
             solver,
             steps,
@@ -474,6 +479,20 @@ int func_fem_solve(char *cmd)
             ciSetPath(femGetDataDir(), femGetJobname(), "rtrack"),
             femCmdNumProcSolver
             );
+				else
+	        	sprintf(params,"-ssor -p %s -nlnbrk -nls %li -nlstp %li -nlit %li -nlf %s -ose %li -osf %s -ln %li -lf %s -lrf %s",
+            ret_minus_p(itersp),
+            solver,
+            steps,
+            iters,
+            ciSetPath(femGetDataDir(), femGetJobname(), "norm"),
+            nsave,
+            ciSetPath(femGetDataDir(), femGetJobname(), "it"),
+            ntrack,
+            ciSetPath(femGetDataDir(), femGetJobname(), "ntrack"),
+            ciSetPath(femGetDataDir(), femGetJobname(), "rtrack")
+            );	
+
         for (i=0; i< (FEM_STR_LEN*2+1); i++) {if(params[i]==','){params[i]='_';}}
 
 #ifdef DEVEL_VERBOSE
@@ -490,13 +509,22 @@ int func_fem_solve(char *cmd)
       case 7:
         /* modal analysis: construct the parameters: */
         for (i=0; i< (FEM_STR_LEN*2+1); i++) { params[i] = '\0' ; }
-        sprintf(params,"-p %s -mod %li -nlit %li -ose 1 -osf %s -t %i",
+				if (femCmdNumProcSolver > 1)
+        	sprintf(params,"-p %s -mod %li -nlit %li -ose 1 -osf %s -t %i",
             ret_minus_p(itersp),
             steps,
             iters,
             ciSetPath(femGetDataDir(), femGetJobname(), "it"),
             femCmdNumProcSolver
             );
+				else
+        	sprintf(params,"-p %s -mod %li -nlit %li -ose 1 -osf %s",
+            ret_minus_p(itersp),
+            steps,
+            iters,
+            ciSetPath(femGetDataDir(), femGetJobname(), "it")
+            );
+
         for (i=0; i< (FEM_STR_LEN*2+1); i++) {if(params[i]==','){params[i]='_';}}
 
 #ifdef DEVEL_VERBOSE
