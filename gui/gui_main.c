@@ -238,7 +238,7 @@ void show_about_dialog(GtkWidget *widget, gpointer data)
       FEM_TUI_RELEASE
       ); 
 
-  g_signal_connect_swapped (GTK_OBJECT (dialog),
+  gtk_signal_connect_swapped (GTK_OBJECT (dialog),
       "response",
       G_CALLBACK (gtk_widget_destroy),
       GTK_OBJECT (dialog)); 
@@ -258,7 +258,7 @@ void show_exit_dialog(GtkWidget *widget, gpointer data)
       _("Please try to quit me through Menu or by use of \'quit\' command.")
       ); 
 
-  g_signal_connect_swapped (GTK_OBJECT (dialog),
+  gtk_signal_connect_swapped (GTK_OBJECT (dialog),
       "response",
       G_CALLBACK (gtk_widget_destroy),
       GTK_OBJECT (dialog)); 
@@ -284,8 +284,8 @@ void gui_main_menu_file(GtkWidget *menubar)
 	GtkWidget *separ_item ;
 #ifndef _USE_GTK_GL_AREA_
 	GtkWidget *jobname_item ;
-	GtkWidget *cleandata_item ;
 #endif
+	GtkWidget *cleandata_item ;
 
 	/* menu object */
 	menu_file = gtk_menu_new() ;
@@ -318,20 +318,22 @@ void gui_main_menu_file(GtkWidget *menubar)
   gtk_widget_show (separ_item);
   gtk_widget_set_sensitive (separ_item, FALSE);
 
-#ifndef _USE_GTK_GL_AREA_
 	/* items */
+#ifndef _USE_GTK_GL_AREA_
 	jobname_item = gtk_menu_item_new_with_label (_("Change JobName.."));
 	gtk_menu_append (GTK_MENU (menu_file), jobname_item);
-	g_signal_connect(GTK_OBJECT (jobname_item), "activate",
+	gtk_signal_connect(GTK_OBJECT (jobname_item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "dialog,jobname");
 	gtk_widget_show (jobname_item);
+#endif
 	
 	cleandata_item = gtk_menu_item_new_with_label (_("Clean All Data"));
 	gtk_menu_append (GTK_MENU (menu_file), cleandata_item);
-	g_signal_connect(GTK_OBJECT (cleandata_item), "activate",
+	gtk_signal_connect(GTK_OBJECT (cleandata_item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "cleandata");
 	gtk_widget_show (cleandata_item);
 
+#ifndef _USE_GTK_GL_AREA_
 	separ_item = gtk_menu_item_new() ;
   gtk_menu_append (GTK_MENU (menu_file), separ_item);
   gtk_widget_show (separ_item);
@@ -361,6 +363,7 @@ void gui_main_menu_file(GtkWidget *menubar)
   gtk_menu_append (GTK_MENU (menu_file), separ_item);
   gtk_widget_show (separ_item);
   gtk_widget_set_sensitive (separ_item, FALSE);
+#endif
 
 	/* items */
 	input_item = gtk_menu_item_new_with_label (_("Read Commands.."));
@@ -393,8 +396,7 @@ void gui_main_menu_file(GtkWidget *menubar)
   gtk_widget_show (separ_item);
   gtk_widget_set_sensitive (separ_item, FALSE);
 
-
-
+#ifndef _USE_GTK_GL_AREA_
   /* nproc*/
 	nproc_item = gtk_menu_item_new_with_label (_("Number of Processes.."));
 	gtk_menu_append (GTK_MENU (menu_file), nproc_item);
@@ -408,8 +410,6 @@ void gui_main_menu_file(GtkWidget *menubar)
   gtk_menu_append (GTK_MENU (menu_file), separ_item);
   gtk_widget_show (separ_item);
   gtk_widget_set_sensitive (separ_item, FALSE);
-
-
 #endif
 
 
@@ -506,18 +506,21 @@ void gui_main_menu_help(GtkWidget *menubar)
 													   GTK_SIGNAL_FUNC(show_about_dialog),
 		                         (gpointer) NULL);
 
-
-
-
 	/* appending of menu to menubar */
+#ifndef _USE_GTK_GL_AREA_
 	help_item = gtk_menu_item_new_with_mnemonic ("_Help");
 	gtk_widget_add_accelerator(help_item, "activate", accel, 
 			GDK_h, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+#else
+	help_item = gtk_menu_item_new_with_label ("Help");
+#endif
 	gtk_widget_show (help_item);
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (help_item), menu_help);
 	gtk_menu_bar_append (GTK_MENU_BAR (menubar), help_item);
 }
+#endif
 
+/* #ifndef _USE_GTK_GL_AREA_ */
 void gui_main_menu_plot(GtkWidget *menubar)
 {
 	GtkWidget *menu_plot ;
@@ -537,13 +540,13 @@ void gui_main_menu_plot(GtkWidget *menubar)
   item = gtk_menu_item_new_with_label (_("Replot"));
 	gtk_menu_append (GTK_MENU (menu_plot), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "replot");
 
   item = gtk_menu_item_new_with_label (_("Nothing"));
 	gtk_menu_append (GTK_MENU (menu_plot), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "noplot");
 
 
@@ -557,13 +560,13 @@ void gui_main_menu_plot(GtkWidget *menubar)
   item = gtk_menu_item_new_with_label (_("Keypoints"));
 	gtk_menu_append (GTK_MENU (menu_plot), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "kplot");
 
   item = gtk_menu_item_new_with_label (_("Geometric Entities"));
 	gtk_menu_append (GTK_MENU (menu_plot), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "geplot");
 
 
@@ -578,32 +581,32 @@ void gui_main_menu_plot(GtkWidget *menubar)
   item = gtk_menu_item_new_with_label (_("Nodes"));
 	gtk_menu_append (GTK_MENU (menu_plot), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "nplot");
 
   item = gtk_menu_item_new_with_label (_("Elements"));
 	gtk_menu_append (GTK_MENU (menu_plot), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "eplot");
 
   item = gtk_menu_item_new_with_label (_("Displacements"));
 	gtk_menu_append (GTK_MENU (menu_plot), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "dplot");
 
   item = gtk_menu_item_new_with_label (_("Nodal Loads"));
 	gtk_menu_append (GTK_MENU (menu_plot), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "fplot");
 
 #ifndef DISABLE_UNFINISHED
   item = gtk_menu_item_new_with_label (_("Element Loads"));
 	gtk_menu_append (GTK_MENU (menu_plot), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "elplot");
 #endif
 
@@ -617,29 +620,30 @@ void gui_main_menu_plot(GtkWidget *menubar)
   item = gtk_menu_item_new_with_label (_("Deformed Shape"));
 	gtk_menu_append (GTK_MENU (menu_plot), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "pldef");
 
   item = gtk_menu_item_new_with_label (_("Reactions"));
 	gtk_menu_append (GTK_MENU (menu_plot), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "plrs");
 
+#ifndef _USE_GTK_GL_AREA_
   item = gtk_menu_item_new_with_label (_("Element Solution.."));
 	gtk_menu_append (GTK_MENU (menu_plot), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "dialog,ples");
+#endif
 
-#ifndef DISABLE_UNFINISHED
   item = gtk_menu_item_new_with_label (_("Nodal Solution.."));
 	gtk_menu_append (GTK_MENU (menu_plot), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "dialog,plns");
-#endif
 
+#ifndef _USE_GTK_GL_AREA_
 	/* separator */
   separ_item = gtk_menu_item_new() ;
   gtk_menu_append (GTK_MENU (menu_plot), separ_item);
@@ -649,8 +653,9 @@ void gui_main_menu_plot(GtkWidget *menubar)
   item = gtk_menu_item_new_with_label (_("Picking Grid..."));
 	gtk_menu_append (GTK_MENU (menu_plot), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "dialog,pgrid");
+#endif
 
   /* ################################ */
   /* separator */
@@ -663,31 +668,31 @@ void gui_main_menu_plot(GtkWidget *menubar)
   item = gtk_menu_item_new_with_label (_("Keypoints Numbers"));
 	gtk_menu_append (GTK_MENU (menu_plot), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "plotprop,kpnumber,yes");
 
   item = gtk_menu_item_new_with_label (_("G.E. Numbers"));
 	gtk_menu_append (GTK_MENU (menu_plot), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "plotprop,genumber,yes");
 
   item = gtk_menu_item_new_with_label (_("Node Numbers"));
 	gtk_menu_append (GTK_MENU (menu_plot), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "plotprop,nodenumber,yes");
 
   item = gtk_menu_item_new_with_label (_("Element Numbers"));
 	gtk_menu_append (GTK_MENU (menu_plot), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "plotprop,elemnumber,yes");
 
   item = gtk_menu_item_new_with_label (_("Load Sizes"));
 	gtk_menu_append (GTK_MENU (menu_plot), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "plotprop,loadsize,yes");
 
   /* separator */
@@ -699,13 +704,13 @@ void gui_main_menu_plot(GtkWidget *menubar)
   item = gtk_menu_item_new_with_label (_("Solid Model"));
 	gtk_menu_append (GTK_MENU (menu_plot), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "plotprop,wireonly,no");
 
   item = gtk_menu_item_new_with_label (_("Wireframe Model"));
 	gtk_menu_append (GTK_MENU (menu_plot), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "plotprop,wireonly,yes");
 
   /* separator */
@@ -717,7 +722,7 @@ void gui_main_menu_plot(GtkWidget *menubar)
   item = gtk_menu_item_new_with_label (_("Automatic Replotting"));
 	gtk_menu_append (GTK_MENU (menu_plot), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "plotprop,autoreplot,yes");
   /* ################################ */
 
@@ -733,7 +738,7 @@ void gui_main_menu_plot(GtkWidget *menubar)
   item = gtk_menu_item_new_with_label (_("Save as PPM.."));
 	gtk_menu_append (GTK_MENU (menu_plot), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "filedialog,gl2ppm");
 
 	/* save to TIFF */
@@ -741,7 +746,7 @@ void gui_main_menu_plot(GtkWidget *menubar)
   item = gtk_menu_item_new_with_label (_("Save as TIFF.."));
 	gtk_menu_append (GTK_MENU (menu_plot), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "filedialog,gl2tiff");
 #endif
 
@@ -750,16 +755,20 @@ void gui_main_menu_plot(GtkWidget *menubar)
   item = gtk_menu_item_new_with_label (_("Save as EPS.."));
 	gtk_menu_append (GTK_MENU (menu_plot), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "filedialog,gl2ps");
 #endif
 
 #endif /* WIN32 */
 
 	/* appending of menu to menubar */
+#ifndef _USE_GTK_GL_AREA_
 	plot_item = gtk_menu_item_new_with_mnemonic ("_Plot");
 	gtk_widget_add_accelerator(plot_item, "activate", accel, 
 			GDK_p, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+#else
+	plot_item = gtk_menu_item_new_with_label ("Plot");
+#endif
 	gtk_widget_show (plot_item);
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (plot_item), menu_plot);
 	gtk_menu_bar_append (GTK_MENU_BAR (menubar), plot_item);
@@ -784,25 +793,25 @@ void gui_main_menu_hide(GtkWidget *menubar)
   item = gtk_menu_item_new_with_label (_("Nodes"));
 	gtk_menu_append (GTK_MENU (menu_plot), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "hide,n");
 
   item = gtk_menu_item_new_with_label (_("Element"));
 	gtk_menu_append (GTK_MENU (menu_plot), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "hide,e");
 
   item = gtk_menu_item_new_with_label (_("Displacements"));
 	gtk_menu_append (GTK_MENU (menu_plot), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "hide,d");
 
   item = gtk_menu_item_new_with_label (_("Loads"));
 	gtk_menu_append (GTK_MENU (menu_plot), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "hide,f");
 
 
@@ -816,13 +825,13 @@ void gui_main_menu_hide(GtkWidget *menubar)
   item = gtk_menu_item_new_with_label (_("Keypoints"));
 	gtk_menu_append (GTK_MENU (menu_plot), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "hide,k");
 
   item = gtk_menu_item_new_with_label (_("Geometric Entities"));
 	gtk_menu_append (GTK_MENU (menu_plot), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "hide,ge");
 
 	/* separator */
@@ -835,7 +844,7 @@ void gui_main_menu_hide(GtkWidget *menubar)
   item = gtk_menu_item_new_with_label (_("Results"));
 	gtk_menu_append (GTK_MENU (menu_plot), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "hide,r");
 
 	/* separator */
@@ -847,7 +856,7 @@ void gui_main_menu_hide(GtkWidget *menubar)
   item = gtk_menu_item_new_with_label (_("Picking Grid"));
 	gtk_menu_append (GTK_MENU (menu_plot), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "plotp,grid,no");
 
   /* ################################ */
@@ -862,31 +871,31 @@ void gui_main_menu_hide(GtkWidget *menubar)
   item = gtk_menu_item_new_with_label (_("Keypoints Numbers"));
 	gtk_menu_append (GTK_MENU (menu_plot), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "plotprop,kpnumber,no");
 
   item = gtk_menu_item_new_with_label (_("G.E. Numbers"));
 	gtk_menu_append (GTK_MENU (menu_plot), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "plotprop,genumber,no");
 
   item = gtk_menu_item_new_with_label (_("Node Numbers"));
 	gtk_menu_append (GTK_MENU (menu_plot), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "plotprop,nodenumber,no");
 
   item = gtk_menu_item_new_with_label (_("Element Numbers"));
 	gtk_menu_append (GTK_MENU (menu_plot), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "plotprop,elemnumber,no");
 
   item = gtk_menu_item_new_with_label (_("Load Sizes"));
 	gtk_menu_append (GTK_MENU (menu_plot), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "plotprop,loadsize,no");
 
 
@@ -899,16 +908,20 @@ void gui_main_menu_hide(GtkWidget *menubar)
   item = gtk_menu_item_new_with_label (_("Automatic Replotting"));
 	gtk_menu_append (GTK_MENU (menu_plot), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "plotprop,autoreplot,no");
 
 
   /* ################################ */
 
 	/* appending of menu to menubar */
+#ifndef _USE_GTK_GL_AREA_
 	plot_item = gtk_menu_item_new_with_mnemonic ("H_ide");
 	gtk_widget_add_accelerator(plot_item, "activate", accel, 
 			GDK_i, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+#else
+	plot_item = gtk_menu_item_new_with_label ("Hide");
+#endif
 	gtk_widget_show (plot_item);
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (plot_item), menu_plot);
 	gtk_menu_bar_append (GTK_MENU_BAR (menubar), plot_item);
@@ -933,19 +946,19 @@ void gui_main_menu_list(GtkWidget *menubar)
   item = gtk_menu_item_new_with_label (_("Element Types"));
 	gtk_menu_append (GTK_MENU (menu_list), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "etlist");
 
   item = gtk_menu_item_new_with_label (_("Real Sets"));
 	gtk_menu_append (GTK_MENU (menu_list), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "rslist");
 
   item = gtk_menu_item_new_with_label (_("Materials"));
 	gtk_menu_append (GTK_MENU (menu_list), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "mplist");
 
 	/* separator */
@@ -957,13 +970,13 @@ void gui_main_menu_list(GtkWidget *menubar)
   item = gtk_menu_item_new_with_label (_("Keypoints"));
 	gtk_menu_append (GTK_MENU (menu_list), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "klist");
 
   item = gtk_menu_item_new_with_label (_("Geometric Entities"));
 	gtk_menu_append (GTK_MENU (menu_list), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "gelist");
 
 
@@ -979,39 +992,39 @@ void gui_main_menu_list(GtkWidget *menubar)
   item = gtk_menu_item_new_with_label (_("Nodes"));
 	gtk_menu_append (GTK_MENU (menu_list), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "nlist");
 
   item = gtk_menu_item_new_with_label (_("Elements"));
 	gtk_menu_append (GTK_MENU (menu_list), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "elist");
 
   item = gtk_menu_item_new_with_label (_("Displacements"));
 	gtk_menu_append (GTK_MENU (menu_list), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "dlist");
 
   item = gtk_menu_item_new_with_label (_("Nodal Loads"));
 	gtk_menu_append (GTK_MENU (menu_list), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "flist");
 
 #ifndef DISABLE_UNFINISHED
   item = gtk_menu_item_new_with_label (_("Element Loads"));
 	gtk_menu_append (GTK_MENU (menu_list), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "ellist");
 #endif
 
   item = gtk_menu_item_new_with_label (_("Accelerations"));
 	gtk_menu_append (GTK_MENU (menu_list), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "accellist");
 
 
@@ -1025,28 +1038,30 @@ void gui_main_menu_list(GtkWidget *menubar)
   item = gtk_menu_item_new_with_label (_("DOF Solution"));
 	gtk_menu_append (GTK_MENU (menu_list), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "prdof");
 
   item = gtk_menu_item_new_with_label (_("Reactions"));
 	gtk_menu_append (GTK_MENU (menu_list), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "prrs");
 
+#ifndef _USE_GTK_GL_AREA_
   item = gtk_menu_item_new_with_label (_("Element Solution.."));
 	gtk_menu_append (GTK_MENU (menu_list), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "dialog,ples");
 
 #ifndef DISABLE_UNFINISHED
   item = gtk_menu_item_new_with_label (_("Nodal Solution.."));
 	gtk_menu_append (GTK_MENU (menu_list), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "dialog,plns");
 #endif
+#endif /* _USE_GTK_GL_AREA_ */
 
 	/* separator */
   separ_item = gtk_menu_item_new() ;
@@ -1058,25 +1073,30 @@ void gui_main_menu_list(GtkWidget *menubar)
   item = gtk_menu_item_new_with_label (_("Summary"));
 	gtk_menu_append (GTK_MENU (menu_list), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "prsumm");
 
   item = gtk_menu_item_new_with_label (_("Coordinate System"));
 	gtk_menu_append (GTK_MENU (menu_list), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "prcs");
 
 
 	/* appending of menu to menubar */
+#ifndef _USE_GTK_GL_AREA_
 	list_item = gtk_menu_item_new_with_mnemonic ("_List");
 	gtk_widget_add_accelerator(list_item, "activate", accel, 
 			GDK_l, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+#else
+	list_item = gtk_menu_item_new_with_label ("List");
+#endif
 	gtk_widget_show (list_item);
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (list_item), menu_list);
 	gtk_menu_bar_append (GTK_MENU_BAR (menubar), list_item);
 }
 
+#ifndef _USE_GTK_GL_AREA_
 void gui_main_menu_sele(GtkWidget *menubar)
 {
 	GtkWidget *menu_sele ;
@@ -1096,13 +1116,13 @@ void gui_main_menu_sele(GtkWidget *menubar)
   item = gtk_menu_item_new_with_label (_("Keypoints.."));
 	gtk_menu_append (GTK_MENU (menu_sele), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "dialog,ksel");
 
   item = gtk_menu_item_new_with_label (_("Geometric Entities.."));
 	gtk_menu_append (GTK_MENU (menu_sele), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "dialog,gesel");
 
 	/* separator */
@@ -1115,39 +1135,39 @@ void gui_main_menu_sele(GtkWidget *menubar)
   item = gtk_menu_item_new_with_label (_("Nodes.."));
 	gtk_menu_append (GTK_MENU (menu_sele), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "dialog,nsel");
 
   item = gtk_menu_item_new_with_label (_("Element.."));
 	gtk_menu_append (GTK_MENU (menu_sele), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "dialog,esel");
 
   item = gtk_menu_item_new_with_label (_("Displacements.."));
 	gtk_menu_append (GTK_MENU (menu_sele), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "dialog,dsel");
 
   item = gtk_menu_item_new_with_label (_("Nodal Loads.."));
 	gtk_menu_append (GTK_MENU (menu_sele), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "dialog,fsel");
 
 #ifndef DISABLE_UNFINISHED
   item = gtk_menu_item_new_with_label (_("Element Loads.."));
 	gtk_menu_append (GTK_MENU (menu_sele), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "dialog,elsel");
 #endif
 
   item = gtk_menu_item_new_with_label (_("Accelerations.."));
 	gtk_menu_append (GTK_MENU (menu_sele), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "dialog,acccesel");
 
 	/* separator */
@@ -1159,13 +1179,13 @@ void gui_main_menu_sele(GtkWidget *menubar)
   item = gtk_menu_item_new_with_label (_("Geometric Entities By Keypoints"));
 	gtk_menu_append (GTK_MENU (menu_sele), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "geslk");
 
   item = gtk_menu_item_new_with_label (_("Keypoints By Geometric Entities "));
 	gtk_menu_append (GTK_MENU (menu_sele), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "kslge");
 
 
@@ -1179,19 +1199,19 @@ void gui_main_menu_sele(GtkWidget *menubar)
   item = gtk_menu_item_new_with_label (_("Elements By Nodes"));
 	gtk_menu_append (GTK_MENU (menu_sele), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "esln");
 
   item = gtk_menu_item_new_with_label (_("Displacements By Nodes"));
 	gtk_menu_append (GTK_MENU (menu_sele), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "dialog,plns");
 
   item = gtk_menu_item_new_with_label (_("Nodal Loads By Nodes"));
 	gtk_menu_append (GTK_MENU (menu_sele), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "fsln");
 
 	/* separator */
@@ -1204,19 +1224,19 @@ void gui_main_menu_sele(GtkWidget *menubar)
   item = gtk_menu_item_new_with_label (_("Nodes By Elements"));
 	gtk_menu_append (GTK_MENU (menu_sele), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "nsle");
 
   item = gtk_menu_item_new_with_label (_("Nodes By Displacements"));
 	gtk_menu_append (GTK_MENU (menu_sele), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "nsld");
 
   item = gtk_menu_item_new_with_label (_("Nodes By Nodal Loads"));
 	gtk_menu_append (GTK_MENU (menu_sele), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "nslf");
 
 	/* separator */
@@ -1229,13 +1249,13 @@ void gui_main_menu_sele(GtkWidget *menubar)
   item = gtk_menu_item_new_with_label (_("Elements By Element Loads"));
 	gtk_menu_append (GTK_MENU (menu_sele), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "eslel");
 
   item = gtk_menu_item_new_with_label (_("Element Loads By Elements"));
 	gtk_menu_append (GTK_MENU (menu_sele), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "elsle");
 
 	/* separator */
@@ -1247,7 +1267,7 @@ void gui_main_menu_sele(GtkWidget *menubar)
   item = gtk_menu_item_new_with_label (_("Interactive.."));
 	gtk_menu_append (GTK_MENU (menu_sele), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "dialog,gsel");
 
 	/* separator */
@@ -1261,7 +1281,7 @@ void gui_main_menu_sele(GtkWidget *menubar)
   item = gtk_menu_item_new_with_label (_("Everything"));
 	gtk_menu_append (GTK_MENU (menu_sele), item);
 	gtk_widget_show (item);
-	g_signal_connect(GTK_OBJECT (item), "activate",
+	gtk_signal_connect(GTK_OBJECT (item), "activate",
 	GTK_SIGNAL_FUNC(fem_gui_cmd), (gpointer) "allsel");
 
 
@@ -1539,10 +1559,10 @@ int gui_winMain(int argc, char *argv[])
 	main_menu = gtk_menu_bar_new ();
 	gtk_box_pack_start(GTK_BOX(hbox_top_1),main_menu,expand, TRUE, padding);
 	gui_main_menu_file(main_menu);
-#ifndef _USE_GTK_GL_AREA_
 	gui_main_menu_plot(main_menu);
 	gui_main_menu_hide(main_menu);
 	gui_main_menu_list(main_menu);
+#ifndef _USE_GTK_GL_AREA_
 	gui_main_menu_sele(main_menu);
   gui_main_menu_help(main_menu);
 #endif
@@ -1564,7 +1584,7 @@ int gui_winMain(int argc, char *argv[])
                  GTK_SIGNAL_FUNC(cmdline_activate), NULL);
 
 #ifndef _USE_GTK_GL_AREA_
-  g_signal_connect(G_OBJECT(cmdLine), 
+  gtk_signal_connect(G_OBJECT(cmdLine), 
 			        "key_press_event", G_CALLBACK(key_press_cmd), windowMain);
 #endif
 
@@ -1609,13 +1629,13 @@ int gui_winMain(int argc, char *argv[])
 
 	pick_run    = gtk_button_new_with_label(_("Done"));
 	gtk_box_pack_start(GTK_BOX(bbox),pick_run,FALSE, TRUE, padding);
-  g_signal_connect(G_OBJECT(pick_run), 
+  gtk_signal_connect(G_OBJECT(pick_run), 
       "clicked",G_CALLBACK(fem_gui_cmd), (gpointer) "gfinish");
 	gtk_widget_show(pick_run) ;
 
 	pick_cancel = gtk_button_new_with_label(_("Cancel"));
 	gtk_box_pack_end(GTK_BOX(bbox),pick_cancel,FALSE, FALSE, padding);
-  g_signal_connect(G_OBJECT(pick_cancel), 
+  gtk_signal_connect(G_OBJECT(pick_cancel), 
       "clicked",G_CALLBACK(fem_gui_cmd), (gpointer) "gcancel");
 	gtk_widget_show(pick_cancel) ;
 
