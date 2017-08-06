@@ -1316,6 +1316,7 @@ void femDataDialogSmall(char *title, char *cmd,
 	gint       spacing = 8 ;
 	gint       padding = 8 ;
 
+  if (norep_len < 1) {return;}
 	entry = (GtkWidget **)malloc(norep_len*sizeof(*entry)) ;
 	if (entry == NULL)
 	{
