@@ -447,7 +447,7 @@ long fdb_user_get_first_selected(long type, long type_id)
 
 	for (i=0; i<n; i++)
 	{
-		if (fdbInputTestSelect(type, i) == AF_OK)
+		if (fdbInputTestSelect(type, i) == AF_YES)
 		{
 			return(fdbInputGetInt(type, type_id, i));
 		}
