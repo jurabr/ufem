@@ -643,12 +643,15 @@ int func_fem_entity_aextrude (char *cmd)
   {
     for (i=0; i< fdbInputTabLenAll(ENTITY); i++ )
     {
-      type = fdbInputGetInt(ENTITY, ENTITY_TYPE, i);
-      if ((type == 2)||(type == 5))
+      if (fdbInputTestSelect(ENTITY,i) == AF_YES)
       {
-        area = fdbInputGetInt(ENTITY, ENTITY_ID, i) ;
-        if (mat0 <= 0) { mat = fdbInputGetInt(ENTITY,ENTITY_MAT, i); }
-        rv =  f_ent_extrude_area(area, klen, k, et, rs, mat, fdbSetInputDefDiv(0)); 
+        type = fdbInputGetInt(ENTITY, ENTITY_TYPE, i);
+        if ((type == 2)||(type == 5))
+        {
+          area = fdbInputGetInt(ENTITY, ENTITY_ID, i) ;
+          if (mat0 <= 0) { mat = fdbInputGetInt(ENTITY,ENTITY_MAT, i); }
+          rv =  f_ent_extrude_area(area, klen, k, et, rs, mat, fdbSetInputDefDiv(0)); 
+        }
       }
     }
   }

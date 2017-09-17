@@ -4,6 +4,15 @@ See fem/ChangeLog for solver changes.
 
 
 
+### Sun Sep 17 21:34:24 CEST 2017
+
+version 0.2.78
+
+bugfixes:
+  - aextrude fix: ignore unselected areas
+
+
+
 ### Mon Aug 28 22:17:19 CEST 2017
 
 version 0.2.77
