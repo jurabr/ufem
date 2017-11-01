@@ -1720,8 +1720,9 @@ int fdb_export_to_ans(FILE *fw, long *opts, long optlen)
 						varstr,
             fdbInputGetDbl(MVAL, MVAL_VAL,pos+j)
 						);
+			  /* if (varstr != NULL) free(varstr); */
 			}
-			free(varstr); varstr=NULL;
+			varstr=NULL;
 		}
 	}
 	fprintf(fw,"\n");

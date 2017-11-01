@@ -478,6 +478,10 @@ int femWriteNodeResSILO(char *fname)
     rv = AF_ERR_IO ; goto memFree ;
   }
 
+	DBMkDir (file, "/static"); /* makes a directory inside SILO file   */
+	DBSetDir(file, "/static"); /* sets the current directory with path */
+
+
   /* PREPARE GEOMETRY DATA --------------------------- */
   if ((nodelist = (int *)malloc(eLenL*sizeof(int)))==NULL){rv=AF_ERR_MEM;goto memFree;} 
   for (i=0; i<eLenL; i++) nodelist[i] = eNodesL[i];

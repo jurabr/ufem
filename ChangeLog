@@ -4,6 +4,15 @@ See fem/ChangeLog for solver changes.
 
 
 
+### Wed Nov  1 20:37:24 CET 2017
+
+version 0.2.79
+
+bugfixes:
+  - segfault in APDL export
+
+
+
 ### Sun Sep 17 21:34:24 CEST 2017
 
 version 0.2.78
