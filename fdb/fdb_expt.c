@@ -1545,6 +1545,7 @@ int fdb_export_to_ans(FILE *fw, long *opts, long optlen)
 	/* number of element types */
 	if (len > 0)
 	{
+		fprintf(fw,"!* uFEM export\nfini\n/PREP7\n\n");
 		/* description of element types: */
 		for (i=0; i<len; i++)
 		{
@@ -1712,16 +1713,17 @@ int fdb_export_to_ans(FILE *fw, long *opts, long optlen)
 
 			if (strcmp((varstr=fdb_ufem_mat_to_ans(fdbInputGetInt(MVAL, MVAL_TYPE,pos+j))),"x") != 0)
 			{
-				fprintf(fw,"mp,%s,%li,%s,%e\n",
+				fprintf(fw,"mp,%s,%li,%e\n",
             ciGetVarNameFromGrp(
             fdbFemStrFromInt(fdbInputGetInt(MVAL,MVAL_TYPE,pos+j)),"material"
 						),
 						fdbInputGetInt(MVAL, MVAL_MAT,pos+j),
-						varstr,
+						/*varstr,*/
             fdbInputGetDbl(MVAL, MVAL_VAL,pos+j)
 						);
+			  /* if (varstr != NULL) free(varstr); */
 			}
-			free(varstr); varstr=NULL;
+			varstr=NULL;
 		}
 	}
 	fprintf(fw,"\n");
@@ -1729,6 +1731,7 @@ int fdb_export_to_ans(FILE *fw, long *opts, long optlen)
 
 	/* ** KPs  -------------------------------------------  */
 
+#if 0
 	len_all = fdbInputTabLenAll(KPOINT) ;
 
 	for (i=0; i<len_all; i++)
@@ -1745,7 +1748,7 @@ int fdb_export_to_ans(FILE *fw, long *opts, long optlen)
 	}
 
 	fprintf(fw,"\n");
-
+#endif
 
 #if 0
 	/* ** Geometric entities  ------------------------------  */
@@ -1880,7 +1883,9 @@ int fdb_export_to_ans(FILE *fw, long *opts, long optlen)
     if (mtype_pos < 0) {mtype_pos = 0 ;}
 
 		fprintf(fw,"type,%li\n",etype_id);
+#if 1 /* do not use untir reals export is fixed */
 		fprintf(fw,"real,%li\n",rtype_pos);
+#endif
 		fprintf(fw,"mat,%li\n",mtype_pos);
 #if 0
 	}
@@ -1899,7 +1904,7 @@ int fdb_export_to_ans(FILE *fw, long *opts, long optlen)
 		
 		if (isize > 0)
 		{
-			fprintf(fw,"e,");
+			fprintf(fw,"e");
 			for (j=0; j<isize; j++)
 			{
 				fprintf(fw,",%li",fdbInputGetInt(ENODE,ENODE_ID,pos+j));
