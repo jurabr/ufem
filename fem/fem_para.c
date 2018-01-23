@@ -98,6 +98,7 @@ long  femEigenNum         = 0 ;     /* number of computed mode shapess */
 long  femEigenInvI        = AF_YES ; /* use inverse iterations method for 1st eigenvalue */
 long  femNewmarkEL        = AF_NO ; /* newmark integration solver */
 long  femComputePriceOnly = AF_NO ; /* computer price and exit    */
+long  femComputeGrCenOnly = AF_NO ; /* computer price and exit    */
 long  femThermTrans       = AF_NO ; /* indicates thermal transient solution */
 
 FILE *fem_sol_norm_file   = NULL ;
@@ -191,6 +192,7 @@ void fem_help(int argc, char *argv[])
 	fprintf(msgout,"   -tis      ... %s\n", _("read thermal results from stdin"));
 #endif /* end of _SMALL_FEM_CODE_*/
 	fprintf(msgout,"   -po       ... %s\n", _("compute structure price and write it to stdout"));
+	fprintf(msgout,"   -pc       ... %s\n", _("compute structure centre of gravity and write it to stdout"));
 	fprintf(msgout,"   -e        ... %s\n", _("compute potential energy and write it to stdout"));
 	fprintf(msgout,"   -ts DIV   ... %s\n", _("prepare tensor scale data with X division DIV"));
 	fprintf(msgout,"   -tso FILE ... %s\n", _("save tensor scale data to FILE"));
@@ -1102,6 +1104,12 @@ int fem_parse_params(int argc, char *argv[])
 		{
 			femComputePriceOnly = AF_YES ;
 		}
+
+		if (strcmp(argv[i],"-pc") == 0)
+		{
+			femComputeGrCenOnly = AF_YES ;
+		}
+
 
 		if (strcmp(argv[i],"-e") == 0)
 		{

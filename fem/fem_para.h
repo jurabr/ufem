@@ -61,6 +61,7 @@ extern long  femEigenModal ;
 extern long  femEigenNum   ;
 extern long  femNewmarkEL  ;
 extern long  femComputePriceOnly;
+extern long  femComputeGrCenOnly;
 extern long  femComputePE  ;
 extern long  femThermTrans ; 
 extern long  femTensorScale ;

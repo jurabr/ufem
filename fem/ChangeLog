@@ -1,5 +1,11 @@
 ### Fri Jun  2 15:28:10 CEST 2017
 
+version 0.5.2
+
+features:
+  + computaion of gravity centre added (-pc switch)
+
+
 version 0.5.1
 
 features:

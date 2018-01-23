@@ -188,6 +188,57 @@ memFree:
   return(Pi);
 }
 
+/* Computes centre of gravity coordinates */
+long fem_gravity_centre(double *x, double *y, double *z)
+{
+	int rv = AF_OK;
+  long i,j ;
+  long inum ;
+  long eT ;
+  double xi, yi, zi, Vi, Sx, Sy, Sz, Vm ;
+
+  *x = 0.0 ;
+  *y = 0.0 ;
+  *z = 0.0 ;
+  Vi = 0.0 ; Vm = 0.0 ;
+  Sx = 0.0 ; Sy = 0.0 ; Sz = 0.0 ;
+
+  for (i=0; i< eLen; i++)
+  {
+		eT = femGetETypePos(i);
+    xi = 0.0 ; yi = 0.0 ; zi = 0.0 ;
+    if ((inum = Elem[eT].nodes) <= 0) {rv = AF_ERR_VAL ; return(rv);}
+
+    /* density*volume */
+    Vi = femGetMPValPos(i, MAT_DENS, 0) ;
+    Vm += Vi ;
+
+    /* Static moments: */
+    for (j=0; j<inum; j++)
+    {
+      xi += femGetNCoordPosX(femGetENodePos(i,j));
+      yi += femGetNCoordPosY(femGetENodePos(i,j));
+      zi += femGetNCoordPosZ(femGetENodePos(i,j));
+    }
+    Sx = Vi * ( xi /  (double)inum ) ;
+    Sy = Vi * ( yi /  (double)inum ) ;
+    Sz = Vi * ( zi /  (double)inum ) ;
+  }
+
+  /* final coordinates: */
+  if (Vm < FEM_ZERO) 
+  {
+    rv = AF_ERR_EMP;
+  }
+  else
+  {
+    *x = Sx / Vm ;
+    *y = Sy / Vm ;
+    *z = Sz / Vm ;
+  }
+
+  return(rv);
+}
 
 
 /* sets some of matrices and vectors to NULL */
@@ -1789,5 +1840,36 @@ memFree:
 
 	return(rv);
 }
+
+
+/** computes centre of grafity of structure based on element volumes
+ *  @return state value
+ */
+int femComputeGravCentre(void)
+{
+	int rv = AF_OK;
+  double x, y, z ;
+
+ 	if ((rv = femElemTypeInit()) != AF_OK) { goto memFree; }
+ 	if ((rv = femMatTypeInit()) != AF_OK) { goto memFree; }
+
+  fem_sol_null();
+
+ 	if ((rv = fem_dofs()) != AF_OK) { goto memFree; }
+ 	if ((rv = fem_sol_alloc()) != AF_OK) { goto memFree; }
+
+  if (fem_gravity_centre(&x, &y, &z) == AF_OK)
+  { 
+    fprintf( stdout, "%f %f %f\n", x, y, z ) ;
+  }
+
+memFree:
+	fem_sol_free();
+	femDataFree();
+
+	return(rv);
+}
+
+
 
 /* end of fem_sol.c */

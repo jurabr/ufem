@@ -182,6 +182,12 @@ int main(int argc, char *argv[])
       }
       else
       {
+        if (femComputeGrCenOnly == AF_YES)
+        {
+          return( femComputeGravCentre());
+        }
+        else
+      {
         if (femThermTrans == AF_YES)
         {
 	        if ((rv = femSolveThermTrans(NULL)) != AF_OK) {return(rv);} /* thermal transient */
@@ -202,6 +208,7 @@ int main(int argc, char *argv[])
 	       else
 	         { if ((rv = femSolve()) != AF_OK) {return(rv);} }
         }
+      } /* * */
       }
     }
   }
