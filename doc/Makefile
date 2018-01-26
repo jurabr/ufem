@@ -5,7 +5,7 @@ CSLATEX=cslatex
 
 progdoc:
 	(cd .. && doxygen fem.dox)
-	(cd .. && doxygen tui.dox)
+#	(cd .. && doxygen tui.dox)
 
 ufem.pdf: ufem.dvi
 	dvipdf ufem.dvi

@@ -238,12 +238,16 @@ void fdbElemTypeInit_002(long type)
 	static long *eload        = NULL ;
 	static long res      = 0 ;
 	static long *nres    = NULL ;
-	static long res_rp   = 19 ;
-	static long nres_rp[19] = {
-		RES_SX, RES_SY, RES_SXY, 
-		RES_EX, RES_EY, RES_EXY, 
+	static long res_rp   = 22 ;
+	static long nres_rp[22] = { 
+    RES_SX, RES_SY, RES_SXY,
+    RES_EX, RES_EY, RES_EXY,
+    RES_EPX, RES_EPY, RES_EPXY,
     RES_USX, RES_USY, RES_USXY,
-		RES_STMAX, RES_SCMAX, RES_DIR1, RES_DIR2, RES_DIR3, RES_ECR1, RES_ECR2, RES_STAT1, RES_STAT2, RES_GCR1} ;
+    RES_STMAX, RES_SCMAX,
+    RES_DIR1, RES_DIR2, RES_DIR3,
+    RES_ECR1, RES_ECR2, RES_STAT1, RES_STAT2, RES_GCR1} ;
+
   static long ellist_len    = 2 ;
   static long ellist[2]     = {1,2} ;
 
@@ -579,8 +583,11 @@ void fdbElemTypeInit_009(long type)
 	static long *eload        = NULL ;
 	static long res           = 0 ;
 	static long *nres         = NULL ;
-	static long res_rp        = 14 ;
-	static long nres_rp[14]   = {RES_SX,RES_SY,RES_SZ,RES_SYZ,RES_SZX,RES_SXY, RES_EX,RES_EY,RES_EZ,RES_EYZ,RES_EZX,RES_EXY,RES_CR1,RES_PSI};
+	static long res_rp      = 20 ;
+	static long nres_rp[20] = {RES_SX,RES_SY,RES_SZ,RES_SYZ,RES_SZX,RES_SXY, RES_EX,RES_EY,RES_EZ,RES_EYZ,RES_EZX,RES_EXY,
+    RES_EPX,RES_EPY,RES_EPZ,RES_EPYZ,RES_EPZX,RES_EPXY,
+    RES_CR1,RES_PSI};
+
   static long ellist_len    = 2 ;
   static long ellist[2]     = {3,4} ;
 
@@ -628,14 +635,18 @@ void fdbElemTypeInit_010(long type)
 	static long res           = 0 ;
 	static long *nres         = NULL ;
 	static long res_rp        = 26 ;
-	static long nres_rp[26]   = {
+	static long res_rp      = 32 ;
+	static long nres_rp[32] = {
     RES_SX,RES_SY,RES_SZ,RES_SYZ,RES_SZX,RES_SXY, 
     RES_EX,RES_EY,RES_EZ,RES_EYZ,RES_EZX,RES_EXY,
+    RES_EPX,RES_EPY,RES_EPZ,RES_EPYZ,RES_EPZX,RES_EPXY,
     RES_CR1,RES_PSI,
     RES_ECR1, RES_ECR2, RES_GCR1,
     RES_P_M11,RES_P_M12,RES_P_M13,
     RES_P_M21,RES_P_M22,RES_P_M23,
     RES_P_M31,RES_P_M32,RES_P_M33};
+
+
   static long ellist_len    = 2 ;
   static long ellist[2]     = {3,4} ;
 
@@ -730,15 +741,17 @@ void fdbElemTypeInit_012(long type)
 	static long *eload        = NULL ;
 	static long res           = 0 ;
 	static long *nres         = NULL ;
-	static long res_rp        = 26 ;
-	static long nres_rp[26]   = {
+	static long res_rp      = 32 ;
+	static long nres_rp[32] = {
     RES_SX,RES_SY,RES_SZ,RES_SYZ,RES_SZX,RES_SXY, 
     RES_EX,RES_EY,RES_EZ,RES_EYZ,RES_EZX,RES_EXY,
+    RES_EPX,RES_EPY,RES_EPZ,RES_EPYZ,RES_EPZX,RES_EPXY,
     RES_CR1,RES_PSI,
     RES_ECR1, RES_ECR2, RES_GCR1,
     RES_P_M11,RES_P_M12,RES_P_M13,
     RES_P_M21,RES_P_M22,RES_P_M23,
     RES_P_M31,RES_P_M32,RES_P_M33};
+
   static long ellist_len    = 0 ;
   static long *ellist     = NULL ;
 

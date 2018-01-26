@@ -1021,10 +1021,11 @@ int addElem_002(void)
 	static long *real_rp = NULL ;
 	static long res      = 0 ;
 	static long *nres    = NULL ;
-	static long res_rp   = 19 ;
-	static long nres_rp[19] = { 
+	static long res_rp   = 22 ;
+	static long nres_rp[22] = { 
     RES_SX, RES_SY, RES_SXY,
     RES_EX, RES_EY, RES_EXY,
+    RES_EPX, RES_EPY, RES_EPXY,
     RES_USX, RES_USY, RES_USXY,
     RES_STMAX, RES_SCMAX,
     RES_DIR1, RES_DIR2, RES_DIR3,

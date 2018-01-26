@@ -46,8 +46,185 @@ extern double fem_plast_H_RO(long ePos,
 
 /* Material status values: 0=linear, 1=plastic, -1=unloading */
 
+/** Return mapping procedure: CPA method ("consistent elastoplatic
+ ** modulus")
+ * @param sigma: stress vector (returned with total sigma)
+ * @param epsilon: strain vector (addition from current step)
+ * @param Mode: AF_YES=new state, AF_NO=old 
+ */
+int retmap_CPA( long ePos, 
+                long e_rep, 
+                long eT, 
+                long mT, 
+                tVector *sigma, 
+                tVector *epsilon, 
+                long Mode, 
+                tMatrix *Dep )
+{
+  int rv = AF_OK ;
+  long d_dim = 3 ;
+  long i ;
+  double lambda, F ;
+  double Ex, nu, fy ;
+  tVector epsilon_n ;
+  tVector epsilon_p ;
+  tVector epsilon_d ;
+  tVector d_sigma ;
+  tVector a ;
+  tMatrix De ;
+  tMatrix Dei ;
 
-/* elasticity condition derivatives: */
+  /* check dimensionality of problem: */
+  if (Elem[eT].dim == 3) { d_dim = 6 ;        /* 3D element */ }
+  else { if (Elem[eT].dim == 2) { d_dim = 3 ; /* wall element*/ }
+    else
+    {
+#ifdef RUN_VERBOSE
+      fprintf(msgout,"[E] %s: %li!\n", _("Return mapping - bad dimension for element"),ePos);
+#endif
+      return(AF_ERR_VAL);
+    }
+  }
+
+  lambda = 0.0 ; /* sed lambda to zero */
+  femVecSetZero(sigma);
+
+  /* TODO: allocate sigma, epsilon vectors */
+  femVecNull(&epsilon_n) ;
+  femVecNull(&epsilon_p) ;
+  femVecNull(&epsilon_d) ;
+  femVecNull(&d_sigma) ;
+  femVecNull(&a) ;
+  femMatNull(&De) ;
+  femMatNull(&Dei) ;
+
+  if ((rv=femVecFullInit(&epsilon_n, d_dim)) != AF_OK){goto memFree;}
+  if ((rv=femVecFullInit(&epsilon_p, d_dim)) != AF_OK){goto memFree;}
+  if ((rv=femVecFullInit(&epsilon_d, d_dim)) != AF_OK){goto memFree;}
+  if ((rv=femVecFullInit(&d_sigma,   d_dim)) != AF_OK){goto memFree;}
+  if ((rv=femVecFullInit(&a,         d_dim)) != AF_OK){goto memFree;}
+  if ((rv=femFullMatInit(&De, d_dim, d_dim)) != AF_OK){goto memFree;}
+  if ((rv=femFullMatInit(&Dei,d_dim, d_dim)) != AF_OK){goto memFree;}
+
+  Ex = femGetMPValPos(ePos, MAT_EX, 0); 
+  nu = femGetMPValPos(ePos, MAT_NU, 0); 
+  fy = femGetMPValPos(ePos, MAT_F_YC, 0)  ;
+
+  /* get previous PLASTIC and TOTAL strain and set De: */
+  switch (d_dim)
+  {
+    case 3:
+      femVecPut(&epsilon_p,1, femGetEResVal(ePos,RES_EPX,e_rep));
+      femVecPut(&epsilon_p,2, femGetEResVal(ePos,RES_EPY,e_rep));
+      femVecPut(&epsilon_p,3, femGetEResVal(ePos,RES_EPXY,e_rep));
+
+      femVecPut(&epsilon_n,1, femGetEResVal(ePos,RES_EX,e_rep));
+      femVecPut(&epsilon_n,2, femGetEResVal(ePos,RES_EY,e_rep));
+      femVecPut(&epsilon_n,3, femGetEResVal(ePos,RES_EXY,e_rep));
+
+      D_HookIso_planeRaw(Ex, nu, 0, &De); /* hardcoded plane stress ! */
+      break ;
+    case 6:
+      femVecPut(&epsilon_p,1, femGetEResVal(ePos,RES_EPX,e_rep));
+      femVecPut(&epsilon_p,2, femGetEResVal(ePos,RES_EPY,e_rep));
+      femVecPut(&epsilon_p,3, femGetEResVal(ePos,RES_EPZ,e_rep));
+      femVecPut(&epsilon_p,4, femGetEResVal(ePos,RES_EPYZ,e_rep));
+      femVecPut(&epsilon_p,5, femGetEResVal(ePos,RES_EPZX,e_rep));
+      femVecPut(&epsilon_p,6, femGetEResVal(ePos,RES_EPXY,e_rep));
+
+      femVecPut(&epsilon_n,1, femGetEResVal(ePos,RES_EX,e_rep));
+      femVecPut(&epsilon_n,2, femGetEResVal(ePos,RES_EY,e_rep));
+      femVecPut(&epsilon_n,3, femGetEResVal(ePos,RES_EZ,e_rep));
+      femVecPut(&epsilon_n,4, femGetEResVal(ePos,RES_EYZ,e_rep));
+      femVecPut(&epsilon_n,5, femGetEResVal(ePos,RES_EZX,e_rep));
+      femVecPut(&epsilon_n,6, femGetEResVal(ePos,RES_EXY,e_rep));
+
+      femD_3D_iso(ePos, Ex, nu, &De) ;
+      break ;
+  }
+
+  /* make inversion of De: */
+  femMatCloneDiffToEmpty(&De, &Dei);
+  femLUinverse(&Dei);
+
+  /* total initial epsilon (n+1): */
+  femVecAddVec(&epsilon_n, 1.0, epsilon);
+
+  /* initial elastic stress: */
+  femVecLinComb(1.0, &epsilon_n, -1.0, &epsilon_p, &epsilon_d);
+
+  /* initial sigma: */
+  femMatVecMult(&De, &epsilon_d, sigma);
+
+  /* iteration loop: */
+  for (i=0; i< 100; i++)
+  {
+    /* check plasticity condition: */
+    if ((F = (3.0 * stress3D_J2dev(sigma) )- (fy*fy) ) < FEM_ZERO)
+    {
+      break ; /* we are done */
+    }
+
+    /* compute lambda: */
+    switch (d_dim) /* check what "alpha=0.0" does! */
+    {
+      case 3: vmis_deriv2D(&a, sigma, 1, 0.0) ; break;
+      case 6: vmis_deriv(&a, sigma, 1, 0.0) ; break;
+    }
+    lambda = femVecMatVecMult(&a, &De, &a) ;
+    if (lambda >= FEM_ZERO)
+    {
+      lambda = F / lambda ;
+    }
+    else
+    {
+      rv = AF_ERR_ZER ; goto memFree ;
+    }
+
+    /* compute d_sigma: */
+    femMatVecMult(&De, &a, &d_sigma) ;
+    femValVecMultSelf(-1.0*lambda, &d_sigma) ;
+
+    /* compute new epsilon_p: */
+    femMatVecMult(&Dei, &d_sigma, &a) ; /* using "a" as mid-product!*/
+    femVecAddVec(&epsilon_p, -1.0, &a) ;
+
+    /* compute total sigma: */
+    femVecAddVec(sigma, 1.0, &d_sigma) ;
+
+  } /* end "for i" */
+
+  /* TODO write plastic stress ! */
+  switch (d_dim)
+  {
+    case 3:
+      femPutEResVal(ePos,RES_EPX,e_rep,femVecGet(&epsilon_p,1));
+      femPutEResVal(ePos,RES_EPY,e_rep,femVecGet(&epsilon_p,2));
+      femPutEResVal(ePos,RES_EPXY,e_rep,femVecGet(&epsilon_p,3));
+      break ;
+    case 6:
+      femPutEResVal(ePos,RES_EPX,e_rep,femVecGet(&epsilon_p,1));
+      femPutEResVal(ePos,RES_EPY,e_rep,femVecGet(&epsilon_p,2));
+      femPutEResVal(ePos,RES_EPZ,e_rep,femVecGet(&epsilon_p,3));
+      femPutEResVal(ePos,RES_EPYZ,e_rep,femVecGet(&epsilon_p,4));
+      femPutEResVal(ePos,RES_EPZX,e_rep,femVecGet(&epsilon_p,5));
+      femPutEResVal(ePos,RES_EPXY,e_rep,femVecGet(&epsilon_p,6));
+      break ;
+  }
+
+
+memFree:
+  femVecFree(&epsilon_n);
+  femVecFree(&epsilon_p);
+  femVecFree(&epsilon_d);
+  femVecFree(&d_sigma);
+  femVecFree(&a);
+	femMatFree(&De);
+	femMatFree(&Dei);
+  return(rv);
+}
+
+/** elasticity condition derivatives: */
 int vmis_deriv(tVector *deriv, tVector *stress, long type, double alpha)
 {
   double s_x, s_y, s_z, s_q, t_xy, t_yz, t_zx, mult, mult1, J2 ;

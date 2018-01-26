@@ -102,6 +102,12 @@
 #define RES_USZX   70
 #define RES_TEMP   71
 #define RES_USUM   72
+#define RES_EPX    73
+#define RES_EPY    74
+#define RES_EPZ    75
+#define RES_EPXY   76
+#define RES_EPYZ   77
+#define RES_EPZX   78
 
 
 #endif

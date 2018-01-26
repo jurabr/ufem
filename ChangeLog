@@ -4,6 +4,15 @@ See fem/ChangeLog for solver changes.
 
 
 
+### Fri Jan 26 20:04:37 CET 2018
+
+version 0.2.80
+
+features:
+  + suppoort for plastic strain (data fileds only) in e002, e009, e010, e012
+
+
+
 ### Wed Nov  1 20:37:24 CET 2017
 
 version 0.2.79

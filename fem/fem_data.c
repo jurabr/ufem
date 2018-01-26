@@ -51,7 +51,7 @@ long solUseCGSSOR      = AF_NO ; /* in non-symetric equation solver is forced to
 /* LENGHTS OF FIELDS: */
 
 long  nLen  = 0; /* number of nodes                */
-long  eLen  = 0; /* number of elemnts              */
+long  eLen  = 0; /* number of elements             */
 long  eLenL = 0; /* lenght of element nodes field  */
 long rsLen  = 0; /* number or real sets            */
 long rsLenL = 0; /* number of real value field     */
