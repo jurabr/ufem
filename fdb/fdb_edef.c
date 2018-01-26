@@ -634,7 +634,6 @@ void fdbElemTypeInit_010(long type)
 	static long *eload        = NULL ;
 	static long res           = 0 ;
 	static long *nres         = NULL ;
-	static long res_rp        = 26 ;
 	static long res_rp      = 32 ;
 	static long nres_rp[32] = {
     RES_SX,RES_SY,RES_SZ,RES_SYZ,RES_SZX,RES_SXY, 
